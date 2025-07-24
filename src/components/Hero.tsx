@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ChevronRight, Car, DollarSign, Shield, Award, Search, Phone, Star, TrendingUp, Eye, Clock, Menu, X, Home, User, Truck, RotateCcw, MessageCircle } from 'lucide-react';
+import Image from 'next/image';
+import { ChevronRight, Car, DollarSign, Shield, Search, Phone, Star, TrendingUp, Eye, Clock, Menu, X, Home, User, MessageCircle } from 'lucide-react';
 
 const mockBanners = [
   {
@@ -22,51 +23,13 @@ const mockBanners = [
   },
   {
     id: '3',
-    image_url: 'assets/images/porsche9111.jpg',
+    image_url: '/assets/images/porsche9111.jpg',
     title: 'Instant Valuation',
     subtitle: 'Sell Your Luxury Car',
     badge: 'FREE QUOTE',
     description: 'Get the best price for your premium vehicle'
   }
 ];
-
-// Trust Bar Component
-function TrustBar() {
-  return (
-    <div className="w-full bg-gradient-to-r from-black/80 via-gray-900/80 to-black/80 backdrop-blur-md border-t border-[#d4af37]/20 py-4 px-4">
-      <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-        <div className="flex flex-col items-center space-y-1">
-          <div className="flex items-center space-x-1">
-            <Car className="w-4 h-4 text-[#d4af37]" />
-            <span className="text-lg md:text-xl font-bold text-white">1000+</span>
-          </div>
-          <span className="text-xs text-gray-300 leading-snug">Verified Cars</span>
-        </div>
-        <div className="flex flex-col items-center space-y-1">
-          <div className="flex items-center space-x-1">
-            <Star className="w-4 h-4 text-[#f1c85c] fill-current" />
-            <span className="text-lg md:text-xl font-bold text-white">4.9</span>
-          </div>
-          <span className="text-xs text-gray-300 leading-snug">Google Rating</span>
-        </div>
-        <div className="flex flex-col items-center space-y-1">
-          <div className="flex items-center space-x-1">
-            <Truck className="w-4 h-4 text-[#d4af37]" />
-            <span className="text-lg md:text-xl font-bold text-white">FREE</span>
-          </div>
-          <span className="text-xs text-gray-300 leading-snug">Home Pickup</span>
-        </div>
-        <div className="flex flex-col items-center space-y-1">
-          <div className="flex items-center space-x-1">
-            <RotateCcw className="w-4 h-4 text-[#f1c85c]" />
-            <span className="text-lg md:text-xl font-bold text-white">7-Day</span>
-          </div>
-          <span className="text-xs text-gray-300 leading-snug">Return Policy</span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // Bottom Sticky Navigation (Mobile Only)
 function BottomNav() {
@@ -79,15 +42,15 @@ function BottomNav() {
         </button>
         <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#f1c85c]/10 transition-all duration-300">
           <DollarSign className="w-5 h-5 text-gray-400" />
-          <span className="text-xs text-gray-400 font-medium">Sell</span>
+          <span className="text-xs text-gray-400 font-medium">Buy</span>
         </button>
         <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#f1c85c]/10 transition-all duration-300">
           <Search className="w-5 h-5 text-gray-400" />
-          <span className="text-xs text-gray-400 font-medium">Track</span>
+          <span className="text-xs text-gray-400 font-medium">Sell</span>
         </button>
         <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#f1c85c]/10 transition-all duration-300">
           <User className="w-5 h-5 text-gray-400" />
-          <span className="text-xs text-gray-400 font-medium">Account</span>
+          <span className="text-xs text-gray-400 font-medium">Connect</span>
         </button>
       </div>
     </div>
@@ -102,19 +65,15 @@ function Header() {
     <header className="fixed top-0 left-0 w-full h-[10vh] md:h-[10vh] z-50 px-4 md:px-8 flex items-center justify-between bg-black/10 backdrop-blur-md border-b border-white/5">
       
       {/* Logo */}
-      <div className="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
+      <div className="flex items-center flex-shrink-0">
         <div className="relative">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-[#d4af37] to-[#f1c85c] rounded-lg flex items-center justify-center shadow-lg">
-            <Car className="w-5 h-5 md:w-6 md:h-6 text-black" />
-          </div>
-        </div>
-        <div className="hidden sm:block">
-          <h1 className="text-sm md:text-lg font-bold bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text tracking-wide">
-            EPIC LUXE
-          </h1>
-          <p className="text-[10px] md:text-xs bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text font-medium tracking-wider">
-            CERTIFIED PRE-OWNED
-          </p>
+          <Image 
+            src="/assets/images/EpicLuxeWithoutbackground.png" 
+            alt="Epic Luxe Logo" 
+            width={40}
+            height={40}
+            className="h-8 md:h-10 w-auto object-contain"
+          />
         </div>
       </div>
       
@@ -194,6 +153,7 @@ export default function LuxuryVehicleHero() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  const [activeTab, setActiveTab] = useState('buy');
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -207,7 +167,7 @@ export default function LuxuryVehicleHero() {
   }, []);
 
   useEffect(() => {
-    const handleParallax = (e) => {
+    const handleParallax = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth - 0.5) * 0.5;
       const y = (e.clientY / window.innerHeight - 0.5) * 0.5;
       setParallax({ x, y });
@@ -224,8 +184,8 @@ export default function LuxuryVehicleHero() {
       {/* Header Component */}
       <Header />
 
-      {/* Main Slider - Improved Mobile Height */}
-      <div className="pt-[10vh] h-[50vh] md:h-[60vh] w-full relative overflow-hidden">
+      {/* Main Slider */}
+      <div className="pt-[10vh] h-[60vh] md:h-[60vh] w-full relative overflow-hidden">
         
         {/* Background Image with Enhanced Gradient Overlay */}
         <div 
@@ -235,56 +195,57 @@ export default function LuxuryVehicleHero() {
             opacity: isTransitioning ? 0.7 : 1
           }}
         >
-          <img
+          <Image
             src={currentBanner.image_url}
             alt="Luxury Car"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/70"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40"></div>
-          {/* Enhanced bottom gradient for better text legibility */}
           <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/90 to-transparent"></div>
         </div>
 
-        {/* Desktop Content Overlay - Enhanced Typography */}
+        {/* Desktop Content Overlay - Compact & Transparent */}
         <div className="hidden md:flex absolute inset-0 flex-col justify-center px-8 lg:px-16 z-20">
           <div className={`transition-all duration-700 ${isTransitioning ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}>
             
             {/* Badge */}
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-[#d4af37]/20 to-[#f1c85c]/20 backdrop-blur-md border border-[#d4af37]/30 mb-6">
-              <div className="w-2 h-2 bg-gradient-to-r from-[#d4af37] to-[#f1c85c] rounded-full mr-2 animate-pulse"></div>
-              <span className="bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text font-bold text-sm tracking-wider">
+            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-gradient-to-r from-[#d4af37]/15 to-[#f1c85c]/15 backdrop-blur-md border border-[#d4af37]/20 mb-2">
+              <div className="w-1.5 h-1.5 bg-gradient-to-r from-[#d4af37] to-[#f1c85c] rounded-full mr-2 animate-pulse"></div>
+              <span className="bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text font-bold text-xs tracking-wider">
                 {currentBanner.badge}
               </span>
             </div>
 
-            {/* Main Content with Improved Typography */}
-            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight tracking-wide">
+            {/* Main Content - Reduced sizes and gaps, more transparent */}
+            <h1 className="text-3xl lg:text-4xl font-bold text-white/80 mb-1 leading-tight tracking-wide">
               {currentBanner.title}
             </h1>
-            <h2 className="text-2xl lg:text-3xl font-light bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text mb-6 leading-snug">
+            <h2 className="text-lg lg:text-xl font-light bg-gradient-to-r from-[#d4af37]/80 to-[#f1c85c]/80 text-transparent bg-clip-text mb-2 leading-snug">
               {currentBanner.subtitle}
             </h2>
-            <p className="text-base lg:text-lg text-gray-200 mb-8 max-w-2xl leading-relaxed">
+            <p className="text-sm lg:text-base text-gray-200/70 mb-4 max-w-xl leading-relaxed">
               {currentBanner.description}
             </p>
 
             {/* Enhanced CTA Buttons */}
-            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-              <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold hover:from-[#f1c85c] hover:to-[#d4af37] transition-all transform hover:scale-105 shadow-2xl hover:shadow-[#d4af37]/30 text-sm">
-                <Eye className="w-5 h-5" />
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+              <button className="flex items-center justify-center space-x-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold hover:from-[#f1c85c] hover:to-[#d4af37] transition-all transform hover:scale-105 shadow-2xl hover:shadow-[#d4af37]/30 text-sm">
+                <Eye className="w-4 h-4" />
                 <span>Explore Collection</span>
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
-              <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full border-2 border-[#d4af37] text-white font-bold hover:bg-gradient-to-r hover:from-[#d4af37] hover:to-[#f1c85c] hover:text-black transition-all transform hover:scale-105 hover:shadow-xl text-sm">
-                <DollarSign className="w-5 h-5" />
+              <button className="flex items-center justify-center space-x-2 px-6 py-2.5 rounded-full border-2 border-[#d4af37]/70 text-white/80 font-bold hover:bg-gradient-to-r hover:from-[#d4af37] hover:to-[#f1c85c] hover:text-black transition-all transform hover:scale-105 hover:shadow-xl text-sm">
+                <DollarSign className="w-4 h-4" />
                 <span>Get Free Quote</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Mobile Content Overlay */}
+        {/* Mobile Content Overlay */}
         <div className="md:hidden absolute bottom-0 left-0 right-0 z-20">
           <div className={`transition-all duration-700 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
             <div className="px-6 pb-6">
@@ -297,7 +258,7 @@ export default function LuxuryVehicleHero() {
                 </span>
               </div>
 
-              {/* Enhanced Mobile Typography */}
+              {/* Mobile Typography */}
               <h1 className="text-3xl font-bold text-white mb-2 leading-tight drop-shadow-2xl tracking-wide">
                 {currentBanner.title}
               </h1>
@@ -308,7 +269,7 @@ export default function LuxuryVehicleHero() {
                 {currentBanner.description}
               </p>
 
-              {/* Enhanced Mobile CTA Buttons */}
+              {/* Mobile CTA Buttons */}
               <div className="flex space-x-3">
                 <button className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold hover:from-[#f1c85c] hover:to-[#d4af37] transition-all transform hover:scale-105 shadow-xl text-sm">
                   <Eye className="w-4 h-4" />
@@ -338,7 +299,7 @@ export default function LuxuryVehicleHero() {
           ))}
         </div>
 
-        {/* Enhanced Progress Bar */}
+        {/* Progress Bar */}
         <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20 z-30">
           <div 
             className="h-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] transition-all duration-[5000ms] ease-linear shadow-lg"
@@ -347,17 +308,13 @@ export default function LuxuryVehicleHero() {
         </div>
       </div>
 
-      {/* Trust Bar */}
-      <TrustBar />
-
-      {/* Enhanced Cards Section with Better Spacing */}
-      <div className="py-8 md:py-12 w-full px-6 md:px-8 lg:px-12">
+      {/* Buy/Sell Cards Section - Desktop Only */}
+      <div className="hidden md:block py-8 md:py-12 w-full px-6 md:px-8 lg:px-12">
         <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
 
-          {/* Enhanced Buy New Car Card */}
+          {/* Buy New Car Card */}
           <div className="group relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black rounded-2xl border border-[#d4af37]/30 cursor-pointer transform hover:scale-[1.02] transition-all duration-500 shadow-2xl hover:shadow-[#d4af37]/30">
             
-            {/* Enhanced Background Pattern */}
             <div className="absolute inset-0 opacity-20">
               <div className="absolute inset-0 bg-gradient-to-br from-[#d4af37]/30 via-transparent to-[#f1c85c]/30"></div>
               <div className="absolute top-0 right-0 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-[#d4af37]/40 to-transparent rounded-full blur-3xl"></div>
@@ -365,7 +322,6 @@ export default function LuxuryVehicleHero() {
 
             <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-between min-h-[200px]">
               
-              {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 rounded-xl bg-gradient-to-r from-[#d4af37]/20 to-[#f1c85c]/20 backdrop-blur-sm border border-[#d4af37]/40">
@@ -378,14 +334,12 @@ export default function LuxuryVehicleHero() {
                 <ChevronRight className="w-5 h-5 text-[#d4af37] group-hover:translate-x-2 transition-transform duration-300" />
               </div>
               
-              {/* Description */}
               <div className="mb-4">
                 <p className="text-gray-300 text-sm md:text-base leading-relaxed">
                   Explore our curated collection of luxury vehicles
                 </p>
               </div>
               
-              {/* Features */}
               <div className="mb-6">
                 <div className="flex items-center space-x-6 text-sm md:text-base">
                   <div className="flex items-center space-x-2">
@@ -399,7 +353,6 @@ export default function LuxuryVehicleHero() {
                 </div>
               </div>
 
-              {/* Enhanced CTA Buttons */}
               <div className="mt-auto flex space-x-3">
                 <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold hover:from-[#f1c85c] hover:to-[#d4af37] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm">
                   <Eye className="w-4 h-4" />
@@ -413,10 +366,9 @@ export default function LuxuryVehicleHero() {
             </div>
           </div>
 
-          {/* Enhanced Sell Your Car Card */}
+          {/* Sell Your Car Card */}
           <div className="group relative overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-2xl border border-[#f1c85c]/30 cursor-pointer transform hover:scale-[1.02] transition-all duration-500 shadow-2xl hover:shadow-[#f1c85c]/30">
             
-            {/* Enhanced Background Pattern */}
             <div className="absolute inset-0 opacity-20">
               <div className="absolute inset-0 bg-gradient-to-bl from-[#f1c85c]/30 via-transparent to-[#d4af37]/30"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-tr from-[#f1c85c]/40 to-transparent rounded-full blur-3xl"></div>
@@ -424,7 +376,6 @@ export default function LuxuryVehicleHero() {
 
             <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-between min-h-[200px]">
               
-              {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 rounded-xl bg-gradient-to-r from-[#f1c85c]/20 to-[#d4af37]/20 backdrop-blur-sm border border-[#f1c85c]/40">
@@ -437,14 +388,12 @@ export default function LuxuryVehicleHero() {
                 <ChevronRight className="w-5 h-5 text-[#f1c85c] group-hover:translate-x-2 transition-transform duration-300" />
               </div>
               
-              {/* Description */}
               <div className="mb-4">
                 <p className="text-gray-300 text-sm md:text-base leading-relaxed">
                   Get instant valuation and the best market price
                 </p>
               </div>
               
-              {/* Features */}
               <div className="mb-6">
                 <div className="flex items-center space-x-6 text-sm md:text-base">
                   <div className="flex items-center space-x-2">
@@ -458,7 +407,6 @@ export default function LuxuryVehicleHero() {
                 </div>
               </div>
 
-              {/* Enhanced CTA Buttons */}
               <div className="mt-auto flex space-x-3">
                 <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-full bg-gradient-to-r from-[#f1c85c] to-[#d4af37] text-black font-bold hover:from-[#d4af37] hover:to-[#f1c85c] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm">
                   <DollarSign className="w-4 h-4" />
@@ -474,27 +422,73 @@ export default function LuxuryVehicleHero() {
         </div>
       </div>
 
-      {/* Final CTA Section */}
+      {/* Final CTA Section - Mobile: Replace Cards, Desktop: Additional */}
       <div className="w-full bg-gradient-to-r from-gray-900 via-black to-gray-900 py-8 px-6 md:px-8 lg:px-12 border-t border-[#d4af37]/20">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <div className="space-y-4">
             <h3 className="text-2xl md:text-3xl font-bold text-white tracking-wide">
-              👋 Ready to sell your luxury car?
+              🚗 Ready for Your Next Luxury Experience?
             </h3>
             <p className="text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
-              Get an instant valuation and connect with our luxury car experts for the best deal in the market
+              Whether you&apos;re buying your dream car or selling your current luxury vehicle, our experts are here to help you get the best deal
             </p>
           </div>
           
+          {/* Toggle Buttons */}
+          <div className="flex justify-center mb-6">
+            <div className="bg-black/30 backdrop-blur-sm rounded-full p-1 border border-[#d4af37]/30">
+              <button
+                onClick={() => setActiveTab('buy')}
+                className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
+                  activeTab === 'buy' 
+                    ? 'bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black' 
+                    : 'text-white hover:bg-white/10'
+                }`}
+              >
+                Buy Car
+              </button>
+              <button
+                onClick={() => setActiveTab('sell')}
+                className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
+                  activeTab === 'sell' 
+                    ? 'bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black' 
+                    : 'text-white hover:bg-white/10'
+                }`}
+              >
+                Sell Car
+              </button>
+            </div>
+          </div>
+          
+          {/* Dynamic CTA Buttons */}
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-center">
             <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold hover:from-[#f1c85c] hover:to-[#d4af37] transition-all transform hover:scale-105 shadow-xl text-sm">
-              <DollarSign className="w-5 h-5" />
-              <span>Get Free Valuation</span>
+              {activeTab === 'buy' ? (
+                <Eye className="w-5 h-5" />
+              ) : (
+                <DollarSign className="w-5 h-5" />
+              )}
+              <span>{activeTab === 'buy' ? 'Browse Collection' : 'Get Free Valuation'}</span>
             </button>
             <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full border-2 border-[#d4af37] text-white font-bold hover:bg-gradient-to-r hover:from-[#d4af37] hover:to-[#f1c85c] hover:text-black transition-all transform hover:scale-105 text-sm">
-              <MessageCircle className="w-5 h-5" />
-              <span>Talk to Expert</span>
+              <Phone className="w-5 h-5" />
+              <span>Call Expert</span>
             </button>
+          </div>
+          
+          {/* Additional Quick Actions */}
+          <div className="pt-4 border-t border-[#d4af37]/10">
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <button className="flex items-center space-x-1 text-[#d4af37] hover:text-[#f1c85c] transition-colors duration-300">
+                <DollarSign className="w-4 h-4" />
+                <span>Quick Valuation</span>
+              </button>
+              <span className="text-gray-600">|</span>
+              <button className="flex items-center space-x-1 text-[#d4af37] hover:text-[#f1c85c] transition-colors duration-300">
+                <MessageCircle className="w-4 h-4" />
+                <span>Live Chat</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -502,7 +496,7 @@ export default function LuxuryVehicleHero() {
       {/* Bottom Sticky Navigation */}
       <BottomNav />
 
-      {/* Enhanced Floating Particles */}
+      {/* Floating Particles */}
       <div className="absolute inset-0 pointer-events-none z-10">
         {[...Array(12)].map((_, i) => (
           <div
