@@ -17,124 +17,8 @@ import {
   Users,
   Eye,
 } from 'lucide-react';
-import Header from '@/components/Header'; // Assuming this exists
-
-// Mock vehicle data (omitted here for brevity; same as yours)
-
-const vehicleData = [
-    {
-        id: 1,
-        brand: 'Mercedes-Benz',
-        model: 'C-Class',
-        year: 2022,
-        price: '₹45,00,000',
-        originalPrice: '₹50,00,000',
-        mileage: '15 km/l',
-        fuelType: 'Petrol',
-        seating: 5,
-        location: 'Mumbai, Maharashtra',
-        image: '/assets/images/Mercedes.jpg',
-        condition: 'Certified Pre-Owned',
-        features: ['Sunroof', 'Leather Seats', 'Navigation System'],
-        savings: '₹5,00,000',
-        views: 1200,
-        isLiked: false,
-    }, 
-    {
-        id: 2,
-        brand: 'BMW',
-        model: 'X5',
-        year: 2021,
-        price: '₹75,00,000',
-        originalPrice: '₹80,00,000',
-        mileage: '12 km/l',
-        fuelType: 'Diesel',
-        seating: 7,
-        location: 'Delhi, Delhi',
-        image: '/assets/images/Mercedes.jpg',
-        condition: 'Certified Pre-Owned',
-        features: ['Panoramic Sunroof', 'Adaptive Cruise Control', 'Harman Kardon Sound'],
-        savings: '₹5,00,000',
-        views: 1500,
-        isLiked: false,
-    },
-
-    {
-        id: 3,
-        brand: 'Audi',
-        model: 'A6',
-        year: 2020,
-        price: '₹60,00,000',
-        originalPrice: '₹65,00,000',
-        mileage: '14 km/l',
-        fuelType: 'Petrol',
-        seating: 5,
-        location: 'Bangalore, Karnataka',
-        image: '/assets/images/AudiA4.jpg',
-        condition: 'Certified Pre-Owned',
-        features: ['Virtual Cockpit', 'Matrix LED Headlights', 'Quattro All-Wheel Drive'],
-        savings: '₹5,00,000',
-        views: 1100,
-        isLiked: false,
-    },
-
-    {
-        id: 4,
-        brand: 'Jaguar',
-        model: 'F-Pace',
-        year: 2019,
-        price: '₹70,00,000',
-        originalPrice: '₹75,00,000',
-        mileage: '13 km/l',
-        fuelType: 'Diesel',
-        seating: 5,
-        location: 'Hyderabad, Telangana',
-        image: '/assets/images/jaguar.jpg',
-        condition: 'Certified Pre-Owned',
-        features: ['Alloy Wheels', 'Leather Upholstery', 'Touch Pro Duo'],
-        savings: '₹5,00,000',
-        views: 900,
-        isLiked: false,
-    },
-
-    {
-        id: 5,
-        brand: 'Volvo',
-        model: 'XC90',
-        year: 2023,
-        price: '₹85,00,000',
-        originalPrice: '₹90,00,000',
-        mileage: '11 km/l',
-        fuelType: 'Hybrid',
-        seating: 7,
-        location: 'Chennai, Tamil Nadu',
-        image: '/assets/images/Mercedes.jpg',
-        condition: 'Certified Pre-Owned',
-        features: ['Pilot Assist', 'Bowers & Wilkins Sound', 'Panoramic Roof'],
-        savings: '₹5,00,000',
-        views: 1300,
-        isLiked: false,
-    },
-
-    {
-        id: 6,
-        brand: 'Land Rover',
-        model: 'Range Rover Velar',
-        year: 2022,
-        price: '₹95,00,000',
-        originalPrice: '₹1,00,00,000',
-        mileage: '10 km/l',
-        fuelType: 'Diesel',
-        seating: 5,
-        location: 'Pune, Maharashtra',
-        image: '/assets/images/Mercedes.jpg',
-        condition: 'Certified Pre-Owned',
-        features: ['Adaptive Dynamics', 'InControl Touch Pro', '360° Parking Aid'],
-        savings: '₹5,00,000',
-        views: 1400,
-        isLiked: false,
-    },
-];
+import Header from '@/components/Header'; // Make sure case matches your file
+import {vehicleData} from '@/data/carInventory';
 
 const filterOptions = {
   brands: ['All Brands', 'Mercedes-Benz', 'BMW', 'Audi', 'Jaguar', 'Volvo', 'Land Rover'],
@@ -347,8 +231,8 @@ export default function InventoryPage() {
                           'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&h=400&fit=crop';
                       }}
                       sizes="(max-width: 768px) 100vw,
-                             (max-width: 1200px) 50vw,
-                             33vw"
+                            (max-width: 1200px) 50vw,
+                            33vw"
                     />
                     {/* Overlay elements */}
                     <div className="absolute top-4 left-4">

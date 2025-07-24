@@ -1,363 +1,524 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import supabase from '@/lib/supabaseClient';
+import { ChevronRight, Car, DollarSign, Shield, Award, Search, Phone, Star, TrendingUp, Eye, Clock, Menu, X, Home, User, Truck, RotateCcw, MessageCircle } from 'lucide-react';
 
-type Banner = {
-  id: string;
-  image_url: string;
-  title: string;
-  description: string;
-  price: number;
-  position: number;
-  cta_text: string;
-  cta_url: string | null;
-};
+const mockBanners = [
+  {
+    id: '1',
+    image_url: '/assets/images/bugatti.jpg',
+    title: 'New Arrivals',
+    subtitle: 'Premium Certified Vehicles',
+    badge: 'JUST IN',
+    description: 'Handpicked luxury vehicles with complete certification'
+  },
+  {
+    id: '2',
+    image_url: '/assets/images/mclaren1.jpg',
+    title: 'Limited Offers',
+    subtitle: 'Up to 25% Off',
+    badge: 'SAVE BIG',
+    description: 'Exclusive deals on verified luxury cars'
+  },
+  {
+    id: '3',
+    image_url: 'assets/images/porsche9111.jpg',
+    title: 'Instant Valuation',
+    subtitle: 'Sell Your Luxury Car',
+    badge: 'FREE QUOTE',
+    description: 'Get the best price for your premium vehicle'
+  }
+];
 
-export default function Hero() {
-  const [banners, setBanners] = useState<Banner[]>([]);
+// Trust Bar Component
+function TrustBar() {
+  return (
+    <div className="w-full bg-gradient-to-r from-black/80 via-gray-900/80 to-black/80 backdrop-blur-md border-t border-[#d4af37]/20 py-4 px-4">
+      <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div className="flex flex-col items-center space-y-1">
+          <div className="flex items-center space-x-1">
+            <Car className="w-4 h-4 text-[#d4af37]" />
+            <span className="text-lg md:text-xl font-bold text-white">1000+</span>
+          </div>
+          <span className="text-xs text-gray-300 leading-snug">Verified Cars</span>
+        </div>
+        <div className="flex flex-col items-center space-y-1">
+          <div className="flex items-center space-x-1">
+            <Star className="w-4 h-4 text-[#f1c85c] fill-current" />
+            <span className="text-lg md:text-xl font-bold text-white">4.9</span>
+          </div>
+          <span className="text-xs text-gray-300 leading-snug">Google Rating</span>
+        </div>
+        <div className="flex flex-col items-center space-y-1">
+          <div className="flex items-center space-x-1">
+            <Truck className="w-4 h-4 text-[#d4af37]" />
+            <span className="text-lg md:text-xl font-bold text-white">FREE</span>
+          </div>
+          <span className="text-xs text-gray-300 leading-snug">Home Pickup</span>
+        </div>
+        <div className="flex flex-col items-center space-y-1">
+          <div className="flex items-center space-x-1">
+            <RotateCcw className="w-4 h-4 text-[#f1c85c]" />
+            <span className="text-lg md:text-xl font-bold text-white">7-Day</span>
+          </div>
+          <span className="text-xs text-gray-300 leading-snug">Return Policy</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Bottom Sticky Navigation (Mobile Only)
+function BottomNav() {
+  return (
+    <div className="md:hidden fixed bottom-0 left-0 w-full bg-black/95 backdrop-blur-md border-t border-[#d4af37]/20 z-50">
+      <div className="grid grid-cols-4 gap-1 py-2 px-2">
+        <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#d4af37]/10 transition-all duration-300">
+          <Home className="w-5 h-5 text-[#d4af37]" />
+          <span className="text-xs text-[#d4af37] font-medium">Home</span>
+        </button>
+        <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#f1c85c]/10 transition-all duration-300">
+          <DollarSign className="w-5 h-5 text-gray-400" />
+          <span className="text-xs text-gray-400 font-medium">Sell</span>
+        </button>
+        <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#f1c85c]/10 transition-all duration-300">
+          <Search className="w-5 h-5 text-gray-400" />
+          <span className="text-xs text-gray-400 font-medium">Track</span>
+        </button>
+        <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#f1c85c]/10 transition-all duration-300">
+          <User className="w-5 h-5 text-gray-400" />
+          <span className="text-xs text-gray-400 font-medium">Account</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Header Component
+function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  return (
+    <header className="fixed top-0 left-0 w-full h-[10vh] md:h-[10vh] z-50 px-4 md:px-8 flex items-center justify-between bg-black/10 backdrop-blur-md border-b border-white/5">
+      
+      {/* Logo */}
+      <div className="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
+        <div className="relative">
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-[#d4af37] to-[#f1c85c] rounded-lg flex items-center justify-center shadow-lg">
+            <Car className="w-5 h-5 md:w-6 md:h-6 text-black" />
+          </div>
+        </div>
+        <div className="hidden sm:block">
+          <h1 className="text-sm md:text-lg font-bold bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text tracking-wide">
+            EPIC LUXE
+          </h1>
+          <p className="text-[10px] md:text-xs bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text font-medium tracking-wider">
+            CERTIFIED PRE-OWNED
+          </p>
+        </div>
+      </div>
+      
+      {/* Desktop Search Bar */}
+      <div className="hidden lg:flex flex-1 max-w-md mx-8">
+        <div className="relative w-full">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#d4af37]" />
+          <input
+            type="text"
+            placeholder="Search by brand, model, or year..."
+            className="w-full pl-12 pr-4 py-2.5 rounded-full bg-black/20 backdrop-blur-md text-white placeholder:text-gray-300 border border-[#d4af37]/30 focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#f1c85c] text-sm transition-all duration-300"
+          />
+        </div>
+      </div>
+
+      {/* Desktop Call Button */}
+      <button className="hidden md:flex items-center space-x-2 px-4 lg:px-6 py-2 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black hover:from-[#f1c85c] hover:to-[#d4af37] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-sm">
+        <Phone className="w-4 h-4" />
+        <span>Call Now</span>
+      </button>
+
+      {/* Mobile Menu Button */}
+      <button 
+        className="md:hidden p-2 rounded-full bg-black/20 backdrop-blur-md border border-[#d4af37]/30 transition-all duration-300 hover:scale-105"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        {isMobileMenuOpen ? (
+          <X className="w-5 h-5 text-[#d4af37]" />
+        ) : (
+          <Menu className="w-5 h-5 text-[#d4af37]" />
+        )}
+      </button>
+
+      {/* Enhanced Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="absolute top-full left-0 w-full bg-black/95 backdrop-blur-md border-b border-[#d4af37]/20 md:hidden">
+          <div className="p-6 space-y-6">
+            {/* Mobile Search */}
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#d4af37]" />
+              <input
+                type="text"
+                placeholder="Search vehicles..."
+                className="w-full pl-12 pr-4 py-3 rounded-full bg-black/20 backdrop-blur-md text-white placeholder:text-gray-300 border border-[#d4af37]/30 focus:outline-none focus:ring-2 focus:ring-[#d4af37] text-sm transition-all duration-300"
+              />
+            </div>
+            
+            {/* Menu Items */}
+            <div className="space-y-3">
+              <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left text-white hover:bg-[#d4af37]/10 transition-all duration-300">
+                <Car className="w-5 h-5 text-[#d4af37]" />
+                <span>Browse Cars</span>
+              </button>
+              <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left text-white hover:bg-[#d4af37]/10 transition-all duration-300">
+                <DollarSign className="w-5 h-5 text-[#f1c85c]" />
+                <span>Sell Your Car</span>
+              </button>
+              <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left text-white hover:bg-[#d4af37]/10 transition-all duration-300">
+                <User className="w-5 h-5 text-gray-400" />
+                <span>My Account</span>
+              </button>
+            </div>
+            
+            {/* Mobile Call Button */}
+            <button className="w-full flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+              <Phone className="w-4 h-4" />
+              <span>Call Now</span>
+            </button>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
+
+export default function LuxuryVehicleHero() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [nextIndex, setNextIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const fetchHero = async () => {
-      const { data, error } = await supabase
-        .from('hero_banners')
-        .select('*')
-        .order('position', { ascending: true });
-      if (error) {
-        console.error('❌ Supabase fetch error:', error.message);
-      } else {
-        setBanners(data || []);
-        setIsLoading(false);
-      }
-    };
-    fetchHero();
+    const interval = setInterval(() => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % mockBanners.length);
+        setIsTransitioning(false);
+      }, 500);
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    if (banners.length > 1) {
-      const interval = setInterval(() => {
-        setIsTransitioning(true);
-        const next = (currentIndex + 1) % banners.length;
-        setNextIndex(next);
-        setTimeout(() => {
-          setCurrentIndex(next);
-          setIsTransitioning(false);
-        }, 800);
-      }, 6000);
-      return () => clearInterval(interval);
-    }
-  }, [currentIndex, banners.length]);
-
-  useEffect(() => {
-    const handleParallax = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    const handleParallax = (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 0.5;
+      const y = (e.clientY / window.innerHeight - 0.5) * 0.5;
       setParallax({ x, y });
     };
     window.addEventListener('mousemove', handleParallax);
     return () => window.removeEventListener('mousemove', handleParallax);
   }, []);
 
-  const handleDotClick = (index: number) => {
-    if (index !== currentIndex && !isTransitioning) {
-      setIsTransitioning(true);
-      setNextIndex(index);
-      setTimeout(() => {
-        setCurrentIndex(index);
-        setIsTransitioning(false);
-      }, 800);
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="h-screen w-full bg-black flex items-center justify-center">
-        <div className="relative">
-          <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 border-2 border-amber-300 border-t-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse' }}></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!banners.length) return <div className="text-center py-20 text-gray-600">No hero banners found</div>;
-
-  const currentBanner = banners[currentIndex];
-  const nextBanner = banners[nextIndex];
+  const currentBanner = mockBanners[currentIndex];
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black" id="hero-section">
-      {/* Overlay Header on Hero Image - Responsive Horizontal Row */}
-      <div className="absolute top-0 left-0 w-full z-30 px-2 pt-3 pb-2">
-        <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">
-          {/* Logo & Name */}
-          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-            <div className="relative flex-shrink-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-xl blur-lg opacity-40"></div>
-              <div className="relative bg-gradient-to-r from-purple-600 to-cyan-600 p-1.5 sm:p-2 rounded-xl shadow-xl">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M3 13l1-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2l1 3M5 16v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx="7.5" cy="16.5" r="1.5" fill="white" />
-                  <circle cx="16.5" cy="16.5" r="1.5" fill="white" />
-                </svg>
+    <div className="min-h-screen w-full relative overflow-hidden bg-black" id="hero-section">
+      
+      {/* Header Component */}
+      <Header />
+
+      {/* Main Slider - Improved Mobile Height */}
+      <div className="pt-[10vh] h-[50vh] md:h-[60vh] w-full relative overflow-hidden">
+        
+        {/* Background Image with Enhanced Gradient Overlay */}
+        <div 
+          className="absolute inset-0 transition-all duration-1000"
+          style={{
+            transform: `scale(1.1) translateX(${parallax.x * 20}px) translateY(${parallax.y * 10}px)`,
+            opacity: isTransitioning ? 0.7 : 1
+          }}
+        >
+          <img
+            src={currentBanner.image_url}
+            alt="Luxury Car"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/70"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40"></div>
+          {/* Enhanced bottom gradient for better text legibility */}
+          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/90 to-transparent"></div>
+        </div>
+
+        {/* Desktop Content Overlay - Enhanced Typography */}
+        <div className="hidden md:flex absolute inset-0 flex-col justify-center px-8 lg:px-16 z-20">
+          <div className={`transition-all duration-700 ${isTransitioning ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}>
+            
+            {/* Badge */}
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-[#d4af37]/20 to-[#f1c85c]/20 backdrop-blur-md border border-[#d4af37]/30 mb-6">
+              <div className="w-2 h-2 bg-gradient-to-r from-[#d4af37] to-[#f1c85c] rounded-full mr-2 animate-pulse"></div>
+              <span className="bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text font-bold text-sm tracking-wider">
+                {currentBanner.badge}
+              </span>
+            </div>
+
+            {/* Main Content with Improved Typography */}
+            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight tracking-wide">
+              {currentBanner.title}
+            </h1>
+            <h2 className="text-2xl lg:text-3xl font-light bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text mb-6 leading-snug">
+              {currentBanner.subtitle}
+            </h2>
+            <p className="text-base lg:text-lg text-gray-200 mb-8 max-w-2xl leading-relaxed">
+              {currentBanner.description}
+            </p>
+
+            {/* Enhanced CTA Buttons */}
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+              <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold hover:from-[#f1c85c] hover:to-[#d4af37] transition-all transform hover:scale-105 shadow-2xl hover:shadow-[#d4af37]/30 text-sm">
+                <Eye className="w-5 h-5" />
+                <span>Explore Collection</span>
+                <ChevronRight className="w-5 h-5" />
+              </button>
+              <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full border-2 border-[#d4af37] text-white font-bold hover:bg-gradient-to-r hover:from-[#d4af37] hover:to-[#f1c85c] hover:text-black transition-all transform hover:scale-105 hover:shadow-xl text-sm">
+                <DollarSign className="w-5 h-5" />
+                <span>Get Free Quote</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Mobile Content Overlay */}
+        <div className="md:hidden absolute bottom-0 left-0 right-0 z-20">
+          <div className={`transition-all duration-700 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+            <div className="px-6 pb-6">
+              
+              {/* Badge */}
+              <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-gradient-to-r from-[#d4af37]/10 to-[#f1c85c]/10 backdrop-blur-sm mb-4">
+                <div className="w-1.5 h-1.5 bg-gradient-to-r from-[#d4af37] to-[#f1c85c] rounded-full mr-2 animate-pulse"></div>
+                <span className="bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text font-bold text-xs tracking-wider">
+                  {currentBanner.badge}
+                </span>
+              </div>
+
+              {/* Enhanced Mobile Typography */}
+              <h1 className="text-3xl font-bold text-white mb-2 leading-tight drop-shadow-2xl tracking-wide">
+                {currentBanner.title}
+              </h1>
+              <h2 className="text-lg font-light bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text mb-3 drop-shadow-sm leading-snug">
+                {currentBanner.subtitle}
+              </h2>
+              <p className="text-sm text-gray-200 mb-6 leading-relaxed drop-shadow-md">
+                {currentBanner.description}
+              </p>
+
+              {/* Enhanced Mobile CTA Buttons */}
+              <div className="flex space-x-3">
+                <button className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold hover:from-[#f1c85c] hover:to-[#d4af37] transition-all transform hover:scale-105 shadow-xl text-sm">
+                  <Eye className="w-4 h-4" />
+                  <span>Explore</span>
+                </button>
+                <button className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-black/30 backdrop-blur-sm border border-[#d4af37]/40 text-white font-bold hover:bg-gradient-to-r hover:from-[#d4af37] hover:to-[#f1c85c] hover:text-black hover:border-transparent transition-all transform hover:scale-105 text-sm">
+                  <DollarSign className="w-4 h-4" />
+                  <span>Quote</span>
+                </button>
               </div>
             </div>
-            <div className="truncate">
-              <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-white via-purple-200 to-cyan-200 bg-clip-text text-transparent tracking-tight truncate">Epic Luxe</h1>
-              <p className="text-[10px] sm:text-xs text-gray-300 font-light tracking-widest truncate">LUXURY REDEFINED</p>
+          </div>
+        </div>
+
+        {/* Slider Navigation */}
+        <div className="absolute bottom-4 md:bottom-6 left-6 md:left-16 z-30 flex space-x-3">
+          {mockBanners.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 ${
+                index === currentIndex 
+                  ? 'bg-gradient-to-r from-[#d4af37] to-[#f1c85c] scale-125 shadow-lg' 
+                  : 'bg-white/60 hover:bg-white/90'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Enhanced Progress Bar */}
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20 z-30">
+          <div 
+            className="h-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] transition-all duration-[5000ms] ease-linear shadow-lg"
+            style={{ width: `${((currentIndex + 1) / mockBanners.length) * 100}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Trust Bar */}
+      <TrustBar />
+
+      {/* Enhanced Cards Section with Better Spacing */}
+      <div className="py-8 md:py-12 w-full px-6 md:px-8 lg:px-12">
+        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+
+          {/* Enhanced Buy New Car Card */}
+          <div className="group relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black rounded-2xl border border-[#d4af37]/30 cursor-pointer transform hover:scale-[1.02] transition-all duration-500 shadow-2xl hover:shadow-[#d4af37]/30">
+            
+            {/* Enhanced Background Pattern */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#d4af37]/30 via-transparent to-[#f1c85c]/30"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-[#d4af37]/40 to-transparent rounded-full blur-3xl"></div>
+            </div>
+
+            <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-between min-h-[200px]">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-xl bg-gradient-to-r from-[#d4af37]/20 to-[#f1c85c]/20 backdrop-blur-sm border border-[#d4af37]/40">
+                    <Car className="w-5 h-5 text-[#d4af37]" />
+                  </div>
+                  <h3 className="text-lg md:text-xl font-bold text-white tracking-wide">
+                    Buy New Car
+                  </h3>
+                </div>
+                <ChevronRight className="w-5 h-5 text-[#d4af37] group-hover:translate-x-2 transition-transform duration-300" />
+              </div>
+              
+              {/* Description */}
+              <div className="mb-4">
+                <p className="text-gray-300 text-sm md:text-base leading-relaxed">
+                  Explore our curated collection of luxury vehicles
+                </p>
+              </div>
+              
+              {/* Features */}
+              <div className="mb-6">
+                <div className="flex items-center space-x-6 text-sm md:text-base">
+                  <div className="flex items-center space-x-2">
+                    <Star className="w-4 h-4 text-[#d4af37] fill-current" />
+                    <span className="text-[#d4af37] font-medium">Certified Quality</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Shield className="w-4 h-4 text-[#f1c85c]" />
+                    <span className="text-[#f1c85c] font-medium">Warranty</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Enhanced CTA Buttons */}
+              <div className="mt-auto flex space-x-3">
+                <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold hover:from-[#f1c85c] hover:to-[#d4af37] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm">
+                  <Eye className="w-4 h-4" />
+                  <span>Explore Options</span>
+                </button>
+                <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-full border-2 border-[#d4af37]/60 text-[#d4af37] font-semibold hover:bg-[#d4af37]/10 hover:border-[#d4af37] transition-all duration-300 text-sm">
+                  <Phone className="w-4 h-4" />
+                  <span>Call Now</span>
+                </button>
+              </div>
             </div>
           </div>
-          {/* Search Bar */}
-          <div className="flex-1 flex justify-center min-w-0">
-            <input
-              type="text"
-              placeholder="Search models, cars..."
-              className="w-full max-w-[140px] sm:max-w-[320px] px-3 py-1.5 sm:px-6 sm:py-3 rounded-full bg-white/10 backdrop-blur-md text-white placeholder:text-gray-300 font-medium border border-white/20 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300 text-xs sm:text-base"
-              style={{ boxShadow: '0 2px 16px 0 rgba(0,0,0,0.12)' }}
-            />
+
+          {/* Enhanced Sell Your Car Card */}
+          <div className="group relative overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-2xl border border-[#f1c85c]/30 cursor-pointer transform hover:scale-[1.02] transition-all duration-500 shadow-2xl hover:shadow-[#f1c85c]/30">
+            
+            {/* Enhanced Background Pattern */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute inset-0 bg-gradient-to-bl from-[#f1c85c]/30 via-transparent to-[#d4af37]/30"></div>
+              <div className="absolute bottom-0 left-0 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-tr from-[#f1c85c]/40 to-transparent rounded-full blur-3xl"></div>
+            </div>
+
+            <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-between min-h-[200px]">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-xl bg-gradient-to-r from-[#f1c85c]/20 to-[#d4af37]/20 backdrop-blur-sm border border-[#f1c85c]/40">
+                    <DollarSign className="w-5 h-5 text-[#f1c85c]" />
+                  </div>
+                  <h3 className="text-lg md:text-xl font-bold text-white tracking-wide">
+                    Sell Your Car
+                  </h3>
+                </div>
+                <ChevronRight className="w-5 h-5 text-[#f1c85c] group-hover:translate-x-2 transition-transform duration-300" />
+              </div>
+              
+              {/* Description */}
+              <div className="mb-4">
+                <p className="text-gray-300 text-sm md:text-base leading-relaxed">
+                  Get instant valuation and the best market price
+                </p>
+              </div>
+              
+              {/* Features */}
+              <div className="mb-6">
+                <div className="flex items-center space-x-6 text-sm md:text-base">
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="w-4 h-4 text-[#f1c85c]" />
+                    <span className="text-[#f1c85c] font-medium">Best Price</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Clock className="w-4 h-4 text-[#d4af37]" />
+                    <span className="text-[#d4af37] font-medium">Quick Process</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Enhanced CTA Buttons */}
+              <div className="mt-auto flex space-x-3">
+                <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-full bg-gradient-to-r from-[#f1c85c] to-[#d4af37] text-black font-bold hover:from-[#d4af37] hover:to-[#f1c85c] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm">
+                  <DollarSign className="w-4 h-4" />
+                  <span>Get Valuation</span>
+                </button>
+                <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-full border-2 border-[#f1c85c]/60 text-[#f1c85c] font-semibold hover:bg-[#f1c85c]/10 hover:border-[#f1c85c] transition-all duration-300 text-sm">
+                  <Phone className="w-4 h-4" />
+                  <span>Know More</span>
+                </button>
+              </div>
+            </div>
           </div>
-          {/* Call Now Button */}
-          <div className="flex-shrink-0 flex items-center justify-end">
-            <button className="flex items-center space-x-1 sm:space-x-2 px-3 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold shadow-lg text-xs sm:text-base border border-white/30 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300 text-white" style={{ backgroundClip: 'padding-box' }}>
-              {/* Modern phone icon */}
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M22 16.92V19a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5 3h2.09a2 2 0 0 1 2 1.72c.13.81.28 1.6.46 2.36a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c.76.18 1.55.33 2.36.46A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>Call Now</span>
+        </div>
+      </div>
+
+      {/* Final CTA Section */}
+      <div className="w-full bg-gradient-to-r from-gray-900 via-black to-gray-900 py-8 px-6 md:px-8 lg:px-12 border-t border-[#d4af37]/20">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-2xl md:text-3xl font-bold text-white tracking-wide">
+              👋 Ready to sell your luxury car?
+            </h3>
+            <p className="text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+              Get an instant valuation and connect with our luxury car experts for the best deal in the market
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-center">
+            <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold hover:from-[#f1c85c] hover:to-[#d4af37] transition-all transform hover:scale-105 shadow-xl text-sm">
+              <DollarSign className="w-5 h-5" />
+              <span>Get Free Valuation</span>
+            </button>
+            <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full border-2 border-[#d4af37] text-white font-bold hover:bg-gradient-to-r hover:from-[#d4af37] hover:to-[#f1c85c] hover:text-black transition-all transform hover:scale-105 text-sm">
+              <MessageCircle className="w-5 h-5" />
+              <span>Talk to Expert</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Animated Background Grid */}
-      <div className="absolute inset-0 opacity-10 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-blue-500/20"></div>
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px',
-            animation: 'grid-move 20s linear infinite',
-          }}
-        ></div>
-      </div>
+      {/* Bottom Sticky Navigation */}
+      <BottomNav />
 
-      {/* Image Slider Container */}
-      <div className="absolute inset-0 z-10">
-        <div className={`absolute inset-0 transition-all duration-1000 ease-in-out ${isTransitioning ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}>
-          <Image
-            src={currentBanner.image_url}
-            alt="Luxury Car"
-            fill
-            className="w-full h-full object-cover animate-hero-zoom"
-            style={{
-              transform: `scale(1.04) translateX(${parallax.x * 16}px) translateY(${parallax.y * 8}px)`,
-            }}
-            priority
-            sizes="100vw"
-          />
-        </div>
-
-        {isTransitioning && (
-          <div className="absolute inset-0 opacity-0 scale-95 animate-fade-in-scale">
-            <Image
-              src={nextBanner.image_url}
-              alt="Luxury Car"
-              fill
-              className="w-full h-full object-cover"
-              sizes="100vw"
-              priority
-            />
-          </div>
-        )}
-
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40"></div>
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/40 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        </div>
-      </div>
-
-      {/* ---- Apple glass bottom card, centered, 80% width, more transparent ---- */}
-      {/* ---- Optimized Luxury Hero Content - Bottom Left, 3-4cm Height ---- */}
-      <div className="absolute bottom-8 left-8 z-30 pointer-events-none max-w-[420px]">
-        <div
-          className="pointer-events-auto flex flex-col text-left px-0 py-0 animate-fade-in-up"
-          style={{
-            fontFamily: `-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif`,
-            maxHeight: '120px', // ≈ 3-4cm
-            minHeight: '80px'
-          }}
-        >
-          {/* Compact Title - Single line preferred */}
-          <h1
-            className="font-bold text-white mb-1 leading-tight"
-            style={{
-              fontFamily: 'SF Pro Display, -apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif',
-              fontWeight: 700,
-              fontSize: 'clamp(1.75rem, 4vw, 2.25rem)', // Slightly smaller for compactness
-              textShadow: '0 2px 25px rgba(255,255,255,0.4), 0 0 50px rgba(255,255,255,0.15)',
-              WebkitTextStroke: '0.5px rgba(255,255,255,0.2)',
-              letterSpacing: '-0.025em',
-              lineHeight: '1.1',
-              maxWidth: '100%',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}
-          >
-            {currentBanner.title}
-          </h1>
-
-          {/* Compact Description - Single line, optional */}
-          {currentBanner.description && (
-            <p
-              className="text-white/85 mb-2 leading-snug"
-              style={{
-                fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif',
-                fontSize: 'clamp(0.875rem, 2.2vw, 1rem)',
-                fontWeight: 400,
-                textShadow: '0 1px 15px rgba(255,255,255,0.25)',
-                WebkitTextStroke: '0.2px rgba(255,255,255,0.1)',
-                letterSpacing: '0.005em',
-                lineHeight: '1.3',
-                maxWidth: '100%',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {currentBanner.description}
-            </p>
-          )}
-
-          {/* Inline Price and CTA */}
-          <div className="flex items-center gap-4 mt-1">
-            <span
-              className="font-bold text-white px-3 py-1.5 rounded-lg border border-white/25 backdrop-blur-sm"
-              style={{
-                fontFamily: 'SF Pro Display, -apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif',
-                fontSize: 'clamp(1.1rem, 2.8vw, 1.4rem)',
-                fontWeight: 600,
-                textShadow: '0 2px 20px rgba(255,255,255,0.4), 0 0 40px rgba(255,255,255,0.15)',
-                WebkitTextStroke: '0.4px rgba(255,255,255,0.25)',
-                letterSpacing: '-0.01em',
-                background: 'rgba(255,255,255,0.05)',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              ₹ {currentBanner.price?.toLocaleString()}
-            </span>
-
-            <a
-              href={currentBanner.cta_url || '/book-test-drive'}
-              className="group inline-flex items-center font-semibold px-5 py-1.5 rounded-full text-white border border-white/40 transition-all duration-300 hover:border-white/60 hover:bg-white/10 hover:scale-105 active:scale-95"
-              style={{
-                fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif',
-                fontSize: 'clamp(0.8rem, 2.2vw, 0.9rem)',
-                fontWeight: 600,
-                textShadow: '0 1px 12px rgba(255,255,255,0.3)',
-                WebkitTextStroke: '0.2px rgba(255,255,255,0.1)',
-                letterSpacing: '0.01em',
-                backdropFilter: 'blur(3px)',
-                background: 'rgba(255,255,255,0.05)',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {currentBanner.cta_text || 'Book Test Drive'}
-              <svg className="ml-2 w-4 h-4 stroke-[2px] text-white group-hover:translate-x-0.5 transform transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Slider Navigation Dots */}
-      {banners.length > 1 && (
-        <div className="absolute left-8 z-30 flex space-x-3" style={{ bottom: '1rem' }}>
-          {banners.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handleDotClick(index)}
-              className={
-                'w-3 h-3 rounded-full transition-all duration-300 ' +
-                (index === currentIndex ? 'bg-amber-500 scale-125' : 'bg-white/50 hover:bg-white/80')
-              }
-              aria-label={`Go to slide ${index + 1}`}
-              type="button"
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0 pointer-events-none z-[15]">
-        {[...Array(15)].map((_, i) => (
+      {/* Enhanced Floating Particles */}
+      <div className="absolute inset-0 pointer-events-none z-10">
+        {[...Array(12)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-white/60 rounded-full"
+            className="absolute w-1 h-1 rounded-full animate-pulse"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 2}s`,
+              background: `linear-gradient(45deg, #d4af37, #f1c85c)`,
+              left: `${15 + Math.random() * 70}%`,
+              top: `${15 + Math.random() * 70}%`,
+              animationDelay: `${Math.random() * 4}s`,
+              animationDuration: `${2 + Math.random() * 3}s`,
+              boxShadow: '0 0 6px rgba(212, 175, 55, 0.3)'
             }}
           />
         ))}
       </div>
-
-      <style jsx>{`
-        .font-sf {
-          font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        }
-        .font-sfmono {
-          font-family: 'SF Mono', 'Roboto Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
-        }
-        .font-sfprodisplay {
-          font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        }
-        @keyframes grid-move {
-          0% { transform: translate(0, 0); }
-          100% { transform: translate(50px, 50px); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        @keyframes fade-in-scale {
-          0% { opacity: 0; transform: scale(0.95); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-        .animate-fade-in-scale {
-          animation: fade-in-scale 1s ease-out forwards;
-        }
-        @keyframes hero-zoom {
-          0% { transform: scale(1) translateY(0); }
-          50% { transform: scale(1.08) translateY(-1.5%); }
-          100% { transform: scale(1) translateY(0); }
-        }
-        .animate-hero-zoom {
-          animation: hero-zoom 18s ease-in-out infinite;
-        }
-        @keyframes fade-in-up {
-          0% { opacity: 0; transform: translateY(40px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-          animation: fade-in-up 1.2s cubic-bezier(0.23, 1.01, 0.32, 1) both;
-        }
-      `}</style>
-    </section>
+    </div>
   );
 }
