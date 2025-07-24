@@ -284,28 +284,9 @@ export default function LuxuryVehicleHero() {
           </div>
         </div>
 
-        {/* Slider Navigation */}
-        <div className="absolute bottom-4 md:bottom-6 left-6 md:left-16 z-30 flex space-x-3">
-          {mockBanners.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 ${
-                index === currentIndex 
-                  ? 'bg-gradient-to-r from-[#d4af37] to-[#f1c85c] scale-125 shadow-lg' 
-                  : 'bg-white/60 hover:bg-white/90'
-              }`}
-            />
-          ))}
-        </div>
+        
 
-        {/* Progress Bar */}
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20 z-30">
-          <div 
-            className="h-full bg-gradient-to-r from-[#d4af37] to-[#f1c85c] transition-all duration-[5000ms] ease-linear shadow-lg"
-            style={{ width: `${((currentIndex + 1) / mockBanners.length) * 100}%` }}
-          ></div>
-        </div>
+        
       </div>
 
       {/* Buy/Sell Cards Section - Desktop Only */}
@@ -429,9 +410,6 @@ export default function LuxuryVehicleHero() {
             <h3 className="text-2xl md:text-3xl font-bold text-white tracking-wide">
               🚗 Ready for Your Next Luxury Experience?
             </h3>
-            <p className="text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
-              Whether you&apos;re buying your dream car or selling your current luxury vehicle, our experts are here to help you get the best deal
-            </p>
           </div>
           
           {/* Toggle Buttons */}

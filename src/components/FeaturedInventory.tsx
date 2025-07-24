@@ -231,15 +231,15 @@ const FeaturedInventory: React.FC = () => {
   const currentVehicle = vehicles[selectedVehicle];
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
+    <section className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text mb-6 sm:mb-8 lg:mb-12 tracking-wide leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight text-gray-900 mb-6 sm:mb-8 lg:mb-12 tracking-tight leading-tight">
             SPECIAL OFFERS
           </h1>
-          <p className="text-sm sm:text-base lg:text-lg text-gray-300 font-light max-w-2xl mx-auto leading-relaxed">
-            Discover our curated collection of exceptional luxury vehicles
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 font-light max-w-2xl mx-auto">
+            Discover our curated collection of exceptional vehicles
           </p>
         </div>
 
@@ -253,23 +253,25 @@ const FeaturedInventory: React.FC = () => {
                   setSelectedVehicle(index);
                   setIsAutoPlaying(false);
                 }}
-                className={`relative flex-shrink-0 w-20 h-12 sm:w-24 sm:h-16 md:w-28 md:h-18 lg:w-32 lg:h-20 rounded-lg overflow-hidden transition-all duration-700 ease-out ${
+                className={`relative flex-shrink-0 w-20 h-12 sm:w-24 sm:h-16 md:w-28 md:h-18 lg:w-32 lg:h-20 transition-all duration-700 ease-out ${
                   index === selectedVehicle
-                    ? 'scale-110 opacity-100 z-10 border-2 border-[#d4af37] shadow-lg shadow-[#d4af37]/30'
-                    : 'opacity-60 hover:opacity-80 hover:scale-105 border border-gray-700 hover:border-[#f1c85c]/50'
+                    ? 'scale-110 opacity-100 z-10'
+                    : 'opacity-50 hover:opacity-75 hover:scale-105 filter grayscale hover:filter-none'
                 }`}
               >
-                <div className="relative w-full h-full bg-gradient-to-br from-gray-800 to-gray-900">
+                <div className="relative w-full h-full">
                   <Image
                     src={vehicle.image_url}
                     alt={`${vehicle.make} ${vehicle.model}`}
                     fill
                     className="object-contain"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw,
+                           (max-width: 1200px) 50vw,
+                           33vw"
                   />
                 </div>
                 {vehicle.badge && (
-                  <div className="absolute -top-1 -right-1 sm:top-1 sm:right-1 px-1 py-0.5 sm:px-2 sm:py-1 bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black text-xs font-bold rounded-full backdrop-blur-sm">
+                  <div className="absolute -top-1 -right-1 sm:top-1 sm:right-1 px-1 py-0.5 sm:px-2 sm:py-1 bg-black/90 text-white text-xs font-medium rounded-full backdrop-blur-sm">
                     {vehicle.badge}
                   </div>
                 )}
@@ -280,15 +282,15 @@ const FeaturedInventory: React.FC = () => {
           {/* Navigation Arrows */}
           <button
             onClick={() => setSelectedVehicle(selectedVehicle > 0 ? selectedVehicle - 1 : vehicles.length - 1)}
-            className="hidden sm:flex absolute left-0 lg:left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 lg:w-12 lg:h-12 bg-black/80 backdrop-blur-sm border border-[#d4af37]/30 shadow-lg rounded-full items-center justify-center hover:bg-gradient-to-r hover:from-[#d4af37] hover:to-[#f1c85c] hover:text-black transition-all duration-300 z-10"
+            className="hidden sm:flex absolute left-0 lg:left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 lg:w-12 lg:h-12 bg-white/90 backdrop-blur-sm shadow-lg rounded-full items-center justify-center hover:bg-white hover:shadow-xl transition-all duration-300 z-10"
           >
-            <ChevronLeft className="w-5 h-5 lg:w-6 lg:h-6 text-[#d4af37]" />
+            <ChevronLeft className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
           </button>
           <button
             onClick={() => setSelectedVehicle(selectedVehicle < vehicles.length - 1 ? selectedVehicle + 1 : 0)}
-            className="hidden sm:flex absolute right-0 lg:right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 lg:w-12 lg:h-12 bg-black/80 backdrop-blur-sm border border-[#d4af37]/30 shadow-lg rounded-full items-center justify-center hover:bg-gradient-to-r hover:from-[#d4af37] hover:to-[#f1c85c] hover:text-black transition-all duration-300 z-10"
+            className="hidden sm:flex absolute right-0 lg:right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 lg:w-12 lg:h-12 bg-white/90 backdrop-blur-sm shadow-lg rounded-full items-center justify-center hover:bg-white hover:shadow-xl transition-all duration-300 z-10"
           >
-            <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6 text-[#d4af37]" />
+            <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
           </button>
         </div>
 
@@ -298,8 +300,8 @@ const FeaturedInventory: React.FC = () => {
           <div className="order-2 lg:order-1 space-y-6 sm:space-y-8">
             {/* Vehicle Title */}
             <div className="space-y-3 sm:space-y-4">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-wide leading-tight">
-                {currentVehicle.make.toUpperCase()} <span className="bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text">MODELS</span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extralight text-gray-900 tracking-tight leading-tight">
+                {currentVehicle.make.toUpperCase()} <span className="text-gray-600">MODELS</span>
               </h2>
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="flex items-center gap-1">
@@ -307,25 +309,25 @@ const FeaturedInventory: React.FC = () => {
                     <Star
                       key={i}
                       className={`w-3 h-3 sm:w-4 sm:h-4 ${
-                        i < currentVehicle.safety_rating ? 'text-[#d4af37] fill-current' : 'text-gray-600'
+                        i < currentVehicle.safety_rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-xs sm:text-sm text-gray-400 font-light">Safety Rating</span>
+                <span className="text-xs sm:text-sm text-gray-500 font-light">Safety Rating</span>
               </div>
             </div>
 
             {/* Price Section */}
             <div className="space-y-2">
               <div className="flex items-baseline gap-2 sm:gap-3">
-                <span className="text-xs sm:text-sm text-gray-400 font-light">Starting from</span>
+                <span className="text-xs sm:text-sm text-gray-500 font-light">Starting from</span>
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
-                  <span className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text">
+                  <span className="text-2xl sm:text-3xl lg:text-4xl font-extralight text-gray-900">
                     {formatPrice(currentVehicle.price)}
                   </span>
                   {currentVehicle.original_price && (
-                    <span className="text-sm sm:text-base text-gray-500 line-through font-light">
+                    <span className="text-sm sm:text-base text-gray-400 line-through font-light">
                       {formatPrice(currentVehicle.original_price)}
                     </span>
                   )}
@@ -334,29 +336,39 @@ const FeaturedInventory: React.FC = () => {
             </div>
 
             {/* Description */}
-            <p className="text-sm sm:text-base lg:text-lg text-gray-300 font-light leading-relaxed">
+            <p className="text-sm sm:text-base lg:text-lg text-gray-600 font-light leading-relaxed">
               {currentVehicle.description}
             </p>
 
             {/* Specifications */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 pt-4 sm:pt-6">
-              {[
-                { label: 'Condition', value: currentVehicle.condition },
-                { label: 'Year', value: currentVehicle.year },
-                { label: 'Transmission', value: currentVehicle.transmission },
-                { label: 'Color', value: currentVehicle.exterior_color },
-                { label: 'Mileage', value: `${formatMileage(currentVehicle.mileage)} km` },
-              ].map((spec, index) => (
-                <div key={index} className="text-center p-3 bg-gradient-to-br from-gray-900 to-black rounded-lg border border-gray-700/50">
-                  <div className="text-xs sm:text-sm text-gray-400 font-light mb-1">{spec.label}</div>
-                  <div className="text-sm sm:text-base font-medium text-white">{spec.value}</div>
+              <div className="text-center">
+                <div className="text-xs sm:text-sm text-gray-500 font-light mb-1">Condition</div>
+                <div className="text-sm sm:text-base font-medium text-gray-900">{currentVehicle.condition}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs sm:text-sm text-gray-500 font-light mb-1">Year</div>
+                <div className="text-sm sm:text-base font-medium text-gray-900">{currentVehicle.year}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs sm:text-sm text-gray-500 font-light mb-1">Transmission</div>
+                <div className="text-sm sm:text-base font-medium text-gray-900">{currentVehicle.transmission}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs sm:text-sm text-gray-500 font-light mb-1">Color</div>
+                <div className="text-sm sm:text-base font-medium text-gray-900">{currentVehicle.exterior_color}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs sm:text-sm text-gray-500 font-light mb-1">Mileage</div>
+                <div className="text-sm sm:text-base font-medium text-gray-900">
+                  {formatMileage(currentVehicle.mileage)} km
                 </div>
-              ))}
+              </div>
             </div>
 
             {/* CTA Button */}
             <div className="pt-6 sm:pt-8">
-              <button className="w-full sm:w-auto bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-black font-bold py-3 sm:py-4 px-8 sm:px-12 rounded-full hover:from-[#f1c85c] hover:to-[#d4af37] transition-all duration-300 text-sm sm:text-base lg:text-lg shadow-lg hover:shadow-xl transform hover:scale-105">
+              <button className="w-full sm:w-auto bg-black text-white font-medium py-3 sm:py-4 px-8 sm:px-12 rounded-full hover:bg-gray-800 transition-all duration-300 text-sm sm:text-base lg:text-lg shadow-lg hover:shadow-xl">
                 {currentVehicle.cta_text}
               </button>
             </div>
@@ -364,17 +376,17 @@ const FeaturedInventory: React.FC = () => {
 
           {/* Right Side - Large Vehicle Image */}
           <div className="order-1 lg:order-2 relative">
-            <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] flex items-center justify-center w-full h-full bg-gradient-to-br from-gray-900/50 to-black/50 rounded-2xl backdrop-blur-sm border border-gray-700/30">
+            <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] flex items-center justify-center w-full h-full">
               <Image
                 src={currentVehicle.image_url}
                 alt={`${currentVehicle.make} ${currentVehicle.model}`}
                 fill
                 className="object-contain transition-all duration-700 drop-shadow-2xl"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                sizes="(max-width: 768px) 100vw,
+                       (max-width: 1200px) 50vw,
+                       33vw"
                 priority
               />
-              {/* Glow effect */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#d4af37]/10 to-[#f1c85c]/10 opacity-30"></div>
             </div>
           </div>
         </div>
@@ -389,31 +401,11 @@ const FeaturedInventory: React.FC = () => {
                 setIsAutoPlaying(false);
               }}
               className={`h-2 sm:h-3 rounded-full transition-all duration-500 ${
-                index === selectedVehicle 
-                  ? 'bg-gradient-to-r from-[#d4af37] to-[#f1c85c] w-6 sm:w-8 shadow-lg' 
-                  : 'bg-gray-600 hover:bg-gray-500 w-2 sm:w-3'
+                index === selectedVehicle ? 'bg-black w-6 sm:w-8' : 'bg-gray-300 hover:bg-gray-400 w-2 sm:w-3'
               }`}
             />
           ))}
         </div>
-      </div>
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0 pointer-events-none z-10">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 rounded-full animate-pulse"
-            style={{
-              background: `linear-gradient(45deg, #d4af37, #f1c85c)`,
-              left: `${15 + Math.random() * 70}%`,
-              top: `${15 + Math.random() * 70}%`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${2 + Math.random() * 3}s`,
-              boxShadow: '0 0 6px rgba(212, 175, 55, 0.3)'
-            }}
-          />
-        ))}
       </div>
     </section>
   );
