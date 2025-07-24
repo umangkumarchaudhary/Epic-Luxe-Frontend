@@ -365,72 +365,90 @@ export default function LuxuryVehicleHero() {
       </div>
 
       {/* Final CTA Section - MOBILE ONLY */}
-      <div className="md:hidden w-full bg-gradient-to-r from-gray-900 via-black to-gray-900 py-8 px-6 border-t border-[#D4AF37]/20">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-white tracking-wide">
-              🚗 Ready for Your Next Luxury Experience?
-            </h3>
-          </div>
-          
-          {/* Toggle Buttons */}
-          <div className="flex justify-center mb-6">
-            <div className="bg-black/30 backdrop-blur-sm rounded-full p-1 border border-[#D4AF37]/30">
-              <button
-                onClick={() => setActiveTab('buy')}
-                className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
-                  activeTab === 'buy' 
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black' 
-                    : 'text-white hover:bg-white/10'
-                }`}
-              >
-                Buy Car
-              </button>
-              <button
-                onClick={() => setActiveTab('sell')}
-                className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
-                  activeTab === 'sell' 
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black' 
-                    : 'text-white hover:bg-white/10'
-                }`}
-              >
-                Sell Car
-              </button>
-            </div>
-          </div>
-          
-          {/* Dynamic CTA Buttons */}
-          <div className="flex flex-col space-y-3 justify-center">
-            <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold hover:from-[#BFA980] hover:to-[#D4AF37] transition-all transform hover:scale-105 shadow-xl text-sm">
-              {activeTab === 'buy' ? (
-                <Eye className="w-5 h-5" />
-              ) : (
-                <DollarSign className="w-5 h-5" />
-              )}
-              <span>{activeTab === 'buy' ? 'Browse Collection' : 'Get Free Valuation'}</span>
-            </button>
-            <button className="flex items-center justify-center space-x-2 px-8 py-3 rounded-full border-2 border-[#D4AF37] text-white font-bold hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#BFA980] hover:text-black transition-all transform hover:scale-105 text-sm">
-              <Phone className="w-5 h-5" />
-              <span>Call Expert</span>
-            </button>
-          </div>
-          
-          {/* Additional Quick Actions */}
-          <div className="pt-4 border-t border-[#D4AF37]/10">
-            <div className="flex flex-wrap justify-center gap-4 text-sm">
-              <button className="flex items-center space-x-1 text-[#D4AF37] hover:text-[#BFA980] transition-colors duration-300">
-                <DollarSign className="w-4 h-4" />
-                <span>Quick Valuation</span>
-              </button>
-              <span className="text-gray-600">|</span>
-              <button className="flex items-center space-x-1 text-[#D4AF37] hover:text-[#BFA980] transition-colors duration-300">
-                <MessageCircle className="w-4 h-4" />
-                <span>Live Chat</span>
-              </button>
-            </div>
-          </div>
-        </div>
+      
+      {/* Final CTA Section - MOBILE ONLY */}
+<div className="md:hidden w-full bg-gradient-to-b from-[#0e0e0e] to-[#1a1a1a] py-8 px-5 border-t border-[#BFA980]/20">
+  <div className="max-w-md mx-auto text-center space-y-6">
+
+    {/* Heading */}
+    <h3 className="text-xl font-semibold text-white leading-snug">
+      🚗 Ready to Sell or Buy?
+    </h3>
+
+    {/* Toggle Buttons */}
+    <div className="flex justify-center">
+      <div className="bg-black/30 backdrop-blur-sm rounded-full p-1 border border-[#BFA980]/20">
+        <button
+          onClick={() => setActiveTab('buy')}
+          className={`px-4 py-1.5 rounded-full font-medium text-sm transition-all duration-300 ${
+            activeTab === 'buy'
+              ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black'
+              : 'text-white/80 hover:bg-white/10'
+          }`}
+        >
+          Buy
+        </button>
+        <button
+          onClick={() => setActiveTab('sell')}
+          className={`px-4 py-1.5 rounded-full font-medium text-sm transition-all duration-300 ${
+            activeTab === 'sell'
+              ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black'
+              : 'text-white/80 hover:bg-white/10'
+          }`}
+        >
+          Sell
+        </button>
       </div>
+    </div>
+
+    {/* Dual Action Buttons with Fade-in */}
+    <div className="relative h-[46px] transition-opacity duration-500 ease-in-out">
+      <div
+        key={activeTab}
+        className="absolute inset-0 flex justify-center gap-3 opacity-0 animate-[fadeIn_0.4s_ease-in-out_forwards]"
+      >
+        <button className="flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/80 font-medium hover:bg-white/10 transition-all text-sm">
+          {activeTab === 'buy' ? <Eye className="w-4 h-4" /> : <DollarSign className="w-4 h-4" />}
+          <span>{activeTab === 'buy' ? 'Browse Collection' : 'Get Valuation'}</span>
+        </button>
+        <button className="flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/80 font-medium hover:bg-white/10 transition-all text-sm">
+          <Phone className="w-4 h-4" />
+          <span>Call Expert</span>
+        </button>
+      </div>
+    </div>
+
+    {/* Quick Actions */}
+    <div className="pt-5 border-t border-white/10">
+      <div className="flex flex-wrap justify-center gap-4 text-xs">
+        <button className="flex items-center gap-1 text-[#D4AF37] hover:text-[#BFA980] transition-colors">
+          <DollarSign className="w-3.5 h-3.5" />
+          <span>Finance Option</span>
+        </button>
+        <span className="text-white/30">|</span>
+        <button className="flex items-center gap-1 text-[#D4AF37] hover:text-[#BFA980] transition-colors">
+          <MessageCircle className="w-3.5 h-3.5" />
+          <span>Live Chat</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+{`
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-\\[fadeIn_0\\.4s_ease-in-out_forwards\\] {
+    animation: fadeIn 0.4s ease-in-out forwards;
+  }
+`}
+</style>
+
 
       {/* Bottom Sticky Navigation */}
       <BottomNav />
