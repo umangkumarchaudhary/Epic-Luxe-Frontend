@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import Header from '@/components/Header'; // Make sure case matches your file
 import {vehicleData} from '@/data/carInventory';
+import SellNowStickyNav from '@/components/StickyFooter/SellNowStickyNav';
 
 const filterOptions = {
   brands: ['All Brands', 'Mercedes-Benz', 'BMW', 'Audi', 'Jaguar', 'Volvo', 'Land Rover'],
@@ -376,6 +377,7 @@ export default function InventoryPage() {
           }
         }
       `}</style>
+      <SellNowStickyNav />
     </div>
   );
 }
