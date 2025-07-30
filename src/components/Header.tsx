@@ -35,8 +35,8 @@ const services = [
   { name: 'Sell Now', icon: Crown, href: '/sell' },
   { name: 'Free Evaluation', icon: Shield, href: '/evaluation' },
   { name: 'Finance', icon: CreditCard, href: '/services/finance' },
-  { name: 'Insurance', icon: FileText, href: '/insurance' },
-  { name: 'Trade In', icon: ArrowUpDown, href: '/trade-in' },
+  { name: 'Insurance', icon: FileText, href: '/services/insurance' },
+  { name: 'Trade In', icon: ArrowUpDown, href: '/services/TradeIn' },
 ];
 const navItems = [
   { name: 'Home', href: '/' },
