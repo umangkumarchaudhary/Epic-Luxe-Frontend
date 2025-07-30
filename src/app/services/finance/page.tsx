@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useCallback} from 'react';
 import { Calculator, CheckCircle, Car, Users, Shield, Clock, Phone, MapPin,ChevronDown, ChevronUp, Minus, X } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -115,23 +115,23 @@ const FinancePage = () => {
 
     
 
-    const startTyping = () => {
-      let currentIndex = 0;
-      const typingInterval = setInterval(() => {
-        if (currentIndex <= text.length) {
-          setDisplayedText(text.slice(0, currentIndex));
-          currentIndex++;
-        } else {
-          clearInterval(typingInterval);
-          setIsComplete(true);
-          setTimeout(() => {
-            if (onComplete) onComplete();
-          }, 2000);
-        }
-      }, 50);
+    const startTyping = useCallback(() => {
+  let currentIndex = 0;
+  const typingInterval = setInterval(() => {
+    if (currentIndex <= text.length) {
+      setDisplayedText(text.slice(0, currentIndex));
+      currentIndex++;
+    } else {
+      clearInterval(typingInterval);
+      setIsComplete(true);
+      setTimeout(() => {
+        if (onComplete) onComplete();
+      }, 2000);
+    }
+  }, 50);
 
-      return () => clearInterval(typingInterval);
-    };
+  return () => clearInterval(typingInterval);
+}, [text, onComplete]);
 
     useEffect(() => {
   if (delay > 0) {

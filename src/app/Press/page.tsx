@@ -14,8 +14,6 @@ import {
   Phone,
   Globe,
   Star,
-  ArrowRight,
-  Play,
   Image as ImageIcon,
   Newspaper,
   Trophy,
@@ -159,9 +157,10 @@ const PressPage = () => {
               Press & <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">Media Center</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-              Stay updated with Epic Luxe's journey in revolutionizing India's luxury pre-owned car market. 
-              Access press releases, media coverage, and resources.
-            </p>
+  Stay updated with Epic Luxe&apos;s journey in revolutionizing India&apos;s luxury pre-owned car market. 
+  Access press releases, media coverage, and resources.
+</p>
+
             
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
@@ -299,14 +298,15 @@ const PressPage = () => {
 
             {/* Featured Quote */}
             <div className="bg-gradient-to-r from-yellow-400/10 to-transparent rounded-xl p-8 border border-yellow-400/20">
-              <Quote className="w-12 h-12 text-yellow-400 mb-4" />
-              <blockquote className="text-xl text-white italic mb-4">
-                "Epic Luxe has revolutionized the luxury pre-owned car market in India with their transparent processes and exceptional customer service."
-              </blockquote>
-              <cite className="text-yellow-400 font-semibold">
-                - Automotive Industry Expert, Economic Times
-              </cite>
-            </div>
+  <Quote className="w-12 h-12 text-yellow-400 mb-4" />
+  <blockquote className="text-xl text-white italic mb-4">
+    &quot;Epic Luxe has revolutionized the luxury pre-owned car market in India with their transparent processes and exceptional customer service.&quot;
+  </blockquote>
+  <cite className="text-yellow-400 font-semibold">
+    - Automotive Industry Expert, Economic Times
+  </cite>
+</div>
+
           </div>
         )}
 

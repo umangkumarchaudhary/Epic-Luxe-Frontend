@@ -59,8 +59,9 @@ const PrivacyPolicy = () => {
               <div>
                 <h2 className="text-2xl font-bold text-white mb-4">Introduction</h2>
                 <p className="text-gray-300 leading-relaxed font-light">
-                  Welcome to Epic Luxe, India's premier platform for luxury pre-owned vehicles. This Privacy Policy explains how we collect, use, protect, and share your personal information when you use our platform for buying, selling, trading, financing, or obtaining valuations for premium vehicles including Mercedes-Benz, BMW, Audi, and other luxury brands.
-                </p>
+  Welcome to Epic Luxe, India&apos;s premier platform for luxury pre-owned vehicles. This Privacy Policy explains how we collect, use, protect, and share your personal information when you use our platform for buying, selling, trading, financing, or obtaining valuations for premium vehicles including Mercedes-Benz, BMW, Audi, and other luxury brands.
+</p>
+
                 <p className="text-gray-300 leading-relaxed mt-4 font-light">
                   By using our services, you consent to the practices described in this Privacy Policy. We are committed to maintaining the highest standards of data protection in compliance with the Information Technology Act, 2000, and related regulations.
                 </p>

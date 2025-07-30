@@ -1,15 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, ChangeEvent, FormEvent, FocusEvent } from 'react';
-import {
-  Phone,
-  Mail,
-  MapPin,
-  Star,
-  Send,
-  Check,
-  Copy,
-} from 'lucide-react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { Phone, Mail, MapPin, Star, Check, Copy } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -24,7 +16,7 @@ interface FormData {
 
 interface ContactCard {
   id: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   title: string;
   description: string;
   contact: string;
@@ -32,7 +24,7 @@ interface ContactCard {
   primaryText: string;
   secondaryAction: () => void;
   secondaryText: string;
-  secondaryIcon: React.ComponentType<any>;
+  secondaryIcon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   isActive: boolean;
 }
 
@@ -57,15 +49,11 @@ const Contact = () => {
   const [emailCopied, setEmailCopied] = useState(false);
   const [phoneCopied, setPhoneCopied] = useState(false);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [isTyping, setIsTyping] = useState(false);
-  const [focusedField, setFocusedField] = useState<string>('');
-
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [currentReviewSlide, setCurrentReviewSlide] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
 
-  // Functions for clipboard copy with feedback
+  // Clipboard copy with feedback
   const copyEmail = () => {
     navigator.clipboard.writeText('luxury@raamgroup.com');
     setEmailCopied(true);
@@ -78,7 +66,6 @@ const Contact = () => {
     setTimeout(() => setPhoneCopied(false), 2000);
   };
 
-  // Contact cards data
   const contactCards: ContactCard[] = [
     {
       id: 'call',
@@ -145,7 +132,6 @@ const Contact = () => {
     },
   ];
 
-  // Mouse position tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -154,7 +140,6 @@ const Contact = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Detect mobile viewport
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -164,7 +149,6 @@ const Contact = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Auto slide for contact cards (mobile only)
   useEffect(() => {
     if (!isMobile) return;
     const interval = setInterval(() => {
@@ -173,7 +157,6 @@ const Contact = () => {
     return () => clearInterval(interval);
   }, [isMobile, contactCards.length]);
 
-  // Auto slide for reviews (mobile only)
   useEffect(() => {
     if (!isMobile) return;
     const interval = setInterval(() => {
@@ -182,16 +165,12 @@ const Contact = () => {
     return () => clearInterval(interval);
   }, [isMobile, reviews.length]);
 
-  // Form input change handler
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setIsTyping(true);
-    setTimeout(() => setIsTyping(false), 1000);
   };
 
-  // Form submit handler
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitted(true);
@@ -208,8 +187,11 @@ const Contact = () => {
     }, 3000);
   };
 
-  // Render contact card utility with proper typings
-  const renderContactCard = (card: ContactCard, index: number) => {
+  const renderContactCard = (
+    card: ContactCard,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _index: number,
+  ) => {
     const Icon = card.icon;
     const SecondaryIcon = card.secondaryIcon;
     return (
@@ -262,7 +244,6 @@ const Contact = () => {
     );
   };
 
-  // Render review card utility with typing
   const renderReviewCard = (review: Review, index: number) => (
     <div
       key={index}
@@ -295,16 +276,19 @@ const Contact = () => {
       <Header />
 
       {/* Background glow & patterns */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0"
-        aria-hidden="true"
-      >
+      <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
         <div
           className="absolute rounded-full bg-gradient-radial from-[#c6a540]/10 to-transparent opacity-80 blur-3xl transition-all duration-500"
           style={{ left: mousePosition.x - 192, top: mousePosition.y - 192 }}
         />
-        <div className="absolute rounded-full bg-gradient-radial from-[#b08e33]/10 to-transparent opacity-70 blur-3xl animate-pulse" style={{ left: '70%' }} />
-        <div className="absolute rounded-full bg-gradient-radial from-[#d3b04f]/10 to-transparent opacity-70 blur-3xl animate-pulse delay-200" style={{ left: '20%', bottom: '30%' }} />
+        <div
+          className="absolute rounded-full bg-gradient-radial from-[#b08e33]/10 to-transparent opacity-70 blur-3xl animate-pulse"
+          style={{ left: '70%' }}
+        />
+        <div
+          className="absolute rounded-full bg-gradient-radial from-[#d3b04f]/10 to-transparent opacity-70 blur-3xl animate-pulse delay-200"
+          style={{ left: '20%', bottom: '30%' }}
+        />
       </div>
 
       {/* Hero and header content */}
@@ -451,7 +435,7 @@ const Contact = () => {
                   'Jaguar',
                   'Lexus',
                   'Other',
-                ].map((brand) => (
+                ].map((brand: string) => (
                   <option key={brand} value={brand}>
                     {brand}
                   </option>
@@ -517,6 +501,7 @@ const Contact = () => {
           ))}
         </div>
       </section>
+
       <Footer />
     </div>
   );

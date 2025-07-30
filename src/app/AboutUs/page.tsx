@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Header from '@/components/Header';
 import AboutStickyNav from '@/components/StickyFooter/AboutStickyNav';
 import '../../app/GlobalFonts.css'
@@ -167,13 +167,13 @@ const AboutUs: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const milestones: Milestone[] = [
-    { year: '2015', title: 'Inception', desc: 'Founded with a vision to redefine luxury car ownership' },
-    { year: '2017', title: '1000+ Luxury Cars Sold', desc: 'Achieved major milestone in premium automotive sales' },
-    { year: '2020', title: 'Multi-city Expansion', desc: 'Expanded operations across major Indian metros' },
-    { year: '2023', title: 'National Recognition', desc: 'Awarded Best Luxury Pre-owned Car Dealer' },
-    { year: '2025', title: 'Digital Showroom Launch', desc: 'Revolutionary virtual showroom experience' }
-  ];
+  const milestones: Milestone[] = useMemo(() => [
+  { year: '2015', title: 'Inception', desc: 'Founded with a vision to redefine luxury car ownership' },
+  { year: '2017', title: '1000+ Luxury Cars Sold', desc: 'Achieved major milestone in premium automotive sales' },
+  { year: '2020', title: 'Multi-city Expansion', desc: 'Expanded operations across major Indian metros' },
+  { year: '2023', title: 'National Recognition', desc: 'Awarded Best Luxury Pre-owned Car Dealer' },
+  { year: '2025', title: 'Digital Showroom Launch', desc: 'Revolutionary virtual showroom experience' }
+], []);
 
   // Timeline animation effect
   useEffect(() => {

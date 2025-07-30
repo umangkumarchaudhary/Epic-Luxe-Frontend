@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Star, Play, ArrowRight, Quote, Heart, MapPin, Calendar, CheckCircle} from 'lucide-react';
+import { Star, ArrowRight, Quote, Heart, MapPin, Calendar, CheckCircle} from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
@@ -179,9 +179,10 @@ const TestimonialsPage = () => {
             <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-[#D4AF37] via-white to-[#D4AF37] bg-clip-text text-transparent">
               Our Clients, Our Pride
             </h1>
-            <p className="text-xl md:text-2xl text-white/80 mb-8 leading-relaxed">
-  See how we transform the car buying & selling experience for India's elite
+              <p className="text-xl md:text-2xl text-white/80 mb-8 leading-relaxed">
+  See how we transform the car buying &amp; selling experience for India&apos;s elite
 </p>
+
 
             <button className="group bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-8 py-4 rounded-full text-lg font-semibold hover:shadow-2xl hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105">
               Share Your Experience
@@ -370,11 +371,14 @@ const TestimonialsPage = () => {
               
               <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
                 <div className="flex items-center space-x-3 mb-3">
-                  <img 
-  src="https://images.unsplash.com/photo-1494790108755-2616b612b977?w=40&h=40&fit=crop&crop=face" 
-  className="w-10 h-10 rounded-full" 
-  alt="Reviewer" 
+                   <Image
+  src="https://images.unsplash.com/photo-1494790108755-2616b612b977?w=40&h=40&fit=crop&crop=face"
+  width={40}
+  height={40}
+  className="rounded-full"
+  alt="Reviewer"
 />
+
                   <div>
                     <div className="text-white font-semibold">Sneha Patil</div>
                     <div className="flex text-[#D4AF37] text-sm">{'★'.repeat(5)}</div>

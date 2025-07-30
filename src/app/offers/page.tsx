@@ -11,22 +11,20 @@ import {
   Shield,
   CreditCard,
   Users,
-  ArrowRight,
+  
   Sparkles,
-  Star,
-  Clock,
-  Award,
+  
   Navigation,
-  ChevronDown,
-  Play
+  ChevronDown
 } from 'lucide-react';
+import Image from 'next/image';
 
 const AdLandingPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  const [showStickyHeader, setShowStickyHeader] = useState(true);
+  const [, setShowStickyHeader] = useState(true);
   const [selectedModel, setSelectedModel] = useState('');
 
   const luxuryCars = [
@@ -136,14 +134,17 @@ const AdLandingPage = () => {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image with Ken Burns Effect */}
         <div className="absolute inset-0">
-          <img
-            src="/api/placeholder/1920/1080"
-            alt="Luxury Car"
-            className="w-full h-full object-cover object-center blur-sm scale-110 animate-pulse"
-            style={{
-              animation: 'kenBurns 20s ease-in-out infinite alternate'
-            }}
-          />
+          <Image
+  src="/api/placeholder/1920/1080"
+  alt="Luxury Car"
+  width={1920}
+  height={1080}
+  className="w-full h-full object-cover object-center blur-sm scale-110 animate-pulse"
+  style={{
+    animation: 'kenBurns 20s ease-in-out infinite alternate'
+  }}
+/>
+
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-[#0e0e0e]/70 to-black/80"></div>
         </div>
 
@@ -375,11 +376,12 @@ const AdLandingPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white/90 font-headline">
-              Why Choose <span className="text-[#D4AF37]">Epic Luxe</span>
-            </h2>
-            <p className="text-xl text-white/70 font-clean">
-              India's most trusted luxury car platform
-            </p>
+  Why Choose <span className="text-[#D4AF37]">Epic Luxe</span>
+</h2>
+<p className="text-xl text-white/70 font-clean">
+  India&apos;s most trusted luxury car platform
+</p>
+
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -441,16 +443,17 @@ const AdLandingPage = () => {
               
               <div className="space-y-6 text-white/70 font-clean text-lg">
                 <p>
-                  Epic Luxe is India's most premium platform for certified pre-owned luxury vehicles. 
-                  With our curated collection of Mercedes-Benz, BMW, Audi, Volvo and more — we make 
-                  luxury more accessible than ever.
-                </p>
-                
-                <p>
-                  Our vehicles come fully inspected, finance-ready, and with a seamless digital experience. 
-                  Based in Hyderabad and operating Pan-India, we've helped over 2,000+ customers find 
-                  their perfect luxury car.
-                </p>
+  Epic Luxe is India&apos;s most premium platform for certified pre-owned luxury vehicles. 
+  With our curated collection of Mercedes-Benz, BMW, Audi, Volvo and more — we make 
+  luxury more accessible than ever.
+</p>
+
+<p>
+  Our vehicles come fully inspected, finance-ready, and with a seamless digital experience. 
+  Based in Hyderabad and operating Pan-India, we&apos;ve helped over 2,000+ customers find 
+  their perfect luxury car.
+</p>
+
               </div>
 
               <div className="grid grid-cols-3 gap-8 mt-8">
