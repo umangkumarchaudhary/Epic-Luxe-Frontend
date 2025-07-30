@@ -32,7 +32,7 @@ const cities = [
 
 const services = [
   { name: 'Buy Now', icon: Car, href: '/inventory' },
-  { name: 'Sell Now', icon: Crown, href: '/sell' },
+  { name: 'Sell Now', icon: Crown, href: '/services/SellNowYourCar' },
   { name: 'Free Evaluation', icon: Shield, href: '/evaluation' },
   { name: 'Finance', icon: CreditCard, href: '/services/finance' },
   { name: 'Insurance', icon: FileText, href: '/services/insurance' },
