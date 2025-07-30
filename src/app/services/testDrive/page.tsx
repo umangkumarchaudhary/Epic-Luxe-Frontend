@@ -1,10 +1,7 @@
-/* -------------------------------------------------------------------------- */
-/*  Epic Luxe · Book Test Drive Page                                          */
-/*  React + Tailwind (TSX)                                                    */
-/*  – Premium, mobile-first, fully modular –                                  */
-/* -------------------------------------------------------------------------- */
 'use client';
+
 import React, { useState } from 'react';
+import Image from 'next/image';
 import {
   Car,
   Calendar,
@@ -18,24 +15,24 @@ import {
   Shield,
   Navigation,
   Sparkles,
-  CheckCircle,
   RotateCcw,
-  ChevronDown,
   Star,
 } from 'lucide-react';
 
-/* -------------------------------------------------------------------------- */
-/*  1 ▸ Hero Section                                                          */
-/* -------------------------------------------------------------------------- */
+
 
 const Hero = () => (
   <section className="relative py-20 px-4 md:py-32 overflow-hidden">
     {/* background blobs */}
     <div className="absolute inset-0">
-      <img
-        src="/api/placeholder/1920x1080" /* blurred luxury-car hero */
+      <Image
+        src="/api/placeholder/1920x1080"
         alt=""
-        className="w-full h-full object-cover object-center blur-lg scale-110"
+        layout="fill"
+        objectFit="cover"
+        objectPosition="center"
+        className="blur-lg scale-110"
+        priority
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-[#0e0e0e]/80 to-[#0e0e0e]" />
     </div>
@@ -48,7 +45,7 @@ const Hero = () => (
       </h1>
 
       <p className="text-xl md:text-2xl text-white/70 font-clean mb-10">
-        Choose your car, your location, and your schedule. We’ll handle the rest.
+        Choose your car, your location, and your schedule. We&apos;ll handle the rest.
       </p>
 
       <a
@@ -61,9 +58,6 @@ const Hero = () => (
   </section>
 );
 
-/* -------------------------------------------------------------------------- */
-/*  2 ▸ Booking Form + Options                                                */
-/* -------------------------------------------------------------------------- */
 
 const BookingForm = () => {
   const [otpSent, setOtpSent] = useState(false);
@@ -108,11 +102,7 @@ const BookingForm = () => {
               <div className="flex gap-3">
                 <div className="input-wrapper flex-1">
                   <Phone className="icon" />
-                  <input
-                    type="tel"
-                    placeholder="10-digit number"
-                    className="input"
-                  />
+                  <input type="tel" placeholder="10-digit number" className="input" />
                 </div>
                 <button
                   type="button"
@@ -179,7 +169,7 @@ const BookingForm = () => {
 
             {/* licence upload */}
             <div>
-              <label className="label">Driver’s License (optional)</label>
+              <label className="label">Driver&apos;s License (optional)</label>
               <div className="flex items-center gap-3">
                 <input
                   type="text"
@@ -234,9 +224,7 @@ const BookingForm = () => {
   );
 };
 
-/* -------------------------------------------------------------------------- */
-/*  3 ▸ Why Epic Luxe                                                         */
-/* -------------------------------------------------------------------------- */
+
 
 const WhyEpicLuxe = () => {
   const items = [
@@ -295,9 +283,7 @@ const WhyEpicLuxe = () => {
   );
 };
 
-/* -------------------------------------------------------------------------- */
-/*  4 ▸ How It Works                                                          */
-/* -------------------------------------------------------------------------- */
+
 
 const HowItWorks = () => {
   const steps = [
@@ -347,10 +333,6 @@ const HowItWorks = () => {
   );
 };
 
-/* -------------------------------------------------------------------------- */
-/*  5 ▸ Testimonials + Offer                                                  */
-/* -------------------------------------------------------------------------- */
-
 const Testimonials = () => (
   <section className="py-16 px-4">
     <div className="max-w-6xl mx-auto">
@@ -373,7 +355,8 @@ const Testimonials = () => (
                 <Star key={j} className="w-5 h-5 text-[#D4AF37] fill-current" />
               ))}
             </div>
-            <p className="text-white/70 italic font-clean">"{quote}"</p>
+            <p className="text-white/70 italic font-clean">&quot;{quote}&quot;</p>
+
           </div>
         ))}
       </div>
@@ -381,8 +364,9 @@ const Testimonials = () => (
       {/* offer */}
       <div className="mt-20 bg-gradient-to-r from-[#D4AF37]/10 via-[#D4AF37]/5 to-[#D4AF37]/10 border-2 border-[#D4AF37]/30 rounded-3xl p-12 text-center backdrop-blur-sm">
         <h3 className="text-2xl md:text-3xl font-bold text-[#D4AF37] mb-3 font-headline">
-          Book now & get ₹5,000 off on your purchase
-        </h3>
+  Book now &amp; get &quot;₹5,000 off&quot; on your purchase
+</h3>
+
         <p className="text-white/70 mb-8 font-clean">
           Zero cancellation fee on all test drives this month.
         </p>
@@ -393,10 +377,6 @@ const Testimonials = () => (
     </div>
   </section>
 );
-
-/* -------------------------------------------------------------------------- */
-/*  6 ▸ Newsletter (Reusable)                                                 */
-/* -------------------------------------------------------------------------- */
 
 const Newsletter = () => (
   <section className="py-16 px-4">
@@ -420,7 +400,7 @@ const Newsletter = () => (
 );
 
 /* -------------------------------------------------------------------------- */
-/*  7 ▸ Sticky Mobile CTA                                                     */
+/*  7 ▸ Sticky Mobile CTA                                                    */
 /* -------------------------------------------------------------------------- */
 
 const StickyCTA = () => (
@@ -435,7 +415,7 @@ const StickyCTA = () => (
 );
 
 /* -------------------------------------------------------------------------- */
-/*  Main Page                                                                 */
+/*  Main Page                                                               */
 /* -------------------------------------------------------------------------- */
 
 const BookTestDrivePage = () => (
@@ -452,21 +432,3 @@ const BookTestDrivePage = () => (
 
 export default BookTestDrivePage;
 
-/* -------------------------------------------------------------------------- */
-/*  Tailwind Utility Aliases                                                  */
-/* -------------------------------------------------------------------------- */
-/*  .label            → text-sm font-semibold text-[#D4AF37] mb-2 font-subheading
-    .input            → w-full bg-black/30 border border-[#D4AF37]/30 rounded-lg
-                        px-4 py-3 focus:border-[#D4AF37] focus:outline-none
-                        transition-all duration-300
-    .input-wrapper    → relative flex items-center
-    .input-wrapper .icon → absolute left-3 w-5 h-5 text-white/50
-    .btn-primary      → bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black
-                        px-8 py-3 rounded-lg font-bold hover:shadow-lg
-                        hover:shadow-[#D4AF37]/30 transition-all duration-300
-                        transform hover:scale-105 font-button
-    .btn-secondary    → bg-white/10 border border-[#D4AF37]/30 text-white
-                        px-4 py-3 rounded-lg hover:bg-[#D4AF37]/20 transition
-    .section-heading  → text-center text-4xl md:text-5xl font-bold
-                        text-white/90 font-headline
-*/

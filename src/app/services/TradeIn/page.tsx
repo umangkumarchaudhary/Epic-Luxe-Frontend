@@ -8,36 +8,35 @@ import {
   Shield,
   Navigation,
   Car,
-  Camera,
   CheckCircle,
   Calculator,
   CreditCard,
   TrendingUp,
   Star,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   Upload,
   Sparkles,
-  Phone,
   MessageCircle,
-  ArrowUpRight,
   RefreshCw,
   DollarSign,
-  FileText,
   Users,
   Award
 } from 'lucide-react';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+interface TradeInValue {
+  market: number;
+  tradeIn: number;
+  bonus: number;
+}
+
 const TradeInPage = () => {
-  const [isVisible, setIsVisible] = useState(Array(12).fill(true));
-  const [activeAccordion, setActiveAccordion] = useState(null);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isVisible] = useState(Array(12).fill(true));
+  const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
   const [selectedBrand, setSelectedBrand] = useState('');
-  const [tradeInValue, setTradeInValue] = useState(null);
+  const [tradeInValue, setTradeInValue] = useState<TradeInValue | null>(null);
 
   const luxuryBrands = [
     'Mercedes-Benz', 'BMW', 'Audi', 'Volvo', 'Jaguar', 
@@ -142,98 +141,98 @@ const TradeInPage = () => {
       <Header/>
       {/* Hero Section */}
       <section className="relative py-20 px-4 overflow-hidden min-h-screen flex items-center">
-  {/* Background image */}
-  <img
-    src="/assets/TradeInHeroBG.png"
-    alt="Trade In Hero Background"
-    className="absolute inset-0 w-full h-full object-cover z-0"
-    style={{ pointerEvents: 'none' }}
-  />
+        {/* Background image */}
+        <Image
+  src="/assets/TradeInHeroBG.png"
+  alt="Trade In Hero Background"
+  fill
+  className="absolute inset-0 w-full h-full object-cover z-0"
+  style={{ pointerEvents: 'none' }}
+  priority
+/>
 
-  {/* Existing Gradient and Decorative DIVs */}
-  <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/10 via-transparent to-[#D4AF37]/5 z-10"></div>
-  <div className="absolute top-20 right-20 w-40 h-40 bg-[#D4AF37]/20 rounded-full blur-3xl animate-pulse z-10"></div>
-  <div className="absolute bottom-20 left-20 w-32 h-32 bg-[#D4AF37]/30 rounded-full blur-2xl animate-pulse delay-1000 z-10"></div>
+        {/* Existing Gradient and Decorative DIVs */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/10 via-transparent to-[#D4AF37]/5 z-10"></div>
+        <div className="absolute top-20 right-20 w-40 h-40 bg-[#D4AF37]/20 rounded-full blur-3xl animate-pulse z-10"></div>
+        <div className="absolute bottom-20 left-20 w-32 h-32 bg-[#D4AF37]/30 rounded-full blur-2xl animate-pulse delay-1000 z-10"></div>
 
-  <div className="max-w-7xl mx-auto relative z-20 grid lg:grid-cols-2 gap-12 items-center">
-    <div className={`transition-all duration-1000 ${isVisible[0] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-3 h-3 bg-[#D4AF37] rounded-full animate-pulse"></div>
-        <RefreshCw className="w-12 h-12 text-[#D4AF37] animate-spin" style={{animationDuration: '3s'}} />
-        <div className="w-3 h-3 bg-[#D4AF37] rounded-full animate-pulse"></div>
-      </div>
-      <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white/90 font-headline">
-        Trade Your <span className="text-[#D4AF37]">Legacy</span><br />
-        for a New <span className="text-[#D4AF37]">Journey</span>
-      </h1>
-      
-      <div className="flex flex-col sm:flex-row gap-4">
-        <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-3 font-button">
-          <Calculator className="w-5 h-5" />
-          Get Trade-In Quote
-        </button>
-        <button className="bg-white/10 backdrop-blur-sm border-2 border-[#D4AF37]/50 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#D4AF37]/20 hover:border-[#D4AF37] transition-all duration-300 flex items-center gap-3 font-button">
-          <Car className="w-5 h-5" />
-          Browse Replacement Cars
-        </button>
-      </div>
-      <div className="flex items-center gap-8 mt-8 text-sm text-white/60">
-        <div className="flex items-center gap-2">
-          <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
-          <span>30-Min Process</span>
+        <div className="max-w-7xl mx-auto relative z-20 grid lg:grid-cols-2 gap-12 items-center">
+          <div className={`transition-all duration-1000 ${isVisible[0] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-3 h-3 bg-[#D4AF37] rounded-full animate-pulse"></div>
+              <RefreshCw className="w-12 h-12 text-[#D4AF37] animate-spin" style={{animationDuration: '3s'}} />
+              <div className="w-3 h-3 bg-[#D4AF37] rounded-full animate-pulse"></div>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white/90 font-headline">
+              Trade Your <span className="text-[#D4AF37]">Legacy</span><br />
+              for a New <span className="text-[#D4AF37]">Journey</span>
+            </h1>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-3 font-button">
+                <Calculator className="w-5 h-5" />
+                Get Trade-In Quote
+              </button>
+              <button className="bg-white/10 backdrop-blur-sm border-2 border-[#D4AF37]/50 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#D4AF37]/20 hover:border-[#D4AF37] transition-all duration-300 flex items-center gap-3 font-button">
+                <Car className="w-5 h-5" />
+                Browse Replacement Cars
+              </button>
+            </div>
+            <div className="flex items-center gap-8 mt-8 text-sm text-white/60">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
+                <span>30-Min Process</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
+                <span>Fair Valuation</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
+                <span>Doorstep Service</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className={`relative transition-all duration-1000 delay-300 bg-cover bg-center rounded-3xl overflow-hidden ${isVisible[0] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+            style={{
+              backgroundImage: "url('/assets/TradeInHero.png')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            {/* Semi-transparent overlay */}
+            <div className="bg-gradient-to-br from-[#1a1a1a]/60 to-[#0e0e0e]/70 rounded-3xl p-8 border border-[#D4AF37]/20">
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-black/40 rounded-xl p-4 border border-[#D4AF37]/10">
+                  <Car className="w-8 h-8 text-white/60 mb-2" />
+                  <p className="text-xs text-white/60 font-clean">Your Current Car</p>
+                  <p className="text-lg font-bold text-white font-subheading">BMW 3 Series</p>
+                </div>
+                <div className="bg-black/40 rounded-xl p-4 border border-[#D4AF37]/10">
+                  <Sparkles className="w-8 h-8 text-[#D4AF37] mb-2" />
+                  <p className="text-xs text-white/60 font-clean">Upgrade To</p>
+                  <p className="text-lg font-bold text-[#D4AF37] font-subheading">Mercedes GLC</p>
+                </div>
+              </div>
+
+              <div className="text-center mb-6">
+                <div className="flex items-center justify-center mb-4">
+                  <ArrowRight className="w-12 h-12 text-[#D4AF37] animate-pulse" />
+                </div>
+                <p className="text-sm text-white/70 font-clean">Instant upgrade with trade-in bonus</p>
+              </div>
+
+              <div className="bg-gradient-to-r from-[#D4AF37]/20 to-[#D4AF37]/10 rounded-xl p-4 text-center">
+                <p className="text-sm text-[#D4AF37] font-semibold font-subheading">Estimated Trade-In Value</p>
+                <p className="text-3xl font-bold text-white font-headline">₹25,00,000</p>
+                <p className="text-xs text-green-400 font-clean">+₹3,50,000 Trade-in Bonus</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
-          <span>Fair Valuation</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
-          <span>Doorstep Service</span>
-        </div>
-      </div>
-    </div>
-
-    <div
-  className={`relative transition-all duration-1000 delay-300 bg-cover bg-center rounded-3xl overflow-hidden ${isVisible[0] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-  style={{
-    backgroundImage: "url('/assets/TradeInHero.png')",
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  }}
->
-  {/* Semi-transparent overlay */}
-  <div className="bg-gradient-to-br from-[#1a1a1a]/60 to-[#0e0e0e]/70 rounded-3xl p-8 border border-[#D4AF37]/20">
-    <div className="grid grid-cols-2 gap-4 mb-6">
-      <div className="bg-black/40 rounded-xl p-4 border border-[#D4AF37]/10">
-        <Car className="w-8 h-8 text-white/60 mb-2" />
-        <p className="text-xs text-white/60 font-clean">Your Current Car</p>
-        <p className="text-lg font-bold text-white font-subheading">BMW 3 Series</p>
-      </div>
-      <div className="bg-black/40 rounded-xl p-4 border border-[#D4AF37]/10">
-        <Sparkles className="w-8 h-8 text-[#D4AF37] mb-2" />
-        <p className="text-xs text-white/60 font-clean">Upgrade To</p>
-        <p className="text-lg font-bold text-[#D4AF37] font-subheading">Mercedes GLC</p>
-      </div>
-    </div>
-
-    <div className="text-center mb-6">
-      <div className="flex items-center justify-center mb-4">
-        <ArrowRight className="w-12 h-12 text-[#D4AF37] animate-pulse" />
-      </div>
-      <p className="text-sm text-white/70 font-clean">Instant upgrade with trade-in bonus</p>
-    </div>
-
-    <div className="bg-gradient-to-r from-[#D4AF37]/20 to-[#D4AF37]/10 rounded-xl p-4 text-center">
-      <p className="text-sm text-[#D4AF37] font-semibold font-subheading">Estimated Trade-In Value</p>
-      <p className="text-3xl font-bold text-white font-headline">₹25,00,000</p>
-      <p className="text-xs text-green-400 font-clean">+₹3,50,000 Trade-in Bonus</p>
-    </div>
-  </div>
-</div>
-
-  </div>
-</section>
-
+      </section>
 
       {/* Instant Valuation + Swap Offer */}
       <section className="py-16 px-4">
@@ -426,7 +425,7 @@ const TradeInPage = () => {
           <div className="relative">
             {/* Progress Bar */}
             <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-full max-w-4xl h-1 bg-white/10 rounded-full hidden lg:block">
-              <div className="h-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] rounded-full transition-all duration-1000" style={{width: `${(currentStep/3)*100}%`}}></div>
+              <div className="h-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] rounded-full transition-all duration-1000" style={{width: '100%'}}></div>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-12">
@@ -701,7 +700,7 @@ const TradeInPage = () => {
                   ))}
                 </div>
                 
-                <p className="text-white/70 font-clean italic">"{testimonial.text}"</p>
+                <p className="text-white/70 font-clean italic">&quot;{testimonial.text}&quot;</p>
               </div>
             ))}
           </div>

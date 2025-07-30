@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Car, Zap, Shield, Star, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 
 interface Brand {
   name: string;
@@ -71,17 +72,19 @@ const BrowseSection = () => {
         
         {/* Brand Logo */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B8941F] flex items-center justify-center mb-2 transform group-hover:rotate-12 transition-transform duration-300 p-1">
-            <img 
-              src={brand.logo} 
-              alt={`${brand.name} logo`}
-              className="w-full h-full object-contain"
-            />
-          </div>
-          <h3 className="text-white font-semibold text-sm text-center group-hover:text-[#D4AF37] transition-colors duration-300">
-            {brand.name}
-          </h3>
-        </div>
+  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B8941F] flex items-center justify-center mb-2 transform group-hover:rotate-12 transition-transform duration-300 p-1">
+    <Image 
+      src={brand.logo}
+      alt={`${brand.name} logo`}
+      width={64}
+      height={64}
+      className="object-contain w-full h-full"
+    />
+  </div>
+  <h3 className="text-white font-semibold text-sm text-center group-hover:text-[#D4AF37] transition-colors duration-300">
+    {brand.name}
+  </h3>
+</div>
 
         {/* Hover tooltip */}
         {hoveredItem === `brand-${index}` && (

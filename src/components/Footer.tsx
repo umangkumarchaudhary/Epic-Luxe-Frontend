@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   Instagram, 
   Youtube, 
@@ -16,24 +17,12 @@ import {
 import '../app/GlobalFonts.css';
 
 const Footer = () => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
-  const [currentCarIndex, setCurrentCarIndex] = useState(0);
   
-  // Unique Feature: Luxury car showcase in footer
-  const featuredCars = [
-    { brand: 'Mercedes-Benz', model: 'S-Class', year: '2022', price: '₹1.2Cr' },
-    { brand: 'BMW', model: 'X7', year: '2021', price: '₹95L' },
-    { brand: 'Audi', model: 'A8L', year: '2022', price: '₹1.1Cr' },
-    { brand: 'Range Rover', model: 'Vogue', year: '2021', price: '₹1.8Cr' }
-  ];
 
-  // Auto-rotate featured cars
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentCarIndex((prev) => (prev + 1) % featuredCars.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [featuredCars.length]);
+
+
 
   const handleNewsletterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,6 +30,23 @@ const Footer = () => {
     console.log('Newsletter subscription:', email);
     setEmail('');
   };
+
+  // Navigation functions
+  const navigateToInventory = () => router.push('/inventory');
+  const navigateToSell = () => router.push('/services/SellNowYourCar');
+  const navigateToValuation = () => router.push('/services/SellNowYourCar');
+  const navigateToTradeIn = () => router.push('/services/trade-in');
+  const navigateToFinance = () => router.push('/services/finance');
+  const navigateToInsurance = () => router.push('/services/insurance');
+  const navigateToAbout = () => router.push('/AboutUs');
+  const navigateToTestimonials = () => router.push('/insights/testimonials');
+  const navigateToBlogs = () => router.push('/insights/blogs');
+  const navigateToCareers = () => router.push('/careers');
+  const navigateToPress = () => router.push('/Press');
+  const navigateToContact = () => router.push('/contact');
+  const navigateToWhatsApp = () => window.open('https://wa.me/your-number', '_blank');
+  const navigateToPrivacy = () => router.push('/PrivacyPolicy');
+  const navigateToTerms = () => router.push('/TermsOfUse');
 
   const services = [
     'Buy Premium Car',
@@ -115,7 +121,7 @@ const Footer = () => {
                 </div>
               </div>
               <p className="text-gray-300 text-sm leading-relaxed mb-8 font-light">
-                India's premier destination for luxury pre-owned cars. Experience unmatched quality and sophistication.
+                India&apos;s premier destination for luxury pre-owned cars. Experience unmatched quality and sophistication.
               </p>
               
               {/* Social Media Icons */}
@@ -151,13 +157,36 @@ const Footer = () => {
               <ul className="space-y-4">
                 {services.map((service, index) => (
                   <li key={index}>
-                    <a 
-                      href="#" 
-                      className="text-gray-300 hover:text-[#D4AF37] transition-all duration-300 flex items-center group text-sm font-light"
+                    <button 
+                      onClick={() => {
+                        switch(service) {
+                          case 'Buy Premium Car':
+                            navigateToInventory();
+                            break;
+                          case 'Sell Your Car':
+                            navigateToSell();
+                            break;
+                          case 'Get Valuation':
+                            navigateToValuation();
+                            break;
+                          case 'Trade-In':
+                            navigateToTradeIn();
+                            break;
+                          case 'Finance':
+                            navigateToFinance();
+                            break;
+                          case 'Insurance':
+                            navigateToInsurance();
+                            break;
+                          default:
+                            break;
+                        }
+                      }}
+                      className="text-gray-300 hover:text-[#D4AF37] transition-all duration-300 flex items-center group text-sm font-light w-full text-left"
                     >
                       <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 text-[#BFA980]" />
                       <span className="group-hover:translate-x-1 transition-transform duration-300">{service}</span>
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -172,13 +201,33 @@ const Footer = () => {
               <ul className="space-y-4">
                 {company.map((item, index) => (
                   <li key={index}>
-                    <a 
-                      href="#" 
-                      className="text-gray-300 hover:text-[#D4AF37] transition-all duration-300 flex items-center group text-sm font-light"
+                    <button 
+                      onClick={() => {
+                        switch(item) {
+                          case 'About Us':
+                            navigateToAbout();
+                            break;
+                          case 'Testimonials':
+                            navigateToTestimonials();
+                            break;
+                          case 'Blogs':
+                            navigateToBlogs();
+                            break;
+                          case 'Careers':
+                            navigateToCareers();
+                            break;
+                          case 'Press':
+                            navigateToPress();
+                            break;
+                          default:
+                            break;
+                        }
+                      }}
+                      className="text-gray-300 hover:text-[#D4AF37] transition-all duration-300 flex items-center group text-sm font-light w-full text-left"
                     >
                       <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 text-[#BFA980]" />
                       <span className="group-hover:translate-x-1 transition-transform duration-300">{item}</span>
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -193,13 +242,30 @@ const Footer = () => {
               <ul className="space-y-4">
                 {support.map((item, index) => (
                   <li key={index}>
-                    <a 
-                      href="#" 
-                      className="text-gray-300 hover:text-[#D4AF37] transition-all duration-300 flex items-center group text-sm font-light"
+                    <button 
+                      onClick={() => {
+                        switch(item) {
+                          case 'Contact Us':
+                            navigateToContact();
+                            break;
+                          case 'WhatsApp Support':
+                            navigateToWhatsApp();
+                            break;
+                          case 'Privacy Policy':
+                            navigateToPrivacy();
+                            break;
+                          case 'Terms of Use':
+                            navigateToTerms();
+                            break;
+                          default:
+                            break;
+                        }
+                      }}
+                      className="text-gray-300 hover:text-[#D4AF37] transition-all duration-300 flex items-center group text-sm font-light w-full text-left"
                     >
                       <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 text-[#BFA980]" />
                       <span className="group-hover:translate-x-1 transition-transform duration-300">{item}</span>
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>

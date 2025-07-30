@@ -1,5 +1,7 @@
 'use client';
+
 import React from "react";
+import Image from 'next/image';
 
 export interface UploadedFiles {
   rc: File | null;
@@ -26,26 +28,31 @@ const UploadedImagePreview: React.FC<{
   onRemove: (idx: number) => void;
 }> = ({ files, onRemove }) => (
   <div className="flex flex-wrap gap-3 mt-2">
-    {files.map((file, idx) => (
-      <div
-        key={idx}
-        className="relative w-16 h-16 bg-gray-700 rounded-lg overflow-hidden border border-[#BFA980]/50"
-      >
-        <img
-          src={URL.createObjectURL(file)}
-          alt={file.name}
-          className="object-cover w-full h-full"
-        />
-        <button
-          type="button"
-          onClick={() => onRemove(idx)}
-          className="absolute -top-2 -right-2 bg-[#D4AF37] text-black font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg hover:bg-[#BFA980] ring-2 ring-black ring-inset"
-          title="Remove"
+    {files.map((file, idx) => {
+      const objectUrl = URL.createObjectURL(file);
+      return (
+        <div
+          key={idx}
+          className="relative w-16 h-16 bg-gray-700 rounded-lg overflow-hidden border border-[#BFA980]/50"
         >
-          ×
-        </button>
-      </div>
-    ))}
+          <Image
+            src={objectUrl}
+            alt={file.name}
+            layout="fill"
+            objectFit="cover"
+            onLoadingComplete={() => URL.revokeObjectURL(objectUrl)}
+          />
+          <button
+            type="button"
+            onClick={() => onRemove(idx)}
+            className="absolute -top-2 -right-2 bg-[#D4AF37] text-black font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg hover:bg-[#BFA980] ring-2 ring-black ring-inset"
+            title="Remove"
+          >
+            &times;
+          </button>
+        </div>
+      );
+    })}
   </div>
 );
 
@@ -61,7 +68,7 @@ const UploadImagesScreen: React.FC<UploadImagesScreenProps> = ({
       </h2>
       <p className="text-white mb-4 leading-relaxed">
         Your request has been submitted. <br />
-        A dedicated person will contact you with your car's current price.
+        A dedicated person will contact you with your car&apos;s current price.
       </p>
       <div className="rounded-lg bg-[#222]/60 border border-[#D4AF37]/10 p-3 mb-6 shadow-md">
         <p className="text-[#D4AF37] font-bold mb-1">
@@ -81,7 +88,7 @@ const UploadImagesScreen: React.FC<UploadImagesScreenProps> = ({
       </div>
       <form
         className="space-y-6 text-left"
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           if (onUpload) onUpload();
           else alert("Images uploaded! (backend to be connected)");
@@ -110,10 +117,13 @@ const UploadImagesScreen: React.FC<UploadImagesScreenProps> = ({
             </div>
             {uploadedFiles.rc && (
               <div className="mt-2 flex items-center gap-2">
-                <img
+                <Image
                   src={URL.createObjectURL(uploadedFiles.rc)}
                   alt="RC Preview"
-                  className="rounded h-16 w-28 object-cover border border-[#D4AF37]/30 shadow-lg"
+                  width={112}
+                  height={64}
+                  className="rounded border border-[#D4AF37]/30 shadow-lg"
+                  unoptimized
                 />
                 <button
                   className="ml-2 py-1 px-2 bg-[#D4AF37] text-black rounded text-xs font-semibold"
@@ -150,7 +160,7 @@ const UploadImagesScreen: React.FC<UploadImagesScreenProps> = ({
               className={inputBase}
             />
             <div className="text-xs text-gray-400 mt-1">
-              You may upload multiple clear images of the car’s exterior from different angles.
+              You may upload multiple clear images of the car&apos;s exterior from different angles.
             </div>
             {uploadedFiles.exterior.length > 0 && (
               <UploadedImagePreview
@@ -254,7 +264,7 @@ const UploadImagesScreen: React.FC<UploadImagesScreenProps> = ({
       </form>
       <div className="text-xs mt-6 text-center text-gray-400">
         <span className="font-bold text-[#D4AF37]">Skip this step if you wish.</span><br />
-        We'll still reach out to you soon.
+        We&apos;ll still reach out to you soon.
       </div>
     </div>
   </div>

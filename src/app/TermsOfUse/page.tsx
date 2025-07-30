@@ -1,20 +1,33 @@
 'use client';
 
 import React from 'react';
-import { Scale, Shield, Users, Car, FileText, AlertTriangle, Phone, Mail, MapPin, Clock, CheckCircle, XCircle } from 'lucide-react';
+import {
+  Scale,
+  Shield,
+  Users,
+  Car,
+  FileText,
+  AlertTriangle,
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  CheckCircle,
+  XCircle,
+} from 'lucide-react';
 import '../GlobalFonts.css';
-import Header from '@/components/Header'; // Ensure this path is correct
-import Footer from '@/components/Footer'; // Ensure this path is correct
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
-const TermsOfUse = () => {
+const TermsOfUse: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden">
-        <Header />
+      <Header />
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/10 via-transparent to-[#BFA980]/10"></div>
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#BFA980]/5 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/10 via-transparent to-[#BFA980]/10" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#BFA980]/5 rounded-full blur-3xl" />
       </div>
 
       {/* Header Section */}
@@ -30,7 +43,7 @@ const TermsOfUse = () => {
               Terms of Use
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 font-light">
-              Clear guidelines for using Epic Luxe's premium automotive platform
+              Clear guidelines for using Epic Luxe&apos;s premium automotive platform
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <div className="flex items-center gap-2 bg-gradient-to-r from-[#D4AF37]/10 to-[#BFA980]/10 border border-[#D4AF37]/30 rounded-full px-4 py-2 backdrop-blur-sm">
@@ -49,7 +62,6 @@ const TermsOfUse = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="max-w-4xl mx-auto">
-          
           {/* Introduction */}
           <section className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-sm border border-[#D4AF37]/20 rounded-xl shadow-lg p-8 mb-8">
             <div className="flex items-start gap-4 mb-6">
@@ -59,10 +71,10 @@ const TermsOfUse = () => {
               <div>
                 <h2 className="text-2xl font-bold text-white mb-4">Welcome to Epic Luxe</h2>
                 <p className="text-gray-300 leading-relaxed mb-4 font-light">
-                  These Terms of Use ("Terms") govern your access to and use of Epic Luxe's platform, website, and services. By accessing or using our platform, you agree to be bound by these Terms and our Privacy Policy.
+                  These Terms of Use (&quot;Terms&quot;) govern your access to and use of Epic Luxe&apos;s platform, website, and services. By accessing or using our platform, you agree to be bound by these Terms and our Privacy Policy.
                 </p>
                 <p className="text-gray-300 leading-relaxed font-light">
-                  Epic Luxe is India's premier platform for luxury pre-owned vehicles, offering services including vehicle browsing, buying, selling, financing, and professional valuations for premium brands such as Mercedes-Benz, BMW, Audi, and other luxury automobiles.
+                  Epic Luxe is India&apos;s premier platform for luxury pre-owned vehicles, offering services including vehicle browsing, buying, selling, financing, and professional valuations for premium brands such as Mercedes-Benz, BMW, Audi, and other luxury automobiles.
                 </p>
               </div>
             </div>
@@ -76,11 +88,11 @@ const TermsOfUse = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-6">Acceptance of Terms</h2>
-                
+
                 <div className="bg-gradient-to-r from-[#BFA980]/20 to-[#D4AF37]/10 border-l-4 border-[#BFA980] rounded-lg p-6 mb-6">
                   <p className="text-[#BFA980] font-medium mb-2">Agreement to Terms</p>
                   <p className="text-gray-300 text-sm font-light">
-                    By using Epic Luxe's services, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you do not agree, please discontinue use of our platform.
+                    By using Epic Luxe&apos;s services, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you do not agree, please discontinue use of our platform.
                   </p>
                 </div>
 
@@ -96,7 +108,7 @@ const TermsOfUse = () => {
                       <li>• Updated periodically with notice</li>
                     </ul>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 border border-[#BFA980]/20 rounded-lg p-6">
                     <h3 className="text-lg font-semibold text-[#BFA980] mb-3">Modifications</h3>
                     <p className="text-gray-300 text-sm mb-3 font-light">
@@ -121,11 +133,11 @@ const TermsOfUse = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-6">Eligibility</h2>
-                
+
                 <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#BFA980]/5 border border-[#D4AF37]/30 rounded-lg p-6 mb-6">
                   <h3 className="font-semibold text-[#D4AF37] mb-3">User Requirements</h3>
                   <p className="text-gray-300 text-sm font-light">
-                    To use Epic Luxe's services, you must meet the following criteria and provide accurate information throughout your interactions with our platform.
+                    To use Epic Luxe&apos;s services, you must meet the following criteria and provide accurate information throughout your interactions with our platform.
                   </p>
                 </div>
 
@@ -137,7 +149,7 @@ const TermsOfUse = () => {
                     <h3 className="font-semibold text-white mb-2">Age Requirement</h3>
                     <p className="text-gray-400 text-sm font-light">Must be at least 18 years old or have legal guardian consent</p>
                   </div>
-                  
+
                   <div className="text-center bg-gradient-to-br from-[#BFA980]/10 to-[#D4AF37]/5 border border-[#BFA980]/30 rounded-lg p-4">
                     <div className="bg-gradient-to-br from-[#BFA980]/20 to-[#D4AF37]/10 border border-[#BFA980]/30 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
                       <span className="text-[#BFA980] font-bold text-lg">ID</span>
@@ -145,7 +157,7 @@ const TermsOfUse = () => {
                     <h3 className="font-semibold text-white mb-2">Valid Identity</h3>
                     <p className="text-gray-400 text-sm font-light">Provide accurate personal information and valid identification</p>
                   </div>
-                  
+
                   <div className="text-center bg-gradient-to-br from-[#D4AF37]/10 to-[#BFA980]/5 border border-[#D4AF37]/30 rounded-lg p-4">
                     <div className="bg-gradient-to-br from-[#D4AF37]/20 to-[#BFA980]/10 border border-[#D4AF37]/30 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
                       <span className="text-[#D4AF37] font-bold text-lg">⚖️</span>
@@ -172,7 +184,7 @@ const TermsOfUse = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-6">Services Offered</h2>
-                
+
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
                   <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#BFA980]/5 border border-[#D4AF37]/30 rounded-lg p-6">
                     <h3 className="text-lg font-semibold text-[#D4AF37] mb-4">Vehicle Services</h3>
@@ -195,7 +207,7 @@ const TermsOfUse = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-[#BFA980]/10 to-[#D4AF37]/5 border border-[#BFA980]/30 rounded-lg p-6">
                     <h3 className="text-lg font-semibold text-[#BFA980] mb-4">Support Services</h3>
                     <ul className="space-y-2 text-gray-300">
@@ -240,7 +252,7 @@ const TermsOfUse = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-6">User Responsibilities</h2>
-                
+
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-4">
@@ -265,7 +277,7 @@ const TermsOfUse = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-4">
                       <span className="text-red-400">✗</span> You Must Not
@@ -302,7 +314,7 @@ const TermsOfUse = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-6">Third-Party Services & Links</h2>
-                
+
                 <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#BFA980]/5 border border-[#D4AF37]/30 rounded-lg p-6 mb-6">
                   <h3 className="font-semibold text-[#D4AF37] mb-3">Partner Services</h3>
                   <p className="text-gray-300 text-sm mb-4 font-light">
@@ -351,13 +363,13 @@ const TermsOfUse = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-6">Limitation of Liability</h2>
-                
+
                 <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 border border-[#BFA980]/20 rounded-lg p-6 mb-6">
                   <h3 className="font-semibold text-[#BFA980] mb-4">Service Limitations</h3>
                   <p className="text-gray-300 text-sm mb-4 font-light">
-                    Epic Luxe provides its platform and services "as is" and makes no warranties regarding accuracy, completeness, or availability of information or services.
+                    Epic Luxe provides its platform and services &quot;as is&quot; and makes no warranties regarding accuracy, completeness, or availability of information or services.
                   </p>
-                  
+
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-medium text-[#D4AF37] mb-2">Vehicle Information</h4>
@@ -368,7 +380,7 @@ const TermsOfUse = () => {
                         <li>• Availability changes without notice</li>
                       </ul>
                     </div>
-                    
+
                     <div>
                       <h4 className="font-medium text-[#BFA980] mb-2">Valuation Services</h4>
                       <ul className="space-y-1 text-gray-400 text-sm font-light">
@@ -411,7 +423,7 @@ const TermsOfUse = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-6">Account Termination</h2>
-                
+
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#BFA980]/5 border border-[#D4AF37]/30 rounded-lg p-6">
                     <h3 className="text-lg font-semibold text-[#D4AF37] mb-4">User-Initiated Termination</h3>
@@ -425,7 +437,7 @@ const TermsOfUse = () => {
                       <li>• Following data deletion procedures</li>
                     </ul>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-[#BFA980]/10 to-[#D4AF37]/5 border border-[#BFA980]/30 rounded-lg p-6">
                     <h3 className="text-lg font-semibold text-[#BFA980] mb-4">Platform-Initiated Termination</h3>
                     <p className="text-gray-300 text-sm mb-4 font-light">
@@ -451,14 +463,14 @@ const TermsOfUse = () => {
           </section>
 
           {/* Dispute Resolution */}
-          <section className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-sm border border-[#D4AF37]/20 rounded-xl shadow-lg p-8 mb-8">
+          <section className="bg-gradient-to-br from-[#090909]/90 to-[#040404]/90 backdrop-blur-sm border border-[#D4AF37]/20 rounded-xl shadow-lg p-8 mb-8">
             <div className="flex items-start gap-4 mb-6">
               <div className="bg-gradient-to-br from-[#BFA980]/20 to-[#D4AF37]/10 rounded-lg p-3 border border-[#BFA980]/30">
                 <Scale className="w-6 h-6 text-[#BFA980]" />
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-6">Dispute Resolution</h2>
-                
+
                 <div className="bg-gradient-to-br from-[#BFA980]/10 to-[#D4AF37]/5 border border-[#BFA980]/30 rounded-lg p-6 mb-6">
                   <h3 className="font-semibold text-[#BFA980] mb-4">Governing Law</h3>
                   <p className="text-gray-300 text-sm font-light">
@@ -474,7 +486,7 @@ const TermsOfUse = () => {
                     <h3 className="font-semibold text-white mb-2">Direct Resolution</h3>
                     <p className="text-gray-400 text-sm font-light">Contact our support team first to resolve issues amicably</p>
                   </div>
-                  
+
                   <div className="text-center bg-gradient-to-br from-[#D4AF37]/10 to-[#BFA980]/5 border border-[#D4AF37]/30 rounded-lg p-6">
                     <div className="bg-gradient-to-br from-[#D4AF37]/20 to-[#BFA980]/10 border border-[#D4AF37]/30 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                       <span className="text-[#D4AF37] font-bold">2</span>
@@ -482,7 +494,7 @@ const TermsOfUse = () => {
                     <h3 className="font-semibold text-white mb-2">Mediation</h3>
                     <p className="text-gray-400 text-sm font-light">Engage in good faith mediation before formal proceedings</p>
                   </div>
-                  
+
                   <div className="text-center bg-gradient-to-br from-[#BFA980]/10 to-[#D4AF37]/5 border border-[#BFA980]/30 rounded-lg p-6">
                     <div className="bg-gradient-to-br from-[#BFA980]/20 to-[#D4AF37]/10 border border-[#BFA980]/30 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                       <span className="text-[#BFA980] font-bold">3</span>
@@ -509,7 +521,7 @@ const TermsOfUse = () => {
                 For clarifications or concerns regarding these Terms of Use, please contact us:
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-3 gap-6 text-center">
               <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#BFA980]/5 border border-[#D4AF37]/30 backdrop-blur-sm rounded-lg p-6">
                 <div className="bg-gradient-to-br from-[#D4AF37]/20 to-[#BFA980]/10 border border-[#D4AF37]/30 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
@@ -519,7 +531,7 @@ const TermsOfUse = () => {
                 <p className="text-gray-300 text-sm font-light">legal@epicluxe.in</p>
                 <p className="text-gray-400 text-xs mt-1 font-light">Response within 48 hours</p>
               </div>
-              
+
               <div className="bg-gradient-to-br from-[#BFA980]/10 to-[#D4AF37]/5 border border-[#BFA980]/30 backdrop-blur-sm rounded-lg p-6">
                 <div className="bg-gradient-to-br from-[#BFA980]/20 to-[#D4AF37]/10 border border-[#BFA980]/30 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                   <Phone className="w-6 h-6 text-[#BFA980]" />
@@ -528,7 +540,7 @@ const TermsOfUse = () => {
                 <p className="text-gray-300 text-sm font-light">+91-XXXX-XXXXX</p>
                 <p className="text-gray-400 text-xs mt-1 font-light">Mon-Sat: 9 AM - 7 PM IST</p>
               </div>
-              
+
               <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#BFA980]/5 border border-[#D4AF37]/30 backdrop-blur-sm rounded-lg p-6">
                 <div className="bg-gradient-to-br from-[#D4AF37]/20 to-[#BFA980]/10 border border-[#D4AF37]/30 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                   <MapPin className="w-6 h-6 text-[#D4AF37]" />
@@ -563,7 +575,7 @@ const TermsOfUse = () => {
           <div className="text-center mt-8 text-gray-400">
             <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 border border-[#D4AF37]/20 rounded-lg shadow-md p-6 backdrop-blur-sm">
               <p className="text-sm mb-4 font-light">
-                By continuing to use Epic Luxe's services, you acknowledge that you have read, understood, and agree to be bound by these Terms of Use and our Privacy Policy.
+                By continuing to use Epic Luxe&apos;s services, you acknowledge that you have read, understood, and agree to be bound by these Terms of Use and our Privacy Policy.
               </p>
               <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-500 font-light">
                 <span>© 2025 Epic Luxe. All rights reserved.</span>

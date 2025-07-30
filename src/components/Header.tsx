@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -43,8 +43,6 @@ const navItems = [
   { name: 'Testimonials', href: '/insights/testimonials' },
   { name: 'About', href: '/AboutUs' },
   { name: 'Blogs', href: '/insights/blogs' },
-  { name: 'Contact', href: '/contact' },
-
 ];
 const popularSearches = {
   cars: ['BMW M3', 'Porsche 911'],
@@ -69,6 +67,11 @@ export default function Header() {
   const [selectedCity, setSelectedCity] = useState('');
   const [locationAsk, setLocationAsk] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+  const [showBrowserLocationPrompt, setShowBrowserLocationPrompt] = useState(false);
+  const [hasShownLocationPopup, setHasShownLocationPopup] = useState(false);
+  const [permissionBlocked, setPermissionBlocked] = useState(false);
+  const [popupClosed, setPopupClosed] = useState(false);
   // City search input state, fully controlled and active input
   const [citySearch, setCitySearch] = useState('');
   const [isCityMobileSheet, setIsCityMobileSheet] = useState(false);
@@ -78,6 +81,55 @@ export default function Header() {
   const lastScrollY = useRef(0);
   const locationDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
   const servicesDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const autoDetectLocation = useCallback(() => {
+    if (navigator.geolocation && showBrowserLocationPrompt) {
+      setIsDetectingLocation(true);
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const { latitude, longitude } = pos.coords;
+          try {
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+            const res = await fetch(url);
+            const data = await res.json();
+            const city =
+              data?.address?.city ||
+              data?.address?.town ||
+              data?.address?.village ||
+              data?.address?.state ||
+              data?.address?.county ||
+              '';
+            if (city) {
+              setSelectedCity(city);
+              localStorage.setItem('selected_city', city);
+              setLocationError(''); // Clear any errors
+              console.log('City detected:', city); // Debug log
+              // Show success message briefly
+              setTimeout(() => {
+                console.log('City successfully set to:', city);
+              }, 100);
+            } else {
+              setLocationError('Could not detect city. Please select manually.');
+            }
+          } catch {
+            setLocationError('Could not detect city. Please select manually.');
+          } finally {
+            setIsDetectingLocation(false);
+          }
+        },
+        (error) => {
+          console.log('Geolocation permission denied or error:', error);
+          setIsDetectingLocation(false);
+          if (error.code === 1) {
+            setPermissionBlocked(true);
+            setLocationError('Location permission is blocked. Please enable it in your browser settings.');
+          } else {
+            setLocationError('Permission denied. Please select your city manually.');
+          }
+        }
+      );
+    }
+  }, [showBrowserLocationPrompt]);
 
 
 
@@ -164,29 +216,131 @@ export default function Header() {
         setSearchQuery('');
         setSearchResults([]);
       }
+      
+      // Close location popup when clicking outside
+      if (locationAsk && !(target as Element).closest?.('.location-popup')) {
+        handleLocationReject();
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isSearchOpen]);
+  }, [isSearchOpen, locationAsk]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const seenPermission = localStorage.getItem('seen_location_permission');
-    if (!seenPermission) setLocationAsk(true);
+    const savedCity = localStorage.getItem('selected_city');
     
     // Load selected city from localStorage
-    const savedCity = localStorage.getItem('selected_city');
     if (savedCity) {
       setSelectedCity(savedCity);
+      setLocationError(''); // Clear error when city is selected
+    } else {
+      // Try auto-detection if no city is saved and permission is granted
+      if (navigator.permissions && navigator.permissions.query) {
+        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+          if (result.state === 'granted') {
+            console.log('Permission already granted, auto-detecting...'); // Debug log
+            setShowBrowserLocationPrompt(true);
+          } else if (result.state === 'denied') {
+            setPermissionBlocked(true);
+          }
+        });
+      }
     }
+    
+    // Check if location permission is blocked
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'denied') {
+          setPermissionBlocked(true);
+        }
+      });
+    }
+    
+    // Show popup on landing if not seen before and not closed
+    if (!seenPermission && !hasShownLocationPopup && !popupClosed) {
+      setTimeout(() => {
+        setLocationAsk(true);
+        setHasShownLocationPopup(true);
+      }, 1000);
+    }
+  }, [hasShownLocationPopup, popupClosed]);
+
+  // Trigger browser location prompt when showBrowserLocationPrompt becomes true
+  useEffect(() => {
+    if (showBrowserLocationPrompt) {
+      console.log('Triggering autoDetectLocation...'); // Debug log
+      autoDetectLocation();
+    }
+  }, [showBrowserLocationPrompt, autoDetectLocation]);
+
+  // Show popup on buy/sell pages if user previously clicked "No"
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const currentPath = window.location.pathname;
+    const isBuySellPage = currentPath.includes('/inventory') || 
+                          currentPath.includes('/sell') || 
+                          currentPath.includes('/buy') ||
+                          currentPath.includes('/services') ||
+                          currentPath.includes('/evaluation') ||
+                          currentPath.includes('/trade-in') ||
+                          currentPath.includes('/insurance') ||
+                          currentPath.includes('/finance');
+    
+    const hasRejectedLocation = localStorage.getItem('location_rejected') === 'true';
+    const hasShownPopup = localStorage.getItem('seen_location_permission');
+    
+    if (isBuySellPage && hasRejectedLocation && !hasShownPopup && !hasShownLocationPopup && !locationAsk && !popupClosed) {
+      setTimeout(() => {
+        setLocationAsk(true);
+        setHasShownLocationPopup(true);
+      }, 1500);
+    }
+  }, [hasShownLocationPopup, locationAsk, popupClosed]);
+
+  // Debug: Monitor selectedCity changes
+  useEffect(() => {
+    console.log('selectedCity changed to:', selectedCity);
+  }, [selectedCity]);
+
+  // Cleanup popup state when component unmounts or user navigates
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      setLocationAsk(false);
+      setPopupClosed(false);
+      setHasShownLocationPopup(false);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
-  const handleLocationConfirm = async () => {
+  const handleLocationConfirm = () => {
+    // IMMEDIATELY close popup and prevent it from showing again
+    setLocationAsk(false);
+    setPopupClosed(true);
+    setHasShownLocationPopup(true);
+    localStorage.setItem('seen_location_permission', '1');
+    localStorage.removeItem('location_rejected');
+    
+    // Check if permission is already blocked
+    if (permissionBlocked) {
+      setLocationError('Location permission is blocked. Please enable it in your browser settings or select your city manually.');
+      return;
+    }
+    
+    // Start location detection
+    setIsDetectingLocation(true);
+    setShowBrowserLocationPrompt(true);
+    
+    // Trigger browser location prompt
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (pos) => {
-          setLocationAsk(false);
-          localStorage.setItem('seen_location_permission', '1');
           const { latitude, longitude } = pos.coords;
           try {
             const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
@@ -202,27 +356,46 @@ export default function Header() {
             if (city) {
               setSelectedCity(city);
               localStorage.setItem('selected_city', city);
-            } else setLocationError('Could not detect city. Please select manually.');
+              setLocationError('');
+              setPermissionBlocked(false);
+            } else {
+              setLocationError('Could not detect city. Please select manually.');
+            }
           } catch {
             setLocationError('Could not detect city. Please select manually.');
+          } finally {
+            setIsDetectingLocation(false);
+            setShowBrowserLocationPrompt(false);
           }
         },
-        () => {
-          setLocationAsk(false);
-          setLocationError('Permission denied. Please select your city.');
-          localStorage.setItem('seen_location_permission', '1');
+        (error) => {
+          // Check if permission is permanently denied
+          if (error.code === 1) {
+            setPermissionBlocked(true);
+            setLocationError('Location permission is blocked. Please enable it in your browser settings or select your city manually.');
+          } else {
+            setLocationError('Permission denied. Please select your city manually.');
+          }
+          setIsDetectingLocation(false);
+          setShowBrowserLocationPrompt(false);
         }
       );
     } else {
-      setLocationAsk(false);
       setLocationError('Geolocation not supported. Please select city manually.');
-      localStorage.setItem('seen_location_permission', '1');
+      setIsDetectingLocation(false);
+      setShowBrowserLocationPrompt(false);
     }
   };
 
   const handleLocationReject = () => {
+    // IMMEDIATELY close popup and prevent it from showing again
     setLocationAsk(false);
+    setPopupClosed(true);
+    setHasShownLocationPopup(true);
     localStorage.setItem('seen_location_permission', '1');
+    localStorage.setItem('location_rejected', 'true');
+    setIsDetectingLocation(false);
+    setLocationError('');
   };
 
   // Filtered cities filtered by full name (case-insensitive) while typing full city name
@@ -312,6 +485,8 @@ export default function Header() {
                   onClick={() => {
                     setSelectedCity(city);
                     localStorage.setItem('selected_city', city);
+                    setLocationError(''); // Clear error when city is selected manually
+                    setPermissionBlocked(false); // Reset permission blocked state
                     setIsCityDropdownOpen(false);
                     setIsCityMobileSheet(false);
                     setCitySearch(''); // Clear search when city is selected
@@ -332,28 +507,7 @@ export default function Header() {
 
   return (
     <>
-      {/* Location pop-down on first visit */}
-      {locationAsk && (
-        <div className="fixed top-3 left-3 z-[9999] rounded-lg shadow-lg bg-white flex items-center p-4 border border-[#E9DDC3] animate-popdown">
-          <div className="text-sm font-medium text-[#2b2661] mr-4">
-            Allow EpicLuxe to detect your city for personalized inventory?
-          </div>
-          <button
-            className="mr-2 px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980]  font-bold text-[#201d16]"
-            onClick={handleLocationConfirm}
-            type="button"
-          >
-            Yes
-          </button>
-          <button
-            className="px-4 py-1.5 rounded-lg bg-[#2b2661] text-white font-medium border border-[#E9DDC3] hover:bg-[#201d16]"
-            onClick={handleLocationReject}
-            type="button"
-          >
-            No
-          </button>
-        </div>
-      )}
+
 
       {isCityMobileSheet && <CityDropdown mobile />}
 
@@ -371,7 +525,7 @@ export default function Header() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`flex items-center justify-between transition-all duration-500 ease-out ${isSearchOpen ? 'h-20' : 'h-16'}`}>
-            <div className="flex flex-row items-center -ml-2">
+            <div className="flex flex-row items-center">
               <Image
                 src="/assets/images/EpicLuxeLogoCopy.jpeg"
                 alt="Epic Luxe Logo"
@@ -382,30 +536,106 @@ export default function Header() {
               />
               {/* Desktop city selector */}
               <div
-                className="relative ml-3 hidden md:block"
-                onMouseEnter={openLocationDropdown}
-                onMouseLeave={closeLocationDropdown}
+                className="relative ml-6 hidden md:block"
+                onMouseEnter={locationAsk ? undefined : openLocationDropdown}
+                onMouseLeave={locationAsk ? undefined : closeLocationDropdown}
                 tabIndex={0}
-                onFocus={openLocationDropdown}
-                onBlur={closeLocationDropdown}
+                onFocus={locationAsk ? undefined : openLocationDropdown}
+                onBlur={locationAsk ? undefined : closeLocationDropdown}
               >
                 <button
                   className="flex items-center px-3 py-[0.3rem] rounded-lg bg-[#1a1a1a] text-white font-semibold text-xs border border-[#BFA980]/30 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 transition-all duration-200"
-                  onClick={openLocationDropdown}
-                  style={{ minWidth: 65, minHeight: 32, fontSize: '0.75rem' }}
+                  onClick={locationAsk ? undefined : openLocationDropdown}
+                  style={{ minWidth: 80, minHeight: 32, fontSize: '0.75rem' }}
                   type="button"
                   aria-haspopup="listbox"
                   aria-expanded={isCityDropdownOpen}
                   aria-label="Select city"
+                  disabled={isDetectingLocation || locationAsk}
                 >
-                  <span className="truncate max-w-[65px]">{selectedCity}</span>
-                  <ChevronDown
-                    className={`ml-1 w-4 h-4 text-[#BFA980] transition-transform duration-300 ${
-                      isCityDropdownOpen ? 'rotate-180' : ''
-                    }`}
-                  />
+                  <span className="truncate max-w-[80px]" title={selectedCity || 'Select City'}>
+                    {isDetectingLocation ? 'Detecting...' : (selectedCity || 'Select City')}
+                  </span>
+                  {isDetectingLocation ? (
+                    <div className="ml-1 w-4 h-4 border-2 border-[#BFA980] border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <ChevronDown
+                      className={`ml-1 w-4 h-4 text-[#BFA980] transition-transform duration-300 ${
+                        isCityDropdownOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  )}
                 </button>
-                {isCityDropdownOpen && <CityDropdown />}
+                {isCityDropdownOpen && !locationAsk && <CityDropdown />}
+                
+                {/* Location pop-down on first visit */}
+                {locationAsk && !popupClosed && (
+                  <div className="location-popup absolute top-full left-0 mt-2 z-[9999] rounded-lg shadow-xl bg-[#1a1a1a] border border-[#BFA980]/30 animate-popdown w-80">
+                    <div className="flex items-center justify-between p-3">
+                      <div className="text-sm font-medium text-white mr-3 flex-1">
+                        Allow EpicLuxe to detect your city for personalized inventory?
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleLocationReject();
+                        }}
+                        className="text-gray-400 hover:text-gray-300 transition-colors duration-200"
+                        type="button"
+                        aria-label="Close popup"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="flex gap-2 px-3 pb-3">
+                      <button
+                        className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980] font-bold text-[#201d16] hover:from-[#BFA980] hover:to-[#D4AF37] transition-all duration-200"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleLocationConfirm();
+                        }}
+                        type="button"
+                      >
+                        Yes
+                      </button>
+                      <button
+                        className="px-4 py-1.5 rounded-lg bg-[#2b2661] text-white font-medium border border-[#BFA980]/30 hover:bg-[#201d16] transition-all duration-200"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleLocationReject();
+                        }}
+                        type="button"
+                      >
+                        No
+                      </button>
+                    </div>
+                    {permissionBlocked && (
+                      <div className="px-3 pb-3">
+                        <div className="text-xs text-red-400 mb-2">
+                          Location permission is blocked. 
+                          <button
+                            onClick={() => {
+                              // Try to open browser settings
+                              if (navigator.userAgent.includes('Chrome')) {
+                                window.open('chrome://settings/content/location');
+                              } else if (navigator.userAgent.includes('Firefox')) {
+                                window.open('about:preferences#privacy');
+                              } else {
+                                alert('Please enable location permission in your browser settings.');
+                              }
+                            }}
+                            className="text-[#D4AF37] underline ml-1 hover:text-[#BFA980]"
+                          >
+                            Enable it here
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             {/* Mobile city selector - removed from header for mobile view */}
@@ -730,13 +960,86 @@ export default function Header() {
                 role="button"
                 tabIndex={0}
               >
-                {selectedCity || (
+                {isDetectingLocation ? (
+                  <span className="text-[#D4AF37]">
+                    Detecting...
+                  </span>
+                ) : selectedCity || (
                   <span className="text-white/60">
-                    ________<span className="text-[#D4AF37]">?</span>
+                    Select City<span className="text-[#D4AF37]">?</span>
                   </span>
                 )}
               </button>
             </div>
+            
+            {/* Mobile location popup */}
+            {locationAsk && !popupClosed && (
+              <div className="location-popup absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-[9999] rounded-lg shadow-xl bg-[#1a1a1a] border border-[#BFA980]/30 animate-popdown w-80">
+                <div className="flex items-center justify-between p-3">
+                  <div className="text-sm font-medium text-white mr-3 flex-1">
+                    Allow EpicLuxe to detect your city for personalized inventory?
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleLocationReject();
+                    }}
+                    className="text-gray-400 hover:text-gray-300 transition-colors duration-200"
+                    type="button"
+                    aria-label="Close popup"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex gap-2 px-3 pb-3">
+                  <button
+                    className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980] font-bold text-[#201d16] hover:from-[#BFA980] hover:to-[#D4AF37] transition-all duration-200"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleLocationConfirm();
+                    }}
+                    type="button"
+                  >
+                    Yes
+                  </button>
+                  <button
+                    className="px-4 py-1.5 rounded-lg bg-[#2b2661] text-white font-medium border border-[#BFA980]/30 hover:bg-[#201d16] transition-all duration-200"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleLocationReject();
+                    }}
+                    type="button"
+                  >
+                    No
+                  </button>
+                </div>
+                {permissionBlocked && (
+                  <div className="px-3 pb-3">
+                    <div className="text-xs text-red-400 mb-2">
+                      Location permission is blocked. 
+                      <button
+                        onClick={() => {
+                          // Try to open browser settings
+                          if (navigator.userAgent.includes('Chrome')) {
+                            window.open('chrome://settings/content/location');
+                          } else if (navigator.userAgent.includes('Firefox')) {
+                            window.open('about:preferences#privacy');
+                          } else {
+                            alert('Please enable location permission in your browser settings.');
+                          }
+                        }}
+                        className="text-[#D4AF37] underline ml-1 hover:text-[#BFA980]"
+                      >
+                        Enable it here
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

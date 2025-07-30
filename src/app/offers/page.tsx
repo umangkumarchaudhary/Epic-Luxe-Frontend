@@ -113,19 +113,17 @@ const AdLandingPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [scrollY, formSubmitted, showModal]);
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    // Simulate form submission
-    setFormSubmitted(true);
-    
-    // Hide modal after success animation
-    setTimeout(() => {
-      setShowModal(false);
-    }, 2000);
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setFormSubmitted(true);
 
-    // Send to Supabase or CRM webhook
-    console.log('Lead captured:', { /* form data */ });
-  };
+  setTimeout(() => {
+    setShowModal(false);
+  }, 2000);
+
+  console.log('Lead captured:', { /* form data */ });
+};
+
 
   const sendOtp = () => {
     setOtpSent(true);

@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { Calculator, CheckCircle, Car, Users, Shield, Clock, Phone, MapPin, Briefcase, CreditCard, ChevronDown, ChevronUp, Plus, Minus, X, Star } from 'lucide-react';
+import { Calculator, CheckCircle, Car, Users, Shield, Clock, Phone, MapPin,ChevronDown, ChevronUp, Minus, X } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -56,7 +56,7 @@ const FinancePage = () => {
   const checkEligibility = () => {
     if (monthlyIncome && employmentType && city) {
       const income = parseInt(monthlyIncome);
-      let multiplier = employmentType === 'Salaried' ? 60 : 40;
+      const multiplier = employmentType === 'Salaried' ? 60 : 40;
       const eligible = Math.round((income * multiplier) / 100000) * 100000;
       setEligibleAmount(eligible);
       setShowEligibility(true);
@@ -111,18 +111,9 @@ const FinancePage = () => {
 
   const TypewriterText: React.FC<TypewriterTextProps> = ({ text, onComplete, delay = 0 }) => {
     const [displayedText, setDisplayedText] = useState('');
-    const [isComplete, setIsComplete] = useState(false);
+    const [, setIsComplete] = useState(false);
 
-    useEffect(() => {
-      if (delay > 0) {
-        const delayTimer = setTimeout(() => {
-          startTyping();
-        }, delay);
-        return () => clearTimeout(delayTimer);
-      } else {
-        startTyping();
-      }
-    }, [delay]);
+    
 
     const startTyping = () => {
       let currentIndex = 0;
@@ -141,6 +132,18 @@ const FinancePage = () => {
 
       return () => clearInterval(typingInterval);
     };
+
+    useEffect(() => {
+  if (delay > 0) {
+    const delayTimer = setTimeout(() => {
+      startTyping();
+    }, delay);
+    return () => clearTimeout(delayTimer);
+  } else {
+    startTyping();
+  }
+}, [delay, startTyping]);
+
 
     return (
       <p
@@ -337,9 +340,14 @@ const FinancePage = () => {
           
           <div className="relative z-10 max-w-5xl mx-auto px-6">
             <div className="text-center mb-16">
-              <h2 className="text-5xl playfair-font font-bold text-white/90 tracking-wide mb-4">Check Your Loan Eligibility</h2>
-              <p className="text-white/60 text-lg manrope-font font-light max-w-2xl mx-auto">Tailored finance solutions for premium vehicles. Know what you're eligible for, instantly.</p>
-            </div>
+  <h2 className="text-5xl playfair-font font-bold text-white/90 tracking-wide mb-4">
+    Check Your Loan Eligibility
+  </h2>
+  <p className="text-white/60 text-lg manrope-font font-light max-w-2xl mx-auto">
+    Tailored finance solutions for premium vehicles. Know what you&apos;re eligible for, instantly.
+  </p>
+</div>
+
 
             <div className="bg-gradient-to-br from-[#1f1f1f]/60 to-[#0d0d0d]/60 rounded-3xl border border-[#BFA980]/20 p-10 backdrop-blur-md shadow-xl">
               <div className="grid md:grid-cols-3 gap-8 mb-10">
@@ -397,9 +405,15 @@ const FinancePage = () => {
                 <div className="mt-10 p-8 bg-gradient-to-r from-[#D4AF37]/10 to-[#BFA980]/10 border border-[#D4AF37]/30 rounded-2xl backdrop-blur-md">
                   <div className="text-center">
                     <CheckCircle className="w-12 h-12 text-[#D4AF37] mx-auto mb-4 animate-bounce" />
-                    <h3 className="text-3xl playfair-font font-bold text-white/90 mb-2">You're Eligible!</h3>
-                    <p className="text-white/60 text-base manrope-font font-light mb-4">Based on your inputs, you may get financing up to:</p>
-                    <p className="text-5xl playfair-font font-semibold text-[#D4AF37] tracking-wider">{formatLakhs(eligibleAmount)}</p>
+                    <h3 className="text-3xl playfair-font font-bold text-white/90 mb-2">
+  You&apos;re Eligible!
+</h3>
+<p className="text-white/60 text-base manrope-font font-light mb-4">
+  Based on your inputs, you may get financing up to:
+</p>
+<p className="text-5xl playfair-font font-semibold text-[#D4AF37] tracking-wider">
+  {formatLakhs(eligibleAmount)}
+</p>
 
                     <div className="mt-6">
                       <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] manrope-font font-medium text-lg px-8 py-3 rounded-lg hover:from-[#BFA980] hover:to-[#D4AF37] transition-all">
@@ -770,9 +784,14 @@ const FinancePage = () => {
         <section className="py-20 bg-gradient-to-r from-[#0e0e0e]/60 via-[#1a1a1a]/40 to-[#0e0e0e]/60">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-4xl playfair-font font-bold text-white/90 mb-4 tracking-wide">Trusted Finance Partners</h2>
-              <p className="text-white/60 text-lg manrope-font font-light">Best-in-class rates from India's most trusted lenders</p>
-            </div>
+  <h2 className="text-4xl playfair-font font-bold text-white/90 mb-4 tracking-wide">
+    Trusted Finance Partners
+  </h2>
+  <p className="text-white/60 text-lg manrope-font font-light">
+    Best-in-class rates from India&apos;s most trusted lenders
+  </p>
+</div>
+
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
               {banks.map((bank, index) => (
@@ -929,11 +948,12 @@ const FinancePage = () => {
                 </select>
               </div>
               <button className="w-full mt-8 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] px-6 py-4 rounded-lg manrope-font font-medium text-lg hover:from-[#BFA980] hover:to-[#D4AF37] hover:shadow-lg hover:shadow-[#D4AF37]/20 transition-all duration-300">
-                Submit Application
-              </button>
-              <p className="text-white/40 text-sm text-center mt-4 manrope-font font-light">
-                By submitting, you agree to our terms and conditions. We'll send you an OTP for verification.
-              </p>
+  Submit Application
+</button>
+<p className="text-white/40 text-sm text-center mt-4 manrope-font font-light">
+  By submitting, you agree to our terms and conditions. We&apos;ll send you an OTP for verification.
+</p>
+
             </div>
           </div>
         </section>

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Fuel, Zap, Leaf, Car, MapPin, Calendar, User, Activity, Phone, Clock, Check, Search } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Fuel, Zap, Leaf, Car, MapPin, Calendar, User, Activity, Phone, Check, Search } from 'lucide-react';
 import { luxuryCars } from '../../../src/data/BrandData';
 import UploadImagesScreen from './uploadImageScreen'; 
 import '../../app/GlobalFonts.css';
@@ -10,16 +10,6 @@ import '../../app/GlobalFonts.css';
 interface Brand {
   name: string;
   logo: React.ReactNode;
-}
-
-interface Model {
-  name: string;
-  img: string;
-}
-
-interface Variant {
-  name: string;
-  subtitle?: string;
 }
 
 export type City = {
@@ -31,6 +21,14 @@ export type City = {
 interface SellNowWizardProps {
   compact?: boolean;
   largeButtons?: boolean;
+}
+
+// Define proper types for uploaded files
+interface UploadedFiles {
+  rc: File | null;
+  exterior: File[];
+  tyres: File[];
+  interior: File[];
 }
 
 // Utility functions and constants
@@ -139,6 +137,7 @@ const getMonumentImage = (cityName: string, size: number = 24, isSelected: boole
   const imageSrc = cityImageMap[normalized];
   if (!imageSrc) return null;
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={imageSrc}
       alt={`${cityName} monument`}
@@ -162,7 +161,7 @@ const getMonumentImage = (cityName: string, size: number = 24, isSelected: boole
   );
 };
 
-const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact = true, largeButtons = false }) => {
+const SellNowWizard: React.FC<SellNowWizardProps> = () => {
   // State management
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedBrand, setSelectedBrand] = useState('');
@@ -177,14 +176,12 @@ const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact = true, largeButt
   const [whatsappUpdates, setWhatsappUpdates] = useState(true);
   const [touched, setTouched] = useState(false);
   const [valuationSubmitted, setValuationSubmitted] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState({
-  rc: null,
-  exterior: [],
-  tyres: [],
-  interior: [],
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({
+    rc: null,
+    exterior: [],
+    tyres: [],
+    interior: [],
   });
-
-  
 
   // Search states
   const [modelSearch, setModelSearch] = useState('');
@@ -221,22 +218,32 @@ const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact = true, largeButt
     
     return { popularModels, otherModels };
   };
+   
+ interface VariantType {
+  name: string;
+  subtitle: string;
+}
 
-  const getVariantsForModel = (brand: string, model: string, fuel: string) => {
-    const brandData = luxuryCars[brand as keyof typeof luxuryCars];
-    if (!brandData) return [];
-    
-    const modelData = brandData[model as keyof typeof brandData];
-    if (!modelData) return [];
-    
-    const fuelKey = fuel as keyof typeof modelData;
-    const variants = modelData[fuelKey] || [];
-    
-    return variants.map(variant => ({
-      name: variant,
-      subtitle: `${fuel} • ${brand} ${model}`,
-    }));
-  };
+const getVariantsForModel = (brand: string, model: string, fuel: string): VariantType[] => {
+  const brandData = luxuryCars[brand as keyof typeof luxuryCars];
+  if (!brandData) return [];
+
+  const modelData = brandData[model as keyof typeof brandData];
+  if (!modelData) return [];
+
+  const fuelKey = fuel as keyof typeof modelData;
+  const variants = modelData[fuelKey];
+
+  // Assert variants might be unknown, so check and cast to string[]
+  if (!Array.isArray(variants)) return [];
+
+  // Cast variants explicitly as string[] for TypeScript to allow map
+  return (variants as string[]).map((variant: string) => ({
+    name: variant,
+    subtitle: `${fuel} • ${brand} ${model}`,
+  }));
+};
+
 
   const getAvailableFuels = (brand: string, model: string) => {
     const brandData = luxuryCars[brand as keyof typeof luxuryCars];
@@ -269,41 +276,43 @@ const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact = true, largeButt
 
   // Handle final submission
   const handleSubmit = () => {
-  const formData = {
-    brand: selectedBrand,
-    model: selectedModel,
-    fuel: selectedFuel,
-    variant: selectedVariant,
-    city: selectedCity,
-    year: selectedYear,
-    owner: selectedOwner,
-    kms: selectedKms,
-    phone: phone,
-    whatsappUpdates: whatsappUpdates,
-    timestamp: new Date().toISOString(),
+    const formData = {
+      brand: selectedBrand,
+      model: selectedModel,
+      fuel: selectedFuel,
+      variant: selectedVariant,
+      city: selectedCity,
+      year: selectedYear,
+      owner: selectedOwner,
+      kms: selectedKms,
+      phone: phone,
+      whatsappUpdates: whatsappUpdates,
+      timestamp: new Date().toISOString(),
+    };
+
+    // (Optional) Send formData to backend here
+    console.log('Form data:', formData);
+
+    // Save state so wizard shows upload images step
+    setValuationSubmitted(true);
   };
 
-  // (Optional) Send formData to backend here
-
-  // Save state so wizard shows upload images step
-  setValuationSubmitted(true);
-};
-
-
   // Filter functions for search
-  const filterModels = (models: any[], searchTerm: string) => {
+  const filterModels = (models: { name: string; img: string }[] | string[], searchTerm: string) => {
     if (!searchTerm) return models;
     return models.filter(model => 
-      model.name ? model.name.toLowerCase().includes(searchTerm.toLowerCase()) : 
-      model.toLowerCase().includes(searchTerm.toLowerCase())
+      typeof model === 'string' 
+        ? model.toLowerCase().includes(searchTerm.toLowerCase())
+        : model.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
-  const filterCities = (cities: any[], searchTerm: string) => {
+  const filterCities = (cities: City[] | string[], searchTerm: string) => {
     if (!searchTerm) return cities;
     return cities.filter(city => 
-      city.name ? city.name.toLowerCase().includes(searchTerm.toLowerCase()) : 
-      city.toLowerCase().includes(searchTerm.toLowerCase())
+      typeof city === 'string'
+        ? city.toLowerCase().includes(searchTerm.toLowerCase())
+        : city.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
@@ -335,7 +344,7 @@ const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact = true, largeButt
 
         {/* Clickable Step indicators */}
         <div className="flex justify-between items-center">
-          {stepConfig.map((step, index) => (
+          {stepConfig.map((step) => (
             <div key={step.id} className="flex flex-col items-center">
               {/* Clickable Step circle */}
               <button
@@ -388,7 +397,7 @@ const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact = true, largeButt
         
         {/* Fixed horizontal scrolling display */}
         <div className="flex gap-1 overflow-x-auto scrollbar-hide">
-          {selections.map((item, index) => (
+          {selections.map((item) => (
             <button
               key={item.label}
               onClick={() => goToStep(item.step)}
@@ -469,56 +478,65 @@ const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact = true, largeButt
               />
             </div>
             
-            {filteredPopularModels.length > 0 && (
+            {Array.isArray(filteredPopularModels) && filteredPopularModels.length > 0 && (
               <div className="mb-4">
                 <h3 className="text-xs font-bold text-gray-300 mb-2 uppercase tracking-wide">Popular Models</h3>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mb-3">
                   {filteredPopularModels.map((model) => (
                     <button
-                      key={model.name}
+                      key={typeof model === 'string' ? model : model.name}
                       className={`relative h-16 rounded-lg overflow-hidden shadow-lg border transition-all duration-300 hover:scale-105 bg-black/40
-                        ${selectedModel === model.name 
+                        ${selectedModel === (typeof model === 'string' ? model : model.name)
                           ? 'border-[#D4AF37] shadow-[#D4AF37]/30' 
                           : 'border-gray-700 hover:border-[#D4AF37]/50'}`}
                       onClick={() => {
-                        setSelectedModel(model.name);
+                        const modelName = typeof model === 'string' ? model : model.name;
+                        setSelectedModel(modelName);
                         setSelectedFuel('');
                         setSelectedVariant('');
                         setModelSearch('');
                         goToNextStep();
                       }}
                     >
-                      <img src={model.img} alt={model.name} className="absolute inset-0 w-full h-full object-cover opacity-70" />
+                      {typeof model !== 'string' && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={model.img} alt={model.name} className="absolute inset-0 w-full h-full object-cover opacity-70" />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                      <span className="absolute bottom-1 left-1 right-1 text-white text-xs font-semibold text-center leading-tight">{model.name}</span>
+                      <span className="absolute bottom-1 left-1 right-1 text-white text-xs font-semibold text-center leading-tight">
+                        {typeof model === 'string' ? model : model.name}
+                      </span>
                     </button>
                   ))}
                 </div>
               </div>
             )}
             
-            {filteredOtherModels.length > 0 && (
+            {Array.isArray(filteredOtherModels) && filteredOtherModels.length > 0 && (
               <div>
                 <h3 className="text-xs font-bold text-gray-300 mb-2 uppercase tracking-wide">All Models</h3>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1 max-h-40 overflow-y-auto">
-                  {filteredOtherModels.map((model) => (
-                    <button
-                      key={model}
-                      className={`p-2 text-xs rounded-lg border transition-all duration-300 hover:scale-102 bg-black/20
-                        ${selectedModel === model 
-                          ? 'border-[#D4AF37] bg-[#D4AF37]/10 text-[#D4AF37]' 
-                          : 'border-gray-700 text-white hover:border-[#D4AF37]/50'}`}
-                      onClick={() => {
-                        setSelectedModel(model);
-                        setSelectedFuel('');
-                        setSelectedVariant('');
-                        setModelSearch('');
-                        goToNextStep();
-                      }}
-                    >
-                      {model}
-                    </button>
-                  ))}
+                  {filteredOtherModels.map((model) => {
+                    const modelName = typeof model === 'string' ? model : model.name;
+                    return (
+                      <button
+                        key={modelName}
+                        className={`p-2 text-xs rounded-lg border transition-all duration-300 hover:scale-102 bg-black/20
+                          ${selectedModel === modelName
+                            ? 'border-[#D4AF37] bg-[#D4AF37]/10 text-[#D4AF37]' 
+                            : 'border-gray-700 text-white hover:border-[#D4AF37]/50'}`}
+                        onClick={() => {
+                          setSelectedModel(modelName);
+                          setSelectedFuel('');
+                          setSelectedVariant('');
+                          setModelSearch('');
+                          goToNextStep();
+                        }}
+                      >
+                        {modelName}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -636,57 +654,64 @@ const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact = true, largeButt
               />
             </div>
             
-            {filteredPopularCities.length > 0 && (
+            {Array.isArray(filteredPopularCities) && filteredPopularCities.length > 0 && (
               <div className="mb-4">
                 <h3 className="text-xs font-bold text-gray-300 mb-2 uppercase tracking-wide">Popular Cities</h3>
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 mb-4">
-                  {filteredPopularCities.map((city) => (
-                    <button
-                      key={city.name}
-                      onClick={() => {
-                        setSelectedCity(city.name);
-                        setCitySearch('');
-                        goToNextStep();
-                      }}
-                      className={`flex flex-col items-center gap-1 p-2 h-16 rounded-lg border transition-all duration-300 hover:scale-105 bg-black/20
-                        ${selectedCity === city.name
-                          ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/30'
-                          : 'border-gray-700 hover:border-[#D4AF37]/50'}`}
-                    >
-                      <div className="w-6 h-6 rounded overflow-hidden">
-                        {city.icon}
-                      </div>
-                      <span className={`text-xs font-semibold text-center leading-tight ${
-                        selectedCity === city.name ? 'text-[#D4AF37]' : 'text-white'
-                      }`}>
-                        {city.name}
-                      </span>
-                    </button>
-                  ))}
+                  {filteredPopularCities.map((city) => {
+                    const cityName = typeof city === 'string' ? city : city.name;
+                    const cityIcon = typeof city === 'string' ? null : city.icon;
+                    return (
+                      <button
+                        key={cityName}
+                        onClick={() => {
+                          setSelectedCity(cityName);
+                          setCitySearch('');
+                          goToNextStep();
+                        }}
+                        className={`flex flex-col items-center gap-1 p-2 h-16 rounded-lg border transition-all duration-300 hover:scale-105 bg-black/20
+                          ${selectedCity === cityName
+                            ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/30'
+                            : 'border-gray-700 hover:border-[#D4AF37]/50'}`}
+                      >
+                        <div className="w-6 h-6 rounded overflow-hidden">
+                          {cityIcon}
+                        </div>
+                        <span className={`text-xs font-semibold text-center leading-tight ${
+                          selectedCity === cityName ? 'text-[#D4AF37]' : 'text-white'
+                        }`}>
+                          {cityName}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
-            {filteredOtherCities.length > 0 && (
+            {Array.isArray(filteredOtherCities) && filteredOtherCities.length > 0 && (
               <div>
                 <h3 className="text-xs font-bold text-gray-300 mb-2 uppercase tracking-wide">Other Cities</h3>
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-1 max-h-40 overflow-y-auto">
-                  {filteredOtherCities.map((city) => (
-                    <button
-                      key={city}
-                      onClick={() => {
-                        setSelectedCity(city);
-                        setCitySearch('');
-                        goToNextStep();
-                      }}
-                      className={`p-1 rounded border text-xs font-semibold transition-all duration-300 hover:scale-102 bg-black/20
-                        ${selectedCity === city
-                          ? 'border-[#D4AF37] bg-[#D4AF37]/10 text-[#D4AF37]'
-                          : 'border-gray-700 text-white hover:border-[#D4AF37]/50'}`}
-                    >
-                      {city}
-                    </button>
-                  ))}
+                  {filteredOtherCities.map((city) => {
+                    const cityName = typeof city === 'string' ? city : city.name;
+                    return (
+                      <button
+                        key={cityName}
+                        onClick={() => {
+                          setSelectedCity(cityName);
+                          setCitySearch('');
+                          goToNextStep();
+                        }}
+                        className={`p-1 rounded border text-xs font-semibold transition-all duration-300 hover:scale-102 bg-black/20
+                          ${selectedCity === cityName
+                            ? 'border-[#D4AF37] bg-[#D4AF37]/10 text-[#D4AF37]'
+                            : 'border-gray-700 text-white hover:border-[#D4AF37]/50'}`}
+                      >
+                        {cityName}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -846,58 +871,53 @@ const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact = true, largeButt
   };
 
   return (
-  <div className="w-full max-w-7xl mx-auto p-2 md:p-4 lg:p-6 min-h-screen bg-black relative overflow-hidden font-primary">
-    <div className="relative z-10">
-      {/* Conditional Progress Bar and Selection Display */}
-      {!valuationSubmitted && <ProgressBar />}
-      {!valuationSubmitted && <SelectionDisplay />}
+    <div className="w-full max-w-7xl mx-auto p-2 md:p-4 lg:p-6 min-h-screen bg-black relative overflow-hidden font-primary">
+      <div className="relative z-10">
+        {/* Conditional Progress Bar and Selection Display */}
+        {!valuationSubmitted && <ProgressBar />}
+        {!valuationSubmitted && <SelectionDisplay />}
 
-      {/* Navigation Button (show only on wizard steps before submit) */}
-      {!valuationSubmitted && currentStep > 1 && currentStep < 9 && (
-        <div className="mb-3 w-4/5 mx-auto">
-          <button
-            onClick={goToPrevStep}
-            className="px-4 py-2 bg-black/40 backdrop-blur-sm border border-[#D4AF37]/30 text-gray-300 rounded-lg hover:border-[#D4AF37]/50 hover:text-[#D4AF37] transition-all duration-300 font-secondary hover:shadow-lg text-xs"
-          >
-            ← Previous
-          </button>
-        </div>
-      )}
+        {/* Navigation Button (show only on wizard steps before submit) */}
+        {!valuationSubmitted && currentStep > 1 && currentStep < 9 && (
+          <div className="mb-3 w-4/5 mx-auto">
+            <button
+              onClick={goToPrevStep}
+              className="px-4 py-2 bg-black/40 backdrop-blur-sm border border-[#D4AF37]/30 text-gray-300 rounded-lg hover:border-[#D4AF37]/50 hover:text-[#D4AF37] transition-all duration-300 font-secondary hover:shadow-lg text-xs"
+            >
+              ← Previous
+            </button>
+          </div>
+        )}
 
-      {/* Main Content */}
-      <div ref={wizardScrollRef} className="min-h-[350px] flex items-start justify-center">
-        <div className="w-full">
-          {
-            !valuationSubmitted
-              ? renderCurrentStep()
-              : (
-                  // You can replace this with your separate component:
-                  <UploadImagesScreen
-                    uploadedFiles={uploadedFiles}
-                    setUploadedFiles={setUploadedFiles}
-                    onUpload={() => {/* handle images submit here */}}
-                  />
-                )
-          }
+        {/* Main Content */}
+        <div ref={wizardScrollRef} className="min-h-[350px] flex items-start justify-center">
+          <div className="w-full">
+            {
+              !valuationSubmitted
+                ? renderCurrentStep()
+                : (
+                    <UploadImagesScreen
+                      uploadedFiles={uploadedFiles}
+                      setUploadedFiles={setUploadedFiles}
+                      onUpload={() => {/* handle images submit here */}}
+                    />
+                  )
+            }
+          </div>
         </div>
       </div>
+      <style jsx>{`
+          .scrollbar-hide {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
     </div>
-    <style jsx>{`
-        .scrollbar-hide {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-    {/* Styles unchanged */}
-  </div>
-);
-
-
-  
+  );
 };
 
 export default SellNowWizard;

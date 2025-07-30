@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import AboutStickyNav from '@/components/StickyFooter/AboutStickyNav';
 import '../../app/GlobalFonts.css'
+import Image from 'next/image';
 
 import { 
   Star, 
@@ -11,16 +12,10 @@ import {
   Shield, 
   Heart, 
   Leaf, 
-  CheckCircle, 
-  Settings, 
-  Crown, 
-  Users, 
+  
   MapPin,
-  ChevronDown,
+  
   ChevronRight,
-  ChevronLeft,
-  Play,
-  Quote
 } from 'lucide-react';
 
 // TypeScript interfaces
@@ -61,7 +56,7 @@ interface Testimonial {
 const AboutUs: React.FC = () => {
   const [isVisible, setIsVisible] = useState<VisibilityState>({});
   const [mousePosition, setMousePosition] = useState<MousePosition>({ x: 0, y: 0 });
-  const [activeTimeline, setActiveTimeline] = useState<number>(0);
+
   
   // Timeline animation states
   const [isLineVisible, setIsLineVisible] = useState<boolean>(false);
@@ -80,7 +75,7 @@ const AboutUs: React.FC = () => {
   const [currentFeature, setCurrentFeature] = useState<number>(0);
   const [currentMilestone, setCurrentMilestone] = useState<number>(0);
   const [currentTeamMember, setCurrentTeamMember] = useState<number>(0);
-  const [currentTestimonial, setCurrentTestimonial] = useState<number>(0);
+  const [, setCurrentTestimonial] = useState<number>(0);
 
   const text1: string = "Reimagining Pre-Owned Luxury with Purpose, Passion, and Precision.";
   const text2: string = "Powered by Raam Group, Epic Luxe curates premium pre-owned luxury vehicles with unmatched quality, trust, and elegance.";
@@ -132,16 +127,7 @@ const AboutUs: React.FC = () => {
   }, [startTypewriter, text1, text2]);
 
   // Auto-rotate sliders
-  useEffect(() => {
-    const intervals = [
-      setInterval(() => setCurrentFeature(prev => (prev + 1) % features.length), 4000),
-      setInterval(() => setCurrentMilestone(prev => (prev + 1) % milestones.length), 5000),
-      setInterval(() => setCurrentTeamMember(prev => (prev + 1) % team.length), 6000),
-      setInterval(() => setCurrentTestimonial(prev => (prev + 1) % testimonials.length), 7000),
-    ];
-
-    return () => intervals.forEach(interval => clearInterval(interval));
-  }, []);
+  
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent): void => {
@@ -171,7 +157,7 @@ const AboutUs: React.FC = () => {
     };
   }, [startTypewriter]);
 
-  const [scrolledPastHero, setScrolledPastHero] = useState<boolean>(false);
+  const [, setScrolledPastHero] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = (): void => {
@@ -181,44 +167,52 @@ const AboutUs: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const milestones: Milestone[] = [
+    { year: '2015', title: 'Inception', desc: 'Founded with a vision to redefine luxury car ownership' },
+    { year: '2017', title: '1000+ Luxury Cars Sold', desc: 'Achieved major milestone in premium automotive sales' },
+    { year: '2020', title: 'Multi-city Expansion', desc: 'Expanded operations across major Indian metros' },
+    { year: '2023', title: 'National Recognition', desc: 'Awarded Best Luxury Pre-owned Car Dealer' },
+    { year: '2025', title: 'Digital Showroom Launch', desc: 'Revolutionary virtual showroom experience' }
+  ];
+
   // Timeline animation effect
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsLineVisible(true);
-            
-            let progress = 0;
-            const lineAnimation = setInterval(() => {
-              progress += 2;
-              setLineProgress(progress);
-              if (progress >= 100) {
-                clearInterval(lineAnimation);
-              }
-            }, 30);
+  const currentRef = timelineRef.current;  // Cache the ref
 
-            milestones.forEach((_, index) => {
-              setTimeout(() => {
-                setVisibleMilestones(prev => [...prev, index]);
-              }, 800 + index * 300);
-            });
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setIsLineVisible(true);
 
-    if (timelineRef.current) {
-      observer.observe(timelineRef.current);
-    }
+          let progress = 0;
+          const lineAnimation = setInterval(() => {
+            progress += 2;
+            setLineProgress(progress);
+            if (progress >= 100) {
+              clearInterval(lineAnimation);
+            }
+          }, 30);
 
-    return () => {
-      if (timelineRef.current) {
-        observer.unobserve(timelineRef.current);
-      }
-    };
-  }, []);
+          milestones.forEach((_, index) => {
+            setTimeout(() => {
+              setVisibleMilestones((prev) => [...prev, index]);
+            }, 800 + index * 300);
+          });
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+
+  if (currentRef) observer.observe(currentRef);
+
+  return () => {
+    if (currentRef) observer.unobserve(currentRef);
+  };
+  // Add milestones to dependencies to keep it up to date
+}, [milestones]);
+
 
   const features = [
     { title: 'Handpicked Cars', icon: '🚗', desc: 'Every car, personally curated.' },
@@ -228,13 +222,7 @@ const AboutUs: React.FC = () => {
     { title: 'Celebrity Trusted', icon: '⭐', desc: 'Preferred by visionaries.' },
   ];
 
-  const milestones: Milestone[] = [
-    { year: '2015', title: 'Inception', desc: 'Founded with a vision to redefine luxury car ownership' },
-    { year: '2017', title: '1000+ Luxury Cars Sold', desc: 'Achieved major milestone in premium automotive sales' },
-    { year: '2020', title: 'Multi-city Expansion', desc: 'Expanded operations across major Indian metros' },
-    { year: '2023', title: 'National Recognition', desc: 'Awarded Best Luxury Pre-owned Car Dealer' },
-    { year: '2025', title: 'Digital Showroom Launch', desc: 'Revolutionary virtual showroom experience' }
-  ];
+  
 
   const values: Value[] = [
     { icon: Shield, title: 'Integrity', desc: 'Transparent processes, honest dealings, authentic experiences' },
@@ -265,6 +253,18 @@ useEffect(() => {
     { name: 'Ananya Pandey', role: 'Celebrity', text: 'Impeccable quality and unmatched professionalism.', rating: 5 },
     { name: 'Rohit Sharma', role: 'Tech Executive', text: 'The entire experience was seamless and luxurious.', rating: 5 }
   ];
+
+  useEffect(() => {
+  const intervals = [
+    setInterval(() => setCurrentFeature(prev => (prev + 1) % features.length), 4000),
+    setInterval(() => setCurrentMilestone(prev => (prev + 1) % milestones.length), 5000),
+    setInterval(() => setCurrentTeamMember(prev => (prev + 1) % team.length), 6000),
+    setInterval(() => setCurrentTestimonial(prev => (prev + 1) % testimonials.length), 7000),
+  ];
+
+  return () => intervals.forEach(interval => clearInterval(interval));
+}, [features.length, milestones.length, team.length, testimonials.length]);
+
 
   return (
     <div className="bg-[#0e0e0e] text-white overflow-hidden font-primary">
@@ -446,16 +446,20 @@ useEffect(() => {
                 '/assets/images/ShowroomInside3.avif',
                 '/assets/images/ShowroomInside4.avif',
               ].map((src, index) => (
-                <img
-                  key={index}
-                  src={src}
-                  alt={`Showroom ${index + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover opacity-0 animate-fade-zoom-loop"
-                  style={{
-                    animationDelay: `${index * 3}s`,
-                    zIndex: 10 - index,
-                  }}
-                />
+                <Image
+  key={index}
+  src={src}
+  alt={`Showroom ${index + 1}`}
+  fill
+  sizes="100vw"
+  className="absolute inset-0 w-full h-full object-cover opacity-0 animate-fade-zoom-loop"
+  style={{
+    animationDelay: `${index * 3}s`,
+    zIndex: 10 - index,
+  }}
+  priority={index === 0} // optionally prioritize the first image
+/>
+
               ))}
             </div>
           </div>

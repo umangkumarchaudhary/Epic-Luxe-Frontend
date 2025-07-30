@@ -1,65 +1,19 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Star, Play, ArrowRight, Quote, Heart, MapPin, Calendar, CheckCircle, Phone, Mail, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Star, Play, ArrowRight, Quote, Heart, MapPin, Calendar, CheckCircle} from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Image from 'next/image';
 
 
 const TestimonialsPage = () => {
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const [filter, setFilter] = useState('All');
-  const [isVisible, setIsVisible] = useState({});
-  const heroRef = useRef(null);
-  const quotesRef = useRef(null);
   
-  // Dummy data for testimonials
-  const videoTestimonials = [
-    {
-      id: 1,
-      name: "Rajesh Mehta",
-      city: "Mumbai",
-      role: "CEO, Tech Innovators",
-      car: "Mercedes S-Class 2022",
-      thumbnail: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face",
-      quote: "Exceptional service that exceeded all expectations. The attention to detail was remarkable.",
-      rating: 5
-    },
-    {
-      id: 2,
-      name: "Priya Sharma",
-      city: "Delhi",
-      role: "Entrepreneur",
-      car: "BMW X7 2023",
-      thumbnail: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=300&fit=crop",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b977?w=60&h=60&fit=crop&crop=face",
-      quote: "A seamless luxury experience from start to finish. Truly world-class service.",
-      rating: 5
-    },
-    {
-      id: 3,
-      name: "Vikram Singh",
-      city: "Bangalore",
-      role: "Real Estate Mogul",
-      car: "Audi A8L 2022",
-      thumbnail: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face",
-      quote: "The personalized approach and premium quality made all the difference.",
-      rating: 5
-    },
-    {
-      id: 4,
-      name: "Anita Gupta",
-      city: "Hyderabad",
-      role: "Investment Banker",
-      car: "Jaguar F-Pace 2023",
-      thumbnail: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&h=300&fit=crop",
-      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=60&h=60&fit=crop&crop=face",
-      quote: "Outstanding professionalism and expertise in luxury automotive solutions.",
-      rating: 5
-    }
-  ];
+  const [filter, setFilter] = useState('All');
+  const [, setIsVisible] = useState({});
+  const heroRef = useRef(null);
+  
+  
 
   const featuredQuotes = [
     {
@@ -226,8 +180,9 @@ const TestimonialsPage = () => {
               Our Clients, Our Pride
             </h1>
             <p className="text-xl md:text-2xl text-white/80 mb-8 leading-relaxed">
-              See how we transform the car buying & selling experience for India's elite
-            </p>
+  See how we transform the car buying & selling experience for India's elite
+</p>
+
             <button className="group bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-8 py-4 rounded-full text-lg font-semibold hover:shadow-2xl hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105">
               Share Your Experience
               <ArrowRight className="inline ml-2 group-hover:translate-x-2 transition-transform" size={20} />
@@ -270,11 +225,14 @@ const TestimonialsPage = () => {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="flex items-start space-x-4 mb-4">
-                  <img 
-                    src={quote.avatar} 
-                    alt={quote.name}
-                    className="w-14 h-14 rounded-full border-3 border-[#D4AF37] group-hover:border-[#BFA980] transition-colors"
-                  />
+                  <Image 
+  src={quote.avatar}
+  alt={quote.name}
+  width={56} // w-14 = 14 * 4 = 56px
+  height={56} // h-14 = 14 * 4 = 56px
+  className="rounded-full border-3 border-[#D4AF37] group-hover:border-[#BFA980] transition-colors"
+/>
+
                   <div className="flex-1">
                     <h3 className="font-semibold text-white text-lg">{quote.name}</h3>
                     <p className="text-white/60 text-sm">{quote.role}</p>
@@ -292,7 +250,8 @@ const TestimonialsPage = () => {
                   ))}
                 </div>
                 
-                <p className="text-white/80 leading-relaxed mb-4">"{quote.quote}"</p>
+                <p className="text-white/80 leading-relaxed mb-4">&quot;{quote.quote}&quot;</p>
+
                 
                 <div className="flex justify-between items-center text-xs text-white/50">
                   <span className="bg-[#D4AF37]/20 text-[#D4AF37] px-2 py-1 rounded-full">
@@ -327,16 +286,20 @@ const TestimonialsPage = () => {
                   animationDelay: `${index * 0.1}s`
                 }}
               >
-                <img 
-                  src={item.image} 
-                  alt={`${item.customerName} with ${item.carModel}`}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
+                <Image
+  src={item.image}
+  alt={`${item.customerName} with ${item.carModel}`}
+  width={800}          // Adjust based on actual layout needs
+  height={600}         // Adjust for aspect ratio
+  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+/>
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-4 left-4 right-4">
                     <h3 className="text-white font-semibold text-lg mb-1">{item.customerName}</h3>
                     <p className="text-[#D4AF37] text-sm mb-2">{item.carModel}</p>
-                    <p className="text-white/80 text-sm mb-3">"{item.quote}"</p>
+                    <p className="text-white/80 text-sm mb-3">&quot;{item.quote}&quot;</p>
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2 text-white/60 text-sm">
                         <Heart size={16} className="text-red-400" />
@@ -364,8 +327,14 @@ const TestimonialsPage = () => {
           
           <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10">
             <div className="flex items-center justify-center space-x-4 mb-6">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" 
-                   alt="Google" className="w-8 h-8" />
+              <Image
+  src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+  alt="Google"
+  width={32} // w-8 = 8 * 4 = 32px
+  height={32} // h-8 = 8 * 4 = 32px
+  className="w-8 h-8"
+/>
+
               <div className="text-2xl font-bold text-white">Google Reviews</div>
             </div>
             
@@ -383,8 +352,14 @@ const TestimonialsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
                 <div className="flex items-center space-x-3 mb-3">
-                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" 
-                       className="w-10 h-10 rounded-full" alt="Reviewer" />
+                  <Image
+  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face"
+  alt="Reviewer"
+  width={40} // w-10 = 40px
+  height={40} // h-10 = 40px
+  className="rounded-full"
+/>
+
                   <div>
                     <div className="text-white font-semibold">Amit Kumar</div>
                     <div className="flex text-[#D4AF37] text-sm">{'★'.repeat(5)}</div>
@@ -395,15 +370,21 @@ const TestimonialsPage = () => {
               
               <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
                 <div className="flex items-center space-x-3 mb-3">
-                  <img src="https://images.unsplash.com/photo-1494790108755-2616b612b977?w=40&h=40&fit=crop&crop=face" 
-                       className="w-10 h-10 rounded-full" alt="Reviewer" />
+                  <img 
+  src="https://images.unsplash.com/photo-1494790108755-2616b612b977?w=40&h=40&fit=crop&crop=face" 
+  className="w-10 h-10 rounded-full" 
+  alt="Reviewer" 
+/>
                   <div>
                     <div className="text-white font-semibold">Sneha Patil</div>
                     <div className="flex text-[#D4AF37] text-sm">{'★'.repeat(5)}</div>
                   </div>
                 </div>
-                <p className="text-white/80 text-sm">"Professional team, transparent process, and premium quality vehicles."</p>
-              </div>
+                <p className="text-white/80 text-sm">
+  &quot;Professional team, transparent process, and premium quality vehicles.&quot;
+</p>
+
+                   </div>
             </div>
           </div>
         </div>

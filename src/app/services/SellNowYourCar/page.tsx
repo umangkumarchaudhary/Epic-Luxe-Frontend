@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronRight, ChevronLeft, Car, Shield, Clock, Award, Star, CheckCircle, ArrowRight, Phone, Mail, MapPin, Zap, Eye, Users, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronRight,Shield, Clock, Award, Star,ArrowRight, Phone, Mail, MapPin } from 'lucide-react';
 import SpinnyWizard from '../../../components/sell/spinnyWizard';
 import Header from '../../../components/Header';
 import Footer from '@/components/Footer';
@@ -10,7 +10,8 @@ import Footer from '@/components/Footer';
 
 // FAQ Section
 const FAQSection = () => {
-  const [openFAQ, setOpenFAQ] = useState(null);
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+
 
   const faqs = [
     {
@@ -91,13 +92,19 @@ const ContactSection = () => {
             Join thousands of satisfied customers who chose Raam Group for their premium vehicle sales
           </p>
           
-          <button 
-            onClick={() => document.getElementById('sell-wizard').scrollIntoView({ behavior: 'smooth' })}
-            className="group bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-12 py-4 rounded-full font-semibold text-xl hover:shadow-2xl hover:shadow-[#D4AF37]/30 transition-all duration-500 transform hover:scale-105"
-          >
-            Start Your Premium Sale
-            <ArrowRight className="inline ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
-          </button>
+          <button
+  onClick={() => {
+    const element = document.getElementById('sell-wizard');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }}
+  className="group bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-12 py-4 rounded-full font-semibold text-xl hover:shadow-2xl hover:shadow-[#D4AF37]/30 transition-all duration-500 transform hover:scale-105"
+>
+  Start Your Premium Sale
+  <ArrowRight className="inline ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+</button>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
@@ -190,8 +197,9 @@ const TrustSection = () => {
         <div className="text-center mb-16">
           <h2 className="text-5xl font-serif text-white mb-6">Why Choose Raam Group?</h2>
           <p className="text-xl text-white/70 max-w-3xl mx-auto">
-            Experience the difference of working with India's most trusted luxury automotive platform
-          </p>
+  Experience the difference of working with India&apos;s most trusted luxury automotive platform
+</p>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

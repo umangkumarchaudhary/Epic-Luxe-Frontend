@@ -17,6 +17,7 @@ import {
   Fuel,
   Settings
 } from 'lucide-react';
+import Image from 'next/image';
 
 const LuxuryBlogPost = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -24,7 +25,7 @@ const LuxuryBlogPost = () => {
   const [showTableOfContents, setShowTableOfContents] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [visibleSections, setVisibleSections] = useState(new Set());
-  const sectionRefs = useRef({});
+  
 
   // Scroll and intersection observer effects
   useEffect(() => {
@@ -61,21 +62,22 @@ const LuxuryBlogPost = () => {
   }, []);
 
   // Smooth section navigation with fade transition
-  const navigateToSection = (sectionId) => {
-    setIsTransitioning(true);
-    setShowTableOfContents(false);
-    
-    setTimeout(() => {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-      setTimeout(() => setIsTransitioning(false), 300);
-    }, 150);
-  };
+  const navigateToSection = (sectionId: string) => {
+  setIsTransitioning(true);
+  setShowTableOfContents(false);
+  
+  setTimeout(() => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+    setTimeout(() => setIsTransitioning(false), 300);
+  }, 150);
+};
+
 
   const blogData = {
     title: "The Ultimate Guide to Investing in Pre-Owned Luxury Vehicles",
@@ -313,11 +315,14 @@ const LuxuryBlogPost = () => {
               {/* Enhanced author info */}
               <div className="flex items-center space-x-6 text-white/85">
                 <div className="flex items-center space-x-3">
-                  <img 
-                    src={blogData.author.avatar} 
-                    alt={blogData.author.name}
-                    className="w-12 h-12 rounded-full border-2 border-[#D4AF37]/30 shadow-md"
-                  />
+                  <Image 
+  src={blogData.author.avatar}
+  alt={blogData.author.name}
+  width={48}
+  height={48}
+  className="rounded-full border-2 border-[#D4AF37]/30 shadow-md"
+/>
+
                   <div>
                     <p className="font-medium">{blogData.author.name}</p>
                     <p className="text-sm text-white/60">{blogData.author.bio}</p>
@@ -358,7 +363,7 @@ const LuxuryBlogPost = () => {
                 <div className="glass-light rounded-2xl p-6 shadow-xl">
                   <h3 className="font-medium text-lg text-white/95 mb-6 blog-heading">Table of Contents</h3>
                   <nav className="space-y-1">
-                    {tableOfContents.map((item, index) => (
+                    {tableOfContents.map((item) => (
                       <button
                         key={item.id}
                         onClick={() => navigateToSection(item.id)}
@@ -415,19 +420,24 @@ const LuxuryBlogPost = () => {
                     id="intro" 
                     className={`mb-12 section-animate ${visibleSections.has('intro') ? 'visible' : ''}`}
                   >
-                    <h2 className="text-3xl font-light text-white/95 mb-6 blog-heading">Market Overview: Why Porsche 911?</h2>
-                    <p className="text-lg text-white/80 leading-relaxed mb-6 font-light">
-                      The Porsche 911 has consistently proven to be one of the most reliable investments in the luxury automotive market. 
-                      With its iconic design, engineering excellence, and strong brand heritage, the 911 continues to appreciate in value 
-                      while providing an unmatched driving experience.
-                    </p>
+                    <h2 className="text-3xl font-light text-white/95 mb-6 blog-heading">
+  Market Overview: Why Porsche 911?
+</h2>
+
+<p className="text-lg text-white/80 leading-relaxed mb-6 font-light">
+  The Porsche 911 has consistently proven to be one of the most reliable investments in the luxury automotive market.
+  With its iconic design, engineering excellence, and strong brand heritage, the 911 continues to appreciate in value
+  while providing an unmatched driving experience often described as &quot;the ultimate daily supercar&quot;.
+</p>
+
                     
                     {/* Enhanced quote box */}
                     <blockquote className="luxury-quote rounded-2xl p-8 my-10 backdrop-blur-md">
                       <p className="text-xl italic text-white/90 mb-4 font-light leading-relaxed">
-                        "In the past five years, well-maintained Porsche 911s have shown an average appreciation of 15-25% annually, 
-                        outperforming many traditional investment vehicles."
-                      </p>
+  &quot;In the past five years, well-maintained Porsche 911s have shown an average appreciation of 15-25% annually, 
+  outperforming many traditional investment vehicles.&quot;
+</p>
+
                       <footer className="text-sm text-white/70 font-medium">— LuxeCars Market Research Team</footer>
                     </blockquote>
                   </div>
@@ -466,11 +476,15 @@ const LuxuryBlogPost = () => {
                     id="models" 
                     className={`mb-12 section-animate ${visibleSections.has('models') ? 'visible' : ''}`}
                   >
-                    <h2 className="text-3xl font-light text-white/95 mb-6 blog-heading">Top Investment Models</h2>
-                    <p className="text-lg text-white/80 leading-relaxed mb-6 font-light">
-                      When considering a Porsche 911 as an investment, certain models stand out for their appreciation potential, 
-                      rarity, and collector appeal. Here's our curated list of the most promising investment opportunities.
-                    </p>
+                    <h2 className="text-3xl font-light text-white/95 mb-6 blog-heading">
+  Top Investment Models
+</h2>
+
+<p className="text-lg text-white/80 leading-relaxed mb-6 font-light">
+  When considering a Porsche 911 as an investment, certain models stand out for their appreciation potential, 
+  rarity, and collector appeal. Here&apos;s our curated list of the most promising investment opportunities.
+</p>
+
                   </div>
 
                   {/* Enhanced image gallery */}
@@ -491,11 +505,14 @@ const LuxuryBlogPost = () => {
                     ].map((image, index) => (
                       <div key={index} className="relative group cursor-pointer">
                         <div className="glass-light rounded-2xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-all duration-500">
-                          <img 
-                            src={image.src}
-                            alt={image.title}
-                            className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-700"
-                          />
+                          <Image
+  src={image.src}
+  alt={image.title}
+  width={800} // adjust based on expected layout
+  height={256} // h-64 = 16rem = 256px
+  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-700"
+/>
+
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl flex items-center justify-center">
                             <Play className="h-16 w-16 text-[#D4AF37] drop-shadow-lg" />
                           </div>
@@ -573,11 +590,13 @@ const LuxuryBlogPost = () => {
                   {relatedPosts.map((post, index) => (
                     <article key={index} className="glass-light rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 group cursor-pointer">
                       <div className="relative">
-                        <img 
-                          src={post.image} 
-                          alt={post.title}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-700"
-                        />
+                        <Image 
+  src={post.image}
+  alt={post.title}
+  width={800}            // Adjust based on your layout, can be 800 or responsive
+  height={192}           // h-48 = 12rem = 192px
+  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-700"
+/>
                         <div className="absolute top-4 left-4">
                           <span className="glass-light text-white/85 px-3 py-1 rounded-full text-sm font-light shadow-md">
                             {post.tag}

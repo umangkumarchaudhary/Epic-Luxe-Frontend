@@ -194,7 +194,7 @@ const Services: React.FC = () => {
         if (autoSlideInterval.current) clearInterval(autoSlideInterval.current);
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [isAutoPlaying, hasStartedAnimation]);
 
   // Pause auto-slide on user interaction temporarily

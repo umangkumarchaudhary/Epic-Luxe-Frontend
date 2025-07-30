@@ -11,8 +11,7 @@ import {
   Calendar, 
   Gauge,
   MapPin,
-  Eye,
-  Sparkles
+  Eye
 } from 'lucide-react';
 
 interface Vehicle {
@@ -273,17 +272,7 @@ const FeaturedInventory: React.FC = () => {
     }
   };
 
-  const getBadgeStyle = (badge: string) => {
-    const styles: Record<string, string> = {
-      'Best Deal': 'bg-gradient-to-r from-green-500 to-emerald-600',
-      'Latest': 'bg-gradient-to-r from-blue-500 to-cyan-600',
-      'Limited': 'bg-gradient-to-r from-purple-500 to-violet-600',
-      'Available': 'bg-gradient-to-r from-orange-500 to-amber-600',
-      'Rare': 'bg-gradient-to-r from-pink-500 to-rose-600',
-      'Exclusive': 'bg-gradient-to-r from-red-500 to-red-600',
-    };
-    return styles[badge] || 'bg-gradient-to-r from-gray-500 to-gray-600';
-  };
+  
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
