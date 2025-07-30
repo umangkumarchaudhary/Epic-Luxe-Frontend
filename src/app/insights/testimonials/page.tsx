@@ -366,8 +366,10 @@ const TestimonialsPage = () => {
                     <div className="flex text-[#D4AF37] text-sm">{'★'.repeat(5)}</div>
                   </div>
                 </div>
-                <p className="text-white/80 text-sm">"Exceptional service and genuine luxury cars. Highly recommended!"</p>
-              </div>
+                <p className="text-white/80 text-sm">
+  &quot;Exceptional service and genuine luxury cars. Highly recommended!&quot;
+</p>
+                      </div>
               
               <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
                 <div className="flex items-center space-x-3 mb-3">
