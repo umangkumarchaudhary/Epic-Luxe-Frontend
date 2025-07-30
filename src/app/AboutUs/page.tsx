@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import AboutStickyNav from '@/components/StickyFooter/AboutStickyNav';
+import '../../app/GlobalFonts.css'
 
 import { 
   Star, 
@@ -83,7 +84,11 @@ const AboutUs: React.FC = () => {
 
   const text1: string = "Reimagining Pre-Owned Luxury with Purpose, Passion, and Precision.";
   const text2: string = "Powered by Raam Group, Epic Luxe curates premium pre-owned luxury vehicles with unmatched quality, trust, and elegance.";
+   
 
+ const [currentValue, setCurrentValue] = useState<number>(0);
+
+ 
   // Typewriter effect
   useEffect(() => {
     if (!startTypewriter) return;
@@ -239,6 +244,15 @@ const AboutUs: React.FC = () => {
     { icon: Leaf, title: 'Sustainability', desc: 'Promoting sustainable luxury through pre-owned excellence' }
   ];
 
+  // Auto-rotate values slider
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentValue(prev => (prev + 1) % values.length);
+  }, 4000); // Change every 4 seconds
+
+  return () => clearInterval(interval);
+}, [values.length]);
+
   const team: TeamMember[] = [
     { name: 'CEO', role: 'Founder & CEO', motto: 'Luxury isn&apos;t a product — it&apos;s an emotion' },
     { name: 'HO', role: 'Head of Operations', motto: 'Excellence in every detail' },
@@ -253,7 +267,7 @@ const AboutUs: React.FC = () => {
   ];
 
   return (
-    <div className="bg-[#0e0e0e] text-white overflow-hidden font-clean">
+    <div className="bg-[#0e0e0e] text-white overflow-hidden font-primary">
       <Header />
       
       {/* Animated Background Elements */}
@@ -270,183 +284,188 @@ const AboutUs: React.FC = () => {
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-[140px]">
-        <div
-          className="absolute inset-0 animate-ken-burns"
-          style={{
-            backgroundImage: "url('/assets/images/mclaren1.jpg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
+       <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-[100px] sm:pt-[120px] md:pt-[140px]">
+  {/* Animated Background */}
+  <div
+    className="absolute inset-0 animate-ken-burns"
+    style={{
+      backgroundImage: "url('/assets/images/mclaren1.jpg')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }}
+  />
 
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a]/90 via-[#0e0e0e]/80 to-[#1a1a1a]/90 z-10" />
+  <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a]/90 via-[#0e0e0e]/80 to-[#1a1a1a]/90 z-10" />
 
-        <div className="absolute inset-0 opacity-30 z-20">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent transform -skew-x-12 animate-shimmer" />
+  <div className="absolute inset-0 opacity-30 z-20">
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent transform -skew-x-12 animate-shimmer" />
+  </div>
+
+  <div className="relative z-30 text-center max-w-6xl mx-auto w-full px-2 sm:px-4">
+    {/* Heading */}
+    <div
+      data-animate
+      className={`transition-all duration-1000 ${
+        isVisible[0] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+    >
+      <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#D4AF37] via-white to-[#BFA980] bg-clip-text text-transparent tracking-wide font-accent">
+        Where Luxury Meets Legacy
+      </h1>
+
+      <div className="relative mb-6">
+        <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-full sm:max-w-2xl mx-auto leading-relaxed font-medium font-primary min-h-[60px] flex items-center justify-center break-words">
+          <span className="relative">
+            {typewriterText1}
+            {showCursor1 && (
+              <span className="inline-block w-0.5 h-5 bg-[#D4AF37] ml-1 animate-pulse" />
+            )}
+          </span>
+        </p>
+      </div>
+    </div>
+
+    {/* Subtitle / About */}
+    <div
+      data-animate
+      className={`transition-all duration-1000 delay-300 ${
+        isVisible[1] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+    >
+      <h2 className="text-lg xs:text-xl md:text-4xl font-semibold text-[#D4AF37] mb-3 font-secondary">
+        About Epic Luxe
+      </h2>
+      <div className="relative mb-8">
+        <p className="text-white/80 text-xs sm:text-sm md:text-base leading-relaxed max-w-full sm:max-w-3xl mx-auto px-1 sm:px-2 font-primary min-h-[60px] sm:min-h-[80px] flex items-center justify-center break-words">
+          <span className="relative">
+            {typewriterText2}
+            {showCursor2 && (
+              <span className="inline-block w-0.5 h-4 bg-[#D4AF37] ml-1 animate-pulse" />
+            )}
+          </span>
+        </p>
+      </div>
+    </div>
+
+    {/* Feature Cards - Desktop Grid & Mobile Slider */}
+    <div className="w-full mt-2 sm:mt-4">
+      {/* Desktop Grid */}
+      <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 px-2">
+        {features.map((item, i) => (
+          <div
+            key={i}
+            className="bg-[#0e0e0e]/70 border border-[#D4AF37]/30 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-[0_0_12px_#D4AF37] transition-all duration-300 backdrop-blur-md transform hover:scale-105"
+          >
+            <div className="text-xl lg:text-2xl mb-2">{item.icon}</div>
+            <h3 className="text-white/90 text-xs md:text-sm font-semibold mb-1 font-secondary">{item.title}</h3>
+            <p className="text-white/60 text-[11px] md:text-xs font-primary">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Mobile Slider */}
+      <div className="md:hidden relative">
+        <div className="overflow-hidden">
+          <div
+            className="flex transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${currentFeature * 100}%)` }}
+          >
+            {features.map((item, i) => (
+              <div
+                key={i}
+                className="w-full flex-shrink-0 px-2"
+              >
+                <div className="bg-[#0e0e0e]/70 border border-[#D4AF37]/30 rounded-xl p-5 flex flex-col items-center text-center backdrop-blur-md mx-auto max-w-xs">
+                  <div className="text-2xl sm:text-3xl mb-3">{item.icon}</div>
+                  <h3 className="text-white/90 text-base font-semibold mb-1 font-secondary">{item.title}</h3>
+                  <p className="text-white/60 text-xs font-primary">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="relative z-30 text-center max-w-6xl mx-auto px-4">
-          <div
-            data-animate
-            className={`transition-all duration-1000 ${
-              isVisible[0] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}
-          >
-            <h1 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#D4AF37] via-white to-[#BFA980] bg-clip-text text-transparent tracking-wide font-headline">
-              Where Luxury Meets Legacy
-            </h1>
-            
-            <div className="relative mb-6">
-              <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed font-medium font-clean min-h-[60px] flex items-center justify-center">
-                <span className="relative">
-                  {typewriterText1}
-                  {showCursor1 && (
-                    <span className="inline-block w-0.5 h-5 bg-[#D4AF37] ml-1 animate-pulse" />
-                  )}
-                </span>
-              </p>
-            </div>
-          </div>
+        {/* Mobile Indicators */}
+        <div className="flex justify-center mt-3 space-x-2">
+          {features.map((_, i) => (
+            <div
+              key={i}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                i === currentFeature ? 'bg-[#D4AF37] scale-125' : 'bg-white/30'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-          <div
-            data-animate
-            className={`transition-all duration-1000 delay-300 ${
-              isVisible[1] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}
-          >
-            <h2 className="text-2xl md:text-4xl font-semibold text-[#D4AF37] mb-3 font-subheading">About Epic Luxe</h2>
-            
-            <div className="relative mb-8">
-              <p className="text-white/80 text-sm md:text-base leading-relaxed max-w-3xl mx-auto px-2 font-clean min-h-[80px] flex items-center justify-center">
-                <span className="relative">
-                  {typewriterText2}
-                  {showCursor2 && (
-                    <span className="inline-block w-0.5 h-4 bg-[#D4AF37] ml-1 animate-pulse" />
-                  )}
-                </span>
-              </p>
-            </div>
-          </div>
+{/* Who We Are - Brand Story */}
+<section className="relative py-12 sm:py-16 lg:py-24 px-4 -mt-6 sm:-mt-0">
+  <div className="max-w-7xl mx-auto">
+    <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div
+        data-animate
+        className={`transition-all duration-1000 delay-200 ${
+          isVisible[1] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+        }`}
+      >
+        <h2 className="text-5xl font-bold mb-8 text-white/90 font-accent">Who We Are</h2>
+        <div className="space-y-6 text-lg leading-relaxed">
+          <p className="text-white/70 font-primary">
+            Founded with an unwavering commitment to excellence,{' '}
+            <span className="text-[#D4AF37] font-semibold">Epic Luxe</span> has redefined
+            the luxury pre-owned automotive landscape in India.
+          </p>
+          <p className="text-white/70 font-primary">
+            Our <span className="text-[#D4AF37] font-semibold">mission</span> is to make
+            premium vehicles accessible without compromise, ensuring every client experiences
+            the pinnacle of automotive luxury.
+          </p>
+          <p className="text-white/70 font-primary">
+            Our <span className="text-[#D4AF37] font-semibold">vision</span> is to become
+            India&apos;s most admired luxury automotive curator, setting new benchmarks for
+            trust, quality, and service excellence.
+          </p>
+        </div>
+      </div>
 
-          {/* Enhanced Feature Cards - Desktop Grid, Mobile Slider */}
-          <div className="mt-4">
-            {/* Desktop View */}
-            <div className="hidden md:grid grid-cols-5 gap-4 px-2">
-              {features.map((item, i) => (
-                <div
-                  key={i}
-                  className="bg-[#0e0e0e]/70 border border-[#D4AF37]/30 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-[0_0_12px_#D4AF37] transition-all duration-300 backdrop-blur-md transform hover:scale-105"
-                >
-                  <div className="text-2xl mb-2">{item.icon}</div>
-                  <h3 className="text-white/90 text-sm font-semibold mb-1 font-subheading">{item.title}</h3>
-                  <p className="text-white/60 text-xs font-clean">{item.desc}</p>
-                </div>
+      <div
+        data-animate
+        className={`transition-all duration-1000 delay-400 ${
+          isVisible[1] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+        }`}
+      >
+        <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/20 aspect-video">
+          <div className="absolute inset-0 w-full h-full">
+            <div className="w-full h-full relative">
+              {[
+                '/assets/images/ShowroomInsideImage.jpg',
+                '/assets/images/ShowroomInside2.avif',
+                '/assets/images/ShowroomInside3.avif',
+                '/assets/images/ShowroomInside4.avif',
+              ].map((src, index) => (
+                <img
+                  key={index}
+                  src={src}
+                  alt={`Showroom ${index + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover opacity-0 animate-fade-zoom-loop"
+                  style={{
+                    animationDelay: `${index * 3}s`,
+                    zIndex: 10 - index,
+                  }}
+                />
               ))}
             </div>
-
-            {/* Mobile Slider */}
-            <div className="md:hidden relative">
-              <div className="overflow-hidden">
-                <div 
-                  className="flex transition-transform duration-500 ease-out"
-                  style={{ transform: `translateX(-${currentFeature * 100}%)` }}
-                >
-                  {features.map((item, i) => (
-                    <div
-                      key={i}
-                      className="w-full flex-shrink-0 px-4"
-                    >
-                      <div className="bg-[#0e0e0e]/70 border border-[#D4AF37]/30 rounded-xl p-6 flex flex-col items-center text-center backdrop-blur-md mx-auto max-w-xs">
-                        <div className="text-4xl mb-4">{item.icon}</div>
-                        <h3 className="text-white/90 text-lg font-semibold mb-2 font-subheading">{item.title}</h3>
-                        <p className="text-white/60 text-sm font-clean">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Mobile Indicators */}
-              <div className="flex justify-center mt-4 space-x-2">
-                {features.map((_, i) => (
-                  <div
-                    key={i}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      i === currentFeature ? 'bg-[#D4AF37] scale-125' : 'bg-white/30'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent z-10" />
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-      {/* Who We Are - Brand Story */}
-      <section className="relative py-24 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div
-              data-animate
-              className={`transition-all duration-1000 delay-200 ${
-                isVisible[1] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
-              }`}
-            >
-              <h2 className="text-5xl font-bold mb-8 text-white/90 font-headline">Who We Are</h2>
-              <div className="space-y-6 text-lg leading-relaxed">
-                <p className="text-white/70 font-clean">
-                  Founded with an unwavering commitment to excellence,{' '}
-                  <span className="text-[#D4AF37] font-semibold">Epic Luxe</span> has redefined
-                  the luxury pre-owned automotive landscape in India.
-                </p>
-                <p className="text-white/70 font-clean">
-                  Our <span className="text-[#D4AF37] font-semibold">mission</span> is to make
-                  premium vehicles accessible without compromise, ensuring every client experiences
-                  the pinnacle of automotive luxury.
-                </p>
-                <p className="text-white/70 font-clean">
-                  Our <span className="text-[#D4AF37] font-semibold">vision</span> is to become
-                  India&apos;s most admired luxury automotive curator, setting new benchmarks for
-                  trust, quality, and service excellence.
-                </p>
-              </div>
-            </div>
-
-            <div
-              data-animate
-              className={`transition-all duration-1000 delay-400 ${
-                isVisible[1] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-              }`}
-            >
-              <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/20 aspect-video">
-                <div className="absolute inset-0 w-full h-full">
-                  <div className="w-full h-full relative">
-                    {[
-                      '/assets/images/ShowroomInsideImage.jpg',
-                      '/assets/images/ShowroomInside2.avif',
-                      '/assets/images/ShowroomInside3.avif',
-                      '/assets/images/ShowroomInside4.avif',
-                    ].map((src, index) => (
-                      <img
-                        key={index}
-                        src={src}
-                        alt={`Showroom ${index + 1}`}
-                        className="absolute inset-0 w-full h-full object-cover opacity-0 animate-fade-zoom-loop"
-                        style={{
-                          animationDelay: `${index * 3}s`,
-                          zIndex: 10 - index,
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent z-10" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Enhanced Horizontal Timeline */}
       <section ref={timelineRef} className="relative py-16 px-4 bg-gradient-to-b from-[#0a0a0a] to-[#151515]">
@@ -455,10 +474,10 @@ const AboutUs: React.FC = () => {
           <div className={`text-center mb-12 transition-all duration-1000 ${
             isLineVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
-            <h2 className="text-4xl md:text-5xl font-light mb-4 text-white/95 font-headline">
+            <h2 className="text-4xl md:text-5xl font-light mb-4 text-white/95 font-accent">
               Our Group Journey
             </h2>
-            <p className="text-lg text-white/70 max-w-2xl mx-auto font-light font-clean">
+            <p className="text-lg text-white/70 max-w-2xl mx-auto font-light font-primary">
               Milestones that define our legacy of excellence
             </p>
           </div>
@@ -492,13 +511,13 @@ const AboutUs: React.FC = () => {
                           transition: `all 0.8s cubic-bezier(0.4, 0, 0.2, 1) ${index * 200}ms`
                         }}
                       >
-                        <div className="text-xl font-semibold text-[#D4AF37] mb-2 font-subheading">
+                        <div className="text-xl font-semibold text-[#D4AF37] mb-2 font-secondary">
                           {milestone.year}
                         </div>
-                        <h3 className="text-sm font-medium text-white/90 mb-2 font-subheading">
+                        <h3 className="text-sm font-medium text-white/90 mb-2 font-secondary">
                           {milestone.title}
                         </h3>
-                        <p className="text-white/70 text-xs leading-relaxed font-light font-clean">
+                        <p className="text-white/70 text-xs leading-relaxed font-light font-primary">
                           {milestone.desc}
                         </p>
                       </div>
@@ -530,13 +549,13 @@ const AboutUs: React.FC = () => {
                     className="w-full flex-shrink-0 px-4"
                   >
                     <div className="bg-gradient-to-br from-[#1a1a1a]/90 to-[#0e0e0e]/90 backdrop-blur-sm p-6 rounded-xl border border-[#D4AF37]/20 text-center mx-auto max-w-sm">
-                      <div className="text-2xl font-semibold text-[#D4AF37] mb-3 font-subheading">
+                      <div className="text-2xl font-semibold text-[#D4AF37] mb-3 font-secondary">
                         {milestone.year}
                       </div>
-                      <h3 className="text-lg font-medium text-white/90 mb-3 font-subheading">
+                      <h3 className="text-lg font-medium text-white/90 mb-3 font-secondary">
                         {milestone.title}
                       </h3>
-                      <p className="text-white/70 text-sm leading-relaxed font-light font-clean">
+                      <p className="text-white/70 text-sm leading-relaxed font-light font-primary">
                         {milestone.desc}
                       </p>
                     </div>
@@ -560,7 +579,7 @@ const AboutUs: React.FC = () => {
           <div className={`text-center mt-8 transition-all duration-1000 ${
             lineProgress > 80 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}>
-            <p className="text-white/50 text-sm font-light font-clean">
+            <p className="text-white/50 text-sm font-light font-primary">
               Journey continues...
             </p>
           </div>
@@ -571,23 +590,9 @@ const AboutUs: React.FC = () => {
       <section className="relative py-24 px-4 bg-gradient-to-b from-[#1a1a1a] to-[#0e0e0e]">
         <div className="max-w-7xl mx-auto">
           <div data-animate className={`text-center mb-16 transition-all duration-1000 ${isVisible[4] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <h2 className="text-5xl font-bold mb-6 text-white/90 font-headline">
+            <h2 className="text-5xl font-bold mb-6 text-white/90 font-accent">
               Leadership Vision
             </h2>
-          </div>
-
-          {/* Founder's Quote - Smaller */}
-          <div data-animate className={`text-center mb-16 transition-all duration-1000 delay-200 ${isVisible[4] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="max-w-2xl mx-auto bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-2xl border border-[#D4AF37]/20">
-              <Quote className="w-8 h-8 text-[#D4AF37] mx-auto mb-4" />
-              <blockquote className="text-xl font-light italic text-[#D4AF37] mb-6 leading-relaxed font-testimonial">
-                &quot;Luxury isn&apos;t a product — it&apos;s an emotion. We exist to deliver that emotion with every key we hand over.&quot;
-              </blockquote>
-              <div className="text-white/70 font-clean text-sm">
-                <div className="font-semibold">CEO</div>
-                <div>Founder & CEO</div>
-              </div>
-            </div>
           </div>
 
           {/* Team Grid - Desktop Horizontal, Mobile Slider */}
@@ -603,12 +608,12 @@ const AboutUs: React.FC = () => {
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                   <div className="relative text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-[#D4AF37] to-[#BFA980] rounded-full mx-auto mb-3 flex items-center justify-center text-black font-bold text-lg font-clean">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#D4AF37] to-[#BFA980] rounded-full mx-auto mb-3 flex items-center justify-center text-black font-bold text-lg font-primary">
                       {member.name.split(' ').map(n => n[0]).join('')}
                     </div>
-                    <h3 className="text-base font-semibold text-white/90 mb-1 font-subheading">{member.name}</h3>
-                    <p className="text-[#D4AF37] mb-2 font-clean text-sm">{member.role}</p>
-                    <p className="text-xs text-white/60 italic font-testimonial">&quot;{member.motto}&quot;</p>
+                    <h3 className="text-base font-semibold text-white/90 mb-1 font-secondary">{member.name}</h3>
+                    <p className="text-[#D4AF37] mb-2 font-primary text-sm">{member.role}</p>
+                    <p className="text-xs text-white/60 italic font-accent">&quot;{member.motto}&quot;</p>
                   </div>
                 </div>
               ))}
@@ -627,12 +632,12 @@ const AboutUs: React.FC = () => {
                       className="w-full flex-shrink-0 px-4"
                     >
                       <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 text-center mx-auto max-w-xs">
-                        <div className="w-20 h-20 bg-gradient-to-br from-[#D4AF37] to-[#BFA980] rounded-full mx-auto mb-4 flex items-center justify-center text-black font-bold text-xl font-clean">
+                        <div className="w-20 h-20 bg-gradient-to-br from-[#D4AF37] to-[#BFA980] rounded-full mx-auto mb-4 flex items-center justify-center text-black font-bold text-xl font-primary">
                           {member.name.split(' ').map(n => n[0]).join('')}
                         </div>
-                        <h3 className="text-lg font-semibold text-white/90 mb-2 font-subheading">{member.name}</h3>
-                        <p className="text-[#D4AF37] mb-3 font-clean">{member.role}</p>
-                        <p className="text-sm text-white/60 italic font-testimonial">&quot;{member.motto}&quot;</p>
+                        <h3 className="text-lg font-semibold text-white/90 mb-2 font-secondary">{member.name}</h3>
+                        <p className="text-[#D4AF37] mb-3 font-primary">{member.role}</p>
+                        <p className="text-sm text-white/60 italic font-accent">&quot;{member.motto}&quot;</p>
                       </div>
                     </div>
                   ))}
@@ -654,202 +659,346 @@ const AboutUs: React.FC = () => {
         </div>
       </section>
 
-      {/* Enhanced Core Values - Single Row */}
-      <section className="relative py-24 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div data-animate className={`text-center mb-16 transition-all duration-1000 ${isVisible[5] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-headline">
-              Our Commitments
-            </h2>
-            <p className="text-xl text-white/70 font-clean">
-              Core values that drive every decision we make
+      {/* Enhanced Core Values - Desktop Grid & Mobile Slider */}
+<section className="relative py-24 px-4">
+  <div className="max-w-7xl mx-auto">
+    <div data-animate className={`text-center mb-16 transition-all duration-1000 ${isVisible[5] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-accent">
+        Our Commitments
+      </h2>
+      <p className="text-xl text-white/70 font-primary">
+        Core values that drive every decision we make
+      </p>
+    </div>
+
+    {/* Desktop Grid - Static */}
+    <div className="hidden md:grid grid-cols-5 gap-6">
+      {values.map((value, index) => (
+        <div 
+          key={index}
+          data-animate
+          className={`group relative bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-500 hover:transform hover:scale-105 ${isVisible[5] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          style={{ transitionDelay: `${index * 150}ms` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+          <div className="relative text-center">
+            <value.icon className="w-10 h-10 text-[#D4AF37] mb-4 mx-auto group-hover:scale-110 transition-transform duration-300" />
+            <h3 className="text-lg font-bold mb-3 text-white/90 group-hover:text-[#D4AF37] transition-colors font-secondary">
+              {value.title}
+            </h3>
+            <p className="text-white/70 group-hover:text-white/80 transition-colors font-primary text-sm">
+              {value.desc}
             </p>
           </div>
+        </div>
+      ))}
+    </div>
 
-          {/* Desktop Single Row */}
-          <div className="hidden md:grid grid-cols-5 gap-6">
-            {values.map((value, index) => (
-              <div 
-                key={index}
-                data-animate
-                className={`group relative bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-500 hover:transform hover:scale-105 ${isVisible[5] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                style={{ transitionDelay: `${index * 150}ms` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
-                <div className="relative text-center">
-                  <value.icon className="w-10 h-10 text-[#D4AF37] mb-4 mx-auto group-hover:scale-110 transition-transform duration-300" />
-                  <h3 className="text-lg font-bold mb-3 text-white/90 group-hover:text-[#D4AF37] transition-colors font-subheading">
+    {/* Mobile Auto-Advancing Slider */}
+    <div className="md:hidden">
+      <div className="overflow-hidden">
+        <div 
+          className="flex transition-transform duration-500 ease-out"
+          style={{ transform: `translateX(-${currentValue * 100}%)` }}
+        >
+          {values.map((value, index) => (
+            <div
+              key={index}
+              className="w-full flex-shrink-0 px-4"
+            >
+              <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-xl border border-[#D4AF37]/20 text-center mx-auto max-w-sm transform transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-20 rounded-xl" />
+                <div className="relative">
+                  <value.icon className="w-14 h-14 text-[#D4AF37] mb-6 mx-auto" />
+                  <h3 className="text-xl font-bold mb-4 text-white/90 font-secondary">
                     {value.title}
                   </h3>
-                  <p className="text-white/70 group-hover:text-white/80 transition-colors font-clean text-sm">
+                  <p className="text-white/70 font-primary leading-relaxed">
                     {value.desc}
                   </p>
                 </div>
               </div>
-            ))}
-          </div>
-
-          {/* Mobile Horizontal Slider */}
-          <div className="md:hidden">
-            <div className="overflow-hidden">
-              <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
-                {values.map((value, index) => (
-                  <div 
-                    key={index}
-                    className="w-72 flex-shrink-0 bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 text-center"
-                  >
-                    <value.icon className="w-12 h-12 text-[#D4AF37] mb-4 mx-auto" />
-                    <h3 className="text-lg font-bold mb-3 text-white/90 font-subheading">
-                      {value.title}
-                    </h3>
-                    <p className="text-white/70 font-clean text-sm">
-                      {value.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
             </div>
-          </div>
+          ))}
         </div>
-      </section>
+      </div>
 
-      {/* Enhanced Showrooms Map - Side by Side */}
-      <section className="relative py-24 px-4 bg-gradient-to-b from-[#0e0e0e] to-[#1a1a1a]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left - Heading and Button */}
-            <div data-animate className={`transition-all duration-1000 ${isVisible[6] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white/90 font-headline">
-                Showrooms Across India
-              </h2>
-              <p className="text-xl text-white/70 mb-8 font-clean">
-                Experience luxury at our state-of-the-art showrooms
-              </p>
-              <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-8 py-4 rounded-lg font-semibold hover:shadow-2xl hover:shadow-[#D4AF37]/50 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 font-button">
-                <MapPin className="w-5 h-5" />
-                Find a Raam Showroom Near You
-              </button>
-            </div>
+      {/* Clickable Pagination Dots */}
+      <div className="flex justify-center mt-8 space-x-3">
+        {values.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentValue(i)}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              i === currentValue 
+                ? 'bg-[#D4AF37] scale-125 shadow-lg shadow-[#D4AF37]/50' 
+                : 'bg-white/30 hover:bg-white/50'
+            }`}
+            aria-label={`Go to value ${i + 1}`}
+          />
+        ))}
+      </div>
 
-            {/* Right - Map */}
-            <div data-animate className={`transition-all duration-1000 delay-300 ${isVisible[6] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <div className="aspect-video bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] rounded-2xl border border-[#D4AF37]/20 flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="w-20 h-20 text-[#D4AF37] mx-auto mb-4 animate-pulse" />
-                  <p className="text-white/70 text-lg font-clean">Interactive India Map</p>
-                  <p className="text-white/50 font-clean">Showroom Locations</p>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* Progress Bar (Optional) */}
+      <div className="flex justify-center mt-4">
+        <div className="w-32 h-1 bg-white/20 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] rounded-full transition-all duration-4000 ease-linear"
+            style={{ 
+              width: `${((currentValue + 1) / values.length) * 100}%`,
+              animation: 'progress-fill 4s linear infinite'
+            }}
+          />
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-      {/* Enhanced Testimonials - Mobile Slider */}
-      <section className="relative py-24 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div data-animate className={`text-center mb-16 transition-all duration-1000 ${isVisible[7] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-headline">
-              What Our Clients Say
-            </h2>
+{/* Google Maps & Directions Section */}
+<section className="relative py-16 px-4 bg-gradient-to-b from-[#1a1a1a] to-[#0e0e0e]">
+  <div className="max-w-7xl mx-auto">
+    <div 
+      data-animate 
+      className={`text-center mb-12 transition-all duration-1000 ${isVisible[7] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+    >
+      <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white/90 font-accent">
+        Get Directions to Our Showroom
+      </h2>
+      <p className="text-xl text-white/70 font-primary">
+        Find us easily with our interactive map and navigation
+      </p>
+    </div>
+
+    {/* Flagship Message - Above Map */}
+    <div 
+      data-animate 
+      className={`mb-8 transition-all duration-1000 delay-150 ${isVisible[7] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+    >
+      <div className="bg-gradient-to-r from-[#D4AF37]/10 via-[#D4AF37]/5 to-[#D4AF37]/10 border-2 border-[#D4AF37]/30 rounded-2xl p-6 text-center backdrop-blur-sm">
+        <div className="flex items-center justify-center gap-3 mb-3">
+          <div className="w-2 h-2 bg-[#D4AF37] rounded-full animate-pulse"></div>
+          <h3 className="text-2xl md:text-3xl font-bold text-[#D4AF37] font-accent">
+            Visit Our Premium Flagship Showroom
+          </h3>
+          <div className="w-2 h-2 bg-[#D4AF37] rounded-full animate-pulse"></div>
+        </div>
+        <div className="flex items-center justify-center gap-6 mt-4 text-sm text-white/70">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            <span>Open Now</span>
           </div>
+          <div className="w-1 h-1 bg-white/30 rounded-full"></div>
+          <span>Premium Test Drives Available</span>
+          <div className="w-1 h-1 bg-white/30 rounded-full"></div>
+          <span>Expert Consultations</span>
+        </div>
+      </div>
+    </div>
 
-          {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-3 gap-8 mb-12">
-            {testimonials.map((testimonial, index) => (
-              <div 
-                key={index}
-                data-animate
-                className={`bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-2xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-500 hover:transform hover:scale-105 ${isVisible[7] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                style={{ transitionDelay: `${index * 200}ms` }}
-              >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-[#D4AF37] text-[#D4AF37]" />
-                  ))}
-                </div>
-                <p className="text-white/70 mb-6 italic font-testimonial">&quot;{testimonial.text}&quot;</p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#BFA980] rounded-full flex items-center justify-center text-black font-bold font-clean">
-                    {testimonial.name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white/90 font-subheading">{testimonial.name}</h4>
-                    <p className="text-[#D4AF37] text-sm font-clean">{testimonial.role}</p>
-                  </div>
-                </div>
+    {/* Map Container with Overlay */}
+    <div className="relative">
+      {/* Reduced Height Map */}
+      <div 
+        data-animate 
+        className={`transition-all duration-1000 delay-200 ${isVisible[7] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+      >
+        <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] rounded-2xl p-4 border border-[#D4AF37]/20 overflow-hidden">
+          <div className="h-80 rounded-xl overflow-hidden border border-[#D4AF37]/10"> {/* Fixed height ~8cm */}
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.888036796!2d78.449570988855!3d17.417160000000017!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb97484bb60ef1%3A0x6b8996b670679e7a!2sSilver%20Star%20-%20Mercedes-Benz!5e0!3m2!1sen!2sin!4v1753702302842!5m2!1sen!2sin" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0 }} 
+              allowFullScreen={true}
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full h-full"
+            />
+          </div>
+          
+          {/* Map Controls */}
+          <div className="flex flex-wrap gap-3 mt-4">
+            <button 
+              onClick={() => window.open('https://maps.google.com/?q=Silver+Star+Mercedes-Benz+Hyderabad', '_blank')}
+              className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-4 py-2 rounded-lg font-semibold hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 font-primary text-sm"
+            >
+              <MapPin className="w-4 h-4" />
+              Open in Google Maps
+            </button>
+            
+            <button 
+              onClick={() => window.open('https://maps.google.com/maps?saddr=My+Location&daddr=Silver+Star+Mercedes-Benz+Hyderabad', '_blank')}
+              className="bg-white/10 backdrop-blur-sm border border-[#D4AF37]/30 text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 flex items-center gap-2 font-primary text-sm"
+            >
+              <div className="w-4 h-4 flex items-center justify-center">
+                <ChevronRight className="w-3 h-3" />
               </div>
-            ))}
-          </div>
-
-          {/* Mobile Slider */}
-          <div className="md:hidden mb-12">
-            <div className="overflow-hidden">
-              <div 
-                className="flex transition-transform duration-500 ease-out"
-                style={{ transform: `translateX(-${currentTestimonial * 100}%)` }}
-              >
-                {testimonials.map((testimonial, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex-shrink-0 px-4"
-                  >
-                    <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-2xl border border-[#D4AF37]/20 mx-auto max-w-sm">
-                      <div className="flex gap-1 mb-4 justify-center">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 fill-[#D4AF37] text-[#D4AF37]" />
-                        ))}
-                      </div>
-                      <p className="text-white/70 mb-6 italic font-testimonial text-center">&quot;{testimonial.text}&quot;</p>
-                      <div className="flex items-center gap-4 justify-center">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#BFA980] rounded-full flex items-center justify-center text-black font-bold font-clean">
-                          {testimonial.name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-white/90 font-subheading">{testimonial.name}</h4>
-                          <p className="text-[#D4AF37] text-sm font-clean">{testimonial.role}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-center mt-6 space-x-2">
-              {testimonials.map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    i === currentTestimonial ? 'bg-[#D4AF37] scale-125' : 'bg-white/30'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="text-center">
-            <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-8 py-4 rounded-lg font-semibold hover:shadow-2xl hover:shadow-[#D4AF37]/50 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 mx-auto font-button">
-              Hear from Our Happy Clients
-              <ChevronRight className="w-5 h-5" />
+              Get Directions
             </button>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Overlay Card - Positioned over map on left side */}
+      <div 
+        data-animate 
+        className={`absolute top-8 left-8 w-full max-w-sm transition-all duration-1000 delay-400 ${isVisible[7] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} hidden lg:block`}
+      >
+        <div className="bg-black/40 backdrop-blur-sm rounded-xl p-2 border border-[#D4AF37]/20 hover:bg-black/50 transition-all duration-300">
+          <h3 className="text-xl font-semibold text-[#D4AF37] mb-4 font-secondary">
+            Visit Our Flagship Showroom
+          </h3>
+          
+          <div className="space-y-3 text-white/70 font-primary">
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-white/90 font-medium">Hyderabad Flagship</p>
+                <p className="text-sm">Banjara Hills, Road No. 12, Hyderabad - 500034</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+              </div>
+              <div>
+                <p className="text-white/90 font-medium">Opening Hours</p>
+                <p className="text-sm">Mon - Sat: 10:00 AM - 8:00 PM</p>
+                <p className="text-sm">Sunday: 11:00 AM - 6:00 PM</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+              </div>
+              <div>
+                <p className="text-white/90 font-medium">Contact</p>
+                <p className="text-sm">+91 40 2354 7890</p>
+                <p className="text-sm">hyderabad@epicluxe.com</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              </div>
+              <p className="text-green-400 font-medium text-sm">Open Now</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Version - Below Map */}
+      <div 
+        data-animate 
+        className={`mt-8 transition-all duration-1000 delay-400 ${isVisible[7] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} lg:hidden`}
+      >
+        <div className="bg-black/40 backdrop-blur-sm rounded-xl p-6 border border-[#D4AF37]/20">
+          <h3 className="text-xl font-semibold text-[#D4AF37] mb-4 font-secondary">
+            Visit Our Flagship Showroom
+          </h3>
+          
+          <div className="space-y-3 text-white/70 font-primary">
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-white/90 font-medium">Hyderabad Flagship</p>
+                <p className="text-sm">Banjara Hills, Road No. 12, Hyderabad - 500034</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+              </div>
+              <div>
+                <p className="text-white/90 font-medium">Opening Hours</p>
+                <p className="text-sm">Mon - Sat: 10:00 AM - 8:00 PM</p>
+                <p className="text-sm">Sunday: 11:00 AM - 6:00 PM</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+              </div>
+              <div>
+                <p className="text-white/90 font-medium">Contact</p>
+                <p className="text-sm">+91 40 2354 7890</p>
+                <p className="text-sm">hyderabad@epicluxe.com</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              </div>
+              <p className="text-green-400 font-medium text-sm">Open Now</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Quick Actions Bar */}
+    <div 
+      data-animate 
+      className={`mt-12 transition-all duration-1000 delay-800 ${isVisible[7] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+    >
+      <div className="bg-gradient-to-r from-[#1a1a1a] via-[#0e0e0e] to-[#1a1a1a] rounded-2xl p-6 border border-[#D4AF37]/20">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="text-xl font-bold text-white mb-2 font-secondary">
+              Need Help Finding Us?
+            </h3>
+            <p className="text-white/70 font-primary">
+              Our team is ready to assist you with directions and any queries
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button 
+              onClick={() => window.open('tel:+914023547890', '_self')}
+              className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-3 rounded-lg font-semibold hover:shadow-xl hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 font-primary"
+            >
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 border-2 border-current rounded-full"></div>
+              </div>
+              Call Showroom
+            </button>
+            
+            <button 
+              onClick={() => window.open('https://wa.me/914023547890?text=Hi, I need directions to your showroom', '_blank')}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-2 font-primary"
+            >
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 bg-current rounded"></div>
+              </div>
+              WhatsApp Us
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Sticky Footer CTA */}
       <section className="relative py-20 px-4 bg-gradient-to-r from-[#0e0e0e] via-[#1a1a1a] to-[#0e0e0e]">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6 text-white/90 font-headline">
+          <h2 className="text-4xl font-bold mb-6 text-white/90 font-accent">
             Own a Piece of Luxury
           </h2>
-          <p className="text-xl text-white/70 mb-8 font-clean">
+          <p className="text-xl text-white/70 mb-8 font-primary">
             Experience Raam
           </p>
           
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] rounded-2xl blur-xl opacity-50 animate-pulse" />
-            <button className="relative bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-12 py-6 rounded-2xl text-2xl font-bold hover:shadow-2xl hover:shadow-[#D4AF37]/50 transition-all duration-300 transform hover:scale-105 group font-button">
+            <button className="relative bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-12 py-6 rounded-2xl text-2xl font-bold hover:shadow-2xl hover:shadow-[#D4AF37]/50 transition-all duration-300 transform hover:scale-105 group font-primary">
               <span className="relative flex items-center justify-center gap-3">
                 Browse Our Cars
                 <ChevronRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
@@ -863,32 +1012,6 @@ const AboutUs: React.FC = () => {
       <AboutStickyNav />
 
       <style jsx>{`
-        /* Font imports */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-        
-        /* Font family classes */
-        .font-headline {
-          font-family: 'Playfair Display', serif;
-        }
-        
-        .font-subheading {
-          font-family: 'Cormorant Garamond', serif;
-        }
-        
-        .font-testimonial {
-          font-family: 'Cormorant Garamond', serif;
-        }
-        
-        .font-button {
-          font-family: 'Inter', 'Helvetica Neue', sans-serif;
-        }
-        
-        .font-clean {
-          font-family: 'Inter', 'Helvetica Neue', sans-serif;
-        }
-
         /* Hide scrollbars */
         .overflow-x-auto::-webkit-scrollbar {
           display: none;
@@ -1021,6 +1144,11 @@ const AboutUs: React.FC = () => {
         .line-glow {
           box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
         }
+
+        @keyframes progress-fill {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
       `}</style>
     </div>
   );

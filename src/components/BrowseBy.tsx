@@ -3,21 +3,35 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Car, Zap, Shield, Star, ArrowRight } from 'lucide-react';
 
+interface Brand {
+  name: string;
+  logo: string;
+  count: number;
+  gradient: string;
+}
+
+interface BodyType {
+  name: string;
+  icon: string;
+  count: number;
+  description: string;
+}
+
 const BrowseSection = () => {
   const [activeTab, setActiveTab] = useState('brands');
-  const [hoveredItem, setHoveredItem] = useState(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [currentBrandSlide, setCurrentBrandSlide] = useState(0);
 
   // Premium car brands with inventory counts
-  const brands = [
-    { name: 'Mercedes-Benz', logo: 'MB', count: 24, gradient: 'from-gray-800 to-gray-900' },
-    { name: 'BMW', logo: 'BMW', count: 18, gradient: 'from-blue-900 to-blue-800' },
-    { name: 'Audi', logo: 'AUDI', count: 15, gradient: 'from-red-900 to-red-800' },
-    { name: 'Porsche', logo: 'P', count: 12, gradient: 'from-yellow-800 to-yellow-700' },
-    { name: 'Jaguar', logo: 'JAG', count: 8, gradient: 'from-green-900 to-green-800' },
-    { name: 'Lexus', logo: 'L', count: 16, gradient: 'from-silver-800 to-gray-700' },
-    { name: 'Land Rover', logo: 'LR', count: 10, gradient: 'from-emerald-900 to-emerald-800' },
-    { name: 'Tesla', logo: 'T', count: 22, gradient: 'from-red-800 to-red-700' }
+  const brands: Brand[] = [
+    { name: 'Mercedes-Benz', logo: '/assets/mercedeslogo.png', count: 24, gradient: 'from-gray-800 to-gray-900' },
+    { name: 'BMW', logo: '/assets/bmwlogo.png', count: 18, gradient: 'from-blue-900 to-blue-800' },
+    { name: 'Audi', logo: '/assets/audilogo.png', count: 15, gradient: 'from-red-900 to-red-800' },
+    { name: 'Porsche', logo: '/assets/porschelogo.png', count: 12, gradient: 'from-yellow-800 to-yellow-700' },
+    { name: 'Jaguar', logo: '/assets/jaguarlogo.png', count: 8, gradient: 'from-green-900 to-green-800' },
+    { name: 'Lexus', logo: '/assets/lexuslogo.png', count: 16, gradient: 'from-silver-800 to-gray-700' },
+    { name: 'Land Rover', logo: '/assets/landroverlogo.png', count: 10, gradient: 'from-emerald-900 to-emerald-800' },
+    { name: 'Tesla', logo: '/assets/teslalogo.png', count: 22, gradient: 'from-red-800 to-red-700' }
   ];
 
   // Body types with icons and counts
@@ -39,7 +53,7 @@ const BrowseSection = () => {
     return () => clearInterval(interval);
   }, [brands.length]);
 
-  const BrandCard = ({ brand, index }) => (
+  const BrandCard = ({ brand, index }: { brand: Brand; index: number }) => (
     <div
       className={`relative group cursor-pointer transform transition-all duration-500 hover:scale-105 ${
         hoveredItem === `brand-${index}` ? 'z-10' : ''
@@ -57,8 +71,12 @@ const BrowseSection = () => {
         
         {/* Brand Logo */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B8941F] flex items-center justify-center mb-2 transform group-hover:rotate-12 transition-transform duration-300">
-            <span className="text-black font-bold text-sm">{brand.logo}</span>
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B8941F] flex items-center justify-center mb-2 transform group-hover:rotate-12 transition-transform duration-300 p-1">
+            <img 
+              src={brand.logo} 
+              alt={`${brand.name} logo`}
+              className="w-full h-full object-contain"
+            />
           </div>
           <h3 className="text-white font-semibold text-sm text-center group-hover:text-[#D4AF37] transition-colors duration-300">
             {brand.name}
@@ -76,7 +94,7 @@ const BrowseSection = () => {
     </div>
   );
 
-  const BodyTypeCard = ({ bodyType, index }) => (
+  const BodyTypeCard = ({ bodyType, index }: { bodyType: BodyType; index: number }) => (
     <div
       className={`relative group cursor-pointer transform transition-all duration-500 hover:scale-105 ${
         hoveredItem === `body-${index}` ? 'z-10' : ''

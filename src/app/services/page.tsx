@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import '../GlobalFonts.css';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const ServicesPage = () => {
   const [activeService, setActiveService] = useState(0);
@@ -50,9 +51,9 @@ const ServicesPage = () => {
       title: 'Buy Premium Cars',
       summary: 'Discover handpicked luxury vehicles with guaranteed quality and heritage',
       description: 'Access our exclusive collection of premium pre-owned vehicles, each meticulously inspected and certified.',
-      features: ['360° Quality Inspection', 'Verified Ownership History', 'Premium Certification', 'Exclusive Inventory'],
+      features: ['360° Quality Inspection','Exclusive Inventory'],
       cta: 'Browse Collection',
-      backgroundImage: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1526&q=80', // Happy person receiving car keys
+      backgroundImage: '/assets/buyNowServices.png', // Happy person receiving car keys
       altText: 'Happy customer receiving luxury car keys from dealer'
     },
     {
@@ -61,9 +62,9 @@ const ServicesPage = () => {
       title: 'Sell Your Luxury Car',
       summary: 'Get maximum value for your luxury vehicle with our premium selling service',
       description: 'Experience the most sophisticated way to sell your luxury car with expert market analysis and white-glove service.',
-      features: ['Expert Market Analysis', 'White-glove Service', 'Instant Documentation', 'Premium Marketplace'],
+      features: ['Expert Market Analysis', 'White-glove Service'],
       cta: 'Start Selling',
-      backgroundImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80', // Professional handshake over car sale
+      backgroundImage: '/assets/sellNow.png', // Professional handshake over car sale
       altText: 'Professional handshake between car seller and buyer'
     },
     {
@@ -72,9 +73,9 @@ const ServicesPage = () => {
       title: 'Free Valuation',
       summary: 'Get instant, accurate valuation from certified luxury car experts',
       description: 'Receive a comprehensive valuation report within minutes using AI-powered analysis and expert verification.',
-      features: ['AI-Powered Analysis', 'Real-time Market Data', 'Expert Verification', 'Instant Results'],
+      features: ['AI-Powered Analysis', 'Real-time Market Data'],
       cta: 'Get Valuation',
-      backgroundImage: 'https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80', // Person using tablet/documents for valuation
+      backgroundImage: '/assets/valuation.png', // Person using tablet/documents for valuation
       altText: 'Professional using tablet for car valuation assessment'
     },
     {
@@ -83,9 +84,9 @@ const ServicesPage = () => {
       title: 'Finance Options',
       summary: 'Flexible premium financing solutions tailored for luxury car buyers',
       description: 'Access exclusive financing options with competitive rates, flexible terms, and personalized solutions.',
-      features: ['Competitive Rates', 'Flexible Terms', 'Quick Approval', 'Premium Support'],
+      features: ['Competitive Rates', 'Flexible Terms'],
       cta: 'Explore Finance',
-      backgroundImage: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80', // Financial consultant helping client
+      backgroundImage: '/assets/finance.png', // Financial consultant helping client
       altText: 'Financial consultant discussing loan options with client'
     },
     {
@@ -94,9 +95,9 @@ const ServicesPage = () => {
       title: 'Insurance Assistance',
       summary: 'Comprehensive insurance solutions for your valuable luxury investment',
       description: 'Protect your investment with specialized luxury car insurance partnerships and agreed value policies.',
-      features: ['Specialized Coverage', 'Agreed Value Policies', 'Premium Partners', 'Claims Support'],
+      features: ['Specialized Coverage', 'Agreed Value Policies'],
       cta: 'Get Protected',
-      backgroundImage: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80', // Insurance agent helping couple
+      backgroundImage: '/assets/insurance.png', // Insurance agent helping couple
       altText: 'Friendly insurance agent helping couple with car insurance'
     },
     {
@@ -105,9 +106,9 @@ const ServicesPage = () => {
       title: 'Trade-In Program',
       summary: 'Seamlessly upgrade your luxury vehicle with our exclusive trade program',
       description: 'Experience ultimate convenience in luxury car trading with instant trade value and seamless processes.',
-      features: ['Instant Trade Value', 'Seamless Process', 'Upgrade Incentives', 'Zero Paperwork Hassle'],
+      features: ['Instant Trade Value', 'Seamless Process'],
       cta: 'Trade Now',
-      backgroundImage: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80', // Person exchanging car keys
+      backgroundImage: '/assets/TradeIn.png', // Person exchanging car keys
       altText: 'Customer exchanging old car keys for new luxury vehicle keys'
     }
   ];
@@ -146,53 +147,15 @@ const ServicesPage = () => {
   return (
     <div>
       <Header />
+      
     <div className="min-h-screen bg-black font-primary">
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-transparent z-10"></div>
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1474&q=80')"
-          }}
-        ></div>
-        
-        <div className="relative z-20 max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-7xl font-light text-white/90 mb-6 tracking-tight">
-              Luxury Car
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#BFA980] font-normal">
-                Services
-              </span>
-            </h1>
-            <p className="text-xl text-white/70 max-w-3xl mx-auto leading-relaxed font-light">
-              Experience the pinnacle of luxury car services. From buying and selling to comprehensive support, 
-              we redefine what premium automotive service means.
-            </p>
-          </div>
-
-          {/* Trust Badges */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
-            {trustBadges.map((badge, index) => (
-              <div 
-                key={index}
-                className="text-center p-6 rounded-2xl bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] backdrop-blur-sm border border-[#BFA980]/20 hover:border-[#D4AF37]/40 transition-all duration-300"
-              >
-                <badge.icon className="w-8 h-8 text-[#D4AF37] mx-auto mb-3" />
-                <div className="text-white/90 font-semibold text-lg">{badge.text}</div>
-                <div className="text-white/60 text-sm">{badge.subtext}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Services Grid */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-light text-white/90 mb-6">
-              World-Class <span className="text-[#D4AF37]">Services</span>
+              Our <span className="text-[#D4AF37]">Services</span>
             </h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto font-light">
               Six comprehensive services designed to exceed the expectations of discerning luxury car enthusiasts.
@@ -354,6 +317,7 @@ const ServicesPage = () => {
         }
       `}</style>
     </div>
+    <Footer />
     </div>
   );
 };

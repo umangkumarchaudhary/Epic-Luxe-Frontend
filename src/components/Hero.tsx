@@ -353,8 +353,7 @@ export default function LuxuryVehicleHero() {
       </style>
 
 
-      {/* Bottom Sticky Navigation */}
-      <HomeStickyNav />
+      <BottomNav />
       
     </div>
   );

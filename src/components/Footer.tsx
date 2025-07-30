@@ -11,9 +11,6 @@ import {
   Phone, 
   Star,
   ChevronRight,
-  Award,
-  Users,
-  Shield,
   Crown
 } from 'lucide-react';
 import '../app/GlobalFonts.css';
@@ -69,12 +66,7 @@ const Footer = () => {
     'Terms of Use'
   ];
 
-  const trustBadges = [
-    { icon: Award, text: 'Certified Dealer' },
-    { icon: Users, text: '10,000+ Clients' },
-    { icon: Shield, text: 'Trusted Platform' },
-    { icon: Crown, text: 'Celebrity Choice' }
-  ];
+
 
   return (
     <footer className="bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
@@ -262,27 +254,12 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Trust Badges */}
-        <div className="border-t border-gray-800/50 mt-16 pt-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-            {trustBadges.map(({ icon: Icon, text }, index) => (
-              <div 
-                key={index} 
-                className="flex items-center justify-center space-x-3 text-[#D4AF37] bg-gradient-to-br from-gray-900/30 to-gray-800/30 rounded-lg py-4 px-4 border border-[#D4AF37]/20 hover:border-[#D4AF37]/40 transition-all duration-300 hover:shadow-lg hover:shadow-[#D4AF37]/10 backdrop-blur-sm group"
-              >
-                <Icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                <span className="text-sm font-medium">{text}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Copyright */}
-          <div className="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm border-t border-gray-800/30 pt-8">
-            <p className="font-light">© 2025 Epic Luxe. All rights reserved.</p>
-            <p className="mt-2 md:mt-0 font-light">
-              Crafted with <span className="text-[#D4AF37]">♥</span> for luxury car enthusiasts
-            </p>
-          </div>
+        {/* Copyright */}
+        <div className="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm border-t border-gray-800/30 pt-8">
+          <p className="font-light">© 2025 Epic Luxe. All rights reserved.</p>
+          <p className="mt-2 md:mt-0 font-light">
+            Crafted with <span className="text-[#D4AF37]">♥</span> for luxury car enthusiasts
+          </p>
         </div>
       </div>
     </footer>

@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Star, Play, ArrowRight, Quote, Heart, MapPin, Calendar, CheckCircle, Phone, Mail, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+
 
 const TestimonialsPage = () => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -204,23 +207,9 @@ const TestimonialsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0e0e0e] via-[#1a1a1a] to-[#0e0e0e] text-white overflow-x-hidden">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="text-2xl font-bold text-[#D4AF37]">Raam Group</div>
-          <div className="flex space-x-8 text-white/70">
-            <a href="#" className="hover:text-[#D4AF37] transition-colors">Home</a>
-            <a href="#" className="hover:text-[#D4AF37] transition-colors">Inventory</a>
-            <a href="#" className="hover:text-[#D4AF37] transition-colors">Services</a>
-            <a href="#" className="text-[#D4AF37]">Testimonials</a>
-          </div>
-          <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-2 rounded-full hover:shadow-lg hover:shadow-[#D4AF37]/20 transition-all duration-300">
-            Call Now
-          </button>
-        </div>
-      </nav>
-
+       <Header />
       {/* Hero Section */}
+      
       <section 
         ref={heroRef}
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
@@ -245,92 +234,8 @@ const TestimonialsPage = () => {
             </button>
           </div>
         </div>
-        
-        {/* Floating testimonial bubbles */}
-        <div className="absolute top-20 left-10 bg-white/10 backdrop-blur-md rounded-2xl p-4 max-w-xs animate-float">
-          <div className="flex items-center space-x-3 mb-2">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" 
-                 className="w-10 h-10 rounded-full border-2 border-[#D4AF37]" alt="Client" />
-            <div className="text-sm">
-              <div className="text-white font-semibold">Rajesh M.</div>
-              <div className="flex text-[#D4AF37]">{'★'.repeat(5)}</div>
-            </div>
-          </div>
-          <p className="text-white/80 text-sm">"Outstanding service quality!"</p>
-        </div>
-        
-        <div className="absolute bottom-32 right-10 bg-white/10 backdrop-blur-md rounded-2xl p-4 max-w-xs animate-float-delayed">
-          <div className="flex items-center space-x-3 mb-2">
-            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b977?w=40&h=40&fit=crop&crop=face" 
-                 className="w-10 h-10 rounded-full border-2 border-[#D4AF37]" alt="Client" />
-            <div className="text-sm">
-              <div className="text-white font-semibold">Priya S.</div>
-              <div className="flex text-[#D4AF37]">{'★'.repeat(5)}</div>
-            </div>
-          </div>
-          <p className="text-white/80 text-sm">"Luxury redefined!"</p>
-        </div>
       </section>
 
-      {/* Video Testimonials Slider */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16" data-animate id="video-testimonials">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#D4AF37]">Client Stories</h2>
-            <p className="text-xl text-white/70">Hear directly from our satisfied customers</p>
-          </div>
-          
-          <div className="flex overflow-x-auto space-x-6 pb-6 scrollbar-hide">
-            {videoTestimonials.map((testimonial, index) => (
-              <div 
-                key={testimonial.id}
-                className="flex-shrink-0 w-80 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 hover:border-[#D4AF37]/30 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 group"
-              >
-                <div className="relative mb-4 overflow-hidden rounded-2xl">
-                  <img 
-                    src={testimonial.thumbnail} 
-                    alt={testimonial.car}
-                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button className="bg-[#D4AF37] text-black p-4 rounded-full hover:bg-[#BFA980] transition-colors">
-                      <Play size={24} />
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3 mb-4">
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full border-2 border-[#D4AF37]"
-                  />
-                  <div>
-                    <h3 className="font-semibold text-white">{testimonial.name}</h3>
-                    <p className="text-white/60 text-sm">{testimonial.role}</p>
-                    <p className="text-[#D4AF37] text-sm flex items-center">
-                      <MapPin size={12} className="mr-1" />
-                      {testimonial.city}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex text-[#D4AF37] mb-3">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} size={16} fill="currentColor" />
-                  ))}
-                </div>
-                
-                <p className="text-white/80 text-sm mb-4 leading-relaxed">"{testimonial.quote}"</p>
-                
-                <div className="text-xs text-white/50 bg-white/5 rounded-lg p-2">
-                  Purchased: {testimonial.car}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Featured Quotes Grid */}
       <section className="py-20 px-6 bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e]">
@@ -530,144 +435,7 @@ const TestimonialsPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#0e0e0e] border-t border-white/10 py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            {/* Company Info */}
-            <div className="lg:col-span-2">
-              <div className="text-3xl font-bold text-[#D4AF37] mb-4">Raam Group</div>
-              <p className="text-white/70 mb-6 leading-relaxed">
-                India's premier destination for luxury pre-owned vehicles. We specialize in providing 
-                exceptional cars with unmatched service quality and complete transparency.
-              </p>
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="bg-[#D4AF37]/20 p-2 rounded-lg">
-                  <Phone size={20} className="text-[#D4AF37]" />
-                </div>
-                <div>
-                  <p className="text-white font-semibold">+91 98765 43210</p>
-                  <p className="text-white/60 text-sm">Available 24/7</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="bg-[#D4AF37]/20 p-2 rounded-lg">
-                  <Mail size={20} className="text-[#D4AF37]" />
-                </div>
-                <div>
-                  <p className="text-white font-semibold">info@raamgroup.com</p>
-                  <p className="text-white/60 text-sm">Quick response guaranteed</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-xl font-semibold text-[#D4AF37] mb-6">Quick Links</h3>
-              <ul className="space-y-3">
-                {['Home', 'Luxury Inventory', 'Sell Your Car', 'Car Loans', 'Insurance', 'About Us', 'Contact'].map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-white/70 hover:text-[#D4AF37] transition-colors duration-300 flex items-center group">
-                      <ArrowRight size={14} className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Services */}
-            <div>
-              <h3 className="text-xl font-semibold text-[#D4AF37] mb-6">Our Services</h3>
-              <ul className="space-y-3">
-                {['Pre-Owned Luxury Cars', 'Car Inspection', 'Financing Solutions', 'Trade-In Services', 'Extended Warranty', 'Maintenance Support', 'Documentation'].map((service) => (
-                  <li key={service}>
-                    <a href="#" className="text-white/70 hover:text-[#D4AF37] transition-colors duration-300 flex items-center group">
-                      <CheckCircle size={14} className="mr-2 text-[#D4AF37]/50" />
-                      {service}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Social Media & Newsletter */}
-          <div className="border-t border-white/10 pt-8 mb-8">
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-              <div>
-                <h3 className="text-lg font-semibold text-white mb-4">Follow Us</h3>
-                <div className="flex space-x-4">
-                  {[
-                    { icon: Facebook, label: 'Facebook' },
-                    { icon: Twitter, label: 'Twitter' },
-                    { icon: Instagram, label: 'Instagram' },
-                    { icon: Linkedin, label: 'LinkedIn' }
-                  ].map(({ icon: Icon, label }) => (
-                    <a 
-                      key={label}
-                      href="#" 
-                      className="bg-white/10 hover:bg-[#D4AF37]/20 p-3 rounded-full transition-all duration-300 group hover:scale-110"
-                      aria-label={label}
-                    >
-                      <Icon size={20} className="text-white/70 group-hover:text-[#D4AF37] transition-colors" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              <div className="text-center md:text-right">
-                <h3 className="text-lg font-semibold text-white mb-4">Stay Updated</h3>
-                <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-                  <input 
-                    type="email" 
-                    placeholder="Enter your email"
-                    className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/50 focus:outline-none focus:border-[#D4AF37] transition-colors"
-                  />
-                  <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-2 rounded-lg font-semibold hover:shadow-lg hover:shadow-[#D4AF37]/20 transition-all duration-300">
-                    Subscribe
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Footer */}
-          <div className="border-t border-white/10 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center text-white/60 text-sm space-y-4 md:space-y-0">
-              <div className="text-center md:text-left">
-                <p>&copy; 2024 Raam Group. All rights reserved.</p>
-                <p className="mt-1">Premium Pre-Owned Luxury Vehicles - Trusted Since 2015</p>
-              </div>
-              
-              <div className="flex flex-wrap justify-center space-x-6">
-                <a href="#" className="hover:text-[#D4AF37] transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-[#D4AF37] transition-colors">Terms of Service</a>
-                <a href="#" className="hover:text-[#D4AF37] transition-colors">Cookie Policy</a>
-                <a href="#" className="hover:text-[#D4AF37] transition-colors">Sitemap</a>
-              </div>
-            </div>
-          </div>
-
-          {/* Additional Trust Indicators */}
-          <div className="mt-8 pt-8 border-t border-white/10">
-            <div className="flex justify-center items-center space-x-8 text-white/40 text-xs">
-              <div className="flex items-center space-x-2">
-                <CheckCircle size={16} className="text-green-400" />
-                <span>Certified Dealer</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Star size={16} className="text-[#D4AF37]" />
-                <span>4.9★ Rated</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Heart size={16} className="text-red-400" />
-                <span>5000+ Happy Customers</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Custom Styles */}
       <style jsx>{`
