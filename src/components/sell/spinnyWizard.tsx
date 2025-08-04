@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Shield, Award, Users, Star, Clock } from 'lucide-react';
-import AllStepsComponent from './allSteps'; // Rename import here
+import AllStepsComponent from './allSteps';
 
 // Define your form data type explicitly
 interface FormData {
@@ -32,7 +33,6 @@ interface AllStepsProps {
   onSubmit: () => void;
   wizardScrollRef: React.RefObject<HTMLDivElement | null>;
 }
-
 
 // Use typed AllSteps alias to avoid naming conflict
 const AllSteps = AllStepsComponent as React.FC<AllStepsProps>;
@@ -212,14 +212,22 @@ const SellNowWizard: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden">
-      {/* Background Image with Animation */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-black/80" />
+      {/* Background Image using Next Image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/assets/images/LandingPageCar4.jpg"
+          alt="Background"
+          fill
+          priority
+          className="object-cover w-full h-full animate-slow-zoom"
+          quality={90}
+        />
+        <div className="absolute inset-0 bg-black/10" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/90" />
       </div>
 
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 z-5">
+      <div className="absolute inset-0 z-5 pointer-events-none">
         <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tl from-[#BFA980]/5 to-transparent rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
@@ -243,7 +251,7 @@ const SellNowWizard: React.FC = () => {
           >
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-white/90 mb-4 tracking-tight">
               Sell Your Car with{' '}
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#BFA980] font-normal">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#BFA980] font-normal">
                 Epic Luxe
               </span>
             </h1>

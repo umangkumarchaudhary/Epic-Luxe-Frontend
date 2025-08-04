@@ -1,9 +1,11 @@
 'use client';
 import Image from 'next/image';
 import React, { useState, useEffect , useCallback} from 'react';
-import { Calculator, CheckCircle, Car, Users, Shield, Clock, Phone, MapPin,ChevronDown, ChevronUp, Minus, X } from 'lucide-react';
+import { Calculator,TrendingUp,Zap,IndianRupee, CheckCircle, Car, Users, Shield, Clock, Phone, MapPin,ChevronDown, ChevronUp, Minus, X } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PremiumEMICalculator from './components/EMICalculator';
+import FinanceComparisonSection from './components/ComparisonSection';
 
 const FinancePage = () => {
   // EMI Calculator State
@@ -14,13 +16,33 @@ const FinancePage = () => {
   const [emi, setEmi] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
   const [totalPayable, setTotalPayable] = useState(0);
+  const [affordableCars, setAffordableCars] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   // Eligibility Checker State
   const [monthlyIncome, setMonthlyIncome] = useState('');
   const [employmentType, setEmploymentType] = useState('');
   const [city, setCity] = useState('');
   const [eligibleAmount, setEligibleAmount] = useState(0);
-  const [showEligibility, setShowEligibility] = useState(false);
+  
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [interestedCar, setInterestedCar] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
+  const [step, setStep] = useState("eligibility");
+  const [eligibilityError, setEligibilityError] = useState("");
+
+  const luxuryCarDatabase = [
+    { brand: 'BMW', model: '3 Series', year: 2019, price: 2850000, image: '🚗', popular: true },
+    { brand: 'Audi', model: 'A4', year: 2018, price: 2680000, image: '🚙', saving: true },
+    { brand: 'Mercedes', model: 'C-Class', year: 2020, price: 3200000, image: '🚗', premium: true },
+    { brand: 'BMW', model: 'X3', year: 2019, price: 4200000, image: '🚙', popular: true },
+    { brand: 'Audi', model: 'Q5', year: 2020, price: 4800000, image: '🚙' },
+    { brand: 'Mercedes', model: 'GLC', year: 2019, price: 4500000, image: '🚙' },
+    { brand: 'BMW', model: '5 Series', year: 2018, price: 3800000, image: '🚗', premium: true },
+  ];
 
   // Form State
   const [formData, setFormData] = useState({
@@ -31,6 +53,28 @@ const FinancePage = () => {
     carInterest: ''
   });
 
+   const [submitted, setSubmitted] = useState(false);
+
+   const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+   const handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Hook your API here
+    setSubmitted(true);
+  };
+
+  const closeModal = () => {
+    setSubmitted(false);
+    setFormData({
+      name: "",
+      phone: "",
+      pan: "",
+      city: "",
+      carInterest: "",
+    });
+  };
+
   // FAQ State
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -38,30 +82,103 @@ const FinancePage = () => {
   useEffect(() => {
     const principal = carPrice - downPayment;
     const monthlyRate = interestRate / (12 * 100);
-    const numPayments = loanTenure * 12;
+    const numberOfPayments = loanTenure * 12;
     
     if (principal > 0 && monthlyRate > 0) {
-      const emiAmount = (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
-                       (Math.pow(1 + monthlyRate, numPayments) - 1);
-      const totalAmount = emiAmount * numPayments;
+      const emiAmount = (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
+                       (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+      const totalAmount = emiAmount * numberOfPayments;
       const interestAmount = totalAmount - principal;
       
       setEmi(Math.round(emiAmount));
       setTotalInterest(Math.round(interestAmount));
-      setTotalPayable(Math.round(totalAmount + downPayment));
+      setTotalPayable(Math.round(totalAmount));
     }
   }, [carPrice, downPayment, loanTenure, interestRate]);
 
+  // Generate car recommendations based on EMI
+  useEffect(() => {
+    const maxAffordablePrice = carPrice + (carPrice * 0.3); // 30% buffer
+    const minAffordablePrice = carPrice - (carPrice * 0.2); // 20% lower
+    
+    const recommendations = luxuryCarDatabase
+      .filter(car => car.price >= minAffordablePrice && car.price <= maxAffordablePrice)
+      .sort((a, b) => Math.abs(a.price - carPrice) - Math.abs(b.price - carPrice))
+      .slice(0, 3);
+    
+    setAffordableCars(recommendations);
+  }, [carPrice, emi]);
+
+  const getEMIForCar = (carPrice) => {
+    const principal = carPrice - downPayment;
+    const monthlyRate = interestRate / (12 * 100);
+    const numberOfPayments = loanTenure * 12;
+    
+    if (principal > 0 && monthlyRate > 0) {
+      const emiAmount = (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
+                       (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+      return Math.round(emiAmount);
+    }
+    return 0;
+  };
+
   // Check Eligibility
+
   const checkEligibility = () => {
-    if (monthlyIncome && employmentType && city) {
-      const income = parseInt(monthlyIncome);
-      const multiplier = employmentType === 'Salaried' ? 60 : 40;
-      const eligible = Math.round((income * multiplier) / 100000) * 100000;
-      setEligibleAmount(eligible);
-      setShowEligibility(true);
+  if (!monthlyIncome || !employmentType || !city) {
+    setEligibilityError("Please fill all fields");
+    return;
+  }
+  
+  // Clear error if all present
+  setEligibilityError("");
+
+  const income = parseInt(monthlyIncome);
+  const multiplier = employmentType === "Salaried" ? 60 : 40;
+  const eligible = Math.round((income * multiplier) / 100000) * 100000;
+
+  setEligibleAmount(eligible);
+  setStep("approval");
+};
+
+
+  const formatLakhs = (amount: number): string => {
+    return `₹${(amount / 100000).toFixed(1)} Lakhs`;
+  };
+ 
+   const submitLead = async (e) => {
+    e.preventDefault();
+    if (!fullName || !phone) {
+      alert("Please enter your name and phone number.");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500)); // Demo delay
+      // API call can go here
+      setShowPopup(true); // Show popup
+    } catch (error) {
+      alert("There was an error submitting your application.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  const handlePopupOk = () => {
+    setShowPopup(false);
+    setMonthlyIncome("");
+    setEmploymentType("");
+    setCity("");
+    setEligibleAmount(0);
+    setFullName("");
+    setPhone("");
+    setEmail("");
+    setInterestedCar("");
+    setStep("eligibility");
+  };
+
+
+
 
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-IN', {
@@ -71,9 +188,8 @@ const FinancePage = () => {
     }).format(amount);
   };
 
-  const formatLakhs = (amount: number): string => {
-    return `₹${(amount / 100000).toFixed(1)} Lakhs`;
-  };
+  
+  
 
   const banks = [
     { name: 'HDFC Bank', logo: '🏦' },
@@ -273,6 +389,33 @@ const FinancePage = () => {
           background: linear-gradient(90deg, #D4AF37, #374151);
           border: none;
         }
+          
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #eab308, #f59e0b);
+          cursor: pointer;
+          box-shadow: 0 4px 8px rgba(234, 179, 8, 0.3);
+        }
+        
+        .slider::-moz-range-thumb {
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #eab308, #f59e0b);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 4px 8px rgba(234, 179, 8, 0.3);
+        }
+      
+
+
+        
+
+
+
       `}</style>
 
       <Header />
@@ -335,451 +478,202 @@ const FinancePage = () => {
         </div>
 
         {/* Enhanced Instant Eligibility Checker */}
-        <section id="eligibility" className="py-24 bg-gradient-to-br from-[#0e0e0e] via-[#151515] to-[#0e0e0e] relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('/assets/images/ferrari.jpg')] bg-cover bg-center"></div>
-          
-          <div className="relative z-10 max-w-5xl mx-auto px-6">
-            <div className="text-center mb-16">
-  <h2 className="text-5xl playfair-font font-bold text-white/90 tracking-wide mb-4">
-    Check Your Loan Eligibility
-  </h2>
-  <p className="text-white/60 text-lg manrope-font font-light max-w-2xl mx-auto">
-    Tailored finance solutions for premium vehicles. Know what you&apos;re eligible for, instantly.
-  </p>
-</div>
+        <section
+  id="eligibility"
+  className="py-24 bg-gradient-to-br from-[#0e0e0e] via-[#151515] to-[#0e0e0e] relative overflow-hidden min-h-screen"
+>
+  <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('/assets/images/ferrari.jpg')] bg-cover bg-center" />
+  <div className="relative z-10 max-w-5xl mx-auto px-6 flex flex-col items-center justify-center min-h-[60vh]">
+    <div className="text-center mb-10 w-full">
+      <h2 className="text-5xl playfair-font font-bold text-white/90 tracking-wide mb-4">
+        Check Your Loan Eligibility
+      </h2>
+      <p className="text-white/60 text-lg manrope-font font-light max-w-2xl mx-auto">
+        Tailored finance solutions for premium vehicles. Know what you&apos;re eligible for, instantly.
+      </p>
+    </div>
+
+    {/* Step 1: Eligibility form */}
+    {step === "eligibility" && (
+  <div className="bg-gradient-to-br from-[#1f1f1f]/60 to-[#0d0d0d]/60 rounded-3xl border border-[#BFA980]/20 p-10 backdrop-blur-md shadow-xl w-full max-w-5xl mx-auto">
+    <div className="grid md:grid-cols-3 gap-8 mb-4">
+      <div>
+        <label className="block text-sm text-white/60 mb-2">Monthly Income</label>
+        <input
+          type="number"
+          value={monthlyIncome}
+          onChange={(e) => setMonthlyIncome(e.target.value)}
+          placeholder="e.g. ₹1,50,000"
+          className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 placeholder:text-white/40 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-white/60 mb-2">Employment Type</label>
+        <select
+          value={employmentType}
+          onChange={(e) => setEmploymentType(e.target.value)}
+          className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40"
+        >
+          <option value="">Select Type</option>
+          <option value="Salaried">Salaried</option>
+          <option value="Self-Employed">Self-Employed</option>
+          <option value="Business">Business Owner</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm text-white/60 mb-2">City</label>
+        <input
+          type="text"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          placeholder="e.g. Bangalore"
+          className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 placeholder:text-white/40 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40"
+        />
+      </div>
+    </div>
+    
+    {eligibilityError && (
+      <p className="mb-6 text-center text-[#D4AF37] font-semibold manrope-font">
+        {eligibilityError}
+      </p>
+    )}
+
+    <div className="flex justify-center">
+      <button
+        onClick={checkEligibility}
+        className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] font-semibold text-lg py-4 px-14 rounded-lg hover:shadow-lg transition-all"
+      >
+        Check Eligibility Instantly
+      </button>
+    </div>
+  </div>
+)}
 
 
-            <div className="bg-gradient-to-br from-[#1f1f1f]/60 to-[#0d0d0d]/60 rounded-3xl border border-[#BFA980]/20 p-10 backdrop-blur-md shadow-xl">
-              <div className="grid md:grid-cols-3 gap-8 mb-10">
-                {/* Monthly Income */}
-                <div>
-                  <label className="block text-sm manrope-font font-medium text-white/60 mb-2">Monthly Income</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      value={monthlyIncome}
-                      onChange={(e) => setMonthlyIncome(e.target.value)}
-                      placeholder="e.g. ₹1,50,000"
-                      className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 placeholder:text-white/40 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40 transition-all duration-300 manrope-font font-normal"
-                    />
-                  </div>
-                </div>
+    {/* Step 2: Approval form */}
+    {step === "approval" && (
+      <div className="mt-8 flex flex-col items-center w-full">
+        <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#BFA980]/10 border border-[#D4AF37]/30 rounded-2xl backdrop-blur-md p-8 w-full max-w-2xl mx-auto shadow-lg">
+          <div className="text-center">
+            <CheckCircle className="w-12 h-12 text-[#D4AF37] mx-auto mb-4 animate-bounce" />
+            <h3 className="text-3xl playfair-font font-bold text-white/90 mb-2">
+              You&apos;re Eligible!
+            </h3>
+            <p className="text-white/60 text-base mb-4">
+              Based on your inputs, you may get financing up to:
+            </p>
+            <p className="text-5xl playfair-font font-semibold text-[#D4AF37] tracking-wider">
+              {formatLakhs(eligibleAmount)}
+            </p>
+          </div>
 
-                {/* Employment Type */}
-                <div>
-                  <label className="block text-sm manrope-font font-medium text-white/60 mb-2">Employment Type</label>
-                  <select
-                    value={employmentType}
-                    onChange={(e) => setEmploymentType(e.target.value)}
-                    className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40 transition-all duration-300 manrope-font font-normal"
-                  >
-                    <option value="">Select Type</option>
-                    <option value="Salaried">Salaried</option>
-                    <option value="Self-Employed">Self-Employed</option>
-                    <option value="Business">Business Owner</option>
-                  </select>
-                </div>
-
-                {/* City */}
-                <div>
-                  <label className="block text-sm manrope-font font-medium text-white/60 mb-2">City</label>
-                  <input
-                    type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="e.g. Bangalore"
-                    className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 placeholder:text-white/40 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40 transition-all duration-300 manrope-font font-normal"
-                  />
-                </div>
-              </div>
-
+          <form className="mt-7 grid md:grid-cols-2 gap-6 text-left" onSubmit={submitLead}>
+            <div>
+              <label className="block text-sm text-white/60 mb-2">Full Name</label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 placeholder:text-white/40"
+                placeholder="e.g. Rahul Sharma"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-white/60 mb-2">Phone Number</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 placeholder:text-white/40"
+                placeholder="e.g. 9876543210"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-white/60 mb-2">Email (Optional)</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 placeholder:text-white/40"
+                placeholder="e.g. you@example.com"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-white/60 mb-2">Interested Car (Optional)</label>
+              <input
+                type="text"
+                value={interestedCar}
+                onChange={(e) => setInterestedCar(e.target.value)}
+                className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-5 py-3 text-white/80 placeholder:text-white/40"
+                placeholder="e.g. BMW X7, Audi A6"
+              />
+            </div>
+            <div className="md:col-span-2 flex justify-center mt-6">
               <button
-                onClick={checkEligibility}
-                className="w-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] manrope-font font-medium text-lg py-4 rounded-lg hover:shadow-lg hover:from-[#BFA980] hover:to-[#D4AF37] transition-all"
+                type="submit"
+                disabled={isSubmitting}
+                className={`
+                  bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] text-lg px-10 py-4 rounded-lg
+                  transition-all relative flex items-center justify-center
+                  ${isSubmitting ? "opacity-60 cursor-not-allowed" : "hover:from-[#BFA980] hover:to-[#D4AF37]"}
+                `}
               >
-                Check Eligibility Instantly
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-[#0e0e0e]" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                    Processing...
+                  </span>
+                ) : (
+                  "Get Pre-Approved Now"
+                )}
               </button>
-
-              {/* Eligibility Result */}
-              {showEligibility && (
-                <div className="mt-10 p-8 bg-gradient-to-r from-[#D4AF37]/10 to-[#BFA980]/10 border border-[#D4AF37]/30 rounded-2xl backdrop-blur-md">
-                  <div className="text-center">
-                    <CheckCircle className="w-12 h-12 text-[#D4AF37] mx-auto mb-4 animate-bounce" />
-                    <h3 className="text-3xl playfair-font font-bold text-white/90 mb-2">
-  You&apos;re Eligible!
-</h3>
-<p className="text-white/60 text-base manrope-font font-light mb-4">
-  Based on your inputs, you may get financing up to:
-</p>
-<p className="text-5xl playfair-font font-semibold text-[#D4AF37] tracking-wider">
-  {formatLakhs(eligibleAmount)}
-</p>
-
-                    <div className="mt-6">
-                      <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] manrope-font font-medium text-lg px-8 py-3 rounded-lg hover:from-[#BFA980] hover:to-[#D4AF37] transition-all">
-                        Get Pre-Approved Now
-                      </button>
-                      <p className="text-white/40 text-xs manrope-font font-light mt-3">*Subject to document verification and credit score</p>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
-          </div>
-        </section>
+            <div className="md:col-span-2 text-center">
+              <p className="text-white/40 text-xs mt-3">
+                *Subject to document verification and credit score
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
 
-        {/* EMI Calculator */}
-        <section id="calculator" className="py-20">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl playfair-font font-bold text-white/90 mb-4 tracking-wide">EMI Calculator</h2>
-              <p className="text-white/60 text-lg manrope-font font-light">Calculate your monthly payments instantly</p>
-            </div>
-            
-            <div className="grid lg:grid-cols-2 gap-12">
-              {/* Calculator Inputs */}
-              <div className="bg-gradient-to-br from-[#1a1a1a]/60 to-[#0e0e0e]/60 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-[#BFA980]/10">
-                <div className="space-y-8">
-                  <div>
-                    <label className="block text-sm manrope-font font-medium text-white/60 mb-4">
-                      Car Price: {formatCurrency(carPrice)}
-                    </label>
-                    <input
-                      type="range"
-                      min="500000"
-                      max="10000000"
-                      step="100000"
-                      value={carPrice}
-                      onChange={(e) => setCarPrice(parseInt(e.target.value))}
-                      className="w-full h-2 bg-[#1a1a1a]/60 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                    <div className="flex justify-between text-sm text-white/40 mt-2 manrope-font font-light">
-                      <span>₹5L</span>
-                      <span>₹1Cr</span>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm manrope-font font-medium text-white/60 mb-4">
-                      Down Payment: {formatCurrency(downPayment)}
-                    </label>
-                    <input
-                      type="range"
-                      min="0"
-                      max={carPrice * 0.5}
-                      step="50000"
-                      value={downPayment}
-                      onChange={(e) => setDownPayment(parseInt(e.target.value))}
-                      className="w-full h-2 bg-[#1a1a1a]/60 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                    <div className="flex justify-between text-sm text-white/40 mt-2 manrope-font font-light">
-                      <span>₹0</span>
-                      <span>{formatCurrency(carPrice * 0.5)}</span>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm manrope-font font-medium text-white/60 mb-4">
-                      Loan Tenure: {loanTenure} years
-                    </label>
-                    <input
-                      type="range"
-                      min="1"
-                      max="7"
-                      step="1"
-                      value={loanTenure}
-                      onChange={(e) => setLoanTenure(parseInt(e.target.value))}
-                      className="w-full h-2 bg-[#1a1a1a]/60 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                    <div className="flex justify-between text-sm text-white/40 mt-2 manrope-font font-light">
-                      <span>1 year</span>
-                      <span>7 years</span>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm manrope-font font-medium text-white/60 mb-4">
-                      Interest Rate: {interestRate}%
-                    </label>
-                    <input
-                      type="range"
-                      min="7"
-                      max="15"
-                      step="0.1"
-                      value={interestRate}
-                      onChange={(e) => setInterestRate(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-[#1a1a1a]/60 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                    <div className="flex justify-between text-sm text-white/40 mt-2 manrope-font font-light">
-                      <span>7%</span>
-                      <span>15%</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Calculator Results */}
-              <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#1a1a1a]/60 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-[#D4AF37]/20">
-                <h3 className="text-2xl playfair-font font-bold text-white/90 mb-8">Loan Summary</h3>
-                <div className="space-y-6">
-                  <div className="flex justify-between items-center p-4 bg-[#1a1a1a]/40 backdrop-blur-sm rounded-lg border border-white/5">
-                    <span className="text-white/60 manrope-font font-light">Monthly EMI</span>
-                    <span className="text-2xl manrope-font font-light text-[#D4AF37]">{formatCurrency(emi)}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-4 bg-[#1a1a1a]/40 backdrop-blur-sm rounded-lg border border-white/5">
-                    <span className="text-white/60 manrope-font font-light">Total Interest</span>
-                    <span className="text-xl manrope-font font-light text-red-400/80">{formatCurrency(totalInterest)}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-4 bg-[#1a1a1a]/40 backdrop-blur-sm rounded-lg border border-white/5">
-                    <span className="text-white/60 manrope-font font-light">Total Payable</span>
-                    <span className="text-xl manrope-font font-light text-white/90">{formatCurrency(totalPayable)}</span>
-                  </div>
-                </div>
-                <button className="w-full mt-8 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] px-6 py-4 rounded-lg manrope-font font-medium text-lg hover:from-[#BFA980] hover:to-[#D4AF37] hover:shadow-lg hover:shadow-[#D4AF37]/20 transition-all duration-300">
-                  Apply for This Loan
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
+    {/* The centered popup modal */}
+    {showPopup && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+        <div className="bg-gradient-to-br from-[#1f1f1f] to-[#0d0d0d] border border-[#D4AF37]/40 rounded-3xl px-8 py-10 shadow-2xl w-full max-w-md mx-4 text-center relative">
+          <CheckCircle className="w-14 h-14 text-[#D4AF37] mx-auto mb-4" />
+          <h2 className="text-2xl playfair-font font-bold text-white/90 mb-3">Application Submitted!</h2>
+          <p className="text-white/60 mb-6">Thank you for your interest.<br />Our experts will contact you soon.</p>
+          <button
+            onClick={handlePopupOk}
+            className="mt-2 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] font-semibold text-lg px-8 py-3 rounded-lg hover:from-[#BFA980] hover:to-[#D4AF37] transition-all"
+            autoFocus
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+
+        
+<PremiumEMICalculator/>
 
         {/* Finance Partners */}
+
+        <FinanceComparisonSection/>
         
 
         {/* Comparison Section - Epic Luxe vs Banks */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl playfair-font font-bold text-white/90 mb-4 tracking-wide">Why Choose Epic Luxe Finance?</h2>
-              <p className="text-white/60 text-lg manrope-font font-light max-w-3xl mx-auto leading-relaxed">
-                Get more value, better rates, and superior service when you finance through Epic Luxe compared to direct bank financing
-              </p>
-            </div>
+     
 
-            {/* Comparison Table */}
-            <div className="bg-gradient-to-br from-[#1a1a1a]/60 to-[#0e0e0e]/60 backdrop-blur-sm rounded-2xl border border-[#BFA980]/10 overflow-hidden">
-              
-              {/* Table Header */}
-              <div className="grid grid-cols-1 md:grid-cols-4 bg-gradient-to-r from-[#D4AF37]/10 to-[#BFA980]/10 border-b border-[#BFA980]/20">
-                <div className="p-6 md:p-8">
-                  <h3 className="text-xl playfair-font font-medium text-white/90 mb-2">Features</h3>
-                  <p className="text-white/50 text-sm manrope-font font-light">Compare what you get</p>
-                </div>
-                <div className="p-6 md:p-8 bg-gradient-to-br from-[#D4AF37]/20 to-[#BFA980]/15 border-l border-[#D4AF37]/30">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <div className="w-8 h-8 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] rounded-full flex items-center justify-center">
-                      <span className="text-[#0e0e0e] manrope-font font-bold text-sm">EL</span>
-                    </div>
-                    <h3 className="text-xl playfair-font font-medium text-[#D4AF37]">Epic Luxe</h3>
-                  </div>
-                  <p className="text-white/60 text-sm manrope-font font-light">Premium Experience</p>
-                </div>
-                <div className="p-6 md:p-8 border-l border-white/5">
-                  <h3 className="text-lg playfair-font font-medium text-white/70 mb-2">HDFC Direct</h3>
-                  <p className="text-white/40 text-sm manrope-font font-light">Standard Banking</p>
-                </div>
-                <div className="p-6 md:p-8 border-l border-white/5">
-                  <h3 className="text-lg playfair-font font-medium text-white/70 mb-2">ICICI Direct</h3>
-                  <p className="text-white/40 text-sm manrope-font font-light">Standard Banking</p>
-                </div>
-              </div>
 
-              {/* Comparison Rows */}
-              <div className="divide-y divide-white/5">
-                
-                {/* Interest Rates */}
-                <div className="grid grid-cols-1 md:grid-cols-4">
-                  <div className="p-6 md:p-8 bg-[#1a1a1a]/20">
-                    <h4 className="manrope-font font-medium text-white/80 mb-1">Interest Rates</h4>
-                    <p className="text-white/50 text-sm manrope-font font-light">Starting from</p>
-                  </div>
-                  <div className="p-6 md:p-8 bg-gradient-to-br from-[#D4AF37]/5 to-[#BFA980]/5 border-l border-[#D4AF37]/20">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-2xl manrope-font font-light text-[#D4AF37]">7.99%</span>
-                      <span className="bg-[#D4AF37]/20 text-[#D4AF37] px-2 py-1 rounded-full text-xs manrope-font font-medium">BEST</span>
-                    </div>
-                    <p className="text-white/60 text-sm manrope-font font-light mt-1">Negotiated rates</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <span className="text-xl manrope-font font-light text-white/60">8.75%</span>
-                    <p className="text-white/40 text-sm manrope-font font-light mt-1">Standard rates</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <span className="text-xl manrope-font font-light text-white/60">9.25%</span>
-                    <p className="text-white/40 text-sm manrope-font font-light mt-1">Standard rates</p>
-                  </div>
-                </div>
-
-                {/* Processing Time */}
-                <div className="grid grid-cols-1 md:grid-cols-4">
-                  <div className="p-6 md:p-8 bg-[#1a1a1a]/20">
-                    <h4 className="manrope-font font-medium text-white/80 mb-1">Processing Time</h4>
-                    <p className="text-white/50 text-sm manrope-font font-light">Approval speed</p>
-                  </div>
-                  <div className="p-6 md:p-8 bg-gradient-to-br from-[#D4AF37]/5 to-[#BFA980]/5 border-l border-[#D4AF37]/20">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xl manrope-font font-light text-[#D4AF37]">30 Minutes</span>
-                      <div className="w-2 h-2 bg-[#D4AF37] rounded-full animate-pulse"></div>
-                    </div>
-                    <p className="text-white/60 text-sm manrope-font font-light mt-1">Instant pre-approval</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <span className="text-xl manrope-font font-light text-white/60">2-3 Days</span>
-                    <p className="text-white/40 text-sm manrope-font font-light mt-1">Standard process</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <span className="text-xl manrope-font font-light text-white/60">3-5 Days</span>
-                    <p className="text-white/40 text-sm manrope-font font-light mt-1">Standard process</p>
-                  </div>
-                </div>
-
-                {/* Loan Amount */}
-                <div className="grid grid-cols-1 md:grid-cols-4">
-                  <div className="p-6 md:p-8 bg-[#1a1a1a]/20">
-                    <h4 className="manrope-font font-medium text-white/80 mb-1">Max Loan Amount</h4>
-                    <p className="text-white/50 text-sm manrope-font font-light">Financing limit</p>
-                  </div>
-                  <div className="p-6 md:p-8 bg-gradient-to-br from-[#D4AF37]/5 to-[#BFA980]/5 border-l border-[#D4AF37]/20">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xl manrope-font font-light text-[#D4AF37]">₹5 Crores</span>
-                      <span className="bg-[#D4AF37]/20 text-[#D4AF37] px-2 py-1 rounded-full text-xs manrope-font font-medium">MAX</span>
-                    </div>
-                    <p className="text-white/60 text-sm manrope-font font-light mt-1">Premium vehicles</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <span className="text-xl manrope-font font-light text-white/60">₹1.5 Crores</span>
-                    <p className="text-white/40 text-sm manrope-font font-light mt-1">Standard limit</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <span className="text-xl manrope-font font-light text-white/60">₹2 Crores</span>
-                    <p className="text-white/40 text-sm manrope-font font-light mt-1">Standard limit</p>
-                  </div>
-                </div>
-
-                {/* Documentation */}
-                <div className="grid grid-cols-1 md:grid-cols-4">
-                  <div className="p-6 md:p-8 bg-[#1a1a1a]/20">
-                    <h4 className="manrope-font font-medium text-white/80 mb-1">Documentation</h4>
-                    <p className="text-white/50 text-sm manrope-font font-light">Paperwork ease</p>
-                  </div>
-                  <div className="p-6 md:p-8 bg-gradient-to-br from-[#D4AF37]/5 to-[#BFA980]/5 border-l border-[#D4AF37]/20">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
-                      <span className="text-white/80 manrope-font font-medium">Doorstep Service</span>
-                    </div>
-                    <p className="text-white/60 text-sm manrope-font font-light">We handle everything</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <X className="w-5 h-5 text-red-400/60" />
-                      <span className="text-white/60 manrope-font font-medium">Self Service</span>
-                    </div>
-                    <p className="text-white/40 text-sm manrope-font font-light">You visit branch</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <X className="w-5 h-5 text-red-400/60" />
-                      <span className="text-white/60 manrope-font font-medium">Self Service</span>
-                    </div>
-                    <p className="text-white/40 text-sm manrope-font font-light">You visit branch</p>
-                  </div>
-                </div>
-
-                {/* Customer Support */}
-                <div className="grid grid-cols-1 md:grid-cols-4">
-                  <div className="p-6 md:p-8 bg-[#1a1a1a]/20">
-                    <h4 className="manrope-font font-medium text-white/80 mb-1">Customer Support</h4>
-                    <p className="text-white/50 text-sm manrope-font font-light">Service quality</p>
-                  </div>
-                  <div className="p-6 md:p-8 bg-gradient-to-br from-[#D4AF37]/5 to-[#BFA980]/5 border-l border-[#D4AF37]/20">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Users className="w-5 h-5 text-[#D4AF37]" />
-                      <span className="text-white/80 manrope-font font-medium">Dedicated RM</span>
-                    </div>
-                    <p className="text-white/60 text-sm manrope-font font-light">Personal concierge</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Phone className="w-5 h-5 text-white/40" />
-                      <span className="text-white/60 manrope-font font-medium">Call Center</span>
-                    </div>
-                    <p className="text-white/40 text-sm manrope-font font-light">General support</p>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Phone className="w-5 h-5 text-white/40" />
-                      <span className="text-white/60 manrope-font font-medium">Call Center</span>
-                    </div>
-                    <p className="text-white/40 text-sm manrope-font font-light">General support</p>
-                  </div>
-                </div>
-
-                {/* Flexibility */}
-                <div className="grid grid-cols-1 md:grid-cols-4">
-                  <div className="p-6 md:p-8 bg-[#1a1a1a]/20">
-                    <h4 className="manrope-font font-medium text-white/80 mb-1">Loan Flexibility</h4>
-                    <p className="text-white/50 text-sm manrope-font font-light">Terms & options</p>
-                  </div>
-                  <div className="p-6 md:p-8 bg-gradient-to-br from-[#D4AF37]/5 to-[#BFA980]/5 border-l border-[#D4AF37]/20">
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4 text-[#D4AF37]" />
-                        <span className="text-white/70 text-sm manrope-font">Flexible EMI</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4 text-[#D4AF37]" />
-                        <span className="text-white/70 text-sm manrope-font">Part payments</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4 text-[#D4AF37]" />
-                        <span className="text-white/70 text-sm manrope-font">Tenure options</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <Minus className="w-4 h-4 text-white/30" />
-                        <span className="text-white/50 text-sm manrope-font">Fixed EMI only</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Minus className="w-4 h-4 text-white/30" />
-                        <span className="text-white/50 text-sm manrope-font">Limited options</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6 md:p-8 border-l border-white/5">
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <Minus className="w-4 h-4 text-white/30" />
-                        <span className="text-white/50 text-sm manrope-font">Fixed EMI only</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Minus className="w-4 h-4 text-white/30" />
-                        <span className="text-white/50 text-sm manrope-font">Limited options</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom CTA */}
-              <div className="p-8 bg-gradient-to-r from-[#D4AF37]/10 to-[#BFA980]/10 border-t border-[#BFA980]/20 text-center">
-                <h3 className="text-2xl playfair-font font-bold text-white/90 mb-4">Ready to Experience the Epic Luxe Advantage?</h3>
-                <p className="text-white/60 manrope-font font-light mb-6 max-w-2xl mx-auto">
-                  Get better rates, faster approval, and premium service. Why settle for standard when you can have extraordinary?
-                </p>
-                <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] px-8 py-4 rounded-full manrope-font font-medium text-lg hover:from-[#BFA980] hover:to-[#D4AF37] hover:shadow-lg hover:shadow-[#D4AF37]/20 transform hover:scale-105 transition-all duration-300">
-                  <Calculator className="inline-block w-5 h-5 mr-2" />
-                  Get Epic Luxe Finance Now
-                </button>
-              </div>
-            </div>
-
-            {/* Additional Benefits */}
-            
-          </div>
-        </section>
 
         <section className="py-20 bg-gradient-to-r from-[#0e0e0e]/60 via-[#1a1a1a]/40 to-[#0e0e0e]/60">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -881,82 +775,218 @@ const FinancePage = () => {
         </section>
 
         {/* Apply Now Form */}
-        <section className="py-20">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl playfair-font font-bold text-white/90 mb-4 tracking-wide">Apply Now</h2>
-              <p className="text-white/60 text-lg manrope-font font-light">Start your luxury car journey today</p>
-            </div>
-            
-            <div className="bg-gradient-to-br from-[#1a1a1a]/60 to-[#0e0e0e]/60 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-[#BFA980]/10">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm manrope-font font-medium text-white/60 mb-2">Full Name *</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    placeholder="Enter your full name"
-                    className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-4 py-3 text-white/80 placeholder:text-white/40 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40 backdrop-blur-sm transition-all duration-300 manrope-font font-normal"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm manrope-font font-medium text-white/60 mb-2">Phone Number *</label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    placeholder="+91 98765 43210"
-                    className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-4 py-3 text-white/80 placeholder:text-white/40 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40 backdrop-blur-sm transition-all duration-300 manrope-font font-normal"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm manrope-font font-medium text-white/60 mb-2">PAN Number</label>
-                  <input
-                    type="text"
-                    value={formData.pan}
-                    onChange={(e) => setFormData({...formData, pan: e.target.value})}
-                    placeholder="ABCDE1234F"
-                    className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-4 py-3 text-white/80 placeholder:text-white/40 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40 backdrop-blur-sm transition-all duration-300 manrope-font font-normal"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm manrope-font font-medium text-white/60 mb-2">City *</label>
-                  <input
-                    type="text"
-                    value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
-                    placeholder="Mumbai"
-                    className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-4 py-3 text-white/80 placeholder:text-white/40 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40 backdrop-blur-sm transition-all duration-300 manrope-font font-normal"
-                  />
-                </div>
-              </div>
-              <div className="mt-6">
-                <label className="block text-sm manrope-font font-medium text-white/60 mb-2">Car of Interest</label>
-                <select
-                  value={formData.carInterest}
-                  onChange={(e) => setFormData({...formData, carInterest: e.target.value})}
-                  className="w-full bg-[#1a1a1a]/60 border border-[#BFA980]/20 rounded-lg px-4 py-3 text-white/80 focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37]/40 backdrop-blur-sm transition-all duration-300 manrope-font font-normal"
-                >
-                  <option value="">Select a car</option>
-                  <option value="Mercedes-Benz">Mercedes-Benz</option>
-                  <option value="BMW">BMW</option>
-                  <option value="Range Rover">Range Rover</option>
-                  <option value="Audi">Audi</option>
-                  <option value="Jaguar">Jaguar</option>
-                  <option value="Porsche">Porsche</option>
-                </select>
-              </div>
-              <button className="w-full mt-8 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] px-6 py-4 rounded-lg manrope-font font-medium text-lg hover:from-[#BFA980] hover:to-[#D4AF37] hover:shadow-lg hover:shadow-[#D4AF37]/20 transition-all duration-300">
-  Submit Application
-</button>
-<p className="text-white/40 text-sm text-center mt-4 manrope-font font-light">
-  By submitting, you agree to our terms and conditions. We&apos;ll send you an OTP for verification.
-</p>
+        <section
+      className="py-20 px-4 sm:px-6 lg:px-8 relative"
+      style={{ fontFamily: "'Inter', sans-serif" }}
+      aria-live="polite"
+    >
+      <div className="max-w-4xl mx-auto" aria-hidden={submitted ? "true" : "false"}>
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-playfair text-white/90 font-bold tracking-wide">
+            Apply Now
+          </h2>
+          <p className="mt-2 text-lg font-manrope text-white/60 font-light">
+            Start your luxury journey today
+          </p>
+        </div>
 
+        {/* Form Container */}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-gradient-to-br from-black/80 to-[#121212]/80 backdrop-blur-lg rounded-3xl border border-[#BFA980]/20 shadow-2xl p-10 grid grid-cols-1 gap-8 sm:grid-cols-2"
+          noValidate
+          aria-disabled={submitted}
+        >
+          {/* Full Name - required */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="name"
+              className="font-manrope text-white/70 mb-2 text-sm"
+            >
+              Full Name <span className="text-[#BFA980]">*</span>
+            </label>
+            <input
+              id="name"
+              name="name"
+              required
+              minLength={2}
+              type="text"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+              className="bg-[#1a1a1a]/70 border border-[#BFA980]/40 rounded-xl px-5 py-4 text-white placeholder-white/40 font-manrope text-base outline-none transition focus:ring-2 focus:ring-[#D1AF49]"
+              autoComplete="off"
+              disabled={submitted}
+            />
+          </div>
+
+          {/* Phone Number - required */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="phone"
+              className="font-manrope text-white/70 mb-2 text-sm"
+            >
+              Phone Number <span className="text-[#BFA980]">*</span>
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              required
+              pattern="[0-9]{10}"
+              inputMode="tel"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="+91 9876543210"
+              className="bg-[#1a1a1a]/70 border border-[#BFA980]/40 rounded-xl px-5 py-4 text-white placeholder-white/40 font-manrope text-base outline-none transition focus:ring-2 focus:ring-[#D1AF49]"
+              autoComplete="off"
+              disabled={submitted}
+            />
+          </div>
+
+          {/* PAN Number - optional */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="pan"
+              className="font-manrope text-white/70 mb-2 text-sm"
+            >
+              PAN Number <span className="text-white/50 italic">(Optional)</span>
+            </label>
+            <input
+              id="pan"
+              name="pan"
+              maxLength={10}
+              type="text"
+              value={formData.pan}
+              onChange={handleChange}
+              placeholder="ABCDE1234F"
+              className="bg-[#1a1a1a]/70 border border-[#BFA980]/40 rounded-xl px-5 py-4 text-white placeholder-white/40 font-manrope text-base outline-none transition focus:ring-2 focus:ring-[#D1AF49]"
+              autoComplete="off"
+              disabled={submitted}
+            />
+          </div>
+
+          {/* City - required */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="city"
+              className="font-manrope text-white/70 mb-2 text-sm"
+            >
+              City <span className="text-[#BFA980]">*</span>
+            </label>
+            <input
+              id="city"
+              name="city"
+              required
+              type="text"
+              value={formData.city}
+              onChange={handleChange}
+              placeholder="Mumbai"
+              className="bg-[#1a1a1a]/70 border border-[#BFA980]/40 rounded-xl px-5 py-4 text-white placeholder-white/40 font-manrope text-base outline-none transition focus:ring-2 focus:ring-[#D1AF49]"
+              autoComplete="off"
+              disabled={submitted}
+            />
+          </div>
+
+          {/* Car of Interest - optional */}
+          <div className="flex flex-col sm:col-span-2">
+            <label
+              htmlFor="carInterest"
+              className="font-manrope text-white/70 mb-2 text-sm"
+            >
+              Car of Interest
+            </label>
+            <select
+              name="carInterest"
+              id="carInterest"
+              value={formData.carInterest}
+              onChange={handleChange}
+              className="appearance-none bg-[#1a1a1a]/70 border border-[#BFA980]/40 rounded-xl px-5 py-4 text-white font-manrope text-base placeholder-white/40 outline-none transition focus:ring-2 focus:ring-[#D1AF49]"
+              disabled={submitted}
+            >
+              <option value="">Select a car</option>
+              <option value="Mercedes-Benz">Mercedes-Benz</option>
+              <option value="BMW">BMW</option>
+              <option value="Range Rover">Range Rover</option>
+              <option value="Audi">Audi</option>
+              <option value="Jaguar">Jaguar</option>
+              <option value="Porsche">Porsche</option>
+            </select>
+          </div>
+
+          {/* Submit button and terms */}
+          <div className="sm:col-span-2 flex flex-col items-center">
+            <button
+              type="submit"
+              className="w-full max-w-sm rounded-full bg-gradient-to-r from-[#D1AF49] to-[#BFA979] py-4 text-black text-xl font-semibold tracking-wide shadow-xl hover:from-[#E6C973] hover:to-[#D1AF49] transition duration-300"
+              disabled={submitted}
+              aria-disabled={submitted}
+            >
+              Submit Application
+            </button>
+
+            <p className="mt-5 max-w-xs text-center text-[11px] font-manrope text-white/60">
+              * By submitting, you agree to our{" "}
+              <a
+                href="/TermsOfUse"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-[#D1AF49] hover:text-[#fff]"
+              >
+                Terms of Use
+              </a>{" "}
+              and{" "}
+              <a
+                href="/PrivacyPolicy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-[#D1AF49] hover:text-[#fff]"
+              >
+                Privacy Policy
+              </a>
+              .
+            </p>
+          </div>
+        </form>
+      </div>
+
+      {/* Application Submitted Modal */}
+      {submitted && (
+        <div
+          className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="submission-title"
+          aria-describedby="submission-desc"
+        >
+          <div className="bg-gradient-to-br from-black to-[#18181b] rounded-2xl border border-[#D4AF37] shadow-2xl max-w-md w-full p-8 text-white relative">
+            <button
+              aria-label="Close"
+              className="absolute top-5 right-5 text-[#BFA980] hover:text-[#D4AF37] transition"
+              onClick={closeModal}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <h3 id="submission-title" className="text-2xl font-manrope font-bold mb-4 text-[#D4AF37] text-center">
+              Thank you for your submission!
+            </h3>
+            <p id="submission-desc" className="text-gray-300 text-center mb-6">
+              Our finance experts will contact you soon to assist.
+            </p>
+            <div className="flex justify-center">
+              <button
+                onClick={closeModal}
+                className="py-2 px-8 border border-[#D4AF37] rounded-full font-medium text-[#D4AF37] hover:bg-[#1a1a1a] transition"
+              >
+                Close
+              </button>
             </div>
           </div>
-        </section>
+        </div>
+      )}
+    </section>
 
         {/* FAQ Section */}
         <section className="py-20 bg-gradient-to-r from-[#0e0e0e]/60 via-[#1a1a1a]/40 to-[#0e0e0e]/60">

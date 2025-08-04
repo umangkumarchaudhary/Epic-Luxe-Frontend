@@ -16,6 +16,10 @@ import {
   FileText,
   ArrowUpDown,
   MessageCircle,
+  Clock,
+  MapPin,
+  Star,
+  Sparkles,
 } from 'lucide-react';
 
 // Tier city data (fill as needed)
@@ -32,17 +36,22 @@ const cities = [
 
 const services = [
   { name: 'Buy Now', icon: Car, href: '/inventory' },
-  { name: 'Sell Now', icon: Crown, href: '/services/SellNowYourCar' },
+  { name: 'Sell Now', icon: Crown, href: '/sell' },
   { name: 'Free Evaluation', icon: Shield, href: '/evaluation' },
   { name: 'Finance', icon: CreditCard, href: '/services/finance' },
-  { name: 'Insurance', icon: FileText, href: '/services/insurance' },
-  { name: 'Trade In', icon: ArrowUpDown, href: '/services/TradeIn' },
+  { name: 'Insurance', icon: FileText, href: '/insurance' },
+  { name: 'Trade In', icon: ArrowUpDown, href: '/trade-in' },
 ];
 const navItems = [
   { name: 'Home', href: '/' },
-  { name: 'Testimonials', href: '/insights/testimonials' },
+  { name: 'Contact', href: '/contact' },
   { name: 'About', href: '/AboutUs' },
+];
+
+const insightsItems = [
+  { name: 'Testimonials', href: '/insights/testimonials' },
   { name: 'Blogs', href: '/insights/blogs' },
+  { name: 'Press', href: '/Press' },
 ];
 const popularSearches = {
   cars: ['BMW M3', 'Porsche 911'],
@@ -50,10 +59,16 @@ const popularSearches = {
   blogs: ['Car Buying Tips'],
 };
 
-export default function Header() {
+interface HeaderProps {
+  showBlogNav?: boolean;
+}
+
+export default function Header({ showBlogNav = false }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isInsightsOpen, setIsInsightsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [showCallPopup, setShowCallPopup] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Array<{
     type: 'vehicle' | 'blog' | 'service';
@@ -81,6 +96,7 @@ export default function Header() {
   const lastScrollY = useRef(0);
   const locationDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
   const servicesDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
+  const insightsDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const autoDetectLocation = useCallback(() => {
     if (navigator.geolocation && showBrowserLocationPrompt) {
@@ -164,12 +180,61 @@ export default function Header() {
     }
   }, [isSearchOpen]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showCallPopup) {
+        setShowCallPopup(false);
+      }
+    };
+
+    if (showCallPopup) {
+      document.addEventListener('keydown', handleKeyDown);
+      // Prevent body scroll when popup is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [showCallPopup]);
+
   const openServicesDropdown = () => {
     if (servicesDropdownTimeout.current) clearTimeout(servicesDropdownTimeout.current);
     setIsServicesOpen(true);
   };
   const closeServicesDropdown = () => {
     servicesDropdownTimeout.current = setTimeout(() => setIsServicesOpen(false), 120);
+  };
+
+  const openInsightsDropdown = () => {
+    if (insightsDropdownTimeout.current) clearTimeout(insightsDropdownTimeout.current);
+    setIsInsightsOpen(true);
+  };
+
+  const closeInsightsDropdown = () => {
+    insightsDropdownTimeout.current = setTimeout(() => setIsInsightsOpen(false), 120);
+  };
+
+  const handleCallClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowCallPopup(true);
+  };
+
+  const handleCallNow = () => {
+    // Close popup first
+    setShowCallPopup(false);
+    
+    // Small delay to ensure popup closes before initiating call
+    setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        window.location.href = 'tel:+919999999999';
+      }
+    }, 100);
+  };
+
+  const handleCallCancel = () => {
+    setShowCallPopup(false);
   };
 
   const openLocationDropdown = () => {
@@ -838,6 +903,58 @@ export default function Header() {
                   <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] group-hover:w-full transition-all duration-400 ease-out" />
                 </a>
               ))}
+
+              <div
+                className="relative flex items-center"
+                onMouseEnter={openInsightsDropdown}
+                onMouseLeave={closeInsightsDropdown}
+                tabIndex={0}
+                onFocus={openInsightsDropdown}
+                onBlur={closeInsightsDropdown}
+              >
+                <button className="flex items-center group px-1" tabIndex={-1} type="button">
+                  <span className="text-base font-semibold tracking-wide text-white/90 hover:text-[#D4AF37] transition-all duration-300">
+                    Insights
+                  </span>
+                  <ChevronDown
+                    className={`ml-1 w-4 h-4 text-[#BFA980] transition-transform duration-300 ${
+                      isInsightsOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                <div
+                  className={`absolute top-full left-0 mt-3 w-80 bg-gradient-to-br from-[#1a1a1a]/95 to-[#0e0e0e]/95 backdrop-blur-lg border border-[#BFA980]/20 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 origin-top-left transform ${
+                    isInsightsOpen
+                      ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto visible animate-scalein'
+                      : 'opacity-0 scale-95 -translate-y-2 pointer-events-none invisible'
+                  }`}
+                  onMouseEnter={openInsightsDropdown}
+                  onMouseLeave={closeInsightsDropdown}
+                  style={{ maxHeight: '480px', overflowY: 'auto' }}
+                >
+                  <div className="p-6">
+                    <div className="grid grid-cols-1 gap-2">
+                      {insightsItems.map((item, index) => (
+                        <a
+                          key={item.name}
+                          href={item.href}
+                          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300 group border border-transparent hover:border-[#BFA980]/30"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <div className="bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20 p-2 rounded-lg border border-[#D4AF37]/30 group-hover:scale-110 transition-transform duration-300">
+                            <FileText className="w-4 h-4 text-[#D4AF37]" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-white/80 font-semibold text-sm tracking-wide group-hover:text-white transition-colors duration-300">
+                              {item.name}
+                            </h3>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </nav>
 
             <div
@@ -853,13 +970,14 @@ export default function Header() {
               >
                 <Search className="w-4 h-4" />
               </button>
-              <a
-                href="tel:+919999999999"
+              <button
+                onClick={handleCallClick}
                 className="flex items-center space-x-2 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] hover:from-[#BFA980] hover:to-[#D4AF37] text-[#0e0e0e] px-5 py-2.5 rounded-full font-semibold transition-all duration-300 shadow-lg transform hover:scale-105 whitespace-nowrap"
+                type="button"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span className="text-sm">Call Now</span>
-              </a>
+              </button>
             </div>
 
             <div className="flex items-center lg:hidden">
@@ -930,13 +1048,43 @@ export default function Header() {
                   {item.name}
                 </a>
               ))}
-              <a
-                href="tel:+919999999999"
+              <div>
+                <button
+                  onClick={() => setIsInsightsOpen((v) => !v)}
+                  className="flex items-center justify-between w-full text-white/90 hover:text-[#D4AF37] font-semibold px-4 py-3 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300"
+                  type="button"
+                  aria-expanded={isInsightsOpen}
+                >
+                  <span>Insights</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#BFA980] transition-transform ${
+                      isInsightsOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {isInsightsOpen && (
+                  <div className="ml-4 mt-2 space-y-2">
+                    {insightsItems.map((item) => (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        className="flex items-center text-white/70 hover:text-[#D4AF37] space-x-3 px-3 py-2 hover:bg-[#D4AF37]/10 rounded-lg transition-all duration-300 font-semibold"
+                      >
+                        <FileText className="w-4 h-4 text-[#BFA980]" />
+                        <span>{item.name}</span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={handleCallClick}
                 className="mt-6 w-full flex items-center justify-center bg-gradient-to-r from-[#D4AF37] to-[#BFA980] hover:from-[#BFA980] hover:to-[#D4AF37] text-[#0e0e0e] px-6 py-4 rounded-full font-semibold shadow-lg"
+                type="button"
               >
                 <Phone className="w-4 h-4 mr-2" />
                 Call Now
-              </a>
+              </button>
             </div>
           </div>
         )}
@@ -1146,6 +1294,61 @@ export default function Header() {
             background: transparent;
           }
         `}</style>
+
+        {/* Custom Call Popup */}
+        {showCallPopup && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div 
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              onClick={handleCallCancel}
+            />
+            
+            {/* Popup Content */}
+            <div className="relative w-full max-w-md bg-gradient-to-br from-[#0e0e0e] via-[#1a1a1a] to-[#0e0e0e] border border-[#D4AF37]/20 rounded-2xl shadow-2xl overflow-hidden animate-in">
+              {/* Header */}
+              <div className="p-6 border-b border-[#D4AF37]/10">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20 p-2 rounded-lg border border-[#D4AF37]/30">
+                    <Phone className="w-5 h-5 text-[#D4AF37]" />
+                  </div>
+                  <div>
+                    <h2 className="text-white font-bold text-xl">Call Epic Luxe</h2>
+                    <p className="text-gray-400 text-sm mt-1">Speak directly with our luxury car expert</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Phone Number */}
+              <div className="p-6 text-center">
+                <div className="text-3xl font-bold text-[#D4AF37] mb-2">+91-9999999999</div>
+                <p className="text-gray-400 text-sm">Available 9:30 AM to 7:30 PM for your luxury car needs</p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="p-6 space-y-3">
+                <button
+                  onClick={handleCallNow}
+                  className="w-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] hover:from-[#BFA980] hover:to-[#D4AF37] text-[#0e0e0e] px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg transform hover:scale-105"
+                  type="button"
+                >
+                  <div className="flex items-center justify-center space-x-2">
+                    <Phone className="w-4 h-4" />
+                    <span>Call Now</span>
+                  </div>
+                </button>
+                
+                <button
+                  onClick={handleCallCancel}
+                  className="w-full bg-transparent border border-[#D4AF37]/30 text-[#D4AF37] px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/50"
+                  type="button"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
     </>
   );

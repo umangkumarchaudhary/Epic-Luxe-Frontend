@@ -4,17 +4,17 @@ import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
   Search, 
-  Filter, 
+ 
   Edit3, 
   Trash2, 
   Eye, 
   Calendar,
   Clock,
   TrendingUp,
-  Users,
+ 
   FileText,
   Settings,
-  BarChart3,
+  
   Save,
   Send,
   X,
@@ -22,14 +22,9 @@ import {
   Upload,
   Copy,
   Check,
-  ChevronDown,
+ 
   Tag,
   User,
-  Folder,
-  Heart,
-  MessageCircle,
-  Share2,
-  ArrowUp,
   Loader
 } from 'lucide-react';
 
