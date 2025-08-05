@@ -54,30 +54,45 @@ export default function Faq() {
   return (
     <section
       aria-label="Frequently Asked Questions"
-      className="max-w-4xl mx-auto p-6"
+      className="w-full px-0 m-0"
       style={{ backgroundColor: COLORS.black }}
     >
       <h2
-        className="text-3xl font-bold mb-6"
-        style={{ color: COLORS.gold, fontFamily: "'Montserrat', 'Roboto', Arial, sans-serif" }}
+        className="text-3xl font-bold mb-6 px-8 pt-8"
+        style={{
+          color: COLORS.gold,
+          fontFamily: "'Montserrat', 'Roboto', Arial, sans-serif",
+          width: '100%',
+        }}
       >
         Frequently Asked Questions
       </h2>
-      <div className="divide-y divide-gray-700">
+      <div className="divide-y divide-gray-700 w-full px-8 pb-12">
         {faqs.map((faq, index) => (
-          <div key={index} className="py-4">
+          <div key={index} className="py-4 w-full">
             <button
               onClick={() => toggleIndex(index)}
               className="w-full text-left flex justify-between items-center focus:outline-none"
               aria-expanded={openIndex === index}
               aria-controls={`faq-panel-${index}`}
               id={`faq-title-${index}`}
-              style={{ color: COLORS.white, fontWeight: '600', fontSize: '1.125rem', fontFamily: "'Montserrat', 'Roboto', Arial, sans-serif" }}
+              style={{
+                color: COLORS.white,
+                fontWeight: 600,
+                fontSize: '1.125rem',
+                fontFamily: "'Montserrat', 'Roboto', Arial, sans-serif",
+                width: '100%',
+              }}
             >
               {faq.question}
               <span
                 className="ml-4 transform transition-transform duration-300"
-                style={{ color: COLORS.gold, fontWeight: 'bold', fontSize: '1.5rem' }}
+                style={{
+                  color: COLORS.gold,
+                  fontWeight: 'bold',
+                  fontSize: '1.5rem',
+                  userSelect: 'none',
+                }}
               >
                 {openIndex === index ? '−' : '+'}
               </span>
@@ -89,7 +104,12 @@ export default function Faq() {
               className={`mt-2 overflow-hidden transition-max-height duration-300 ease-in-out ${
                 openIndex === index ? 'max-h-96' : 'max-h-0'
               }`}
-              style={{ color: COLORS.grayText, fontSize: '0.95rem', fontFamily: "'Montserrat', 'Roboto', Arial, sans-serif" }}
+              style={{
+                color: COLORS.grayText,
+                fontSize: '0.95rem',
+                fontFamily: "'Montserrat', 'Roboto', Arial, sans-serif",
+                width: '100%',
+              }}
             >
               <p className="pt-2">{faq.answer}</p>
             </div>

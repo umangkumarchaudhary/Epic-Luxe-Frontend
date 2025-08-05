@@ -3,7 +3,8 @@ import Hero from "./Hero";
 import Footer from "@/components/Footer";
 
 import VehiclesPage from "./VehiclePage";
-import ScheduleDemo from "./Schedule";
+import Faq from "./Faq"
+
 
 
 
@@ -14,6 +15,7 @@ export default function Page() {
       <Hero />
  
       <VehiclesPage />
+      <Faq /> 
       
       <Footer />
       
