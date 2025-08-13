@@ -28,22 +28,30 @@ export interface Vehicle {
   id: number;
   brand: string;
   model: string;
+  variant?: string;
   year: number;
   price: string;
-  originalPrice: string;
-  image: string;
+  originalPrice?: string;
+  savings?: string;
   mileage: string;
   fuelType: string;
   transmission: string;
-  seating: number;
+  engineCapacity?: string;
+  horsepower?: string;
+  torque?: string;
   location: string;
   condition: string;
-  features: string[];
-  savings: string;
-  views: number;
-  // Optional properties used in filtering:
-  bodyType?: string;
-  driveType?: string;
+  ownership?: string;
   colorExterior?: string;
   colorInterior?: string;
+  image: string;
+  images?: string[];
+  features: string[];
+  videoUrl?: string;
+  slug: string;
+  views?: number;
+  // Optional properties for compatibility with existing UI
+  bodyType?: string;
+  driveType?: string;
+  seating?: number;
 }
