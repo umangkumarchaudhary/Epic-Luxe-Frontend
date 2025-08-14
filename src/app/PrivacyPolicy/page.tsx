@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Shield, Phone, Mail, MapPin, Clock, Users, Lock, Eye, Settings, AlertCircle } from 'lucide-react';
-import '../../GlobalFonts.css';
+import '../GlobalFonts.css';
 import Header from '@/app/components/Header'; // Ensure this path is correct
 import Footer from '@/app/components/Footer'; // Ensure this path is correct
 
