@@ -13,48 +13,51 @@ const trackEvent = (event: string, section: string, label: string) => {
 // Declare window.dataLayer type
 declare global {
   interface Window {
-    dataLayer?: any[];
+    dataLayer?: unknown[];
   }
 }
+
 
 const Section2AboutEpicCars = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    // Scroll handler for parallax
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+useEffect(() => {
+  // Scroll handler for parallax
+  const handleScroll = () => {
+    setScrollY(window.scrollY);
+  };
+  window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Intersection Observer for fade-in animations
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
-            setIsVisible(true);
-          }
-        });
-      },
-      { 
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-      }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+  // Intersection Observer for fade-in animations
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+          setIsVisible(true);
+        }
+      });
+    },
+    { 
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
     }
+  );
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
+  const sectionEl = sectionRef.current; // capture ref value once
+  if (sectionEl) {
+    observer.observe(sectionEl);
+  }
+
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+    if (sectionEl) { // use captured value
+      observer.unobserve(sectionEl);
+    }
+  };
+}, []);
+
 
   // Partner brands
   const partnerBrands = [
@@ -137,23 +140,23 @@ const Section2AboutEpicCars = () => {
 
               {/* Paragraph with fade-up delay */}
               <p 
-                className={`text-gray-400 text-base sm:text-lg lg:text-xl leading-relaxed tracking-wide transition-all duration-1000 ease-out ${
-                  isVisible 
-                    ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-12'
-                }`}
-                style={{
-                  fontFamily: 'Inter, Manrope, sans-serif',
-                  fontWeight: 300,
-                  letterSpacing: '0.02em',
-                  lineHeight: '1.7',
-                  transitionDelay: '200ms'
-                }}
-              >
-                Epic Cars brings together the opulence of Epic Luxe and the assured quality of Epic Reassured. 
-                Backed by the Raam Group's decades of automotive leadership, we deliver not just cars — 
-                we deliver trust, heritage, and unmatched ownership experiences.
-              </p>
+  className={`text-gray-400 text-base sm:text-lg lg:text-xl leading-relaxed tracking-wide transition-all duration-1000 ease-out ${
+    isVisible 
+      ? 'opacity-100 translate-y-0' 
+      : 'opacity-0 translate-y-12'
+  }`}
+  style={{
+    fontFamily: 'Inter, Manrope, sans-serif',
+    fontWeight: 300,
+    letterSpacing: '0.02em',
+    lineHeight: '1.7',
+    transitionDelay: '200ms'
+  }}
+>
+  Epic Cars brings together the opulence of Epic Luxe and the assured quality of Epic Reassured. 
+  Backed by the Raam Group&apos;s decades of automotive leadership, we deliver not just cars — 
+  we deliver trust, heritage, and unmatched ownership experiences.
+</p>
 
               {/* CTA Button */}
               <button
