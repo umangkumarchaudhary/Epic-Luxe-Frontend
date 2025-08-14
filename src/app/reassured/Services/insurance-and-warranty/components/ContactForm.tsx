@@ -44,7 +44,7 @@ export default function ContactForm() {
             Get in Touch
           </h2>
           <p className="text-xl text-gray-600">
-            Ready to find your perfect pre-owned car? We're here to help.
+            Ready to find your perfect pre-owned car? We&apos;re here to help.
           </p>
         </div>
 
@@ -141,7 +141,7 @@ export default function ContactForm() {
 
           {showSuccess && (
             <div className="bg-green-50 border-2 border-green-200 text-green-800 px-6 py-4 rounded-xl text-center opacity-0 animate-fade-in-up">
-              Thank you! We'll get back to you within 24 hours.
+              Thank you! We&apos;ll get back to you within 24 hours.
             </div>
           )}
         </form>

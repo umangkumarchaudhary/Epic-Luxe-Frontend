@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, X, Check, Star, Phone, Mail, User, Car, ArrowRight, Shield, Award, MapPin, TrendingUp } from 'lucide-react';
+import Image from 'next/image';
+import { ChevronLeft, ChevronRight, X, Check, Star, Phone, ArrowRight, Shield, Award, MapPin, TrendingUp } from 'lucide-react';
 
 const EpicReassuredLanding = () => {
   const [showLeadForm, setShowLeadForm] = useState(false);
@@ -26,7 +27,7 @@ const EpicReassuredLanding = () => {
 
   // Exit intent detection
   useEffect(() => {
-    const handleMouseLeave = (e) => {
+    const handleMouseLeave = (e: MouseEvent) => {
       if (e.clientY <= 0 && !showLeadForm) {
         setShowExitIntent(true);
       }
@@ -35,13 +36,20 @@ const EpicReassuredLanding = () => {
     return () => document.removeEventListener('mouseleave', handleMouseLeave);
   }, [showLeadForm]);
 
+  // Data declarations
+  const testimonials = [
+    { name: "Rajesh Kumar", location: "Mumbai", text: "Got my dream car with zero hassle. The warranty gave me complete peace of mind.", rating: 5, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face" },
+    { name: "Priya Sharma", location: "Delhi", text: "Amazing experience! The certification process is thorough and transparent.", rating: 5, avatar: "https://images.unsplash.com/photo-1494790108755-2616b332c1de?w=60&h=60&fit=crop&crop=face" },
+    { name: "Amit Patel", location: "Bangalore", text: "Best decision ever. Quality cars at unbeatable prices with full warranty coverage.", rating: 5, avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face" }
+  ];
+
   // Testimonial carousel
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials.length]);
 
   const handleFormSubmit = async () => {
     if (!formData.name || !formData.phone) {
@@ -89,13 +97,7 @@ const EpicReassuredLanding = () => {
     { name: "Honda City", emi: "₹12,499", image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=250&fit=crop" }
   ];
 
-  const testimonials = [
-    { name: "Rajesh Kumar", location: "Mumbai", text: "Got my dream car with zero hassle. The warranty gave me complete peace of mind.", rating: 5, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face" },
-    { name: "Priya Sharma", location: "Delhi", text: "Amazing experience! The certification process is thorough and transparent.", rating: 5, avatar: "https://images.unsplash.com/photo-1494790108755-2616b332c1de?w=60&h=60&fit=crop&crop=face" },
-    { name: "Amit Patel", location: "Bangalore", text: "Best decision ever. Quality cars at unbeatable prices with full warranty coverage.", rating: 5, avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face" }
-  ];
-
-  const LeadForm = ({ onClose, title = "Reserve Your Dream Car" }) => (
+  const LeadForm = ({ onClose, title = "Reserve Your Dream Car" }: { onClose: () => void; title?: string }) => (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl transform animate-in slide-in-from-bottom-4 duration-300">
         <div className="flex justify-between items-center mb-6">
@@ -208,11 +210,13 @@ const EpicReassuredLanding = () => {
               </div>
             </div>
             <div className="relative animate-in slide-in-from-right duration-700">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop"
                 alt="Premium Car"
+                width={800}
+                height={600}
                 className="w-full h-96 lg:h-[500px] object-cover rounded-2xl shadow-2xl"
-                loading="lazy"
+                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
             </div>
@@ -242,11 +246,12 @@ const EpicReassuredLanding = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="relative">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=600&h=400&fit=crop"
                 alt="Campaign Offer"
+                width={600}
+                height={400}
                 className="w-full h-80 object-cover rounded-2xl shadow-xl"
-                loading="lazy"
               />
               <div className="absolute top-6 left-6 bg-yellow-400 text-white px-4 py-2 rounded-full font-bold">
                 Limited Time
@@ -296,11 +301,12 @@ const EpicReassuredLanding = () => {
                 className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group transform hover:-translate-y-2"
                 onClick={() => setShowLeadForm(true)}
               >
-                <img
+                <Image
                   src={car.image}
                   alt={car.name}
+                  width={400}
+                  height={250}
                   className="w-full h-48 object-cover rounded-t-2xl"
-                  loading="lazy"
                 />
                 <div className="p-6">
                   <h3 className="font-bold text-xl text-gray-900 mb-2">{car.name}</h3>
@@ -358,11 +364,13 @@ const EpicReassuredLanding = () => {
                   <Star key={i} className="h-6 w-6 text-yellow-400 fill-current" />
                 ))}
               </div>
-              <p className="text-lg text-gray-700 mb-6 italic">"{testimonials[currentTestimonial].text}"</p>
+              <p className="text-lg text-gray-700 mb-6 italic">&quot;{testimonials[currentTestimonial].text}&quot;</p>
               <div className="flex items-center justify-center space-x-4">
-                <img
+                <Image
                   src={testimonials[currentTestimonial].avatar}
                   alt={testimonials[currentTestimonial].name}
+                  width={48}
+                  height={48}
                   className="w-12 h-12 rounded-full"
                 />
                 <div>
@@ -394,13 +402,14 @@ const EpicReassuredLanding = () => {
             Why Choose Epic Reassured?
           </h2>
           <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-            We've revolutionized the pre-owned car buying experience by combining cutting-edge technology with uncompromising quality standards. Every vehicle undergoes our rigorous 200-point inspection process, ensuring you drive away with complete confidence and peace of mind.
+            We&apos;ve revolutionized the pre-owned car buying experience by combining cutting-edge technology with uncompromising quality standards. Every vehicle undergoes our rigorous 200-point inspection process, ensuring you drive away with complete confidence and peace of mind.
           </p>
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=300&fit=crop"
             alt="Epic Reassured Showroom"
+            width={800}
+            height={300}
             className="w-full h-64 object-cover rounded-2xl shadow-xl"
-            loading="lazy"
           />
         </div>
       </section>

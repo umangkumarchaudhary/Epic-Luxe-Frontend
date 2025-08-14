@@ -415,7 +415,7 @@ export default function VehiclesPageClient({ initialVehicles }: VehiclesPageClie
                   <div className="mb-6 p-4 bg-black/5 border-l-4 border-black">
                     <p className="text-sm text-black/70">
                       Showing closest matches for{' '}
-                      <span className="font-medium text-black">"{searchTerm}"</span>
+                      <span className="font-medium text-black">&quot;{searchTerm}&quot;</span>
                     </p>
                   </div>
                 )}

@@ -2,7 +2,8 @@
 
 // VehicleGridClient.tsx - Client Component with Premium Cards
 import React, { useState, useCallback, useMemo } from "react";
-import { Calculator, Calendar, Heart, Share2, Check, Star, TrendingUp, Award } from 'lucide-react';
+import Image from 'next/image';
+import { Calculator, Calendar, Heart, Share2, Check, TrendingUp, Award } from 'lucide-react';
 import EMIModal from '../EMIModal/EMIModal';
 import CompareDrawer from '../CompareDrawer/CompareDrawer';
 import ScheduleDemo from '../Schedule';
@@ -37,6 +38,7 @@ export type Vehicle = {
   bodyType?: string;
   driveType?: string;
   seating?: number;
+  isLiked?: boolean;
 };
 
 // EMI calculator utility
@@ -142,7 +144,13 @@ export default function VehicleGridClient({ vehicles }: VehicleGridClientProps) 
       {emiOpen.open && emiOpen.car && (
         <EMIModal
           visible={emiOpen.open}
-          vehicle={emiOpen.car}
+          vehicle={{
+            ...emiOpen.car,
+            isLiked: likedIds.includes(emiOpen.car.id),
+            views: emiOpen.car.views || 0,
+            seating: emiOpen.car.seating || 5,
+            savings: emiOpen.car.savings || '0'
+          }}
           onClose={() => setEmiOpen({ open: false, car: null })}
         />
       )}
@@ -256,11 +264,12 @@ function VehicleCard({
       
       {/* Image Container */}
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100 rounded-t-xl">
-        <img
+        <Image
           src={car.image}
           alt={`${car.brand} ${car.model}`}
-          className="object-cover w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
-          loading="lazy"
+          fill
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           draggable={false}
         />
         

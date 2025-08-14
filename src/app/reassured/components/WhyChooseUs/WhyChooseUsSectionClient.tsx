@@ -76,7 +76,6 @@ const TestimonialCarousel = () => {
   const memoizedTestimonials = useMemo(() => testimonials, []);
   
   const totalSlides = memoizedTestimonials.length;
-  const slidesToShow = 3; // Show 3 testimonials on desktop
 
   const nextSlide = useCallback(() => {
     if (isTransitioning) return;
@@ -105,7 +104,7 @@ const TestimonialCarousel = () => {
     return () => clearInterval(interval);
   }, [nextSlide]);
 
-  const TestimonialCard = React.memo(({ testimonial, index }: { testimonial: typeof testimonials[0], index: number }) => (
+  const TestimonialCard = React.memo(({ testimonial }: { testimonial: typeof testimonials[0] }) => (
     <article 
       className="flex-none w-full md:w-1/3 px-4"
       itemScope 
@@ -179,7 +178,7 @@ const TestimonialCarousel = () => {
       <div className="relative overflow-hidden" ref={containerRef}>
         <div className="flex transition-transform duration-300 ease-in-out">
           {memoizedTestimonials.map((testimonial, index) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} index={index} />
+            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
           ))}
         </div>
       </div>

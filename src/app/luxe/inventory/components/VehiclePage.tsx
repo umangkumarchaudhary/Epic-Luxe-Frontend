@@ -86,8 +86,8 @@ interface FrontendVehicle {
   // Additional properties for compatibility
   bodyType?: string;
   driveType?: string;
-  seating?: number;
-  isLiked?: boolean;
+  seating: number;
+  isLiked: boolean;
 }
 
 /* ---------- initial filter state ---------- */
@@ -173,6 +173,7 @@ function transformBackendToFrontend(backendVehicle: BackendVehicle): FrontendVeh
     bodyType: 'Sedan', // You might want to add this to your backend
     driveType: 'FWD',  // You might want to add this to your backend
     seating: 5,        // You might want to add this to your backend
+    isLiked: false,    // Default like status
   };
 }
 

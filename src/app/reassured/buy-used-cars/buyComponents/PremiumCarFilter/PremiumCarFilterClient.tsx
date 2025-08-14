@@ -2,7 +2,7 @@
 
 // PremiumCarFilterClient.tsx - Client Component (Interactive)
 import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { Filter, X, ChevronDown, ChevronUp, Car, Settings, Palette, Zap, Search, SortAsc } from "lucide-react";
+import { Filter, X, ChevronDown, ChevronUp, Car, Settings, Zap, Search, SortAsc } from "lucide-react";
 
 interface FiltersState {
   brand: string[];
@@ -236,8 +236,6 @@ export default function PremiumCarFilterClient({
     label,
     formatter,
   }: DualRangeSliderProps) {
-    const sliderRef = useRef<HTMLDivElement>(null);
-
     const minPercent = ((minVal - min) / (max - min)) * 100;
     const maxPercent = ((maxVal - min) / (max - min)) * 100;
 

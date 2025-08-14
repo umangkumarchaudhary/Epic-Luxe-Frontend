@@ -96,8 +96,8 @@ const EpicReassuredBenefits: React.FC = () => {
         <section>
           <h2>Why Choose Our Certified Pre-Owned Luxury Cars?</h2>
           <p>
-            When you purchase a certified pre-owned luxury vehicle from us, you're not just buying a car – 
-            you're investing in peace of mind. Our Epic Reassured Benefits program sets the gold standard 
+            When you purchase a certified pre-owned luxury vehicle from us, you&apos;re not just buying a car – 
+            you&apos;re investing in peace of mind. Our Epic Reassured Benefits program sets the gold standard 
             for pre-owned luxury car purchases in India, offering comprehensive protection and services that 
             rival new car ownership experiences.
           </p>
@@ -147,7 +147,7 @@ const EpicReassuredBenefits: React.FC = () => {
           <p>
             Join 10,000+ satisfied customers who have experienced the difference of buying certified 
             pre-owned luxury cars with Epic Reassured Benefits. With a 4.8/5 customer satisfaction rating 
-            and 95% customer retention rate, we're India's most trusted pre-owned luxury car platform.
+            and 95% customer retention rate, we&apos;re India&apos;s most trusted pre-owned luxury car platform.
           </p>
         </section>
 
@@ -164,7 +164,7 @@ const EpicReassuredBenefits: React.FC = () => {
             <dd>Yes, we offer competitive financing options with interest rates starting from 7.5% through our banking partners including HDFC, ICICI, and Axis Bank.</dd>
             
             <dt>Can I return the car if I'm not satisfied?</dt>
-            <dd>Yes, we offer a 7-day/300km return policy. If you're not satisfied, return the vehicle for a full refund (subject to vehicle condition).</dd>
+            <dd>Yes, we offer a 7-day/300km return policy. If you&apos;re not satisfied, return the vehicle for a full refund (subject to vehicle condition).</dd>
           </dl>
         </section>
       </div>

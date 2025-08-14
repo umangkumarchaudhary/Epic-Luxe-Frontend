@@ -18,7 +18,7 @@ export default function HectorSpotlight() {
               Drive the Hector,<br />Worry-Free for 3 Years
             </h2>
             <p className="text-xl text-gray-300 mb-8">
-              As an authorized MG partner, we're offering an exclusive 3-Year Warranty on every new Hector.
+              As an authorized MG partner, we&apos;re offering an exclusive 3-Year Warranty on every new Hector.
             </p>
             
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 mb-8">
@@ -45,7 +45,7 @@ export default function HectorSpotlight() {
           
           <div className="relative h-[600px] rounded-3xl overflow-hidden">
             <Image
-              src="/mg-hector.jpg"
+              src="/assets/images/MGHector2.png"
               alt="MG Hector 3 Year Warranty Hyderabad Chennai Vizag Pune"
               fill
               className="object-cover"

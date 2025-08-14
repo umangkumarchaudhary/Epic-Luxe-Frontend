@@ -180,7 +180,7 @@ export default function SellCarPage() {
         <header className="sr-only">
           <h1>Sell Your Used Car Online - Get Best Price Instantly</h1>
           <p>
-            India's #1 platform to sell used cars online. Get instant valuation, 
+            India&apos;s #1 platform to sell used cars online. Get instant valuation, 
             free inspection, and immediate payment. We buy all car brands including 
             Maruti, Hyundai, Honda, Toyota, Volkswagen, Ford, Tata, Mahindra, and more.
           </p>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, MouseEvent } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ChevronRight, Car, DollarSign, Shield, Eye, Star, TrendingUp, Clock, Phone, MessageCircle } from 'lucide-react';
 import GetQuoteForm from './QuoteForm';

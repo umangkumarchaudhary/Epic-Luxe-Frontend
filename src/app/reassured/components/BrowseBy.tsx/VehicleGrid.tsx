@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { ChevronRight, Car, MapPin, Fuel } from 'lucide-react';
 
 interface Vehicle {
@@ -31,6 +32,40 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const updateVehicles = useCallback(async (brandName: string) => {
+    setLoading(true);
+    try {
+      const brandVehicles = vehiclesByBrand[brandName.toLowerCase()] || [];
+      const limitedVehicles = brandVehicles.slice(0, 3);
+      
+      const vehiclesWithImages = await Promise.all(
+        limitedVehicles.map(async (vehicle: Vehicle) => {
+          try {
+            const imageResponse = await fetch(`http://localhost:5000/admin/vehicle/${vehicle.id}`);
+            const imageData = await imageResponse.json();
+            
+            return {
+              ...vehicle,
+              image_url: imageData.images?.[0]?.image_url || '/placeholder.png'
+            };
+          } catch {
+            return {
+              ...vehicle,
+              image_url: '/placeholder.png'
+            };
+          }
+        })
+      );
+      
+      setVehicles(vehiclesWithImages);
+    } catch (error) {
+      console.error('Error updating vehicles:', error);
+      setVehicles([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [vehiclesByBrand]);
+
   useEffect(() => {
     const handleBrandSelection = (event: CustomEvent) => {
       const brandName = event.detail.brandName;
@@ -47,41 +82,8 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
     return () => {
       window.removeEventListener('brandSelected', handleBrandSelection as EventListener);
     };
-  }, [defaultBrand]);
+  }, [defaultBrand, updateVehicles]);
 
-  const updateVehicles = async (brandName: string) => {
-    setLoading(true);
-    try {
-      const brandVehicles = vehiclesByBrand[brandName.toLowerCase()] || [];
-      const limitedVehicles = brandVehicles.slice(0, 3);
-      
-      const vehiclesWithImages = await Promise.all(
-        limitedVehicles.map(async (vehicle: Vehicle) => {
-          try {
-            const imageResponse = await fetch(`http://localhost:5000/admin/vehicle/${vehicle.id}`);
-            const imageData = await imageResponse.json();
-            
-            return {
-              ...vehicle,
-              image_url: imageData.images?.[0]?.image_url || '/placeholder.png'
-            };
-          } catch (error) {
-            return {
-              ...vehicle,
-              image_url: '/placeholder.png'
-            };
-          }
-        })
-      );
-      
-      setVehicles(vehiclesWithImages);
-    } catch (error) {
-      console.error('Error updating vehicles:', error);
-      setVehicles([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const formatPrice = (price: number) => {
     if (price >= 10000000) {
@@ -126,10 +128,12 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
                 className="group relative bg-white rounded-none overflow-hidden border border-black hover:shadow-xl transition-all duration-500 w-96"
               >
                 <div className="relative h-48 overflow-hidden bg-gray-100">
-                  <img
-                    src={vehicle.image_url}
+                  <Image
+                    src={vehicle.image_url || '/placeholder.png'}
                     alt={`${vehicle.year} ${vehicle.brand} ${vehicle.model}${vehicle.variant ? ` ${vehicle.variant}` : ''}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   
                   {/* Premium Badge */}
@@ -211,7 +215,7 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
           </div>
           <h3 className="text-xl font-medium text-black mb-2">No Vehicles Found</h3>
           <p className="text-gray-600 font-light">
-            We don't have any {selectedBrand} vehicles available at the moment.
+            We don&apos;t have any {selectedBrand} vehicles available at the moment.
           </p>
         </div>
       )}

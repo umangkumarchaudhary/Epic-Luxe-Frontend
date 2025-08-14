@@ -2,6 +2,7 @@
 
 // EMIModalClient.tsx - Client Component (Interactive)
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import Image from 'next/image';
 import { X, Calculator, ChevronRight, Check } from 'lucide-react';
 
 interface Vehicle {
@@ -286,9 +287,11 @@ const EMIModalClient: React.FC<EMIModalClientProps> = ({ visible, onClose, vehic
               
               {/* Vehicle Info */}
               <div className="flex items-center gap-4 py-6 border-b border-black/10">
-                <img
+                <Image
                   src={vehicle.image}
                   alt={`${vehicle.brand} ${vehicle.model}`}
+                  width={80}
+                  height={56}
                   className="w-20 h-14 object-cover"
                 />
                 <div>

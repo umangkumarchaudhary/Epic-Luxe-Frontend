@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { Phone, Mail, MapPin, Star, Check, Copy } from 'lucide-react';
+import { Phone, Mail, MapPin, Check, ArrowRight, Clock, User, MessageSquare } from 'lucide-react';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 
@@ -10,30 +10,8 @@ interface FormData {
   email: string;
   phone: string;
   message: string;
-  preferredTime: string;
   carInterest: string;
-}
-
-interface ContactCard {
-  id: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  title: string;
-  description: string;
-  contact: string;
-  primaryAction: () => void;
-  primaryText: string;
-  secondaryAction: () => void;
-  secondaryText: string;
-  secondaryIcon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  isActive: boolean;
-}
-
-interface Review {
-  name: string;
-  rating: number;
-  text: string;
-  avatar: string;
-  verified: boolean;
+  contactMethod: string;
 }
 
 const Contact = () => {
@@ -42,131 +20,12 @@ const Contact = () => {
     email: '',
     phone: '',
     message: '',
-    preferredTime: '',
     carInterest: '',
+    contactMethod: 'phone',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [emailCopied, setEmailCopied] = useState(false);
-  const [phoneCopied, setPhoneCopied] = useState(false);
-  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [currentSlide, setCurrentSlide] = useState<number>(0);
-  const [currentReviewSlide, setCurrentReviewSlide] = useState<number>(0);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
-
-  const gold = '#d3b04f';
-  const goldGrad = 'bg-gradient-to-r from-[#d3b04f] to-[#b08e33]';
-
-  // Clipboard copy with feedback
-  const copyEmail = () => {
-    navigator.clipboard.writeText('luxury@raamgroup.com');
-    setEmailCopied(true);
-    setTimeout(() => setEmailCopied(false), 2000);
-  };
-
-  const copyPhone = () => {
-    navigator.clipboard.writeText('+91 98765 43210');
-    setPhoneCopied(true);
-    setTimeout(() => setPhoneCopied(false), 2000);
-  };
-
-  const contactCards: ContactCard[] = [
-    {
-      id: 'call',
-      icon: Phone,
-      title: 'Speak Directly',
-      description: 'Immediate assistance from our experts',
-      contact: '+91 98765 43210',
-      primaryAction: () => window.open('tel:+919876543210'),
-      primaryText: 'Call Now',
-      secondaryAction: copyPhone,
-      secondaryText: phoneCopied ? 'Copied' : 'Copy Number',
-      secondaryIcon: phoneCopied ? Check : Copy,
-      isActive: phoneCopied,
-    },
-    {
-      id: 'email',
-      icon: Mail,
-      title: 'Write to Us',
-      description: 'Detailed inquiries and documentation',
-      contact: 'luxury@raamgroup.com',
-      primaryAction: () => window.open('mailto:luxury@raamgroup.com'),
-      primaryText: 'Send Email',
-      secondaryAction: copyEmail,
-      secondaryText: emailCopied ? 'Copied' : 'Copy Email',
-      secondaryIcon: emailCopied ? Check : Copy,
-      isActive: emailCopied,
-    },
-    {
-      id: 'visit',
-      icon: MapPin,
-      title: 'Experience Luxury',
-      description: 'Visit our premium showroom',
-      contact: 'Hi-Tech City, Hyderabad',
-      primaryAction: () => {},
-      primaryText: 'Schedule Visit',
-      secondaryAction: () => {},
-      secondaryText: 'View on Map',
-      secondaryIcon: MapPin,
-      isActive: false,
-    },
-  ];
-
-  const reviews: Review[] = [
-    {
-      name: 'Arjun Mehta',
-      rating: 5,
-      text: 'Exceptional service! The team made buying my dream car effortless. Every detail was perfect.',
-      avatar: 'AM',
-      verified: true,
-    },
-    {
-      name: 'Priya Sharma',
-      rating: 5,
-      text: 'Premium experience from start to finish. The showroom visit was absolutely luxurious.',
-      avatar: 'PS',
-      verified: true,
-    },
-    {
-      name: 'Rajesh Kumar',
-      rating: 5,
-      text: 'Outstanding quality and transparency. Raam Group exceeded all my expectations completely.',
-      avatar: 'RK',
-      verified: true,
-    },
-  ];
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % contactCards.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isMobile, contactCards.length]);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    const interval = setInterval(() => {
-      setCurrentReviewSlide((prev) => (prev + 1) % reviews.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isMobile, reviews.length]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState<string>('');
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -174,337 +33,346 @@ const Contact = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    setIsLoading(true);
+    
+    // Simulate API call
     setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        message: '',
-        preferredTime: '',
-        carInterest: '',
-      });
-    }, 3000);
+      setIsSubmitted(true);
+      setIsLoading(false);
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: '',
+          carInterest: '',
+          contactMethod: 'phone',
+        });
+      }, 3000);
+    }, 1500);
   };
-
-  const renderContactCard = (
-    card: ContactCard,
-    _index: number,
-  ) => {
-    const Icon = card.icon;
-    const SecondaryIcon = card.secondaryIcon;
-    return (
-      <div
-        key={card.id}
-        className="group relative bg-white p-4 rounded-2xl border border-black shadow-lg overflow-hidden w-full"
-        style={{ minWidth: '280px' }}
-      >
-        {/* Optional subtle gold glow on hover for important focus */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#d3b04f]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none" />
-        <div className="relative">
-          <div className={`w-12 h-12 ${goldGrad} rounded-xl flex items-center justify-center mb-3 mx-auto`}>
-            <Icon className="w-6 h-6 text-black" />
-          </div>
-          <h3 className="text-lg font-semibold text-black mb-1 text-center">{card.title}</h3>
-          <p className="text-gray-600 text-sm text-center mb-3">{card.description}</p>
-          <div className="text-black text-base font-semibold mb-4 text-center select-text">
-            {card.id === 'visit' ? (
-              <>
-                Hi-Tech City, Hyderabad
-                <br />
-                Telangana 500081
-                <br />
-                <span className="text-xs">Mon - Sun: 9:00 AM - 8:00 PM</span>
-              </>
-            ) : (
-              card.contact
-            )}
-          </div>
-          <div className="space-y-2">
-            <button
-              onClick={card.primaryAction}
-              className={`w-full ${goldGrad} text-black rounded-lg py-2 font-semibold shadow-md hover:shadow-lg focus:outline-none transition duration-200`}
-            >
-              {card.primaryText}
-            </button>
-            <button
-              onClick={card.secondaryAction}
-              className="w-full bg-transparent border border-black text-black rounded-lg py-2 font-medium shadow-sm hover:bg-[#d3b04f]/10 transition duration-200 flex items-center justify-center gap-2"
-            >
-              <SecondaryIcon className="w-4 h-4" />
-              {card.secondaryText}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderReviewCard = (review: Review, index: number) => (
-    <div
-      key={index}
-      className="w-full p-4 bg-white rounded-2xl border border-black shadow-lg transition hover:scale-105 duration-300"
-    >
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <div className={`rounded-full ${goldGrad} w-12 h-12 flex items-center justify-center font-semibold text-black select-text`}>
-            {review.avatar}
-          </div>
-          <div>
-            <div className="text-black font-semibold flex items-center gap-2">
-              {review.name}
-              {review.verified && <Check className="w-4 h-4" style={{ color: gold }} />}
-            </div>
-            <div className="flex gap-1 mt-1">
-              {[...Array(review.rating)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-current" style={{ color: gold }} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-      <p className="text-gray-600 text-sm leading-relaxed select-text">{review.text}</p>
-    </div>
-  );
 
   return (
-    <div className="relative min-h-screen bg-white text-black overflow-hidden manrope-font">
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       <Header />
-
-      {/* Background gold glow accent but unobtrusive */}
-      <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
-        <div
-          className="absolute rounded-full bg-gradient-radial from-[#d3b04f]/10 to-transparent opacity-80 blur-3xl transition-all duration-500"
-          style={{ left: mousePosition.x - 192, top: mousePosition.y - 192 }}
-        />
-        <div
-          className="absolute rounded-full bg-gradient-radial from-[#d3b04f]/20 to-transparent opacity-40 blur-3xl animate-pulse"
-          style={{ left: '70%' }}
-        />
-        <div
-          className="absolute rounded-full bg-gradient-radial from-[#d3b04f]/20 to-transparent opacity-40 blur-3xl animate-pulse delay-200"
-          style={{ left: '20%', bottom: '30%' }}
-        />
-      </div>
-
-      {/* Hero and header content */}
-      <section className="relative min-h-[75vh] flex flex-col justify-center px-6 pt-24 md:pt-32">
-        <h1 className={`text-5xl font-playfair font-black mb-4 text-center leading-tight bg-clip-text text-transparent bg-gradient-to-r from-[#d3b04f] to-[#b08e33]`}>
-          Contact Our Luxury Specialists
-        </h1>
-        <p className="text-center text-lg text-gray-600 max-w-4xl mx-auto">
-          Connect and communicate your luxury car aspirations with our experienced team.
-        </p>
-        <div className="mt-10 flex justify-center gap-6 flex-wrap max-w-lg mx-auto">
-          <button
-            onClick={() => {
-              const contactFormElement = document.getElementById('contact-form');
-              if (contactFormElement) contactFormElement.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className={`${goldGrad} rounded-full text-black font-semibold py-3 px-8 hover:shadow-lg transition duration-300`}
-          >
-            Start Conversation
-          </button>
-          <a
-            href="tel:+919876543210"
-            className="rounded-full bg-transparent border border-black text-black font-medium py-3 px-8 transition hover:bg-[#d3b04f] hover:text-black"
-          >
-            Call Directly
-          </a>
+      
+      {/* Hero Section - Minimal and Clean */}
+      <section className="pt-24 pb-12 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h1 className="text-5xl md:text-7xl font-extralight text-black mb-6 tracking-tight leading-[0.9]">
+              Contact
+            </h1>
+            <p className="text-lg md:text-xl text-black/70 font-light max-w-2xl mx-auto leading-relaxed">
+              Experience premium automotive excellence. Our specialists are ready to assist you.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Contact cards: mobile & desktop */}
-      <section className="relative py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          {/* Mobile slider view */}
-          <div className="md:hidden relative">
-            <div className="overflow-hidden">
-              <div
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {contactCards.map((card, idx) => (
-                  <div key={card.id} className="w-full flex-shrink-0 px-2">
-                    {renderContactCard(card, idx)}
+      {/* Main Content - Single Screen Layout */}
+      <section className="px-4 pb-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-3 gap-12 items-start">
+            
+            {/* Contact Information */}
+            <div className="lg:col-span-1 space-y-8">
+              
+              {/* Phone */}
+              <div className="group">
+                <div className="border border-black/10 rounded-2xl p-6 hover:border-black/30 transition-all duration-300 hover:shadow-lg">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-black">Call</h3>
+                      <p className="text-sm text-black/60">Immediate assistance</p>
+                    </div>
                   </div>
-                ))}
+                  <p className="text-black font-medium mb-4">+91 98765 43210</p>
+                  <button 
+                    onClick={() => window.open('tel:+919876543210')}
+                    className="w-full bg-black text-white py-3 rounded-full font-medium hover:bg-black/90 transition-colors flex items-center justify-center gap-2"
+                  >
+                    Call Now
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="group">
+                <div className="border border-black/10 rounded-2xl p-6 hover:border-black/30 transition-all duration-300 hover:shadow-lg">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
+                      <Mail className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-black">Email</h3>
+                      <p className="text-sm text-black/60">Detailed inquiries</p>
+                    </div>
+                  </div>
+                  <p className="text-black font-medium mb-4">contact@raamgroup.com</p>
+                  <button 
+                    onClick={() => window.open('mailto:contact@raamgroup.com')}
+                    className="w-full border border-black text-black py-3 rounded-full font-medium hover:bg-black hover:text-white transition-all flex items-center justify-center gap-2"
+                  >
+                    Send Email
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="group">
+                <div className="border border-black/10 rounded-2xl p-6 hover:border-black/30 transition-all duration-300 hover:shadow-lg">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-black">Visit</h3>
+                      <p className="text-sm text-black/60">Experience center</p>
+                    </div>
+                  </div>
+                  <p className="text-black font-medium mb-2">Hi-Tech City, Hyderabad</p>
+                  <p className="text-black/60 text-sm mb-4">Telangana 500081</p>
+                  <div className="flex items-center gap-2 text-sm text-black/60 mb-4">
+                    <Clock className="w-4 h-4" />
+                    <span>Mon - Sun: 9:00 AM - 8:00 PM</span>
+                  </div>
+                  <button className="w-full border border-black text-black py-3 rounded-full font-medium hover:bg-black hover:text-white transition-all flex items-center justify-center gap-2">
+                    Get Directions
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="flex justify-center mt-4 space-x-2">
-              {contactCards.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                    currentSlide === idx ? 'bg-black' : 'bg-gray-400'
-                  }`}
-                  aria-label={`Slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-          {/* Desktop view */}
-          <div className="hidden md:grid md:grid-cols-3 gap-6">
-            {contactCards.map((card, idx) => renderContactCard(card, idx))}
-          </div>
-        </div>
-      </section>
 
-      {/* Contact form */}
-      <section
-        id="contact-form"
-        className="py-12 px-6 bg-white max-w-4xl mx-auto rounded-xl shadow-lg border border-black"
-      >
-        <h2 className="font-playfair text-3xl mb-6 text-center" style={{ color: gold }}>
-          Get Started
-        </h2>
-        {!isSubmitted ? (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block mb-2 font-semibold text-black">
-                Full Name
-              </label>
-              <input
-                id="name"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                className="w-full rounded-md p-3 bg-white text-black border border-black"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block mb-2 font-semibold text-black">
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="w-full rounded-md p-3 bg-white text-black border border-black"
-              />
-            </div>
-            <div>
-              <label htmlFor="phone" className="block mb-2 font-semibold text-black">
-                Phone Number
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                required
-                className="w-full rounded-md p-3 bg-white text-black border border-black"
-              />
-            </div>
-            <div>
-              <label htmlFor="preferredTime" className="block mb-2 font-semibold text-black">
-                Preferred Time to Contact
-              </label>
-              <input
-                id="preferredTime"
-                type="time"
-                name="preferredTime"
-                value={formData.preferredTime}
-                onChange={handleInputChange}
-                className="w-full rounded-md p-3 bg-white text-black border border-black"
-              />
-            </div>
-            <div>
-              <label htmlFor="carInterest" className="block mb-2 font-semibold text-black">
-                Car Brand of Interest
-              </label>
-              <select
-                id="carInterest"
-                name="carInterest"
-                value={formData.carInterest}
-                onChange={handleInputChange}
-                className="w-full rounded-md p-3 bg-white text-black border border-black"
-              >
-                <option value="">Select a brand</option>
-                {[
-                  'BMW',
-                  'Mercedes',
-                  'Audi',
-                  'Porsche',
-                  'Jaguar',
-                  'Lexus',
-                  'Other',
-                ].map((brand: string) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="message" className="block mb-2 font-semibold text-black">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleInputChange}
-                rows={4}
-                className="w-full rounded-md p-3 bg-white text-black border border-black"
-              />
-            </div>
+            {/* Contact Form */}
+            <div className="lg:col-span-2">
+              <div className="border border-black/10 rounded-3xl p-8 md:p-12">
+                <div className="mb-8">
+                  <h2 className="text-3xl md:text-4xl font-light text-black mb-4">Get in Touch</h2>
+                  <p className="text-black/60 font-light">Tell us about your automotive needs and preferences.</p>
+                </div>
 
-            <button
-              type="submit"
-              disabled={!formData.name || !formData.email || !formData.phone}
-              className={`${goldGrad} text-black rounded-full py-3 px-8 font-semibold transition disabled:opacity-50`}
-            >
-              {isSubmitted ? (
-                <>
-                  Sent <Check className="inline w-4 h-4 ml-2" />
-                </>
-              ) : (
-                'Submit'
-              )}
-            </button>
-          </form>
-        ) : (
-          <div className="text-center font-semibold mt-6" style={{ color: gold }}>
-            Thank you for reaching out! We&#39;ll get back to you shortly.
-          </div>
-        )}
-      </section>
+                {!isSubmitted ? (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Name Field */}
+                      <div className="relative">
+                        <label 
+                          htmlFor="name" 
+                          className={`absolute left-4 transition-all duration-200 pointer-events-none ${
+                            focusedField === 'name' || formData.name 
+                              ? 'top-3 text-xs text-black/60' 
+                              : 'top-6 text-base text-black/40'
+                          }`}
+                        >
+                          Full Name
+                        </label>
+                        <input
+                          id="name"
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          onFocus={() => setFocusedField('name')}
+                          onBlur={() => setFocusedField('')}
+                          required
+                          className="w-full h-16 pt-6 pb-2 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors"
+                        />
+                      </div>
 
-      {/* Reviews Carousel */}
-      <section className="py-12 px-6 bg-white max-w-4xl mx-auto rounded-xl shadow-lg mt-12 border border-black">
-        <h2 className="font-playfair text-3xl mb-6 text-center" style={{ color: gold }}>
-          Client Reviews
-        </h2>
-        <div className="overflow-hidden">
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentReviewSlide * 100}%)` }}
-          >
-            {reviews.map((review: Review, index: number) => renderReviewCard(review, index))}
+                      {/* Phone Field */}
+                      <div className="relative">
+                        <label 
+                          htmlFor="phone" 
+                          className={`absolute left-4 transition-all duration-200 pointer-events-none ${
+                            focusedField === 'phone' || formData.phone 
+                              ? 'top-3 text-xs text-black/60' 
+                              : 'top-6 text-base text-black/40'
+                          }`}
+                        >
+                          Phone Number
+                        </label>
+                        <input
+                          id="phone"
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          onFocus={() => setFocusedField('phone')}
+                          onBlur={() => setFocusedField('')}
+                          required
+                          className="w-full h-16 pt-6 pb-2 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email Field */}
+                    <div className="relative">
+                      <label 
+                        htmlFor="email" 
+                        className={`absolute left-4 transition-all duration-200 pointer-events-none ${
+                          focusedField === 'email' || formData.email 
+                            ? 'top-3 text-xs text-black/60' 
+                            : 'top-6 text-base text-black/40'
+                        }`}
+                      >
+                        Email Address
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('email')}
+                        onBlur={() => setFocusedField('')}
+                        required
+                        className="w-full h-16 pt-6 pb-2 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    {/* Car Interest */}
+                    <div className="relative">
+                      <label htmlFor="carInterest" className="block text-sm text-black/60 mb-2 font-medium">
+                        Vehicle of Interest
+                      </label>
+                      <select
+                        id="carInterest"
+                        name="carInterest"
+                        value={formData.carInterest}
+                        onChange={handleInputChange}
+                        className="w-full h-16 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors appearance-none"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+                      >
+                        <option value="">Select a vehicle type</option>
+                        <option value="Luxury Sedan">Luxury Sedan</option>
+                        <option value="Premium SUV">Premium SUV</option>
+                        <option value="Sports Car">Sports Car</option>
+                        <option value="Electric Vehicle">Electric Vehicle</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                    {/* Contact Method */}
+                    <div>
+                      <label className="block text-sm text-black/60 mb-4 font-medium">
+                        Preferred Contact Method
+                      </label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <label className="relative">
+                          <input
+                            type="radio"
+                            name="contactMethod"
+                            value="phone"
+                            checked={formData.contactMethod === 'phone'}
+                            onChange={handleInputChange}
+                            className="sr-only"
+                          />
+                          <div className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                            formData.contactMethod === 'phone' 
+                              ? 'border-black bg-black text-white' 
+                              : 'border-black/20 hover:border-black/40'
+                          }`}>
+                            <div className="flex items-center gap-3">
+                              <Phone className="w-5 h-5" />
+                              <span className="font-medium">Phone Call</span>
+                            </div>
+                          </div>
+                        </label>
+                        <label className="relative">
+                          <input
+                            type="radio"
+                            name="contactMethod"
+                            value="email"
+                            checked={formData.contactMethod === 'email'}
+                            onChange={handleInputChange}
+                            className="sr-only"
+                          />
+                          <div className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                            formData.contactMethod === 'email' 
+                              ? 'border-black bg-black text-white' 
+                              : 'border-black/20 hover:border-black/40'
+                          }`}>
+                            <div className="flex items-center gap-3">
+                              <Mail className="w-5 h-5" />
+                              <span className="font-medium">Email</span>
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Message Field */}
+                    <div className="relative">
+                      <label 
+                        htmlFor="message" 
+                        className={`absolute left-4 transition-all duration-200 pointer-events-none ${
+                          focusedField === 'message' || formData.message 
+                            ? 'top-3 text-xs text-black/60' 
+                            : 'top-6 text-base text-black/40'
+                        }`}
+                      >
+                        Message (Optional)
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('message')}
+                        onBlur={() => setFocusedField('')}
+                        rows={4}
+                        className="w-full pt-8 pb-4 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors resize-none"
+                      />
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                      type="submit"
+                      disabled={!formData.name || !formData.email || !formData.phone || isLoading}
+                      className="w-full h-16 bg-black text-white rounded-2xl font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/90 transition-all flex items-center justify-center gap-3 text-lg"
+                    >
+                      {isLoading ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          Send Message
+                          <ArrowRight className="w-5 h-5" />
+                        </>
+                      )}
+                    </button>
+
+                    <p className="text-xs text-black/40 text-center leading-relaxed">
+                      By submitting this form, you agree to our privacy policy and terms of service. 
+                      We will contact you within 24 hours.
+                    </p>
+                  </form>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Check className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-medium text-black mb-4">Message Sent Successfully</h3>
+                    <p className="text-black/60 font-light">
+                      Thank you for contacting us. Our team will respond within 24 hours.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="flex justify-center mt-4 space-x-2">
-          {reviews.map((_, idx: number) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentReviewSlide(idx)}
-              className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                currentReviewSlide === idx ? 'bg-black' : 'bg-gray-400'
-              }`}
-              aria-label={`Slide ${idx + 1}`}
-            />
-          ))}
         </div>
       </section>
 

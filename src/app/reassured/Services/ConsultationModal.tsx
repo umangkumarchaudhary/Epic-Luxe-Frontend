@@ -114,7 +114,8 @@ const ConsultationModal = () => {
         <div className="text-center mb-8">
           <Calendar className="w-12 h-12 mx-auto text-black mb-4" />
           <h3 className="text-2xl font-light text-black mb-2 tracking-tight">Schedule Consultation</h3>
-          <p className="text-gray-600 font-light">Let's discuss your luxury car needs</p>
+          <p className="text-gray-600 font-light">Let&apos;s discuss your luxury car needs</p>
+
         </div>
 
         {isSuccess ? (

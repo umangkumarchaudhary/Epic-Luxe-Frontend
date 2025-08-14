@@ -22,7 +22,7 @@ const SubmitRequestSection: React.FC = () => {
             className="text-4xl md:text-5xl font-light tracking-tight text-black mb-6"
             style={{ fontFamily: 'Manrope, sans-serif' }}
           >
-            Can't Find Your Dream Car?
+            Can&apos;t Find Your Dream Car?
           </h2>
           
           <p 

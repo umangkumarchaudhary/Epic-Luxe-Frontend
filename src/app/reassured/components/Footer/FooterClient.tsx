@@ -97,7 +97,7 @@ const FooterClient = () => {
               <div>
                 <p className="font-medium text-sm">Successfully subscribed!</p>
                 <p className="text-xs text-green-700 mt-1">
-                  Thank you for joining our exclusive community. You'll receive our weekly newsletter with luxury car updates.
+                  Thank you for joining our exclusive community. You&apos;ll receive our weekly newsletter with luxury car updates.
                 </p>
               </div>
             </div>

@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
+import type { SwiperRef } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 import { useRef } from "react";
 
@@ -25,7 +27,7 @@ interface Banner {
 }
 
 export default function HeroClient({ banners }: { banners: Banner[] }) {
-  const swiperRef = useRef<any>(null);
+  const swiperRef = useRef<SwiperRef | null>(null);
 
   if (!banners.length) return null;
 
@@ -53,11 +55,13 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
             <div className="relative w-full h-full">
               {/* Background Image */}
               <div className="absolute inset-0">
-                <img
+                <Image
                   src={banner.image_url} // now using backend Supabase URL
                   alt={banner.title || "Hero Banner"}
-                  className="w-full h-full object-cover object-center"
-                  loading="lazy"
+                  fill
+                  className="object-cover object-center"
+                  priority={banners.indexOf(banner) === 0} // Load first image with priority
+                  sizes="100vw"
                 />
                 {/* Overlay for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-white/10"></div>

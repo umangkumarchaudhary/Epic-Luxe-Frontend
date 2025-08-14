@@ -14,8 +14,6 @@ import {
   X,
 } from 'lucide-react';
 
-const GOLD = '#D4AF37';
-const LIGHT_GOLD = '#BFA980';
 
 interface Car {
   brand: string;
@@ -32,13 +30,13 @@ interface Car {
 const PremiumEMICalculator = () => {
   // Main state
   const [carPrice, setCarPrice] = useState(5300000);
-  const [defaultCarPrice, setDefaultCarPrice] = useState(5300000);
+  const [defaultCarPrice] = useState(5300000);
   const [downPayment, setDownPayment] = useState(400000);
-  const [defaultDownPayment, setDefaultDownPayment] = useState(400000);
+  const [defaultDownPayment] = useState(400000);
   const [loanTenure, setLoanTenure] = useState(5);
-  const [defaultTenure, setDefaultTenure] = useState(5);
+  const [defaultTenure] = useState(5);
   const [interestRate, setInterestRate] = useState(8.5);
-  const [defaultInterest, setDefaultInterest] = useState(8.5);
+  const [defaultInterest] = useState(8.5);
   const [currentCarIndex, setCurrentCarIndex] = useState(0);
   const [emi, setEmi] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
@@ -95,7 +93,7 @@ const PremiumEMICalculator = () => {
       .slice(0, 4);
     setTopCars(recommendations);
     setCurrentCarIndex(0);
-  }, [carPrice]);
+  }, [carPrice, luxuryCarDatabase]);
 
   const formatCurrency = (amount : number) => {
     return new Intl.NumberFormat('en-IN', {

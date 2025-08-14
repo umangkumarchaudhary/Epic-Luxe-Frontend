@@ -1,11 +1,22 @@
 'use client';
 import Image from 'next/image';
 import React, { useState, useEffect , useCallback} from 'react';
-import { Calculator, CheckCircle, Car, Users, Shield, Clock, Phone, MapPin,ChevronDown, ChevronUp, Minus, X } from 'lucide-react';
+import { Calculator, CheckCircle, Car as CarIcon, Users, Shield, Clock, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import PremiumEMICalculator from './components/EMICalculator';
 import FinanceComparisonSection from './components/ComparisonSection';
+
+interface CarData {
+  brand: string;
+  model: string;
+  year: number;
+  price: number;
+  image: string;
+  popular?: boolean;
+  saving?: boolean;
+  premium?: boolean;
+}
 
 const FinancePage = () => {
   // EMI Calculator State
@@ -16,7 +27,7 @@ const FinancePage = () => {
   const [emi, setEmi] = useState(0);
   const [, setTotalInterest] = useState(0);
   const [totalPayable, setTotalPayable] = useState(0);
-  const [, setAffordableCars] = useState([]);
+  const [affordableCars, setAffordableCars] = useState<CarData[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
 
@@ -55,18 +66,18 @@ const FinancePage = () => {
 
    const [submitted, setSubmitted] = useState(false);
 
-   const handleChange = (e) =>
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-   const handleSubmit = async (e) => {
+   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   // Build the payload
   const payload = {
     lead_type: 'finance_emi',       // Pick an identifier that matches your backend logic
     lead_title: 'EMI Calculator Application',
-    name: form.name,
-    phone: form.phone,
-    preferred_car: form.preferredCar,
+    name: formData.name,
+    phone: formData.phone,
+    preferred_car: formData.carInterest,
     loan_amount: carPrice - downPayment,
     emi_tenure: loanTenure,
     interest: interestRate,
@@ -85,7 +96,7 @@ const FinancePage = () => {
 
     const result = await response.json();
     if (response.ok) {
-      setFormSubmitted(true);
+      setSubmitted(true);
       console.log('Lead sent successfully!', result);
     } else {
       alert(result.error || 'Error submitting lead');
@@ -141,9 +152,9 @@ const FinancePage = () => {
       .slice(0, 3);
     
     setAffordableCars(recommendations);
-  }, [carPrice, emi]);
+  }, [carPrice, emi, luxuryCarDatabase, downPayment]);
 
-  const getEMIForCar = (carPrice:number) => {
+  // const getEMIForCar = (carPrice:number) => {
     const principal = carPrice - downPayment;
     const monthlyRate = interestRate / (12 * 100);
     const numberOfPayments = loanTenure * 12;
@@ -154,7 +165,7 @@ const FinancePage = () => {
       return Math.round(emiAmount);
     }
     return 0;
-  };
+  // };
 
   // Check Eligibility
 
@@ -180,7 +191,7 @@ const FinancePage = () => {
     return `₹${(amount / 100000).toFixed(1)} Lakhs`;
   };
  
-   const submitLead = async (e) => {
+   const submitLead = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!fullName || !phone) {
       alert("Please enter your name and phone number.");
@@ -191,7 +202,7 @@ const FinancePage = () => {
       await new Promise((resolve) => setTimeout(resolve, 1500)); // Demo delay
       // API call can go here
       setShowPopup(true); // Show popup
-    } catch (error) {
+    } catch {
       alert("There was an error submitting your application.");
     } finally {
       setIsSubmitting(false);
@@ -214,13 +225,13 @@ const FinancePage = () => {
 
 
 
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
+  // const formatCurrency = (amount: number): string => {
+  //   return new Intl.NumberFormat('en-IN', {
+  //     style: 'currency',
+  //     currency: 'INR',
+  //     maximumFractionDigits: 0
+  //   }).format(amount);
+  // };
 
   
   
@@ -763,7 +774,7 @@ const FinancePage = () => {
               
               <div className="text-center group">
                 <div className="bg-gradient-to-br from-[#D4AF37] to-[#BFA980] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Car className="w-10 h-10 text-[#0e0e0e]" />
+                  <CarIcon className="w-10 h-10 text-[#0e0e0e]" />
                 </div>
                 <h3 className="text-2xl playfair-font font-bold mb-4 text-white/90">Drive Home</h3>
                 <p className="text-white/60 manrope-font font-light leading-relaxed">Complete the paperwork and drive home your dream luxury car with full support.</p>
@@ -830,7 +841,6 @@ const FinancePage = () => {
           onSubmit={handleSubmit}
           className="bg-gradient-to-br from-black/80 to-[#121212]/80 backdrop-blur-lg rounded-3xl border border-[#BFA980]/20 shadow-2xl p-10 grid grid-cols-1 gap-8 sm:grid-cols-2"
           noValidate
-          aria-disabled={submitted}
         >
           {/* Full Name - required */}
           <div className="flex flex-col">
@@ -954,8 +964,7 @@ const FinancePage = () => {
               type="submit"
               className="w-full max-w-sm rounded-full bg-gradient-to-r from-[#D1AF49] to-[#BFA979] py-4 text-black text-xl font-semibold tracking-wide shadow-xl hover:from-[#E6C973] hover:to-[#D1AF49] transition duration-300"
               disabled={submitted}
-              aria-disabled={submitted}
-            >
+                >
               Submit Application
             </button>
 

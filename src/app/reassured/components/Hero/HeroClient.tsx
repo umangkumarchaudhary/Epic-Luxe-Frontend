@@ -72,18 +72,11 @@ const iconMap = {
 export default function HeroClient({ data }: HeroClientProps) {
   const [mounted, setMounted] = useState(false)
   const [hoveredSection, setHoveredSection] = useState<'buy' | 'sell' | null>(null)
-  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     setMounted(true)
     
-    // Check if mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
+    // Mobile check removed as it was unused
     
     // Add Google Fonts
     const link = document.createElement('link')
@@ -613,7 +606,7 @@ export default function HeroClient({ data }: HeroClientProps) {
     document.head.appendChild(style)
     
     return () => {
-      window.removeEventListener('resize', checkMobile)
+      // Cleanup function
     }
   }, [])
 

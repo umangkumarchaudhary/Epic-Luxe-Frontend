@@ -1,5 +1,4 @@
 import React from 'react';
-import { Fuel, Zap, Leaf, Car, MapPin, Calendar, User, Activity, Phone } from 'lucide-react';
 import { luxuryCars } from '../../../../data/BrandData';
 import SellNowWizardClient from './SellNowWizardClient';
 import '../../../../app/GlobalFonts.css';
@@ -21,13 +20,26 @@ interface SellNowWizardProps {
   largeButtons?: boolean;
 }
 
+// Define proper types for luxury cars data
+type VehicleVariants = {
+  [fuelType: string]: string[];
+};
+
+type VehicleModels = {
+  [model: string]: VehicleVariants;
+};
+
+type LuxuryCars = {
+  [brand: string]: VehicleModels;
+};
+
 // Server-side data preparation
 const fuelOptions = [
   { key: 'Petrol', icon: 'fuel', color: '#000000' },
   { key: 'Diesel', icon: 'fuel', color: '#666666' },
   { key: 'Hybrid', icon: 'leaf', color: '#000000' },
   { key: 'Electric', icon: 'zap', color: '#666666' },
-];
+] as const;
 
 const years = Array.from({ length: 26 }, (_, i) => (2025 - i).toString()).concat(['1999 or older']);
 
@@ -37,7 +49,7 @@ const ownerOptions = [
   '3rd owner',
   '4th owner',
   'Beyond 4th owner',
-];
+] as const;
 
 const kmOptions = [
   '0 - 10,000 Km',
@@ -51,7 +63,7 @@ const kmOptions = [
   '80,000 - 90,000 Km',
   '90,000 - 100,000 Km',
   '100,000+ Km',
-];
+] as const;
 
 // Reduced step configuration - from 9 to 5 steps
 const stepConfig = [
@@ -60,7 +72,7 @@ const stepConfig = [
   { id: 3, label: 'Usage History', icon: 'activity', shortLabel: 'Usage' },
   { id: 4, label: 'Contact Info', icon: 'phone', shortLabel: 'Contact' },
   { id: 5, label: 'Upload Images', icon: 'camera', shortLabel: 'Images' },
-];
+] as const;
 
 // City data and image mapping
 const cityImageMap: { [key: string]: string } = {
@@ -108,11 +120,28 @@ const otherCities = [
   // Kerala cities
   'Calicut', 'Thrissur', 'Kollam', 'Palakkad', 'Alappuzha', 'Malappuram',
   'Kannur', 'Kasaragod', 'Kottayam', 'Pathanamthitta', 'Idukki', 'Wayanad',
-];
+] as const;
 
 // Brand logos with server-side preparation
-const getBrandLogo = (brandName: string) => {
+const getBrandLogo = (brandName: string): string => {
   return brandName.charAt(0);
+};
+
+// Convert readonly luxury cars data to mutable format
+const convertLuxuryCarsToMutable = (readonlyData: Record<string, Record<string, Record<string, readonly string[]>>>): LuxuryCars => {
+  const mutableData: LuxuryCars = {};
+  
+  Object.keys(readonlyData).forEach(brand => {
+    mutableData[brand] = {};
+    Object.keys(readonlyData[brand]).forEach(model => {
+      mutableData[brand][model] = {};
+      Object.keys(readonlyData[brand][model]).forEach(fuelType => {
+        mutableData[brand][model][fuelType] = [...readonlyData[brand][model][fuelType]];
+      });
+    });
+  });
+  
+  return mutableData;
 };
 
 const brands: Brand[] = Object.keys(luxuryCars).map(brandName => ({
@@ -121,16 +150,14 @@ const brands: Brand[] = Object.keys(luxuryCars).map(brandName => ({
 }));
 
 // Server-side utility functions
-const normalizeCityName = (name: string) =>
-  name.replace(/\s+/g, '').toLowerCase().replace('ahmedabad', 'ahemdabad');
-
-const getMonumentImage = (cityName: string) => {
-  const normalized = normalizeCityName(cityName);
-  return cityImageMap[normalized] || null;
-};
+// const normalizeCityName = (name: string): string =>
+//   name.replace(/\s+/g, '').toLowerCase().replace('ahmedabad', 'ahemdabad');
 
 // Server Component - SEO Friendly
 const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact, largeButtons }) => {
+  // Convert readonly luxury cars to mutable format
+  const mutableLuxuryCars = convertLuxuryCarsToMutable(luxuryCars);
+  
   // Server-side data preparation for better SEO
   const seoData = {
     title: "Sell Your Used Car Online - Get Instant Valuation",
@@ -194,15 +221,15 @@ const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact, largeButtons }) 
       {/* Client Component */}
       <SellNowWizardClient
         brands={brands}
-        fuelOptions={fuelOptions}
+        fuelOptions={[...fuelOptions]}
         years={years}
-        ownerOptions={ownerOptions}
-        kmOptions={kmOptions}
-        stepConfig={stepConfig}
+        ownerOptions={[...ownerOptions]}
+        kmOptions={[...kmOptions]}
+        stepConfig={[...stepConfig]}
         popularCities={popularCities}
-        otherCities={otherCities}
+        otherCities={[...otherCities]}
         cityImageMap={cityImageMap}
-        luxuryCars={luxuryCars}
+        luxuryCars={mutableLuxuryCars}
         compact={compact}
         largeButtons={largeButtons}
       />

@@ -245,7 +245,7 @@ const ServicesPage = () => {
               <div className="text-center mb-6">
                 <Calendar className="w-12 h-12 mx-auto text-[#D4AF37] mb-4" />
                 <h3 className="text-2xl font-semibold text-white mb-2">Schedule Consultation</h3>
-                <p className="text-white/70">Let's discuss your luxury car needs</p>
+                <p className="text-white/70">Let&apos;s discuss your luxury car needs</p>
               </div>
 
               {isSuccess ? (

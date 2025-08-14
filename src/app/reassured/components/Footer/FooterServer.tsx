@@ -220,7 +220,7 @@ const Footer = () => {
                 
                 <div className="mb-8" itemProp="description">
                   <p className="text-gray-700 text-sm leading-relaxed font-light">
-                    India's most trusted destination for certified luxury pre-owned cars. 
+                    India&apos;s most trusted destination for certified luxury pre-owned cars. 
                     Experience unmatched quality, transparent pricing, and exceptional service.
                   </p>
                 </div>

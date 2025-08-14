@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 interface Brand {
   name: string;
@@ -37,10 +38,13 @@ const BrandSelector = ({ brands, defaultBrand }: BrandSelectorProps) => {
             }`}
             onClick={() => handleBrandClick(brand.name)}
           >
-            <img
+            <Image
               src={brand.logo}
               alt={brand.name}
-              className="w-14 h-14 object-contain"
+              width={56}
+              height={56}
+              className="object-contain"
+              sizes="56px"
             />
           </div>
           <span

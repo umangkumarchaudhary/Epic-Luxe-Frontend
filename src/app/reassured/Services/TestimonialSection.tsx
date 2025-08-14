@@ -39,7 +39,7 @@ const TestimonialSection = ({ testimonials }: TestimonialProps) => {
                 ))}
               </div>
               <p className="text-gray-700 mb-6 italic leading-relaxed font-light">
-                "{testimonial.content}"
+                &quot;{testimonial.content}&quot;
               </p>
               <div className="flex items-center">
                 <div className="text-2xl mr-4">{testimonial.image}</div>

@@ -5,10 +5,11 @@ import InsurancePartners from './components/InsurancePartners'
 import RenewalSection from './components/RenewalSection'
 import WarrantySection from './components/WarrantySection'
 import HectorSpotlight from './components/HectorSpotlight'
-import StatsSection from './components/StatsSection'
-import CTASection from './components/CTASection'
 import ContactForm from './components/ContactForm'
 import WhatsAppWidget from './components/WhatsAppWidget'
+import FooterServer from '../../components/Footer/FooterServer'
+import HeaderServer from '../../components/Header/HeaderServer'
+
 
 export const metadata: Metadata = {
   title: 'Epic Reassured - Premium Pre-Owned Cars Hyderabad Chennai Vizag Pune | Best Used Cars with Warranty & Insurance',
@@ -118,7 +119,10 @@ export default function HomePage() {
       
       <main className="min-h-screen bg-white">
         {/* Hero Section with Video/Image Background */}
+        <HeaderServer/>
         <HeroSection />
+        <WarrantySection />
+        <HectorSpotlight />
         
         {/* Trusted Insurance Partnerships */}
         <InsurancePartners />
@@ -126,23 +130,14 @@ export default function HomePage() {
         {/* Hassle-Free Renewals */}
         <RenewalSection />
         
-        {/* Warranty Excellence */}
-        <WarrantySection />
-        
-        {/* MG Hector Exclusive Spotlight */}
-        <HectorSpotlight />
-        
-        {/* Statistics Section */}
-        <StatsSection />
-        
-        {/* Call to Action */}
-        <CTASection />
+       
         
         {/* Contact Form */}
         <ContactForm />
         
         {/* WhatsApp Sticky Widget */}
         <WhatsAppWidget />
+        <FooterServer/>
       </main>
     </>
   )

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, FormEvent, MouseEvent as ReactMouseEvent } from 'react';
+import React, { useEffect, useState, FormEvent } from 'react';
 import Image from 'next/image';
 import { ChevronRight, Car, DollarSign, Shield, Search, Phone, Star, TrendingUp, Eye, Clock, Home, User, MessageCircle, X, Loader2, CheckCircle, ArrowRight } from 'lucide-react';
 
@@ -263,7 +263,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
 
           {/* Privacy Notice */}
           <p className="text-xs text-white/50 text-center leading-relaxed">
-            By submitting, you agree to our privacy policy. We'll only use your information to provide the requested quote and may contact you about related luxury vehicle services.
+            By submitting, you agree to our privacy policy. We&apos;ll only use your information to provide the requested quote and may contact you about related luxury vehicle services.
           </p>
         </form>
       </div>

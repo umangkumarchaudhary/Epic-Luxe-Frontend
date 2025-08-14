@@ -8,7 +8,7 @@ export interface Vehicle {
   model: string;
   year: number;
   price: string;
-  originalPrice: string;
+  originalPrice?: string;
   image: string;
   mileage: string;
   fuelType: string;

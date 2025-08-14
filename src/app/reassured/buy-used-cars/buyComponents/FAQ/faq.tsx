@@ -152,7 +152,7 @@ const FAQ = () => {
             </h2>
             <p className="text-gray-600 font-light max-w-3xl mx-auto leading-relaxed">
               Get answers to the most common questions about our certified pre-owned cars, financing options, 
-              warranty coverage, and why EPIC Reassured is India's most trusted alternative to Cars24, Spinny, 
+              warranty coverage, and why EPIC Reassured is India&apos;s most trusted alternative to Cars24, Spinny, 
               and other used car platforms.
             </p>
             <div className="w-16 h-0.5 bg-gray-900 mx-auto mt-6"></div>

@@ -100,12 +100,6 @@ const AboutUs: React.FC = () => {
     };
   }, [startTypewriter]);
 
-  useEffect(() => {
-    const handleScroll = () => setScrolledPastHero(window.scrollY > 10);
-    const setScrolledPastHero = (cond: boolean) => {};
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const milestones: Milestone[] = useMemo(() => [
     { year: '2015', title: 'Inception', desc: 'Founded with a vision to redefine luxury car ownership' },
@@ -479,7 +473,7 @@ const AboutUs: React.FC = () => {
                     </div>
                     <h3 className="text-base font-semibold text-black mb-1 font-secondary">{member.name}</h3>
                     <p className="text-[#D4AF37] mb-2 font-primary text-sm">{member.role}</p>
-                    <p className="text-xs text-black/60 italic font-accent">"{member.motto}"</p>
+                    <p className="text-xs text-black/60 italic font-accent">&quot;{member.motto}&quot;</p>
                   </div>
                 </div>
               ))}
@@ -499,7 +493,7 @@ const AboutUs: React.FC = () => {
                         </div>
                         <h3 className="text-lg font-semibold text-black mb-2 font-secondary">{member.name}</h3>
                         <p className="text-[#D4AF37] mb-3 font-primary">{member.role}</p>
-                        <p className="text-sm text-black/60 italic font-accent">"{member.motto}"</p>
+                        <p className="text-sm text-black/60 italic font-accent">&quot;{member.motto}&quot;</p>
                       </div>
                     </div>
                   ))}
@@ -611,7 +605,7 @@ const AboutUs: React.FC = () => {
           <div className="w-full flex flex-col items-center">
             <div className="w-full md:w-1/2 mx-auto bg-white shadow-lg rounded-xl p-10 border border-[#D4AF37]/20 text-center">
               <p className="text-black/70 text-lg font-primary italic mb-4">
-                "{testimonials[currentTestimonial].text}"
+                &quot;{testimonials[currentTestimonial].text}&quot;
               </p>
               <div className="flex justify-center my-2">
                 {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (

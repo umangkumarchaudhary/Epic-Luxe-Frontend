@@ -22,21 +22,10 @@ export default function SliderClient({ slides = [] }: SliderClientProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
-  const slideRef = useRef<HTMLDivElement | null>(null);
-  const isVisible = useIntersectionObserver(slideRef, { threshold: 0.3 });
+  const slideRef = useRef<HTMLDivElement>(null);
+  const isVisible = useIntersectionObserver<HTMLDivElement>(slideRef, { threshold: 0.3 });
 
-  // Early return if no slides provided
-  if (!slides || slides.length === 0) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh] text-gray-500 bg-gray-100">
-        <div className="text-center">
-          <p className="text-lg mb-2">No slides available</p>
-          <p className="text-sm">Please check your slider configuration.</p>
-        </div>
-      </div>
-    );
-  }
-
+  // Always call hooks - but handle empty slides gracefully
   const imageUrls = slides.map((slide) => slide.imageUrl);
   const imagesLoaded = usePreloadImages(imageUrls);
 
@@ -64,6 +53,18 @@ export default function SliderClient({ slides = [] }: SliderClientProps) {
       setCurrentIndex(0);
     }
   }, [slides.length, currentIndex]);
+
+  // Early return if no slides provided - AFTER all hooks
+  if (!slides || slides.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh] text-gray-500 bg-gray-100">
+        <div className="text-center">
+          <p className="text-lg mb-2">No slides available</p>
+          <p className="text-sm">Please check your slider configuration.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!imagesLoaded) {
     return (

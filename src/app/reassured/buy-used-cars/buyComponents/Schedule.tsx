@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 interface ScheduleProps {
   isOpen: boolean;
@@ -242,10 +243,13 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                     {selectedVehicle ? (
                       <div className="flex items-center space-x-3">
                         {selectedVehicle.image && (
-                          <img 
+                          <Image 
                             src={selectedVehicle.image} 
                             alt={`${selectedVehicle.brand} ${selectedVehicle.model}`}
+                            width={48}
+                            height={32}
                             className="w-12 h-8 object-cover rounded"
+                            sizes="48px"
                           />
                         )}
                         <div>

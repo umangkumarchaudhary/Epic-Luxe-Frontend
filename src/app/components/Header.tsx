@@ -48,11 +48,9 @@ const popularSearches = {
   blogs: ['Car Buying Tips'],
 };
 
-interface HeaderProps {
-  showBlogNav?: boolean;
-}
+interface HeaderProps {}
 
-export default function Header({ showBlogNav = false }: HeaderProps) {
+export default function Header({}: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isInsightsOpen, setIsInsightsOpen] = useState(false);

@@ -47,12 +47,12 @@ interface LocationData {
   states: LocationState[];
 }
 
-interface FinancePageProps {
-  seoData: SEOData;
-  locationData: LocationData;
-  popularBrands: string[];
-  serverTimestamp: string;
-}
+// interface FinancePageProps {
+//   seoData: SEOData;
+//   locationData: LocationData;
+//   popularBrands: string[];
+//   serverTimestamp: string;
+// }
 
 // ───────────────────────────────────────────────────────────────────────────────
 // Static constants (fully typed)
@@ -184,7 +184,6 @@ const FinancePage = async () => {
 
         {/* Structured Data */}
         <script
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(seoData.structuredData),
           }}
@@ -193,7 +192,6 @@ const FinancePage = async () => {
 
         {/* Additional Structured Data for Local Business */}
         <script
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',

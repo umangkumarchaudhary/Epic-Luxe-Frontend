@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Sparkles, Star, Shield, Award, Section } from 'lucide-react';
+import { ChevronRight, Sparkles, Shield, Award} from 'lucide-react';
 
 import Section2AboutEpicCars from './LandingPage/AboutEpic';
 import Section3WhyChooseUs from './LandingPage/Section3WhyChooseUs';
@@ -11,7 +11,7 @@ import EpicCarsPage from './LandingPage/ChooseYourJourneySection';
 
 const LandingPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [hoveredSide, setHoveredSide] = useState(null);
+  const [hoveredSide, setHoveredSide] = useState<'luxe' | 'reassured' | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
@@ -29,7 +29,7 @@ const LandingPage = () => {
       setScrolled(window.scrollY > 20);
     };
     
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100

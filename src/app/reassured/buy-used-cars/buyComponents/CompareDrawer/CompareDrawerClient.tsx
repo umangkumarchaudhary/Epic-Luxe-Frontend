@@ -2,6 +2,7 @@
 
 // CompareDrawerClient.tsx - Client Component (Interactive)
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
+import Image from 'next/image';
 import {
   X,
   GitCompare,
@@ -233,15 +234,12 @@ const CompareDrawerClient: React.FC<CompareDrawerClientProps> = ({
                   {vehicles.map(v => (
                     <th key={v.id} className="min-w-[240px] px-6 py-4 text-center">
                       <div className="space-y-2">
-                        <img
-                          src={v.image}
+                        <Image
+                          src={v.image || 'https://images.unsplash.com/photo-1555215695-3004980ad54e?fit=crop&w=600&h=400'}
                           alt={`${v.brand} ${v.model}`}
+                          width={240}
+                          height={96}
                           className="h-24 w-full object-cover"
-                          onError={e => {
-                            const img = e.currentTarget;
-                            img.onerror = null;
-                            img.src = 'https://images.unsplash.com/photo-1555215695-3004980ad54e?fit=crop&w=600&h=400';
-                          }}
                         />
                         <div>
                           <div className="text-sm font-medium text-black">

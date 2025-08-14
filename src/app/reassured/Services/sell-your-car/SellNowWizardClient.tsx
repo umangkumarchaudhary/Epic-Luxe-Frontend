@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Fuel, Zap, Leaf, Car, MapPin, Calendar, User, Activity, Phone, Check, Search, Camera, Upload } from 'lucide-react';
+import { Fuel, Zap, Leaf, Car, MapPin, Activity, Phone, Check, Search, Camera, Upload } from 'lucide-react';
+import Image from 'next/image';
 import '../../../../app/GlobalFonts.css';
 
 // Types
@@ -36,6 +37,19 @@ interface UploadedFiles {
   interior: File[];
 }
 
+// Define the luxuryCars type structure
+interface VehicleVariants {
+  [fuelType: string]: string[];
+}
+
+interface VehicleModels {
+  [modelName: string]: VehicleVariants;
+}
+
+interface LuxuryCars {
+  [brandName: string]: VehicleModels;
+}
+
 interface SellNowWizardClientProps {
   brands: Brand[];
   fuelOptions: FuelOption[];
@@ -46,7 +60,7 @@ interface SellNowWizardClientProps {
   popularCities: City[];
   otherCities: string[];
   cityImageMap: { [key: string]: string };
-  luxuryCars: any;
+  luxuryCars: LuxuryCars;
   compact?: boolean;
   largeButtons?: boolean;
 }
@@ -60,9 +74,11 @@ const getMonumentImage = (cityName: string, cityImageMap: { [key: string]: strin
   const imageSrc = cityImageMap[normalized];
   if (!imageSrc) return null;
   return (
-    <img
+    <Image
       src={imageSrc}
       alt={`${cityName} monument`}
+      width={size}
+      height={size}
       className={`object-contain w-full h-full transition-all duration-300 rounded-lg
         ${isSelected ? 'ring-2 ring-black ring-offset-1 scale-110' : ''}
       `}
@@ -172,7 +188,7 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
 
   // Get data based on selections
   const getModelsForBrand = (brand: string) => {
-    const brandData = luxuryCars[brand as keyof typeof luxuryCars];
+    const brandData = luxuryCars[brand];
     if (!brandData) return { popularModels: [], otherModels: [] };
     
     const models = Object.keys(brandData);
@@ -186,14 +202,13 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
   };
 
   const getVariantsForModel = (brand: string, model: string, fuel: string) => {
-    const brandData = luxuryCars[brand as keyof typeof luxuryCars];
+    const brandData = luxuryCars[brand];
     if (!brandData) return [];
 
-    const modelData = brandData[model as keyof typeof brandData];
+    const modelData = brandData[model];
     if (!modelData) return [];
 
-    const fuelKey = fuel as keyof typeof modelData;
-    const variants = modelData[fuelKey];
+    const variants = modelData[fuel];
 
     if (!Array.isArray(variants)) return [];
 
@@ -204,15 +219,15 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
   };
 
   const getAvailableFuels = (brand: string, model: string) => {
-    const brandData = luxuryCars[brand as keyof typeof luxuryCars];
+    const brandData = luxuryCars[brand];
     if (!brandData) return [];
     
-    const modelData = brandData[model as keyof typeof brandData];
+    const modelData = brandData[model];
     if (!modelData) return [];
     
     return Object.keys(modelData).filter(fuel => 
-      Array.isArray(modelData[fuel as keyof typeof modelData]) && 
-      (modelData[fuel as keyof typeof modelData] as string[]).length > 0
+      Array.isArray(modelData[fuel]) && 
+      (modelData[fuel] as string[]).length > 0
     );
   };
 

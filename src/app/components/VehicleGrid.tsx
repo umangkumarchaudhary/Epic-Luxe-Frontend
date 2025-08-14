@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { ChevronRight, Car, MapPin, Fuel } from 'lucide-react';
 
 interface Vehicle {
@@ -140,10 +141,11 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
                   className="group relative bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border border-gray-800 hover:border-gray-600 transition-all duration-500 hover:transform hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 w-80"
                 >
                   <div className="relative h-40 overflow-hidden">
-                    <img
+                    <Image
                       src={vehicle.image_url || '/placeholder.png'}
                       alt={`${vehicle.year} ${vehicle.brand} ${vehicle.model}${vehicle.variant ? ` ${vehicle.variant}` : ''}`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      layout="fill"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
 

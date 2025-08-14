@@ -1,106 +1,195 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { motion, Variants } from 'framer-motion'
+import Image from 'next/image'
+import { Shield, Clock, HeartHandshake, Award } from 'lucide-react'
 
-const partners = [
-  { name: 'HDFC ERGO', logo: '/hdfc-ergo.png' },
-  { name: 'ICICI Lombard', logo: '/icici-lombard.png' },
-  { name: 'Bajaj Allianz', logo: '/bajaj-allianz.png' },
-  { name: 'Tata AIG', logo: '/tata-aig.png' },
-]
-
-const benefits = [
-  {
-    icon: '⚡',
-    title: 'Instant Policy Issuance',
-    description: 'Get your insurance policy in minutes, not days'
-  },
-  {
-    icon: '🔧',
-    title: 'Cashless Repairs',
-    description: 'Authorized service centers across Hyderabad, Chennai, Vizag, Pune'
-  },
-  {
-    icon: '🛡️',
-    title: 'Zero Depreciation',
-    description: 'Add-ons available for complete protection'
-  },
-  {
-    icon: '🔄',
-    title: 'Renewal in Minutes',
-    description: 'Quick and hassle-free renewal process'
-  },
-]
-
-export default function InsurancePartners() {
-  const [isVisible, setIsVisible] = useState(false)
-  const sectionRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true)
-          }
-        })
-      },
-      { threshold: 0.1 }
-    )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
+const InsurancePartners = () => {
+  const partners = [
+    {
+      id: 1,
+      name: 'Bajaj Allianz',
+      logo: '/assets/images/bajaj2.png',
+      alt: 'ICICI Lombard car insurance Hyderabad Chennai luxury vehicle coverage',
+      brandColor: 'hover:bg-orange-50'
+    },
+    {
+      id: 2,
+      name: 'ICICI',
+      logo: '/assets/images/icici.jfif',
+      alt: 'HDFC ERGO premium car insurance Pune Vizag comprehensive vehicle protection',
+      brandColor: 'hover:bg-red-50'
     }
+  ]
 
-    return () => observer.disconnect()
-  }, [])
+  const benefits = [
+    {
+      icon: Shield,
+      title: 'Comprehensive Coverage',
+      description:
+        'Complete protection for your luxury vehicle including theft, accidents, and natural disasters with zero depreciation options.'
+    },
+    {
+      icon: Clock,
+      title: 'Instant Claims',
+      description:
+        'Express claim settlement within 24 hours through our dedicated luxury car service network across all major cities.'
+    },
+    {
+      icon: HeartHandshake,
+      title: 'Doorstep Service',
+      description:
+        'Premium concierge service including vehicle pickup, documentation, and delivery right to your location.'
+    },
+    {
+      icon: Award,
+      title: 'Premium Add-ons',
+      description:
+        'Exclusive benefits like key replacement, engine protection, and return to invoice coverage for ultimate peace of mind.'
+    }
+  ]
+
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  }
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut' as const // ✅ Type-safe literal
+      }
+    }
+  }
 
   return (
-    <section id="insurance" ref={sectionRef} className="py-16 md:py-24 lg:py-32 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`text-center mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-tight mb-4">
-            Insurance Backed by Industry Leaders
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            We partner with India's most trusted insurance providers to keep your drive worry-free
-          </p>
-        </div>
+    <section className="relative py-16 md:py-24 bg-white overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/assets/images/trustedPartner.png"
+          alt="Trusted insurance partners background"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
 
-        {/* Partner Logos */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
-          {partners.map((partner, index) => (
-            <div
-              key={partner.name}
-              className={`flex items-center justify-center p-8 bg-gray-50 rounded-2xl hover:shadow-xl transition-all duration-700 transform hover:scale-105 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
-              style={{ transitionDelay: `${index * 100}ms` }}
-            >
-              <div className="text-2xl font-bold">{partner.name}</div>
-            </div>
-          ))}
-        </div>
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-gray-50/80 to-amber-50/70"></div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Heading */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className="text-center mb-16"
+        >
+          <motion.h2
+            variants={itemVariants}
+            className="text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-6 leading-tight"
+          >
+            Insurance Backed by Industry Leaders
+          </motion.h2>
+          <motion.p
+            variants={itemVariants}
+            className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed"
+          >
+            We partner with India&apos;s most trusted providers to keep your drive worry-free
+          </motion.p>
+        </motion.div>
+
+        {/* Partners Grid */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className="mb-20"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {partners.map((partner) => (
+              <motion.div
+                key={partner.id}
+                variants={itemVariants}
+                className={`group bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl p-8 shadow-sm transition-all duration-500 hover:shadow-xl hover:scale-105 hover:bg-white ${partner.brandColor}`}
+                role="article"
+                aria-label={`Insurance partner: ${partner.name}`}
+              >
+                <div className="aspect-[5/2] relative mb-4 flex items-center justify-center">
+                  <Image
+                    src={partner.logo}
+                    alt={partner.alt}
+                    width={200}
+                    height={80}
+                    className="object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500 max-w-full h-auto"
+                    priority
+                  />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 text-center group-hover:text-gray-900 transition-colors duration-300">
+                  {partner.name}
+                </h3>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Benefits Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {benefits.map((benefit, index) => (
-            <div
-              key={benefit.title}
-              className={`group transition-all duration-700 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
-              style={{ transitionDelay: `${(index + 4) * 100}ms` }}
-            >
-              <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 hover:border-black transition-all duration-300 h-full">
-                <div className="text-4xl mb-4">{benefit.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className="mb-16"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            {benefits.map((benefit, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="group"
+                role="article"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-300 border border-gray-200">
+                    <benefit.icon size={24} className="text-gray-700" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {benefit.title}
+                  </h3>
+                </div>
+                <p className="text-gray-700 leading-relaxed ml-16">
+                  {benefit.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Section Divider */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: 'easeOut' as const }}
+          className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"
+          role="separator"
+          aria-hidden="true"
+        />
       </div>
     </section>
   )
 }
+
+export default InsurancePartners

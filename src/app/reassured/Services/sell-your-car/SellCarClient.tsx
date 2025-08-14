@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Phone, ChevronRight, ChevronLeft
+  Phone, ChevronRight, ChevronLeft, Check
 } from 'lucide-react';
 import SellNowWizard from './SellNowWizard';
 
@@ -24,7 +24,7 @@ interface FormData {
 }
 
 interface TrustSignal {
-  icon: any;
+  icon: React.ComponentType;
   title: string;
   subtitle: string;
   stat: string;
@@ -154,7 +154,7 @@ const CarDetailsSummary: React.FC<{ formData: FormData }> = ({ formData }) => {
 };
 
 // Main Client Component
-export default function SellCarClient({ trustSignals }: SellCarClientProps) {
+export default function SellCarClient(_props: SellCarClientProps) {
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState<'next' | 'back'>('next');
   const [formData, setFormData] = useState<FormData>({
@@ -200,7 +200,7 @@ export default function SellCarClient({ trustSignals }: SellCarClientProps) {
   };
 
   // Check if step is accessible based on form completion
-  const isStepAccessible = (targetStep: number) => {
+  const isStepAccessible = (_targetStep: number) => {
     // Logic to check if previous steps are completed
     // For simplicity, allowing all navigation in this example
     return true;
@@ -284,14 +284,8 @@ export default function SellCarClient({ trustSignals }: SellCarClientProps) {
               transition={{ duration: 0.3 }}
             >
               <SellNowWizard
-                currentStep={step}
-                formData={formData}
-                onStepChange={handleStepChange}
-                onFormDataChange={handleFormDataChange}
-                onNext={handleNext}
-                onBack={handleBack}
-                onSubmit={handleSubmit}
-                wizardScrollRef={wizardScrollRef}
+                compact={false}
+                largeButtons={true}
               />
             </motion.div>
           </AnimatePresence>
