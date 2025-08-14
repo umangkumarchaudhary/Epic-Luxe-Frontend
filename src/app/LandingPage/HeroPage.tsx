@@ -2,12 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Sparkles, Star, Shield, Award, Section } from 'lucide-react';
 
-import Section2AboutEpicCars from './LandingPage/AboutEpic';
-import Section3WhyChooseUs from './LandingPage/Section3WhyChooseUs';
-import ThisMonthsHighlights from './LandingPage/ThisMonthHighlights';
-import VoicesOfDistinction from './LandingPage/VoicesOfDistinction';
-import LuxuryLeadForm from './LandingPage/LuxuryLeadForm';
-import EpicCarsPage from './LandingPage/ChooseYourJourneySection';
+
 
 const LandingPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -48,7 +43,7 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="relative w-full min-h-screen overflow bg-black">
+    <div className="relative w-full min-h-screen overflow-hidden bg-black">
       {/* Premium Navigation Header - Fixed for both mobile and desktop */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
         scrolled ? 'bg-black/95 backdrop-blur-xl shadow-2xl' : 'bg-transparent'
@@ -408,13 +403,7 @@ const LandingPage = () => {
           </div>
         </div>
       )}
-      <ThisMonthsHighlights/>
-      <Section2AboutEpicCars/>
-      <Section3WhyChooseUs/>
       
-      <VoicesOfDistinction/>
-      <LuxuryLeadForm/>
-      <EpicCarsPage/>
 
       {/* Styles for animations */}
       <style jsx>{`
