@@ -43,8 +43,8 @@ type FormErrors = {
   message: string;
 };
 
-
-const HomeAboutSection = React.memo(() => {
+// -------------------- About Section --------------------
+const HomeAboutSection = React.memo(function HomeAboutSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentFeature, setCurrentFeature] = useState(0);
 
@@ -73,18 +73,20 @@ const HomeAboutSection = React.memo(() => {
     };
   }, [features.length]);
 
-  const FeatureCard = React.memo(({ feature, index }: { feature: Feature; index: number }) => (
-    <div
-      key={index}
-      className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 group"
-    >
-      <feature.icon className="w-8 h-8 text-[#D4AF37] mb-3 group-hover:scale-110 transition-transform" />
-      <h3 className="text-lg font-bold mb-2 text-white/90 group-hover:text-[#D4AF37] transition-colors">
-        {feature.title}
-      </h3>
-      <p className="text-white/70 text-sm group-hover:text-white/80 transition-colors">{feature.desc}</p>
-    </div>
-  ));
+  const FeatureCard = React.memo(function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
+    return (
+      <div
+        key={index}
+        className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 group"
+      >
+        <feature.icon className="w-8 h-8 text-[#D4AF37] mb-3 group-hover:scale-110 transition-transform" />
+        <h3 className="text-lg font-bold mb-2 text-white/90 group-hover:text-[#D4AF37] transition-colors">
+          {feature.title}
+        </h3>
+        <p className="text-white/70 text-sm group-hover:text-white/80 transition-colors">{feature.desc}</p>
+      </div>
+    );
+  });
 
   return (
     <section 
@@ -201,7 +203,7 @@ const HomeAboutSection = React.memo(() => {
 });
 
 // -------------------- Contact Section --------------------
-const HomeContactSection = React.memo(() => {
+const HomeContactSection = React.memo(function HomeContactSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState<FormData>({ 
     name: '', 
@@ -215,7 +217,6 @@ const HomeContactSection = React.memo(() => {
     message: '' 
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [currentCard, setCurrentCard] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const [modalConfig, setModalConfig] = useState({
@@ -225,20 +226,46 @@ const HomeContactSection = React.memo(() => {
     onProceed: () => {},
   });
 
+  const handleCallClick = useCallback(() => {
+    setModalConfig({
+      isOpen: true,
+      actionName: 'Call Epic Luxe',
+      actionDescription: 'Speak directly with our luxury car expert',
+      onProceed: () => { 
+        window.location.href = 'tel:+919999999999'; 
+        setModalConfig(prev => ({ ...prev, isOpen: false })); 
+      }
+    });
+  }, []);
+
+  const handleEmailClick = useCallback(() => {
+    setModalConfig({
+      isOpen: true,
+      actionName: 'Email Epic Luxe',
+      actionDescription: 'Send us an email with your inquiry',
+      onProceed: () => {
+        const subject = encodeURIComponent('Luxury Car Inquiry');
+        const body = encodeURIComponent("Hello, I'd like to know more about your luxury car collection and services.");
+        window.location.href = `mailto:contact@epicluxe.com?subject=${subject}&body=${body}`;
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+      }
+    });
+  }, []);
+
   const contactCards: ContactCard[] = useMemo(() => [
     { 
       icon: Phone, 
       title: 'Call Us', 
       subtitle: '+91-9999999999', 
       desc: 'Available 9:30 AM to 7:30 PM', 
-      action: () => handleCallClick() 
+      action: handleCallClick 
     },
     { 
       icon: Mail, 
       title: 'Email Us', 
       subtitle: 'contact@epicluxe.com', 
       desc: 'Get detailed information', 
-      action: () => handleEmailClick() 
+      action: handleEmailClick 
     },
     { 
       icon: MapPin, 
@@ -247,7 +274,7 @@ const HomeContactSection = React.memo(() => {
       desc: 'Mon - Sun: 9:00 AM - 8:00 PM', 
       action: () => {} 
     },
-  ], []);
+  ], [handleCallClick, handleEmailClick]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -257,15 +284,10 @@ const HomeContactSection = React.memo(() => {
     const element = document.getElementById('contact-section');
     if (element) observer.observe(element);
 
-    const interval = setInterval(() => {
-      setCurrentCard((prev) => (prev + 1) % contactCards.length);
-    }, 4000);
-
     return () => {
       if (element) observer.unobserve(element);
-      clearInterval(interval);
     };
-  }, [contactCards.length]);
+  }, []);
 
   const validateForm = useCallback((): boolean => {
     const newErrors: FormErrors = { name: '', phone: '', message: '' };
@@ -329,56 +351,32 @@ const HomeContactSection = React.memo(() => {
     }
   }, [formData, validateForm]);
 
-  const handleCallClick = useCallback(() => {
-    setModalConfig({
-      isOpen: true,
-      actionName: 'Call Epic Luxe',
-      actionDescription: 'Speak directly with our luxury car expert',
-      onProceed: () => { 
-        window.location.href = 'tel:+919999999999'; 
-        setModalConfig(prev => ({ ...prev, isOpen: false })); 
-      }
-    });
-  }, []);
-
-  const handleEmailClick = useCallback(() => {
-    setModalConfig({
-      isOpen: true,
-      actionName: 'Email Epic Luxe',
-      actionDescription: 'Send us an email with your inquiry',
-      onProceed: () => {
-        const subject = encodeURIComponent('Luxury Car Inquiry');
-        const body = encodeURIComponent("Hello, I'd like to know more about your luxury car collection and services.");
-        window.location.href = `mailto:contact@epicluxe.com?subject=${subject}&body=${body}`;
-        setModalConfig(prev => ({ ...prev, isOpen: false }));
-      }
-    });
-  }, []);
-
   const closeModal = useCallback(() => {
     setModalConfig(prev => ({ ...prev, isOpen: false }));
   }, []);
 
-  const ContactCardItem = React.memo(({ card }: { card: ContactCard }) => (
-    <div 
-      onClick={card.action} 
-      className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 cursor-pointer hover:border-[#D4AF37]/50 transition"
-      role="button"
-      tabIndex={0}
-      aria-label={`${card.title} - ${card.subtitle}`}
-      onKeyDown={(e) => e.key === 'Enter' && card.action()}
-    >
-      <div className="flex items-center gap-4">
-        <card.icon className="w-8 h-8 text-[#D4AF37]" aria-hidden="true" />
-        <div>
-          <h3 className="text-lg font-bold text-white">{card.title}</h3>
-          <p className="text-[#D4AF37] font-semibold">{card.subtitle}</p>
-          <p className="text-white/80 text-sm">{card.desc}</p>
+  const ContactCardItem = React.memo(function ContactCardItem({ card }: { card: ContactCard }) {
+    return (
+      <div 
+        onClick={card.action} 
+        className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 cursor-pointer hover:border-[#D4AF37]/50 transition"
+        role="button"
+        tabIndex={0}
+        aria-label={`${card.title} - ${card.subtitle}`}
+        onKeyDown={(e) => e.key === 'Enter' && card.action()}
+      >
+        <div className="flex items-center gap-4">
+          <card.icon className="w-8 h-8 text-[#D4AF37]" aria-hidden="true" />
+          <div>
+            <h3 className="text-lg font-bold text-white">{card.title}</h3>
+            <p className="text-[#D4AF37] font-semibold">{card.subtitle}</p>
+            <p className="text-white/80 text-sm">{card.desc}</p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-[#D4AF37]" aria-hidden="true" />
         </div>
-        <ChevronRight className="w-5 h-5 text-[#D4AF37]" aria-hidden="true" />
       </div>
-    </div>
-  ));
+    );
+  });
 
   return (
     <section 
@@ -393,7 +391,7 @@ const HomeContactSection = React.memo(() => {
             Contact Epic Luxe
           </h2>
           <p className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto font-clean">
-            Ready to find your perfect luxury vehicle? Let's start the conversation
+            Ready to find your perfect luxury vehicle? Let&apos;s start the conversation
           </p>
         </div>
 

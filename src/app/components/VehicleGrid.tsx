@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronRight, Car, MapPin, Fuel } from 'lucide-react';
 
 interface Vehicle {
@@ -31,6 +31,41 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Update vehicles function wrapped with useCallback to avoid useEffect warning
+  const updateVehicles = useCallback(async (brandName: string) => {
+    setLoading(true);
+    try {
+      const brandVehicles = vehiclesByBrand[brandName.toLowerCase()] || [];
+      const limitedVehicles = brandVehicles.slice(0, 3);
+
+      // Fetch images for each vehicle
+      const vehiclesWithImages = await Promise.all(
+        limitedVehicles.map(async (vehicle: Vehicle) => {
+          try {
+            const imageResponse = await fetch(`http://localhost:5000/admin/vehicle/${vehicle.id}`);
+            const imageData = await imageResponse.json();
+
+            return {
+              ...vehicle,
+              image_url: imageData.images?.[0]?.image_url || '/placeholder.png'
+            };
+          } catch {
+            return {
+              ...vehicle,
+              image_url: '/placeholder.png'
+            };
+          }
+        })
+      );
+
+      setVehicles(vehiclesWithImages);
+    } catch {
+      setVehicles([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [vehiclesByBrand]);
+
   // Listen for brand selection events
   useEffect(() => {
     const handleBrandSelection = (event: CustomEvent) => {
@@ -40,7 +75,7 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
     };
 
     window.addEventListener('brandSelected', handleBrandSelection as EventListener);
-    
+
     // Initialize with default brand
     if (defaultBrand) {
       updateVehicles(defaultBrand);
@@ -49,42 +84,7 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
     return () => {
       window.removeEventListener('brandSelected', handleBrandSelection as EventListener);
     };
-  }, [defaultBrand]);
-
-  const updateVehicles = async (brandName: string) => {
-    setLoading(true);
-    try {
-      const brandVehicles = vehiclesByBrand[brandName.toLowerCase()] || [];
-      const limitedVehicles = brandVehicles.slice(0, 3);
-      
-      // Fetch images for each vehicle
-      const vehiclesWithImages = await Promise.all(
-        limitedVehicles.map(async (vehicle: Vehicle) => {
-          try {
-            const imageResponse = await fetch(`http://localhost:5000/admin/vehicle/${vehicle.id}`);
-            const imageData = await imageResponse.json();
-            
-            return {
-              ...vehicle,
-              image_url: imageData.images?.[0]?.image_url || '/placeholder.png'
-            };
-          } catch (error) {
-            return {
-              ...vehicle,
-              image_url: '/placeholder.png'
-            };
-          }
-        })
-      );
-      
-      setVehicles(vehiclesWithImages);
-    } catch (error) {
-      console.error('Error updating vehicles:', error);
-      setVehicles([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [defaultBrand, updateVehicles]);
 
   const formatPrice = (price: number) => {
     if (price >= 10000000) {
@@ -105,8 +105,6 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
 
   return (
     <div className="space-y-8">
-      
-
       {loading ? (
         <div className="flex justify-center items-center py-16">
           <div className="relative">
@@ -118,14 +116,14 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
         </div>
       ) : vehicles.length > 0 ? (
         <>
-          <div 
+          <div
             className={`flex justify-center gap-6 ${
-              vehicles.length === 1 ? 'max-w-xs mx-auto' : 
-              vehicles.length === 2 ? 'max-w-2xl mx-auto' : 
+              vehicles.length === 1 ? 'max-w-xs mx-auto' :
+              vehicles.length === 2 ? 'max-w-2xl mx-auto' :
               'max-w-4xl mx-auto'
             }`}
           >
-            {vehicles.map((vehicle, index) => {
+            {vehicles.map((vehicle) => {
               const premiumBadges = [
                 { text: 'Curated Selection', gradient: 'from-[#D4AF37] to-[#F4E076]' },
                 { text: 'Premium Certified', gradient: 'from-purple-600 to-indigo-500' },
@@ -135,7 +133,7 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
                 { text: 'Luxury Approved', gradient: 'from-violet-600 to-purple-500' }
               ];
               const randomBadge = premiumBadges[Math.floor(Math.random() * premiumBadges.length)];
-              
+
               return (
                 <div
                   key={vehicle.id}
@@ -143,12 +141,12 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
                 >
                   <div className="relative h-40 overflow-hidden">
                     <img
-                      src={vehicle.image_url}
+                      src={vehicle.image_url || '/placeholder.png'}
                       alt={`${vehicle.year} ${vehicle.brand} ${vehicle.model}${vehicle.variant ? ` ${vehicle.variant}` : ''}`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    
+
                     <div className={`absolute top-3 left-3 bg-gradient-to-r ${randomBadge.gradient} text-white text-xs font-semibold px-2 py-1 rounded-md shadow-lg`}>
                       {randomBadge.text}
                     </div>
@@ -231,7 +229,7 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
           </div>
           <h3 className="text-xl font-semibold text-white mb-2">No Vehicles Found</h3>
           <p className="text-gray-400">
-            We don't have any {selectedBrand} vehicles available at the moment.
+            We don&apos;t have any {selectedBrand} vehicles available at the moment.
           </p>
         </div>
       )}

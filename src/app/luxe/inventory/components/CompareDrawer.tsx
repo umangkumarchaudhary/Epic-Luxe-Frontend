@@ -7,7 +7,8 @@
 */
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import Image from 'next/image';
 import {
   X,
   GitCompare,
@@ -141,28 +142,32 @@ export default function CompareDrawer({
             <thead>
               <tr className="border-b border-gray-700 text-left">
                 <th className="w-44 px-4 py-3 bg-gray-900">Specification</th>
-                {vehicles.map(v => (
-                  <th
-                    key={v.id}
-                    className="min-w-[220px] px-4 py-3 border-l border-gray-700"
-                  >
-                    <div className="font-medium">
-                      {v.brand} {v.model}
-                    </div>
-                    <div className="text-gray-400">{v.year}</div>
-                    <img
-                      src={v.image}
-                      alt={`${v.brand} ${v.model}`}
-                      className="mt-2 h-20 w-auto object-contain rounded"
-                      onError={e => {
-                        const tgt = e.currentTarget;
-                        tgt.onerror = null;
-                        tgt.src =
-                          'https://images.unsplash.com/photo-1555215695-3004980ad54e?fit=crop&w=600&h=400';
-                      }}
-                    />
-                  </th>
-                ))}
+                {vehicles.map(v => {
+                  const [imgSrc, setImgSrc] = useState(v.image);
+                  return (
+                    <th
+                      key={v.id}
+                      className="min-w-[220px] px-4 py-3 border-l border-gray-700"
+                    >
+                      <div className="font-medium">
+                        {v.brand} {v.model}
+                      </div>
+                      <div className="text-gray-400">{v.year}</div>
+                      <Image
+                        src={imgSrc}
+                        alt={`${v.brand} ${v.model}`}
+                        width={80}
+                        height={80}
+                        className="mt-2 h-20 w-auto object-contain rounded"
+                        onError={() =>
+                          setImgSrc(
+                            'https://images.unsplash.com/photo-1555215695-3004980ad54e?fit=crop&w=600&h=400'
+                          )
+                        }
+                      />
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
 

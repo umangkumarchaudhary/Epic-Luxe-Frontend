@@ -6,7 +6,6 @@ import React, {
   useRef,
   useCallback,
   KeyboardEvent,
-  MouseEvent,
   FormEvent,
 } from "react";
 import Image from "next/image";
@@ -78,17 +77,6 @@ export default function EpicHeroSlider() {
     }, 2500);
   }, [slideCount]);
 
-  const nextSlide = useCallback(() => {
-    if (debounceRef.current) return;
-    debounceRef.current = true;
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrent((prev) => (prev + 1) % slideCount);
-      setIsTransitioning(false);
-      setButtonState("callNow");
-      debounceRef.current = false;
-    }, 400);
-  }, [slideCount]);
 
   const handlePrevious = useCallback(() => {
     if (debounceRef.current) return;
@@ -136,7 +124,7 @@ export default function EpicHeroSlider() {
     setTimeout(() => setIsLoaded(true), 100);
   }, []);
 
-  const [callConfirmed, setCallConfirmed] = useState(false);
+  const [, setCallConfirmed] = useState(false);
 
   const onCallNowClick = () => {
     setCallConfirmed(true);

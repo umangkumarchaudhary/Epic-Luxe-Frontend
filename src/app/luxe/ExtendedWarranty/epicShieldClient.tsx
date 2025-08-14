@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 const EpicShieldClient = () => {
-  const [isVisible, setIsVisible] = useState(false)
+  const [, setIsVisible] = useState(false)
   const [activeCard, setActiveCard] = useState<number | null>(null)
 
   useEffect(() => {
@@ -325,7 +325,10 @@ const EpicShieldClient = () => {
                     <span key={i} className="text-[#D4AF37] text-xl">★</span>
                   ))}
                 </div>
-                <p className="text-gray-300 mb-6 italic">"{testimonial.comment}"</p>
+                 <p className="text-gray-300 mb-6 italic">
+  &quot;{testimonial.comment}&quot;
+</p>
+
                 <div>
                   <p className="font-semibold text-[#D4AF37]">{testimonial.name}</p>
                   <p className="text-sm text-gray-400">{testimonial.vehicle}</p>

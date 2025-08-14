@@ -1,12 +1,77 @@
 import { useState, useEffect } from "react";
 
+// Define proper types for vehicle data
+interface VehicleData {
+  brand?: string;
+  model?: string;
+  variant?: string;
+  year?: number | string;
+  price?: number | string;
+  original_price?: number | string;
+  savings?: number | string;
+  mileage?: string;
+  fuel_type?: string;
+  transmission?: string;
+  engine_capacity?: string;
+  drivetrain?: string;
+  seating?: number | string;
+  horsepower?: string;
+  torque?: string;
+  location?: string;
+  condition?: string;
+  ownership?: string;
+  health_engine?: number | string;
+  health_tyres?: number | string;
+  health_paint?: number | string;
+  health_interior?: number | string;
+  health_electrical?: number | string;
+  color_exterior?: string;
+  color_interior?: string;
+  video_url?: string;
+  published?: boolean;
+  featured?: boolean;
+  features?: string[] | string;
+}
+
 interface Props {
-  existingData?: any;
+  existingData?: VehicleData;
   vehicleId?: string | number;
 }
 
+interface FormData {
+  brand: string;
+  model: string;
+  variant: string;
+  year: string;
+  price: string;
+  original_price: string;
+  savings: string;
+  mileage: string;
+  fuel_type: string;
+  transmission: string;
+  engine_capacity: string;
+  drivetrain: string;
+  seating: string;
+  horsepower: string;
+  torque: string;
+  location: string;
+  condition: string;
+  ownership: string;
+  health_engine: string;
+  health_tyres: string;
+  health_paint: string;
+  health_interior: string;
+  health_electrical: string;
+  color_exterior: string;
+  color_interior: string;
+  video_url: string;
+  published: boolean;
+  featured: boolean;
+  features: string;
+}
+
 export default function AdminUploadForm({ existingData, vehicleId }: Props) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     brand: "",
     model: "",
     variant: "",
@@ -72,7 +137,9 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
         video_url: existingData.video_url || "",
         published: existingData.published || false,
         featured: existingData.featured || false,
-        features: existingData.features?.join(", ") || "",
+        features: Array.isArray(existingData.features) 
+          ? existingData.features.join(", ") 
+          : existingData.features || "",
       });
     }
   }, [existingData]);
@@ -80,8 +147,17 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+    const target = e.target;
+    const name = target.name;
+    const value = target.value;
+    
+    // Type guard for checkbox inputs
+    if (target instanceof HTMLInputElement && target.type === "checkbox") {
+      const checked = target.checked;
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   }
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -96,15 +172,17 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
     try {
       const form = new FormData();
 
-      for (const key in formData) {
+      // Type-safe iteration over form data
+      (Object.keys(formData) as Array<keyof FormData>).forEach((key) => {
         if (key === "features") {
           const featuresArray = formData.features.split(",").map((f) => f.trim()).filter(Boolean);
           form.append("features", JSON.stringify(featuresArray));
         } else {
-          // @ts-ignore
+          // @ts-expect-error - FormData.append expects string, but we know our values are convertible
           form.append(key, formData[key]);
         }
-      }
+      });
+      
       images.forEach((img) => form.append("images", img));
 
       const url = vehicleId
@@ -155,8 +233,9 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
       } else {
         setMessage("Failed: " + data.error);
       }
-    } catch (err: any) {
-      setMessage("Error: " + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+      setMessage("Error: " + errorMessage);
     } finally {
       setLoading(false);
     }
@@ -212,32 +291,32 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
       </div>
 
       {[ 
-        { name: "brand", label: "Brand", required: true },
-        { name: "model", label: "Model", required: true },
-        { name: "variant", label: "Variant" },
-        { name: "year", label: "Year", type: "number" },
-        { name: "price", label: "Price" },
-        { name: "original_price", label: "Original Price" },
-        { name: "savings", label: "Savings" },
-        { name: "mileage", label: "Mileage" },
-        { name: "fuel_type", label: "Fuel Type" },
-        { name: "transmission", label: "Transmission" },
-        { name: "engine_capacity", label: "Engine Capacity" },
-        { name: "drivetrain", label: "Drivetrain" },
-        { name: "seating", label: "Seating", type: "number" },
-        { name: "horsepower", label: "Horsepower" },
-        { name: "torque", label: "Torque" },
-        { name: "location", label: "Location" },
-        { name: "condition", label: "Condition" },
-        { name: "ownership", label: "Ownership" },
-        { name: "health_engine", label: "Health Engine", type: "number" },
-        { name: "health_tyres", label: "Health Tyres", type: "number" },
-        { name: "health_paint", label: "Health Paint", type: "number" },
-        { name: "health_interior", label: "Health Interior", type: "number" },
-        { name: "health_electrical", label: "Health Electrical", type: "number" },
-        { name: "color_exterior", label: "Color Exterior" },
-        { name: "color_interior", label: "Color Interior" },
-        { name: "video_url", label: "Video URL" },
+        { name: "brand" as keyof FormData, label: "Brand", required: true },
+        { name: "model" as keyof FormData, label: "Model", required: true },
+        { name: "variant" as keyof FormData, label: "Variant" },
+        { name: "year" as keyof FormData, label: "Year", type: "number" },
+        { name: "price" as keyof FormData, label: "Price" },
+        { name: "original_price" as keyof FormData, label: "Original Price" },
+        { name: "savings" as keyof FormData, label: "Savings" },
+        { name: "mileage" as keyof FormData, label: "Mileage" },
+        { name: "fuel_type" as keyof FormData, label: "Fuel Type" },
+        { name: "transmission" as keyof FormData, label: "Transmission" },
+        { name: "engine_capacity" as keyof FormData, label: "Engine Capacity" },
+        { name: "drivetrain" as keyof FormData, label: "Drivetrain" },
+        { name: "seating" as keyof FormData, label: "Seating", type: "number" },
+        { name: "horsepower" as keyof FormData, label: "Horsepower" },
+        { name: "torque" as keyof FormData, label: "Torque" },
+        { name: "location" as keyof FormData, label: "Location" },
+        { name: "condition" as keyof FormData, label: "Condition" },
+        { name: "ownership" as keyof FormData, label: "Ownership" },
+        { name: "health_engine" as keyof FormData, label: "Health Engine", type: "number" },
+        { name: "health_tyres" as keyof FormData, label: "Health Tyres", type: "number" },
+        { name: "health_paint" as keyof FormData, label: "Health Paint", type: "number" },
+        { name: "health_interior" as keyof FormData, label: "Health Interior", type: "number" },
+        { name: "health_electrical" as keyof FormData, label: "Health Electrical", type: "number" },
+        { name: "color_exterior" as keyof FormData, label: "Color Exterior" },
+        { name: "color_interior" as keyof FormData, label: "Color Interior" },
+        { name: "video_url" as keyof FormData, label: "Video URL" },
       ].map(({ name, label, type, required }) => (
         <div key={name} style={{ display: "flex", flexDirection: "column" }}>
           <label
@@ -250,7 +329,7 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
             id={name}
             name={name}
             type={type || "text"}
-            value={(formData as any)[name]}
+            value={formData[name] as string}
             onChange={handleChange}
             required={required}
             placeholder={label}

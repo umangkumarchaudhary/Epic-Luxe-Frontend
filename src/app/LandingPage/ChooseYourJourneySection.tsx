@@ -19,8 +19,8 @@ const cssVars = {
 // Analytics tracking function
 const trackEvent = (event: string, section: string, label: string) => {
   // Safe analytics tracking for dataLayer
-  if (typeof window !== 'undefined' && (window as any).dataLayer) {
-    (window as any).dataLayer.push({
+  if (typeof window !== 'undefined' && window.dataLayer) {
+    window.dataLayer.push({
       event,
       section,
       label
@@ -28,10 +28,11 @@ const trackEvent = (event: string, section: string, label: string) => {
   }
   
   // Also check for custom analytics function
-  if (typeof window !== 'undefined' && (window as any).analytics?.track) {
-    (window as any).analytics.track(event, { label });
+  if (typeof window !== 'undefined' && window.analytics?.track) {
+    window.analytics.track(event, { label });
   }
 };
+
 
 const ChooseYourJourneySection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -133,7 +134,8 @@ const ChooseYourJourneySection: React.FC = () => {
       <section 
         ref={sectionRef}
         className="relative w-full min-h-screen flex items-center justify-center overflow-hidden motion-safe-animate"
-        style={cssVars}
+        style={cssVars as React.CSSProperties}
+
         aria-label="Choose your Epic Cars journey"
         role="banner"
       >

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, FormEvent, MouseEvent } from 'react';
+import React, { useEffect, useState, FormEvent, MouseEvent as ReactMouseEvent } from 'react';
 import Image from 'next/image';
 import { ChevronRight, Car, DollarSign, Shield, Search, Phone, Star, TrendingUp, Eye, Clock, Home, User, MessageCircle, X, Loader2, CheckCircle, ArrowRight } from 'lucide-react';
 
@@ -44,7 +44,7 @@ const luxuryCarModels: string[] = [
 ];
 
 // Quote Form Component
-function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): JSX.Element | null {
+function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactElement | null {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
@@ -156,7 +156,9 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): JSX.Element |
             <h2 id="quote-form-title" className="text-lg font-bold text-white leading-tight">
               {formType === 'buy' ? 'Get Your Dream Car Quote' : 'Get Instant Car Valuation'}
             </h2>
-            <p id="quote-form-desc" className="text-white/60 text-xs">We'll contact you within 30 minutes</p>
+            <p id="quote-form-desc" className="text-white/60 text-xs">
+              We&apos;ll contact you within 30 minutes
+            </p>
           </div>
         </div>
 
@@ -270,7 +272,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): JSX.Element |
 }
 
 // Bottom Sticky Navigation (Mobile Only)
-function BottomNav(): JSX.Element {
+function BottomNav(): React.ReactElement {
   return (
     <div className="md:hidden fixed bottom-0 left-0 w-full bg-black/95 backdrop-blur-md border-t border-[#D4AF37]/20 z-50 manrope-font" role="navigation" aria-label="Bottom navigation">
       <div className="grid grid-cols-4 gap-1 py-2 px-2">
@@ -295,7 +297,7 @@ function BottomNav(): JSX.Element {
   );
 }
 
-export default function LuxuryVehicleHero(): JSX.Element {
+export default function LuxuryVehicleHero(): React.ReactElement {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [loadingBanners, setLoadingBanners] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<string>('');
@@ -354,7 +356,7 @@ export default function LuxuryVehicleHero(): JSX.Element {
     return () => clearInterval(interval);
   }, [banners]);
 
-  // Parallax effect
+  // Parallax effect - Fixed version
   useEffect(() => {
     const handleParallax = (e: MouseEvent): void => {
       const x = (e.clientX / window.innerWidth - 0.5) * 0.5;
@@ -362,8 +364,8 @@ export default function LuxuryVehicleHero(): JSX.Element {
       setParallax({ x, y });
     };
 
-    window.addEventListener('mousemove', handleParallax as EventListener);
-    return () => window.removeEventListener('mousemove', handleParallax as EventListener);
+    window.addEventListener('mousemove', handleParallax);
+    return () => window.removeEventListener('mousemove', handleParallax);
   }, []);
 
   // Cleanup scroll style on unmount

@@ -84,8 +84,9 @@ const BrowseBySection = async () => {
             Browse By <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#F4E076]">Brand</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Discover premium pre-owned vehicles from the world's most prestigious automotive brands
-          </p>
+  Discover premium pre-owned vehicles from the world's most prestigious automotive brands
+</p>
+
           <div className="w-24 h-1 bg-gradient-to-r from-[#D4AF37] to-[#F4E076] mx-auto mt-6 shadow-lg shadow-[#D4AF37]/30"></div>
         </div>
 
@@ -111,8 +112,9 @@ const BrowseBySection = async () => {
           <div className="text-center py-16">
             <h3 className="text-xl font-semibold text-white mb-2">No Vehicles Available</h3>
             <p className="text-gray-400">
-              We're currently updating our inventory. Please check back soon.
-            </p>
+  We&apos;re currently updating our inventory. Please check back soon.
+</p>
+
           </div>
         )}
       </div>

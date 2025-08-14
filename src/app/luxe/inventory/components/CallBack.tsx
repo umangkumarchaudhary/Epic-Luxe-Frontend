@@ -77,13 +77,14 @@ const SubmitRequestSection: React.FC = () => {
 
               {/* Headline */}
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-                Can't Find the Car You're Looking For?
-              </h2>
+  Can&apos;t Find the Car You&apos;re Looking For?
+</h2>
 
               {/* Subtext */}
               <p className="text-gray-300 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
-                Let our luxury experts help you source the perfect model. Enter your details and we'll call you back with personalized options.
-              </p>
+  Let our luxury experts help you source the perfect model. Enter your details and we&apos;ll call you back with personalized options.
+</p>
+
 
               {/* Form */}
               {!isSubmitted ? (

@@ -3,9 +3,28 @@
 import { useEffect, useState } from "react";
 import AdminUploadForm from '@/app/components/AdminUploadForm';
 
+// Define a proper Vehicle type instead of using `any`
+interface Vehicle {
+  id: string;
+  brand: string;
+  model: string;
+  variant?: string;
+  year: number;
+  price: number;
+  original_price?: number;
+  savings?: number;
+  mileage?: string;
+  fuel_type?: string;
+  transmission?: string;
+  location?: string;
+  condition?: string;
+  slug: string;
+  image_url?: string;
+}
+
 export default function Page({ params }: { params: { id: string } }) {
   const { id } = params;
-  const [vehicle, setVehicle] = useState<any>(null);
+  const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import axios from "axios";
-import AdminHeroBannerLivePreview from "./adminLivePreviewForm";
+import axios, { AxiosError } from "axios";
+
 import {
-  X,
   Loader2,
   Edit2,
   Trash2,
@@ -42,6 +41,10 @@ interface NewBannerInput {
   uploading: boolean;
   uploadError: string | null;
   uploadedId?: number | string;
+}
+
+interface ErrorResponse {
+  error: string;
 }
 
 const goldGradient = "bg-gradient-to-r from-[#D4AF37] to-[#BFA980]";
@@ -119,7 +122,8 @@ export default function AdminHeroBanners() {
         "http://localhost:5000/admin/banners"
       );
       setBanners(res.data.banners);
-    } catch (e) {
+    } catch (error) {
+      console.error("Error fetching banners:", error);
       setLoadBannersError("Failed to load banners");
     } finally {
       setLoadingBanners(false);
@@ -229,10 +233,11 @@ export default function AdminHeroBanners() {
 
         updatedBanners[i].uploadedId = res.data.data.id;
         updatedBanners[i].uploading = false;
-      } catch (err: any) {
+      } catch (err) {
+        const error = err as AxiosError<ErrorResponse>;
         updatedBanners[i].uploading = false;
         updatedBanners[i].uploadError =
-          err.response?.data?.error || "Upload failed";
+          error.response?.data?.error || "Upload failed";
       }
       setNewBanners([...updatedBanners]);
     }
@@ -260,7 +265,8 @@ export default function AdminHeroBanners() {
       await axios.delete(`http://localhost:5000/admin/delete-hero/${id}`);
       await fetchBanners();
       setGlobalMessage("Banner deleted successfully.");
-    } catch (e) {
+    } catch (error) {
+      console.error("Error deleting banner:", error);
       setGlobalError("Failed to delete banner");
     }
   };
@@ -364,7 +370,8 @@ export default function AdminHeroBanners() {
       });
       await fetchBanners();
       setGlobalMessage("Banner updated successfully!");
-    } catch (e) {
+    } catch (error) {
+      console.error("Error updating banner:", error);
       setEditStates((prev) => ({
         ...prev,
         [id]: {
@@ -525,15 +532,13 @@ export default function AdminHeroBanners() {
         )}
       </section>
       
-
-
       {/* Uploaded banners list */}
       <section>
         <h2 className="text-2xl font-semibold mb-6">Uploaded Banners</h2>
 
         {loadingBanners ? (
           <div className="text-yellow-400 flex items-center space-x-2">
-            <Loader2 className="animate-spin" /> <span>Loadind EPICness</span>
+            <Loader2 className="animate-spin" /> <span>Loading EPICness</span>
           </div>
         ) : loadBannersError ? (
           <div className="text-red-500">{loadBannersError}</div>
@@ -565,24 +570,24 @@ export default function AdminHeroBanners() {
                     <>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {[
-                          { label: "Title", field: "title" },
-                          { label: "Subtitle", field: "subtitle" },
-                          { label: "Badge", field: "badge" },
-                          { label: "Position", field: "position", type: "number" },
-                          { label: "CTA 1 Text", field: "cta1_text" },
-                          { label: "CTA 1 URL/Action", field: "cta1_url_or_action" },
-                          { label: "CTA 2 Text", field: "cta2_text" },
-                          { label: "CTA 2 URL/Action", field: "cta2_url_or_action" },
+                          { label: "Title", field: "title" as keyof Banner },
+                          { label: "Subtitle", field: "subtitle" as keyof Banner },
+                          { label: "Badge", field: "badge" as keyof Banner },
+                          { label: "Position", field: "position" as keyof Banner, type: "number" },
+                          { label: "CTA 1 Text", field: "cta1_text" as keyof Banner },
+                          { label: "CTA 1 URL/Action", field: "cta1_url_or_action" as keyof Banner },
+                          { label: "CTA 2 Text", field: "cta2_text" as keyof Banner },
+                          { label: "CTA 2 URL/Action", field: "cta2_url_or_action" as keyof Banner },
                         ].map(({ label, field, type }) => (
                           <input
                             key={field}
                             type={type || "text"}
                             placeholder={label}
-                            value={(editState as any)[field] ?? ""}
+                            value={String(editState[field] ?? "")}
                             onChange={(e) =>
                               updateEditField(
                                 banner.id,
-                                field as keyof Banner,
+                                field,
                                 type === "number"
                                   ? Number(e.target.value)
                                   : e.target.value

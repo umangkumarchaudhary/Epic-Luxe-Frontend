@@ -77,7 +77,7 @@ const fadeInUp = {
     y: 0,
     transition: { 
       duration: 1.2, 
-      ease: [0.21, 0.47, 0.32, 0.98] 
+      ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number]
     }
   }
 }
@@ -90,7 +90,7 @@ const cardVariants = {
     y: 0,
     transition: { 
       duration: 0.8, 
-      ease: [0.21, 0.47, 0.32, 0.98] 
+      ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number]
     }
   },
   exit: { 
@@ -99,7 +99,7 @@ const cardVariants = {
     y: -20,
     transition: { 
       duration: 0.5, 
-      ease: [0.21, 0.47, 0.32, 0.98] 
+      ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number]
     }
   }
 }
@@ -156,14 +156,16 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; className?: string }
         {/* Quote text */}
         <blockquote className="mb-6 relative">
           {/* Opening quote mark */}
-          <span 
-            className={`absolute -top-3 -left-1 text-5xl font-serif leading-none ${
-              testimonial.type === 'luxe' ? 'text-yellow-600/30' : 'text-gray-400/60'
-            }`}
-            style={{ fontFamily: 'Cormorant Garamond, serif' }}
-          >
-            "
-          </span>
+          <span
+  className={`
+    absolute -top-3 -left-1 text-5xl font-serif leading-none
+    ${testimonial?.type === 'luxe' ? 'text-yellow-600/30' : 'text-gray-400/60'}
+  `}
+  style={{ fontFamily: 'Cormorant Garamond, serif' }}
+>
+  &quot;
+</span>
+
           
           <p 
             className={`text-base lg:text-lg leading-relaxed relative z-10 ${
@@ -183,17 +185,16 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; className?: string }
         <div className="flex items-center space-x-4">
           {/* Avatar with 3D pan effect */}
           <motion.div
-            className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-offset-2 flex-shrink-0"
-            style={{
-              ringColor: testimonial.type === 'luxe' ? 'rgba(212, 175, 55, 0.3)' : 'rgba(0, 0, 0, 0.15)',
-              ringOffsetColor: testimonial.type === 'luxe' ? '#000' : '#fff'
-            }}
-            whileHover={{
-              scale: 1.1,
-              rotateY: 15,
-              transition: { duration: 0.6, ease: "easeOut" }
-            }}
-          >
+  className={`relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-offset-2 flex-shrink-0 ${
+    testimonial.type === 'luxe' ? 'ring-[rgba(212,175,55,0.3)] ring-offset-black' : 'ring-[rgba(0,0,0,0.15)] ring-offset-white'
+  }`}
+  whileHover={{
+    scale: 1.1,
+    rotateY: 15,
+    transition: { duration: 0.6, ease: "easeOut" }
+  }}
+>
+
             <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center">
               <span className="text-gray-600 font-medium text-base">
                 {testimonial.author.split(' ')[0][0]}
@@ -233,7 +234,8 @@ const TestimonialCarousel: React.FC<{
 }> = ({ testimonials, type, autoPlay = true }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length)

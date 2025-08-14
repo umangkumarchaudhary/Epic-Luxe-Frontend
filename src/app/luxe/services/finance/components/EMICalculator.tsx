@@ -14,31 +14,46 @@ import {
   X,
 } from 'lucide-react';
 
-const GOLD = '#D4AF37';
-const LIGHT_GOLD = '#BFA980';
+// TypeScript interfaces
+interface CarData {
+  brand: string;
+  model: string;
+  year: number;
+  price: number;
+  image: string;
+  tag: string;
+}
+
+interface FormData {
+  name: string;
+  phone: string;
+  preferredCar: string;
+}
 
 const PremiumEMICalculator = () => {
   // Main state
-  const [carPrice, setCarPrice] = useState(5300000);
-  const [defaultCarPrice, setDefaultCarPrice] = useState(5300000);
-  const [downPayment, setDownPayment] = useState(400000);
-  const [defaultDownPayment, setDefaultDownPayment] = useState(400000);
-  const [loanTenure, setLoanTenure] = useState(5);
-  const [defaultTenure, setDefaultTenure] = useState(5);
-  const [interestRate, setInterestRate] = useState(8.5);
-  const [defaultInterest, setDefaultInterest] = useState(8.5);
-  const [currentCarIndex, setCurrentCarIndex] = useState(0);
-  const [emi, setEmi] = useState(0);
-  const [totalInterest, setTotalInterest] = useState(0);
-  const [totalPayable, setTotalPayable] = useState(0);
-  const [topCars, setTopCars] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({
+  const [carPrice, setCarPrice] = useState<number>(5300000);
+  const [downPayment, setDownPayment] = useState<number>(400000);
+  const [loanTenure, setLoanTenure] = useState<number>(5);
+  const [interestRate, setInterestRate] = useState<number>(8.5);
+  const [currentCarIndex, setCurrentCarIndex] = useState<number>(0);
+  const [emi, setEmi] = useState<number>(0);
+  const [totalInterest, setTotalInterest] = useState<number>(0);
+  const [totalPayable, setTotalPayable] = useState<number>(0);
+  const [topCars, setTopCars] = useState<CarData[]>([]);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [form, setForm] = useState<FormData>({
     name: '',
     phone: '',
     preferredCar: ''
   });
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+
+  // Default values for comparison
+  const defaultCarPrice = 5300000;
+  const defaultDownPayment = 400000;
+  const defaultTenure = 5;
+  const defaultInterest = 8.5;
 
   // For test case: did user actually change loan config?
   const loanIsDefault =
@@ -47,7 +62,7 @@ const PremiumEMICalculator = () => {
     loanTenure === defaultTenure &&
     interestRate === defaultInterest;
 
-  const luxuryCarDatabase = [
+  const luxuryCarDatabase: CarData[] = [
     { brand: 'BMW', model: '3 Series', year: 2019, price: 2850000, image: '🚗', tag: 'Popular' },
     { brand: 'Audi', model: 'A4', year: 2018, price: 2680000, image: '🚙', tag: 'Value' },
     { brand: 'Mercedes', model: 'C-Class', year: 2020, price: 3200000, image: '🚗', tag: 'Premium' },
@@ -83,9 +98,9 @@ const PremiumEMICalculator = () => {
       .slice(0, 4);
     setTopCars(recommendations);
     setCurrentCarIndex(0);
-  }, [carPrice]);
+  }, [carPrice, luxuryCarDatabase]);
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
@@ -93,12 +108,12 @@ const PremiumEMICalculator = () => {
     }).format(amount);
   };
 
-  const formatCompact = (amount) => {
+  const formatCompact = (amount: number): string => {
     if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(1)}Cr`;
     return `₹${(amount / 100000).toFixed(1)}L`;
   };
 
-  const getEMIForCar = (carPrice) => {
+  const getEMIForCar = (carPrice: number): number => {
     const principal = carPrice - downPayment;
     const monthlyRate = interestRate / (12 * 100);
     const numberOfPayments = loanTenure * 12;
@@ -115,12 +130,12 @@ const PremiumEMICalculator = () => {
   const prevCar = () => setCurrentCarIndex((prev) => (prev - 1 + topCars.length) % topCars.length);
 
   // Handle form input changes
-  const handleInput = (e) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   // Handle form submit (simulate DB)
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormSubmitted(true);
     // You'd POST here later:

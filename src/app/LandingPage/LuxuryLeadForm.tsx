@@ -3,6 +3,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 
+// Global type declarations (using unknown[] to match existing declaration)
+declare global {
+  interface Window {
+    dataLayer?: unknown[]
+  }
+}
+
 // Types
 interface FormData {
   name: string
@@ -14,13 +21,7 @@ interface FormData {
   utm_campaign?: string
 }
 
-interface FormErrors {
-  name?: string
-  phone?: string
-  email?: string
-  interest?: string
-  submit?: string
-}
+type FormErrors = Partial<Record<keyof FormData, string>> & { submit?: string };
 
 // Animation variants
 const fadeInUp = {
@@ -30,7 +31,7 @@ const fadeInUp = {
     y: 0,
     transition: { 
       duration: 0.8, 
-      ease: [0.21, 0.47, 0.32, 0.98] 
+      ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number]
     }
   }
 }
@@ -43,7 +44,7 @@ const successCardVariants = {
     y: 0,
     transition: { 
       duration: 1, 
-      ease: [0.21, 0.47, 0.32, 0.98] 
+      ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number]
     }
   }
 }
@@ -544,15 +545,17 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
       </div>
 
       {/* Reduced motion support */}
-      <style jsx>{`
-        @media (prefers-reduced-motion: reduce) {
-          * {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
+      <style>
+        {`
+          @media (prefers-reduced-motion: reduce) {
+            * {
+              animation-duration: 0.01ms !important;
+              animation-iteration-count: 1 !important;
+              transition-duration: 0.01ms !important;
+            }
           }
-        }
-      `}</style>
+        `}
+      </style>
     </section>
   )
 }

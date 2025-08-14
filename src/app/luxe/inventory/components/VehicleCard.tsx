@@ -11,9 +11,7 @@ import FinanceProtectionHighlights from "./FinanceBenefits";
 import SubmitRequestSection from "./CallBack";
 import ScheduleDemo from "./Schedule";
 
-const gold = "#d4af37";
-
-// Updated Vehicle type to include slug
+// Updated Vehicle type to match EMI Modal expectations
 export type Vehicle = {
   id: number;
   brand: string;
@@ -42,7 +40,8 @@ export type Vehicle = {
   views?: number;
   bodyType?: string;
   driveType?: string;
-  seating?: number;
+  seating: number; // Changed from optional to required to match EMI Modal
+  isLiked: boolean; 
 };
 
 // EMI calculator utility
@@ -183,10 +182,18 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
         allVehicles={vehicles}
         triggerClear={() => setCompareList([])}
       />
+      
       {emiOpen.open && emiOpen.car && (
         <EMIModal
           visible={emiOpen.open}
-          vehicle={emiOpen.car}
+          vehicle={{
+            ...emiOpen.car,
+            originalPrice: emiOpen.car.originalPrice || '', // Provide default value
+            seating: emiOpen.car.seating || 5, // Ensure seating is always a number
+            savings: emiOpen.car.savings || '',
+            features: emiOpen.car.features || [],
+            views: emiOpen.car.views || 0
+          }}
           onClose={() => setEmiOpen({ open: false, car: null })}
         />
       )}
@@ -244,17 +251,16 @@ function VehicleCard({
 }: VehicleCardProps) {
   
   let priceVal = 0;
-if (typeof car.price === "string") {
-  if (car.price.toLowerCase().includes("lakh")) {
-    const num = parseFloat(car.price.replace(/[^0-9.]/g, ''));
-    priceVal = num * 100000; // convert lakh to rupees
+  if (typeof car.price === "string") {
+    if (car.price.toLowerCase().includes("lakh")) {
+      const num = parseFloat(car.price.replace(/[^0-9.]/g, ''));
+      priceVal = num * 100000; // convert lakh to rupees
+    } else {
+      priceVal = parseFloat(car.price.replace(/[^0-9.]/g, ''));
+    }
   } else {
-    priceVal = parseFloat(car.price.replace(/[^0-9.]/g, ''));
+    priceVal = Number(car.price) || 0;
   }
-} else {
-  priceVal = Number(car.price) || 0;
-}
-
 
   const emiValue = getEMI(priceVal);
 

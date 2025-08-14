@@ -179,10 +179,43 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
 
   return (
     <div className={`relative ${className}`}>
-      {/* Custom Navigation Arrows */}
-      
+      {/* Render Slider */}
+      <Slider ref={sliderRef} {...settings}>
+        {displayTestimonials.map((t) => (
+          <div key={t.id} className="p-4">
+            <div className="bg-white/5 p-6 rounded-lg h-full flex flex-col justify-between">
+              <p className="text-white text-sm mb-4">"{t.text}"</p>
+              <div className="flex items-center mt-auto">
+                <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mr-3">
+                  <span className="text-white font-bold">{t.initials}</span>
+                </div>
+                <div>
+                  <p className="text-white font-semibold">{t.name}</p>
+                  {t.role && <p className="text-gray-400 text-xs">{t.role}, {t.company}</p>}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Slider>
 
-      
+      {/* Navigation Arrows */}
+      {showArrows && (
+        <>
+          <button
+            onClick={previous}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10"
+          >
+            <ChevronLeft size={32} />
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10"
+          >
+            <ChevronRight size={32} />
+          </button>
+        </>
+      )}
 
       {/* Custom CSS for Slick */}
       <style jsx>{`
@@ -257,4 +290,4 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
   );
 };
 
-export default TestimonialsCarousel; 
+export default TestimonialsCarousel;

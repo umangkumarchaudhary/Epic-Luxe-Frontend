@@ -1,46 +1,46 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Sparkles, Star, Shield, Award, Section } from 'lucide-react';
+import { ChevronRight, Sparkles, Shield, Award } from 'lucide-react';
 
 
 
 const LandingPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [hoveredSide, setHoveredSide] = useState(null);
+  const [hoveredSide, setHoveredSide] = useState<'luxe' | 'reassured' | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    setIsLoaded(true);
-    
-    // Check if mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    
-    const handleMouseMove = (e) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100
-      });
-    };
-    
-    window.addEventListener('resize', checkMobile);
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
-    
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
+ useEffect(() => {
+  setIsLoaded(true);
+  
+  const checkMobile = () => {
+    setIsMobile(window.innerWidth < 768);
+  };
+  checkMobile();
+  
+  const handleScroll = () => {
+    setScrolled(window.scrollY > 20);
+  };
+  
+  const handleMouseMove = (e: MouseEvent) => {
+    setMousePosition({
+      x: (e.clientX / window.innerWidth) * 100,
+      y: (e.clientY / window.innerHeight) * 100
+    });
+  };
+
+  window.addEventListener('resize', checkMobile);
+  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('mousemove', handleMouseMove);
+  
+  return () => {
+    window.removeEventListener('resize', checkMobile);
+    window.removeEventListener('scroll', handleScroll);
+    window.removeEventListener('mousemove', handleMouseMove);
+  };
+}, []);
+
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-black">

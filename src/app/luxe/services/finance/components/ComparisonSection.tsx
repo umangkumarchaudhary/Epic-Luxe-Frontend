@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-const GOLD = '#D4AF37';
-const LIGHT_GOLD = '#BFA980';
+
 const API_BASE_URL = 'http://localhost:5000/api';
 
 export default function FinanceComparisonSection() {
@@ -18,106 +17,107 @@ export default function FinanceComparisonSection() {
   });
 
   // Handle form field changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
-    if (submitError) setSubmitError('');
-  };
+// Handle form field changes
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
+  
+  // Clear error when user starts typing
+  if (submitError) setSubmitError('');
+};
 
-  // Submit form handler with API integration
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name.trim() || !formData.phone.trim()) {
-      setSubmitError('Please fill in all required fields');
-      return;
+// Submit form handler with API integration
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  // Basic validation
+  if (!formData.name.trim() || !formData.phone.trim()) {
+    setSubmitError('Please fill in all required fields');
+    return;
+  }
+
+  if (formData.phone.replace(/\D/g, '').length < 10) {
+    setSubmitError('Please enter a valid 10-digit phone number');
+    return;
+  }
+
+  setIsSubmitting(true);
+  setSubmitError('');
+
+  try {
+    // Prepare data for API
+    const leadData = {
+      lead_type: 'finance_inquiry',
+      lead_title: 'Finance Concierge Request',
+      name: formData.name.trim(),
+      phone: formData.phone.replace(/\D/g, ''), // Remove non-digits
+      email: '', // Optional field
+      preferred_model: formData.preferredCar.trim() || null,
+      vehicle_id: null,
+      appointment_date: null,
+      appointment_time: null,
+      message: 'Finance concierge request from comparison section',
+      budget: null,
+      insurance_type: null,
+      loan_details: null,
+      status: 'new',
+      source_page: 'finance_comparison_section',
+      brand: null,
+      fuel: null,
+      variant: null,
+      city: null,
+      year: null,
+      owner: null,
+      kms: null,
+      whatsapp_updates: true,
+      monthly_income: null,
+      employment_type: null,
+      interested_car: formData.preferredCar.trim() || null,
+      loan_amount: null,
+      emi_tenure: null,
+      interest: null,
+      your_emi: null,
+      total_payable: null,
+      pan_card: formData.panCard.trim() || null,
+      car_interest: 'luxury_finance',
+    };
+
+    console.log('Submitting lead data:', leadData);
+
+    const response = await fetch(`${API_BASE_URL}/leads`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(leadData),
+    });
+
+    const result = await response.json();
+    console.log('API Response:', result);
+
+    if (!response.ok) {
+      throw new Error(result.error || `Server error: ${response.status}`);
     }
 
-    if (formData.phone.replace(/\D/g, '').length < 10) {
-      setSubmitError('Please enter a valid 10-digit phone number');
-      return;
+    if (result.success) {
+      setFormSubmitted(true);
+      console.log('Lead submitted successfully:', result.lead);
+    } else {
+      throw new Error(result.error || 'Failed to submit lead');
     }
 
-    setIsSubmitting(true);
-    setSubmitError('');
+  } catch (error: any) {
+    console.error('Error submitting form:', error);
+    setSubmitError(
+      error.message?.includes('fetch')
+        ? 'Unable to connect to server. Please try again later.'
+        : error.message || 'An error occurred. Please try again.'
+    );
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
-    try {
-      // Prepare data for API
-      const leadData = {
-        lead_type: 'finance_inquiry',
-        lead_title: 'Finance Concierge Request',
-        name: formData.name.trim(),
-        phone: formData.phone.replace(/\D/g, ''), // Remove non-digits
-        email: '', // Optional field
-        preferred_model: formData.preferredCar.trim() || null,
-        vehicle_id: null,
-        appointment_date: null,
-        appointment_time: null,
-        message: 'Finance concierge request from comparison section',
-        budget: null,
-        insurance_type: null,
-        loan_details: null,
-        status: 'new',
-        source_page: 'finance_comparison_section',
-        brand: null,
-        fuel: null,
-        variant: null,
-        city: null,
-        year: null,
-        owner: null,
-        kms: null,
-        whatsapp_updates: true,
-        monthly_income: null,
-        employment_type: null,
-        interested_car: formData.preferredCar.trim() || null,
-        loan_amount: null,
-        emi_tenure: null,
-        interest: null,
-        your_emi: null,
-        total_payable: null,
-        pan_card: formData.panCard.trim() || null,
-        car_interest: 'luxury_finance'
-      };
-
-      console.log('Submitting lead data:', leadData);
-
-      const response = await fetch(`${API_BASE_URL}/leads`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add API key if configured in backend
-          // 'Authorization': `Bearer ${API_KEY}` // Uncomment if API key is required
-        },
-        body: JSON.stringify(leadData)
-      });
-
-      const result = await response.json();
-      console.log('API Response:', result);
-
-      if (!response.ok) {
-        throw new Error(result.error || `Server error: ${response.status}`);
-      }
-
-      if (result.success) {
-        setFormSubmitted(true);
-        console.log('Lead submitted successfully:', result.lead);
-      } else {
-        throw new Error(result.error || 'Failed to submit lead');
-      }
-
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setSubmitError(
-        error.message.includes('fetch') 
-          ? 'Unable to connect to server. Please try again later.'
-          : error.message || 'An error occurred. Please try again.'
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   // Close all modals and reset form
   const closeModal = () => {

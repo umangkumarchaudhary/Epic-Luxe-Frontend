@@ -3,9 +3,10 @@ import { memo } from 'react';
 
 interface SeoJsonLdProps {
   type: 'organization' | 'website' | 'breadcrumb' | 'article' | 'product' | 'faq';
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   id?: string;
 }
+
 
 /**
  * SEO JSON-LD structured data component

@@ -87,6 +87,7 @@ interface FrontendVehicle {
   bodyType?: string;
   driveType?: string;
   seating?: number;
+  isLiked?: boolean;
 }
 
 /* ---------- initial filter state ---------- */
@@ -343,7 +344,7 @@ export default function VehiclesPage() {
   }, [exactFiltered, fuzzyMatches, sortValue]);
 
   /* ---------------- handlers ---------------- */
-  const clearAllFilters = () => setFilters(initialFilters);
+  
 
   const handleSortClick = (v: string) => {
     setSort(v);

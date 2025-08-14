@@ -13,9 +13,10 @@ const trackEvent = (event: string, section: string, label: string) => {
 // Declare window.dataLayer type
 declare global {
   interface Window {
-    dataLayer?: unknown[];
+    dataLayer?: Record<string, unknown>[];
   }
 }
+
 
 
 const Section2AboutEpicCars = () => {

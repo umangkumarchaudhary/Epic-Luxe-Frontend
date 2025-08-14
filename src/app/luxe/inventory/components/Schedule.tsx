@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 interface ScheduleProps {
   isOpen: boolean;
@@ -234,32 +235,42 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                 </div>
 
                 {/* Preferred Vehicle */}
-                <div>
-                  <label className="block text-white text-sm font-semibold mb-2">
-                    Preferred Vehicle
-                  </label>
-                  <div className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-xl">
-                    {selectedVehicle ? (
-                      <div className="flex items-center space-x-3">
-                        {selectedVehicle.image && (
-                          <img 
-                            src={selectedVehicle.image} 
-                            alt={`${selectedVehicle.brand} ${selectedVehicle.model}`}
-                            className="w-12 h-8 object-cover rounded"
-                          />
-                        )}
-                        <div>
-                          <p className="font-semibold">
-                            {selectedVehicle.year} {selectedVehicle.brand} {selectedVehicle.model}
-                          </p>
-                          <p className="text-gold text-sm">{selectedVehicle.price}</p>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-gray-400">No vehicle selected</p>
-                    )}
-                  </div>
-                </div>
+                import Image from 'next/image';
+
+<div>
+  <label className="block text-white text-sm font-semibold mb-2">
+    Preferred Vehicle
+  </label>
+  <div className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-xl">
+    {selectedVehicle ? (
+      <div className="flex items-center space-x-3">
+        {selectedVehicle.image && (
+          <div className="relative w-12 h-8">
+            <Image
+              src={selectedVehicle.image}
+              alt={`${selectedVehicle.brand} ${selectedVehicle.model}`}
+              fill
+              className="object-cover rounded"
+              onError={() => {
+                selectedVehicle.image =
+                  'https://images.unsplash.com/photo-1555215695-3004980ad54e?fit=crop&w=600&h=400';
+              }}
+            />
+          </div>
+        )}
+        <div>
+          <p className="font-semibold">
+            {selectedVehicle.year} {selectedVehicle.brand} {selectedVehicle.model}
+          </p>
+          <p className="text-gold text-sm">{selectedVehicle.price}</p>
+        </div>
+      </div>
+    ) : (
+      <p className="text-gray-400">No vehicle selected</p>
+    )}
+  </div>
+</div>
+
 
                 {/* Date */}
                 <div>

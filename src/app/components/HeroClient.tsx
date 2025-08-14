@@ -16,7 +16,7 @@ interface HeroClientProps {
 }
 
 export default function HeroClient({ initialBanners }: HeroClientProps) {
-  const [banners, setBanners] = useState<Banner[]>(initialBanners);
+  const [banners] = useState<Banner[]>(initialBanners);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const [parallax, setParallax] = useState<ParallaxState>({ x: 0, y: 0 });
@@ -51,16 +51,19 @@ export default function HeroClient({ initialBanners }: HeroClientProps) {
   }, [banners]);
 
   // Parallax effect
-  useEffect(() => {
-    const handleParallax = (e: MouseEvent): void => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 0.5;
-      const y = (e.clientY / window.innerHeight - 0.5) * 0.5;
-      setParallax({ x, y });
-    };
+ useEffect(() => {
+  const handleParallax = (e: globalThis.MouseEvent) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 0.5;
+    const y = (e.clientY / window.innerHeight - 0.5) * 0.5;
+    setParallax({ x, y });
+  };
 
-    window.addEventListener('mousemove', handleParallax as EventListener);
-    return () => window.removeEventListener('mousemove', handleParallax as EventListener);
-  }, []);
+  window.addEventListener('mousemove', handleParallax);
+
+  return () => window.removeEventListener('mousemove', handleParallax);
+}, []);
+
+
 
   // Cleanup scroll style on unmount
   useEffect(() => {

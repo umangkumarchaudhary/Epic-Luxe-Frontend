@@ -1,8 +1,8 @@
 // components/BrandSelector.tsx
-
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 interface Brand {
   name: string;
@@ -30,27 +30,37 @@ const BrandSelector = ({ brands, defaultBrand }: BrandSelectorProps) => {
   };
 
   return (
-    <div className="flex gap-6 justify-center my-6">
+    <div className="flex gap-6 justify-center my-6 flex-wrap">
       {brands.map((brand) => (
         <div key={brand.name} className="flex flex-col items-center">
-          <img
-            src={brand.logo}
-            alt={brand.name}
-            className={`rounded-full cursor-pointer p-1 border-4 transition-all duration-300 ${
+          <div
+            className={`relative rounded-full cursor-pointer p-1 border-4 transition-all duration-300 ${
               selectedBrand === brand.name
                 ? 'border-yellow-400 shadow-lg'
                 : 'border-transparent opacity-60 hover:opacity-100 hover:border-gray-400'
             }`}
-            onClick={() => handleBrandClick(brand.name)}
             style={{
+              background:
+                selectedBrand === brand.name
+                  ? `linear-gradient(to right, ${brand.gradient
+                      .replace('from-', '')
+                      .replace('to-', '')
+                      .replace(' ', ', ')})`
+                  : 'transparent',
               width: 75,
               height: 75,
-              objectFit: 'cover',
-              background: selectedBrand === brand.name
-                ? `linear-gradient(to right, ${brand.gradient.replace('from-', '').replace('to-', '').replace(' ', ', ')})`
-                : 'transparent',
             }}
-          />
+            onClick={() => handleBrandClick(brand.name)}
+          >
+            <Image
+              src={brand.logo}
+              alt={brand.name}
+              fill
+              style={{ objectFit: 'cover', borderRadius: '9999px' }}
+              sizes="75px"
+              priority={selectedBrand === brand.name} // prioritize LCP for selected
+            />
+          </div>
           <span
             className={`mt-2 text-sm font-semibold ${
               selectedBrand === brand.name ? 'text-yellow-500' : 'text-gray-400'

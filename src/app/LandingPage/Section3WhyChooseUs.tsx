@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useRef, useEffect } from 'react'
+import React, { useRef} from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
-import Image from 'next/image'
+
 import Head from 'next/head'
 
 // Animation variants
@@ -29,7 +29,7 @@ const iconDelayed = {
     transition: { 
       duration: 0.6, 
       delay: 0.1,
-      ease: [0.21, 0.47, 0.32, 0.98] 
+      ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number]
     }
   }
 }

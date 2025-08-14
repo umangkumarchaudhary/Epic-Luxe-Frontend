@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useRef, useEffect, useState } from 'react'
-import { motion, useScroll, useTransform, useInView, useAnimation } from 'framer-motion'
+import { motion, useInView, useAnimation } from 'framer-motion'
 import Image from 'next/image'
 
 // Types for CMS-ready structure
@@ -48,7 +48,7 @@ const fadeScale = {
     y: 0,
     transition: { 
       duration: 1.2, 
-      ease: [0.21, 0.47, 0.32, 0.98],
+      ease: [0.21, 0.47, 0.32, 0.98] as [number,number, number, number],
       staggerChildren: 0.3
     }
   }
@@ -70,7 +70,7 @@ const tileReveal = {
     rotateX: 0,
     transition: { 
       duration: 1.4, 
-      ease: [0.21, 0.47, 0.32, 0.98] 
+      ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number]
     }
   }
 }

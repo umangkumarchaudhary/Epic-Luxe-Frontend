@@ -1,8 +1,7 @@
-// app/components/QuoteForm.tsx
 'use client';
 
 import React, { useEffect, useState, FormEvent } from 'react';
-import { Loader2, CheckCircle, X, Car, DollarSign, Clock } from 'lucide-react';
+import { Loader2, CheckCircle, X, Car, DollarSign, Clock, Phone, ArrowRight } from 'lucide-react';
 
 interface FormData {
   name: string;
@@ -27,10 +26,14 @@ const luxuryCarModels: string[] = [
 export default function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [formData, setFormData] = useState<FormData>({ name: '', phone: '', preferredModel: '', additionalNotes: '' });
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    phone: '',
+    preferredModel: '',
+    additionalNotes: ''
+  });
 
   useEffect(() => {
-    // close on escape
     function handleKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose();
     }
@@ -42,9 +45,7 @@ export default function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps)
     e.preventDefault();
     setIsLoading(true);
     try {
-      // simulate call
       await new Promise((r) => setTimeout(r, 1400));
-      // TODO: replace with actual API call to your leads endpoint
       console.log('QuoteForm submitted', { ...formData, formType });
       setIsLoading(false);
       setIsSubmitted(true);
@@ -125,7 +126,7 @@ export default function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps)
             <h2 id="quote-form-title" className="text-lg font-bold text-white leading-tight">
               {formType === 'buy' ? 'Get Your Dream Car Quote' : 'Get Instant Car Valuation'}
             </h2>
-            <p id="quote-form-desc" className="text-white/60 text-xs">We'll contact you within 30 minutes</p>
+            <p id="quote-form-desc" className="text-white/60 text-xs">We&apos;ll contact you within 30 minutes</p>
           </div>
         </div>
 
@@ -157,10 +158,23 @@ export default function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps)
           </div>
 
           <button type="submit" disabled={isLoading} className="w-full flex items-center justify-center space-x-2 px-6 py-3.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold hover:from-[#BFA980] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed">
-            {isLoading ? (<><Loader2 className="w-5 h-5 animate-spin" /><span>Processing...</span></>) : (<><Phone className="w-5 h-5" /><span>{formType === 'buy' ? 'Get Purchase Quote' : 'Get Valuation'}</span><ArrowRight className="w-5 h-5" /></>)}
+            {isLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Processing...</span>
+              </>
+            ) : (
+              <>
+                <Phone className="w-5 h-5" />
+                <span>{formType === 'buy' ? 'Get Purchase Quote' : 'Get Valuation'}</span>
+                <ArrowRight className="w-5 h-5" />
+              </>
+            )}
           </button>
 
-          <p className="text-xs text-white/50 text-center leading-relaxed">By submitting, you agree to our privacy policy. We'll only use your information to provide the requested quote and may contact you about related luxury vehicle services.</p>
+          <p className="text-xs text-white/50 text-center leading-relaxed">
+            By submitting, you agree to our privacy policy. We&apos;ll only use your information to provide the requested quote and may contact you about related luxury vehicle services.
+          </p>
         </form>
       </div>
     </div>

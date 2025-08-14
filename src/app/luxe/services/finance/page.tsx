@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useState, useEffect , useCallback} from 'react';
-import { Calculator,TrendingUp,Zap,IndianRupee, CheckCircle, Car, Users, Shield, Clock, Phone, MapPin,ChevronDown, ChevronUp, Minus, X } from 'lucide-react';
+import { Calculator, CheckCircle, Car, Users, Shield, Clock, Phone, MapPin,ChevronDown, ChevronUp, Minus, X } from 'lucide-react';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import PremiumEMICalculator from './components/EMICalculator';
@@ -9,14 +9,14 @@ import FinanceComparisonSection from './components/ComparisonSection';
 
 const FinancePage = () => {
   // EMI Calculator State
-  const [carPrice, setCarPrice] = useState(2500000);
-  const [downPayment, setDownPayment] = useState(500000);
-  const [loanTenure, setLoanTenure] = useState(5);
-  const [interestRate, setInterestRate] = useState(8.5);
+  const [carPrice] = useState(2500000);
+  const [downPayment] = useState(500000);
+  const [loanTenure] = useState(5);
+  const [interestRate, ] = useState(8.5);
   const [emi, setEmi] = useState(0);
-  const [totalInterest, setTotalInterest] = useState(0);
+  const [, setTotalInterest] = useState(0);
   const [totalPayable, setTotalPayable] = useState(0);
-  const [affordableCars, setAffordableCars] = useState([]);
+  const [, setAffordableCars] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
 
@@ -143,7 +143,7 @@ const FinancePage = () => {
     setAffordableCars(recommendations);
   }, [carPrice, emi]);
 
-  const getEMIForCar = (carPrice) => {
+  const getEMIForCar = (carPrice:number) => {
     const principal = carPrice - downPayment;
     const monthlyRate = interestRate / (12 * 100);
     const numberOfPayments = loanTenure * 12;

@@ -208,9 +208,12 @@ export default function VehicleSort({
             setShowSortDropdown(!showSortDropdown);
           }}
           style={{
-            ...sortButtonStyle,
-            backgroundColor: showSortDropdown ? "rgba(212,175,55,0.1)" : sortButtonStyle.background,
-          }}
+  ...sortButtonStyle,
+  backgroundColor: showSortDropdown
+    ? "rgba(212,175,55,0.1)"
+    : String(sortButtonStyle.background), // convert to string
+}}
+
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = "rgba(212,175,55,0.15)";
             e.currentTarget.style.transform = "translateY(-1px)";

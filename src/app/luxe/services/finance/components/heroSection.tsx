@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { IndianRupee, Phone, Calculator } from 'lucide-react';
+import { Phone, Calculator } from 'lucide-react';
 
-const GOLD = '#D4AF37';
-const LIGHT_GOLD = '#BFA980';
+
 
 // HERO marketing lines for animated highlight in hero section
 const marketingTexts = [
@@ -29,13 +28,15 @@ export default function FinancePage() {
   const [emiValue, setEmiValue] = useState(75000);
   const emiSamples = [75000, 82000, 68000, 79000, 73000];
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      index = (index + 1) % emiSamples.length;
-      setEmiValue(emiSamples[index]);
-    }, 2400);
-    return () => clearInterval(interval);
-  }, []);
+  let index = 0;
+  const interval = setInterval(() => {
+    index = (index + 1) % emiSamples.length;
+    setEmiValue(emiSamples[index]);
+  }, 2400);
+
+  return () => clearInterval(interval);
+}, [emiSamples]); // Added emiSamples as a dependency
+
 
   // Marketing text animation
   const [marketingIndex, setMarketingIndex] = useState(0);

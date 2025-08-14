@@ -30,22 +30,18 @@ interface EMIModalProps {
 const formatINR = (n: number): string => `₹${n.toLocaleString()}`;
 
 const EMIModal: React.FC<EMIModalProps> = ({ visible, onClose, vehicle }) => {
-  if (!visible || !vehicle) return null;
-
   function parsePriceToRupees(priceString: string): number {
-  const clean = priceString.replace(/[^0-9.]/g, '');
-  if (priceString.toLowerCase().includes('lakh')) {
-    return parseFloat(clean) * 100000;
-  } else if (priceString.toLowerCase().includes('crore')) {
-    return parseFloat(clean) * 10000000;
-  } else {
-    return parseFloat(clean);
+    const clean = priceString.replace(/[^0-9.]/g, '');
+    if (priceString.toLowerCase().includes('lakh')) {
+      return parseFloat(clean) * 100000;
+    } else if (priceString.toLowerCase().includes('crore')) {
+      return parseFloat(clean) * 10000000;
+    } else {
+      return parseFloat(clean);
+    }
   }
-}
 
-
-  const carPrice = parsePriceToRupees(vehicle.price) || 0;
-
+  const carPrice = vehicle ? parsePriceToRupees(vehicle.price) || 0 : 0;
 
   // EMI form states
   const [downPayment, setDownPayment] = useState(Math.round(carPrice * 0.2));
@@ -67,7 +63,10 @@ const EMIModal: React.FC<EMIModalProps> = ({ visible, onClose, vehicle }) => {
 
   // Reset all on vehicle change or modal open/close
   useEffect(() => {
-    setDownPayment(Math.round(carPrice * 0.2));
+    if (vehicle) {
+      const newCarPrice = parsePriceToRupees(vehicle.price) || 0;
+      setDownPayment(Math.round(newCarPrice * 0.2));
+    }
     setTenure(60);
     setInterest(8.5);
     setShowCustomerForm(false);
@@ -75,7 +74,10 @@ const EMIModal: React.FC<EMIModalProps> = ({ visible, onClose, vehicle }) => {
     setCustomerPhone('');
     setCustomerErrors({});
     setSavingStatus('idle');
-  }, [vehicle, visible, carPrice]);
+  }, [vehicle, visible]);
+
+  // Early return after hooks
+  if (!visible || !vehicle) return null;
 
   function calculateEMI() {
     if (!loanAmount || !interest || !tenure) return 0;
