@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Car, Zap } from 'lucide-react';
 
 const CAR_COLORS = [
   '#d4af37', '#393939', '#7afaff', '#e457a1', '#8146dc', '#ea6300', '#92dd52',

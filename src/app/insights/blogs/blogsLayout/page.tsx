@@ -7,9 +7,9 @@ import { ChevronLeft, ChevronRight, Play, Clock, User, Star, ArrowRight, Sparkle
 export default function EpicLuxeBlog() {
   const [activeFilter, setActiveFilter] = useState('All')
   const [currentCarousel, setCurrentCarousel] = useState(0)
-  const [isVisible, setIsVisible] = useState({})
+  const [isVisible, setIsVisible] = useState<Record<string, boolean>>({})
   const heroRef = useRef(null)
-  const observerRef = useRef(null)
+  const observerRef = useRef<IntersectionObserver | null>(null)
 
   const categories = ['All', 'Ownership', 'Finance', 'Behind the Wheel', 'Luxury Hacks', 'Trends', 'Reviews']
   

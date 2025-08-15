@@ -22,13 +22,19 @@ interface Vehicle {
   image_url?: string;
 }
 
-export default function Page({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [id, setId] = useState<string | null>(null);
+
+  // Resolve params Promise
+  useEffect(() => {
+    params.then(({ id }) => setId(id));
+  }, [params]);
 
   useEffect(() => {
+    if (!id) return;
     async function fetchVehicle() {
       try {
         const res = await fetch(`http://localhost:5000/admin/vehicle/${id}`);
@@ -90,7 +96,7 @@ export default function Page({ params }: { params: { id: string } }) {
   return (
     <div style={containerStyle}>
       <h1 style={titleStyle}>Edit Vehicle</h1>
-      <AdminUploadForm existingData={vehicle} vehicleId={id} />
+      <AdminUploadForm existingData={vehicle} vehicleId={id || undefined} />
     </div>
   );
 }

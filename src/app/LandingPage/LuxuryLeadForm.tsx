@@ -165,7 +165,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
         })
       }
 
-    } catch (error) {
+    } catch {
       setErrors({ 
         submit: 'We encountered an issue. Please try again or call us directly.' 
       })

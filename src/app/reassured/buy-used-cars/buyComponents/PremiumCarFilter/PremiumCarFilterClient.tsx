@@ -1,7 +1,7 @@
 "use client";
 
 // PremiumCarFilterClient.tsx - Client Component (Interactive)
-import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { Filter, X, ChevronDown, ChevronUp, Car, Settings, Zap, Search, SortAsc } from "lucide-react";
 
 interface FiltersState {

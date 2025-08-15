@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Car, Zap, Atom, Settings, Shield, Star } from 'lucide-react';
+import { Car, Zap, Atom, Settings, Star } from 'lucide-react';
 
 /**
  * QuantumMolecularForgeLoader
@@ -216,7 +216,7 @@ const QuantumMolecularForgeLoader = () => {
             const Y1 = 160 * Math.cos(t1) + 175;
             const Y2 = 160 * Math.cos(t2) + 175;
             const X1 = Math.sin(t1) * 48;
-            const X2 = Math.sin(t2) * 48;
+            // const X2 = Math.sin(t2) * 48; // Currently unused
             return (
               <div
                 key={'line-' + i}

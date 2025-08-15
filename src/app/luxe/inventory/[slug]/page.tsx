@@ -753,7 +753,7 @@ export default function VehicleDetailsPage() {
               <div>
                 <h2 className="text-3xl font-bold text-slate-900 mb-6">Comprehensive Service & Support</h2>
                 <p className="text-lg text-slate-600 mb-8">
-                  Our commitment doesn't end with the purchase. We provide comprehensive after-sales support to keep your vehicle in pristine condition.
+                  Our commitment doesn&apos;t end with the purchase. We provide comprehensive after-sales support to keep your vehicle in pristine condition.
                 </p>
                 
                 <div className="space-y-4">

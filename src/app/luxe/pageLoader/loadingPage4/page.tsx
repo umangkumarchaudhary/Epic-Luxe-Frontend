@@ -1,7 +1,7 @@
 
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import { Car, Zap, Star, Shield, Settings, Gauge } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Car } from 'lucide-react';
 
 // Option 1: Hyper-Realistic 3D Car Transformation
 const HyperRealistic3DLoader = () => {
