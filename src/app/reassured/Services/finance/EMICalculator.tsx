@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Calculator,
   Shield,
@@ -57,7 +57,7 @@ const PremiumEMICalculator = () => {
     loanTenure === defaultTenure &&
     interestRate === defaultInterest;
 
-  const luxuryCarDatabase = [
+  const luxuryCarDatabase = useMemo(() => [
     { brand: 'BMW', model: '3 Series', year: 2019, price: 2850000, image: '🚗', tag: 'Popular' },
     { brand: 'Audi', model: 'A4', year: 2018, price: 2680000, image: '🚙', tag: 'Value' },
     { brand: 'Mercedes', model: 'C-Class', year: 2020, price: 3200000, image: '🚗', tag: 'Premium' },
@@ -66,7 +66,7 @@ const PremiumEMICalculator = () => {
     { brand: 'Mercedes', model: 'GLC', year: 2019, price: 4500000, image: '🚙', tag: 'SUV' },
     { brand: 'BMW', model: '5 Series', year: 2020, price: 5200000, image: '🚗', tag: 'Executive' },
     { brand: 'Audi', model: 'A6', year: 2019, price: 5500000, image: '🚗', tag: 'Luxury' },
-  ];
+  ], []);
 
   useEffect(() => {
     const principal = carPrice - downPayment;

@@ -235,9 +235,7 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                 </div>
 
                 {/* Preferred Vehicle */}
-                import Image from 'next/image';
-
-<div>
+                <div>
   <label className="block text-white text-sm font-semibold mb-2">
     Preferred Vehicle
   </label>

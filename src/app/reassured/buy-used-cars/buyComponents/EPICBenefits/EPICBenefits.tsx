@@ -163,7 +163,7 @@ const EpicReassuredBenefits: React.FC = () => {
             <dt>Is financing available?</dt>
             <dd>Yes, we offer competitive financing options with interest rates starting from 7.5% through our banking partners including HDFC, ICICI, and Axis Bank.</dd>
             
-            <dt>Can I return the car if I'm not satisfied?</dt>
+            <dt>Can I return the car if I&apos;m not satisfied?</dt>
             <dd>Yes, we offer a 7-day/300km return policy. If you&apos;re not satisfied, return the vehicle for a full refund (subject to vehicle condition).</dd>
           </dl>
         </section>

@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Search, Star, Users, Clock, ArrowRight, Tag, Calendar, User } from 'lucide-react'
+import Image from 'next/image'
+import { Star, Users, Clock, ArrowRight, Tag, Calendar, User } from 'lucide-react'
 
 const EpicLuxeBlog = () => {
   const [activeFilter, setActiveFilter] = useState('All')
@@ -136,11 +137,13 @@ const EpicLuxeBlog = () => {
         <div className="relative group cursor-pointer">
           <div className="relative overflow-hidden rounded-3xl bg-gray-800 shadow-2xl hover:shadow-yellow-500/20 transition-all duration-500 transform hover:scale-[1.02]">
             <div className="aspect-[21/9] relative overflow-hidden">
-              <img
+              <Image
                 src={featuredPost.image}
                 alt={featuredPost.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                loading="lazy"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
             </div>
@@ -208,11 +211,12 @@ const EpicLuxeBlog = () => {
               className="group cursor-pointer bg-gray-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-yellow-500/10 transition-all duration-500 transform hover:scale-[1.03] hover:-translate-y-2"
             >
               <div className="aspect-[16/9] relative overflow-hidden">
-                <img
+                <Image
                   src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading="lazy"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute top-4 left-4">
                   <span className="px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold rounded-full">

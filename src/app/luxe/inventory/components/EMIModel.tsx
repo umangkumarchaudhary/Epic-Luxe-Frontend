@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { X, Calculator, Info } from 'lucide-react';
 
 interface Vehicle {
@@ -271,11 +272,15 @@ const EMIModal: React.FC<EMIModalProps> = ({ visible, onClose, vehicle }) => {
             </div>
 
             <div className="flex items-center gap-3 mb-4">
-              <img
-                src={vehicle.image}
-                alt={`${vehicle.brand} ${vehicle.model}`}
-                className="w-16 h-10 object-cover rounded-lg border border-slate-600"
-              />
+              <div className="relative w-16 h-10">
+                <Image
+                  src={vehicle.image}
+                  alt={`${vehicle.brand} ${vehicle.model}`}
+                  fill
+                  className="object-cover rounded-lg border border-slate-600"
+                  sizes="64px"
+                />
+              </div>
               <div>
                 <div className="uppercase text-xs tracking-wide text-slate-400">On-road Price</div>
                 <div className="text-xl font-bold bg-gradient-to-r from-[#d4af37] to-[#f1c85c] text-transparent bg-clip-text">

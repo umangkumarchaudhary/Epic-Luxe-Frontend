@@ -1,8 +1,7 @@
 'use client'
 
 import React, { useRef, useEffect, useState, useCallback } from 'react'
-import { motion, useScroll, useTransform, useInView, useAnimation, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
+import { motion, useInView, useAnimation, AnimatePresence } from 'framer-motion'
 
 // Types for testimonials
 interface Testimonial {
@@ -229,9 +228,8 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; className?: string }
 // Carousel Component
 const TestimonialCarousel: React.FC<{ 
   testimonials: Testimonial[]
-  type: 'luxe' | 'reassured'
   autoPlay?: boolean
-}> = ({ testimonials, type, autoPlay = true }) => {
+}> = ({ testimonials, autoPlay = true }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -362,7 +360,6 @@ const VoicesOfDistinction: React.FC<{ className?: string }> = ({ className = '' 
             >
               <TestimonialCarousel 
                 testimonials={[...luxeTestimonials, ...reassuredTestimonials]} 
-                type="luxe"
               />
             </motion.div>
           </div>
@@ -372,7 +369,6 @@ const VoicesOfDistinction: React.FC<{ className?: string }> = ({ className = '' 
             <motion.div variants={fadeInUp} className="max-w-lg mx-auto">
               <TestimonialCarousel 
                 testimonials={[...luxeTestimonials, ...reassuredTestimonials]} 
-                type="luxe"
               />
             </motion.div>
           </div>

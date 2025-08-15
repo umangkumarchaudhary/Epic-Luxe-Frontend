@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Slider from 'react-slick';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -184,7 +184,7 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
         {displayTestimonials.map((t) => (
           <div key={t.id} className="p-4">
             <div className="bg-white/5 p-6 rounded-lg h-full flex flex-col justify-between">
-              <p className="text-white text-sm mb-4">"{t.text}"</p>
+              <p className="text-white text-sm mb-4">&quot;{t.text}&quot;</p>
               <div className="flex items-center mt-auto">
                 <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mr-3">
                   <span className="text-white font-bold">{t.initials}</span>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
+import Image from 'next/image';
 import { Calculator, Calendar } from 'lucide-react';
 import EMIModal from './EMIModel'; // Your EMI calculator modal component
 import CompareDrawer from './CompareDrawer';
@@ -290,11 +291,12 @@ function VehicleCard({
     <div className="relative rounded-2xl overflow-hidden bg-gradient-to-b from-gray-900 to-black border border-gray-700 shadow-2xl flex flex-col group hover:shadow-gold/20 hover:border-gold/30 transition-all duration-500 h-full">
       {/* Image & overlays */}
       <div className="relative aspect-video w-full overflow-hidden">
-        <img
-          src={car.image}
+        <Image
+          src={car.image || '/placeholder-car.jpg'}
           alt={`${car.brand} ${car.model}`}
+          width={400}
+          height={300}
           className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-          loading="lazy"
           draggable={false}
         />
         
@@ -336,24 +338,25 @@ function VehicleCard({
           {/* Brand and Price row */}
           <div className="flex justify-between items-start space-x-2 mb-2">
             <h2 className="text-lg font-bold truncate leading-tight text-white">{car.brand}</h2>
-            <p className="text-2xl font-bold bg-gradient-to-r from-gold to-yellow-400 bg-clip-text text-transparent whitespace-nowrap leading-tight">{car.price}</p>
+            <p className="text-2xl font-bold whitespace-nowrap leading-tight" style={{
+              background: 'linear-gradient(90deg, #D4AF37 0%, #FFD700 25%, #F4E4C1 50%, #FFD700 75%, #D4AF37 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>{car.price}</p>
           </div>
 
-          {/* Model - No crossed out pricing */}
-          <div className="flex justify-between items-center mb-2">
+          {/* Model, Year and Location row */}
+          <div className="flex justify-between items-center mb-">
             <p className="text-base text-gray-300 truncate leading-tight font-medium">{car.model}</p>
-          </div>
-
-          {/* Year/Location */}
-          <div className="flex items-center">
-            <p className="text-sm text-gray-400 truncate">
+            <p className="text-sm text-gray-400 whitespace-nowrap leading-tight">
               {car.year} • {car.location}
             </p>
           </div>
         </div>
 
         {/* Specs Section */}
-        <div className="flex items-center mb-4 pb-4 border-b border-gray-800">
+        <div className="flex items-center mb-2 pb-4 border-b border-gray-800">
           <div className="flex flex-wrap gap-x-2 gap-y-1 text-sm text-gray-300">
             <span className="font-medium">{car.mileage}</span>
             <span className="text-gray-600">•</span>

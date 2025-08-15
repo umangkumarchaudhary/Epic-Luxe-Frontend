@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Phone, ChevronRight, ChevronLeft, Check
@@ -23,16 +23,6 @@ interface FormData {
   whatsappUpdates: boolean;
 }
 
-interface TrustSignal {
-  icon: React.ComponentType;
-  title: string;
-  subtitle: string;
-  stat: string;
-}
-
-interface SellCarClientProps {
-  trustSignals: TrustSignal[];
-}
 
 // Progress Steps Configuration
 const STEPS = [
@@ -154,10 +144,10 @@ const CarDetailsSummary: React.FC<{ formData: FormData }> = ({ formData }) => {
 };
 
 // Main Client Component
-export default function SellCarClient(_props: SellCarClientProps) {
+export default function SellCarClient() {
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState<'next' | 'back'>('next');
-  const [formData, setFormData] = useState<FormData>({
+  const [formData] = useState<FormData>({
     brand: '',
     model: '',
     fuelType: '',
@@ -172,7 +162,7 @@ export default function SellCarClient(_props: SellCarClientProps) {
     whatsappUpdates: true,
   });
   const [showSuccess, setShowSuccess] = useState(false);
-  const wizardScrollRef = useRef<HTMLDivElement>(null);
+  // const wizardScrollRef = useRef<HTMLDivElement>(null);
 
   // Handle navigation
   const handleNext = () => {
@@ -188,19 +178,19 @@ export default function SellCarClient(_props: SellCarClientProps) {
   };
 
   const handleStepChange = (newStep: number) => {
-    if (newStep <= step || isStepAccessible(newStep)) {
+    if (newStep <= step || isStepAccessible()) {
       setDirection(newStep > step ? 'next' : 'back');
       setStep(newStep);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const handleFormDataChange = (newData: Partial<FormData>) => {
-    setFormData((prev) => ({ ...prev, ...newData }));
-  };
+  // const handleFormDataChange = (newData: Partial<FormData>) => {
+  //   setFormData((prev) => ({ ...prev, ...newData }));
+  // };
 
   // Check if step is accessible based on form completion
-  const isStepAccessible = (_targetStep: number) => {
+  const isStepAccessible = () => {
     // Logic to check if previous steps are completed
     // For simplicity, allowing all navigation in this example
     return true;

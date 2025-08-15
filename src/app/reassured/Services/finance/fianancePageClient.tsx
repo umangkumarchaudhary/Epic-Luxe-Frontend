@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useEffect, useCallback } from 'react';
-import { Calculator, TrendingUp, Zap, IndianRupee, CheckCircle, Car, Users, Shield, Clock, Phone, MapPin, ChevronDown, ChevronUp, Minus, X, Star, Award, CreditCard, FileText, DollarSign } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Calculator, CheckCircle, Car, Users, Shield, Clock, Phone, ChevronDown, ChevronUp, X, Star, Award, CreditCard, FileText, DollarSign } from 'lucide-react';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import PremiumEMICalculator from './EMICalculator';
@@ -56,16 +56,16 @@ interface FAQ {
   answer: string;
 }
 
-const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, popularBrands, serverTimestamp }) => {
+const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, popularBrands }) => {
   // EMI Calculator State
-  const [carPrice, setCarPrice] = useState<number>(800000); // Adjusted for non-luxury segment
-  const [downPayment, setDownPayment] = useState<number>(150000);
-  const [loanTenure, setLoanTenure] = useState<number>(5);
-  const [interestRate, setInterestRate] = useState<number>(9.5);
+  const [carPrice] = useState<number>(800000); // Adjusted for non-luxury segment
+  const [downPayment] = useState<number>(150000);
+  const [loanTenure] = useState<number>(5);
+  const [interestRate] = useState<number>(9.5);
   const [emi, setEmi] = useState<number>(0);
-  const [totalInterest, setTotalInterest] = useState<number>(0);
+  const [, setTotalInterest] = useState<number>(0);
   const [totalPayable, setTotalPayable] = useState<number>(0);
-  const [affordableCars, setAffordableCars] = useState<PreOwnedCar[]>([]);
+  const [, setAffordableCars] = useState<PreOwnedCar[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Eligibility Checker State
@@ -83,7 +83,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
   const [eligibilityError, setEligibilityError] = useState<string>("");
 
   // Pre-owned car database for non-luxury segment
-  const preOwnedCarDatabase: PreOwnedCar[] = [
+  const preOwnedCarDatabase: PreOwnedCar[] = useMemo(() => [
     { brand: 'Maruti Suzuki', model: 'Swift', year: 2019, price: 650000, image: '🚗', popular: true, fuel: 'Petrol', km: '45,000' },
     { brand: 'Hyundai', model: 'i20', year: 2020, price: 750000, image: '🚙', saving: true, fuel: 'Petrol', km: '32,000' },
     { brand: 'Tata', model: 'Nexon', year: 2021, price: 950000, image: '🚗', premium: true, fuel: 'Diesel', km: '28,000' },
@@ -91,7 +91,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
     { brand: 'Toyota', model: 'Innova', year: 2019, price: 1200000, image: '🚙', fuel: 'Diesel', km: '40,000' },
     { brand: 'Mahindra', model: 'Scorpio', year: 2020, price: 1100000, image: '🚙', fuel: 'Diesel', km: '35,000' },
     { brand: 'Ford', model: 'EcoSport', year: 2019, price: 700000, image: '🚗', premium: true, fuel: 'Petrol', km: '48,000' },
-  ];
+  ], []);
 
   // Form State
   const [formData, setFormData] = useState<FormData>({
@@ -136,7 +136,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
       } else {
         alert(result.error || 'Error submitting application');
       }
-    } catch (err) {
+    } catch {
       alert('Network error. Please try again.');
     }
   };
@@ -184,7 +184,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
       .slice(0, 3);
     
     setAffordableCars(recommendations);
-  }, [carPrice, emi]);
+  }, [carPrice, emi, preOwnedCarDatabase, downPayment]);
 
   const checkEligibility = () => {
     if (!monthlyIncome || !employmentType || !city) {
@@ -215,7 +215,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       setShowPopup(true);
-    } catch (error) {
+    } catch {
       alert("There was an error submitting your application.");
     } finally {
       setIsSubmitting(false);
@@ -235,13 +235,13 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
     setStep("eligibility");
   };
 
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
+  // const formatCurrency = (amount: number): string => {
+  //   return new Intl.NumberFormat('en-IN', {
+  //     style: 'currency',
+  //     currency: 'INR',
+  //     maximumFractionDigits: 0
+  //   }).format(amount);
+  // };
 
   // Financial partners for pre-owned car segment
   const financialPartners: FinancialPartner[] = [
@@ -602,7 +602,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
                   <div className="text-center">
                     <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4 animate-bounce" />
                     <h3 className="text-3xl font-heading font-bold text-black mb-2">
-                      You're Eligible!
+                      You&apos;re Eligible!
                     </h3>
                     <p className="text-gray-600 text-base mb-4">
                       Based on your inputs, you may get financing up to:
@@ -720,7 +720,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
                 Trusted Finance Partners
               </h2>
               <p className="text-gray-600 text-lg">
-                Competitive rates from India's most trusted lenders
+                Competitive rates from India&apos;s most trusted lenders
               </p>
             </div>
             
@@ -753,8 +753,8 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {locationData.states.map((state: State, index: number) => (
-                <div key={index} className="premium-card rounded-2xl p-8">
+              {locationData.states.map((state: State) => (
+                <div key={state.name} className="premium-card rounded-2xl p-8">
                   <h3 className="text-2xl font-bold text-black mb-4">{state.name}</h3>
                   <div className="grid grid-cols-2 gap-2">
                     {state.cities.slice(0, 6).map((city: string, cityIndex: number) => (
@@ -876,7 +876,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
                     {[...Array(5)].map((_, i: number) => <Star key={i} className="w-5 h-5 fill-current" />)}
                   </div>
                 </div>
-                <p className="text-gray-600 mb-6 italic">"Got my Maruti Swift financed in just 2 days. The process was so smooth and transparent. EMI of ₹12,000 fits perfectly in my budget."</p>
+                <p className="text-gray-600 mb-6 italic">&quot;Got my Maruti Swift financed in just 2 days. The process was so smooth and transparent. EMI of ₹12,000 fits perfectly in my budget.&quot;</p>
                 <div>
                   <h4 className="font-bold text-black">Rajesh Kumar</h4>
                   <p className="text-sm text-gray-500">Chennai, Tamil Nadu</p>
@@ -889,7 +889,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
                     {[...Array(5)].map((_, i: number) => <Star key={i} className="w-5 h-5 fill-current" />)}
                   </div>
                 </div>
-                <p className="text-gray-600 mb-6 italic">"Amazing service! They helped me get finance for my Hyundai i20. The interest rate was competitive and approval was instant."</p>
+                <p className="text-gray-600 mb-6 italic">&quot;Amazing service! They helped me get finance for my Hyundai i20. The interest rate was competitive and approval was instant.&quot;</p>
                 <div>
                   <h4 className="font-bold text-black">Priya Menon</h4>
                   <p className="text-sm text-gray-500">Kochi, Kerala</p>
@@ -902,7 +902,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
                     {[...Array(5)].map((_, i: number) => <Star key={i} className="w-5 h-5 fill-current" />)}
                   </div>
                 </div>
-                <p className="text-gray-600 mb-6 italic">"Professional team and excellent support. Got my Honda City financed with best rates in the market. Highly recommended!"</p>
+                <p className="text-gray-600 mb-6 italic">&quot;Professional team and excellent support. Got my Honda City financed with best rates in the market. Highly recommended!&quot;</p>
                 <div>
                   <h4 className="font-bold text-black">Vikram Reddy</h4>
                   <p className="text-sm text-gray-500">Hyderabad, Telangana</p>
@@ -1145,7 +1145,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
             <p>Second hand car loan in Hyderabad Telangana with competitive interest rates. Finance pre owned cars from top brands with flexible EMI options.</p>
             
             {/* More SEO content for each state and city */}
-            {locationData.states.map((state: State, index: number) => (
+            {locationData.states.map((state: State) => (
               <div key={state.name}>
                 <h4>Pre Owned Car Finance {state.name}</h4>
                 <p>Get used car finance in {state.name}. Service available in {state.cities.join(', ')}. Quick approval process for pre owned vehicle loans.</p>
@@ -1153,7 +1153,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
             ))}
             
             {/* Popular brands SEO content */}
-            {popularBrands.map((brand: string, index: number) => (
+            {popularBrands.map((brand: string) => (
               <div key={brand}>
                 <h4>{brand} Used Car Finance</h4>
                 <p>Finance pre owned {brand} cars with attractive EMI options. Get instant approval for used {brand} vehicles across South India.</p>

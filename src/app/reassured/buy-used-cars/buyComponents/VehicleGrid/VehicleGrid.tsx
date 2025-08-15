@@ -59,13 +59,13 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ vehicles }) => {
   // Calculate stats for SEO
   const totalVehicles = vehicles.length;
   const brands = Object.keys(vehiclesByBrand);
-  const priceRange = vehicles.reduce((acc, v) => {
-    const price = parseFloat(v.price.replace(/[^0-9.]/g, ''));
-    return {
-      min: Math.min(acc.min, price),
-      max: Math.max(acc.max, price)
-    };
-  }, { min: Infinity, max: 0 });
+  // const priceRange = vehicles.reduce((acc, v) => {
+  //   const price = parseFloat(v.price.replace(/[^0-9.]/g, ''));
+  //   return {
+  //     min: Math.min(acc.min, price),
+  //     max: Math.max(acc.max, price)
+  //   };
+  // }, { min: Infinity, max: 0 });
 
   return (
     <>

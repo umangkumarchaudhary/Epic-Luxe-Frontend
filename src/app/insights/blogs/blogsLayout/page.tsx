@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { ChevronLeft, ChevronRight, Play, Clock, User, Star, ArrowRight, Sparkles, Globe, Award } from 'lucide-react'
+import Image from 'next/image'
+import { ChevronLeft, ChevronRight, Play, Clock, User, Star, ArrowRight, Sparkles, Globe } from 'lucide-react'
 
 export default function EpicLuxeBlog() {
   const [activeFilter, setActiveFilter] = useState('All')
@@ -90,7 +91,7 @@ export default function EpicLuxeBlog() {
       setCurrentCarousel((prev) => (prev + 1) % carouselItems.length)
     }, 4000)
     return () => clearInterval(interval)
-  }, [])
+  }, [carouselItems.length])
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
@@ -163,10 +164,13 @@ export default function EpicLuxeBlog() {
                   </div>
                 </div>
                 <div className="relative overflow-hidden rounded-2xl group-hover:scale-105 transition-transform duration-500">
-                  <img 
+                  <Image 
                     src={featuredArticle.image}
                     alt="Featured article"
+                    width={600}
+                    height={400}
                     className="w-full h-80 object-cover"
+                    priority
                   />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all duration-300" />
                   <div className="absolute top-4 right-4 w-12 h-12 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
@@ -215,9 +219,11 @@ export default function EpicLuxeBlog() {
                   <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400/0 to-yellow-600/0 group-hover:from-yellow-400/20 group-hover:to-yellow-600/20 rounded-2xl transition-all duration-300" />
                   <div className="relative">
                     <div className="overflow-hidden">
-                      <img
+                      <Image
                         src={article.image}
                         alt={article.title}
+                        width={400}
+                        height={300}
                         className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                     </div>
@@ -249,7 +255,7 @@ export default function EpicLuxeBlog() {
       <section id="carousel" data-animate className="py-20 px-6 bg-gradient-to-r from-gray-900/50 to-black/50">
         <div className="max-w-7xl mx-auto">
           <div className={`transition-all duration-1000 delay-300 transform ${isVisible.carousel ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
-            <h2 className="font-serif text-4xl text-center mb-12">Reader's Choice</h2>
+            <h2 className="font-serif text-4xl text-center mb-12">Reader&apos;s Choice</h2>
             
             <div className="relative">
               <div className="flex items-center justify-center">

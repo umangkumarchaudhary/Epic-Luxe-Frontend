@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Award, Star, CheckCircle, Clock, CreditCard } from 'lucide-react';
+import { Shield, Award } from 'lucide-react';
 import FAQClient from './faqclient';
 
 // Define the FAQ type to match what FAQClient expects

@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Search, Star, Users, Clock, ArrowRight, Tag, Calendar, User } from 'lucide-react'
+import React, { useState, useCallback, useMemo } from 'react'
+import Image from 'next/image'
+import { Star, Users, Clock, ArrowRight, Tag, Calendar, User } from 'lucide-react'
 
 const EpicLuxeBlog = () => {
   const [activeFilter, setActiveFilter] = useState('All')
@@ -20,7 +21,7 @@ const EpicLuxeBlog = () => {
     readTime: "12 min read"
   }
 
-  const blogPosts = [
+  const blogPosts = useMemo(() => [
     {
       id: 2,
       title: "2024 Porsche 911: Pre-Owned Performance Excellence",
@@ -81,17 +82,25 @@ const EpicLuxeBlog = () => {
       date: "Nov 30, 2024",
       readTime: "14 min read"
     }
-  ]
+  ], [])
 
-  const filteredPosts = activeFilter === 'All' 
-    ? blogPosts 
-    : blogPosts.filter(post => post.category === activeFilter)
+  const filteredPosts = useMemo(() => 
+    activeFilter === 'All' 
+      ? blogPosts 
+      : blogPosts.filter(post => post.category === activeFilter),
+    [activeFilter, blogPosts]
+  )
 
-  const handleEmailSubmit = () => {
+  const handleEmailSubmit = useCallback(() => {
+    if (!email.trim()) return
     console.log('Newsletter signup:', email)
     setEmail('')
     // Add your newsletter signup logic here
-  }
+  }, [email])
+
+  const handleFilterChange = useCallback((category: string) => {
+    setActiveFilter(category)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-900" style={{ backgroundColor: '#0e0e0e' }}>
@@ -136,11 +145,13 @@ const EpicLuxeBlog = () => {
         <div className="relative group cursor-pointer">
           <div className="relative overflow-hidden rounded-3xl bg-gray-800 shadow-2xl hover:shadow-yellow-500/20 transition-all duration-500 transform hover:scale-[1.02]">
             <div className="aspect-[21/9] relative overflow-hidden">
-              <img
+              <Image
                 src={featuredPost.image}
                 alt={featuredPost.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                loading="lazy"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
             </div>
@@ -183,7 +194,7 @@ const EpicLuxeBlog = () => {
           {categories.map((category) => (
             <button
               key={category}
-              onClick={() => setActiveFilter(category)}
+              onClick={() => handleFilterChange(category)}
               className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
                 activeFilter === category
                   ? 'bg-yellow-500 text-black'
@@ -208,11 +219,12 @@ const EpicLuxeBlog = () => {
               className="group cursor-pointer bg-gray-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-yellow-500/10 transition-all duration-500 transform hover:scale-[1.03] hover:-translate-y-2"
             >
               <div className="aspect-[16/9] relative overflow-hidden">
-                <img
+                <Image
                   src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading="lazy"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute top-4 left-4">
                   <span className="px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold rounded-full">

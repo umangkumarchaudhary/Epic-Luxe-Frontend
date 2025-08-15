@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Head from 'next/head';
+import Image from 'next/image';
 
 import {
   ArrowLeft, Calendar, Calculator, Share2, Heart, Phone, MapPin, Fuel,
@@ -120,9 +121,11 @@ const ImageGallery = ({ images }: { images: VehicleImage[] }) => {
     <>
       {/* Main Image */}
       <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-slate-100 group">
-        <img
-          src={images[currentIndex]?.image_url}
+        <Image
+          src={images[currentIndex]?.image_url || '/placeholder-car.jpg'}
           alt={`Vehicle image ${currentIndex + 1}`}
+          width={800}
+          height={600}
           className="w-full h-full object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
           onClick={() => setShowFullscreen(true)}
         />
@@ -174,9 +177,11 @@ const ImageGallery = ({ images }: { images: VehicleImage[] }) => {
                   : 'border-slate-200 hover:border-slate-300'
               }`}
             >
-              <img
-                src={image.image_url}
+              <Image
+                src={image.image_url || '/placeholder-car.jpg'}
                 alt={`Thumbnail ${index + 1}`}
+                width={120}
+                height={90}
                 className="w-full h-full object-cover"
               />
             </button>
@@ -188,9 +193,11 @@ const ImageGallery = ({ images }: { images: VehicleImage[] }) => {
       {showFullscreen && (
         <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
           <div className="relative max-w-6xl w-full h-full flex items-center justify-center">
-            <img
-              src={images[currentIndex]?.image_url}
+            <Image
+              src={images[currentIndex]?.image_url || '/placeholder-car.jpg'}
               alt="Fullscreen view"
+              width={1200}
+              height={900}
               className="max-w-full max-h-full object-contain rounded-2xl"
             />
             
@@ -284,7 +291,7 @@ export default function VehicleDetailsPage() {
           title: `${vehicle.year} ${vehicle.brand} ${vehicle.model}`,
           url: window.location.href,
         });
-      } catch (err) {
+      } catch {
         // Fallback to clipboard
         navigator.clipboard.writeText(window.location.href);
         setCopyMessage('Link copied!');
@@ -313,10 +320,10 @@ export default function VehicleDetailsPage() {
   const handleEMICalculator = () => {
     if (vehicle) {
       // Create a vehicle object with price as string to fix the EMI modal error
-      const vehicleForEMI = {
-        ...vehicle,
-        price: vehicle.price.toString() // Convert price to string
-      };
+      // const vehicleForEMI = {
+      //   ...vehicle,
+      //   price: vehicle.price.toString() // Convert price to string
+      // };
       setShowEMIModal(true);
     }
   };
@@ -344,7 +351,7 @@ export default function VehicleDetailsPage() {
           </h1>
           <p className="text-slate-600 mb-8">
             {error === 'Vehicle not found'
-              ? 'The vehicle you\'re looking for is no longer available.'
+              ? 'The vehicle you&apos;re looking for is no longer available.'
               : error || 'Unable to load vehicle details at the moment.'}
           </p>
           <div className="space-y-3">
@@ -881,17 +888,39 @@ export default function VehicleDetailsPage() {
             visible={showEMIModal}
             onClose={() => setShowEMIModal(false)}
             vehicle={{
-              ...vehicle,
-              price: vehicle.price.toString() // Ensure price is string for EMI modal
+              id: vehicle.id,
+              brand: vehicle.brand,
+              model: vehicle.model,
+              year: vehicle.year,
+              price: vehicle.price.toString(),
+              originalPrice: vehicle.original_price?.toString() || vehicle.price.toString(),
+              image: images[0]?.image_url || '/placeholder-car.jpg',
+              mileage: vehicle.mileage || 'N/A',
+              fuelType: vehicle.fuel_type || 'Petrol',
+              transmission: vehicle.transmission,
+              seating: 5, // Default value as it's not in VehicleDetails
+              location: vehicle.location || 'India',
+              condition: vehicle.condition || 'Excellent',
+              features: features.map(f => f.feature),
+              savings: vehicle.savings?.toString() || '0',
+              isLiked: liked,
+              views: 0 // Default value as it's not in VehicleDetails
             }}
           />
         )}
         
         {showScheduleModal && (
           <ScheduleDemo
-            visible={showScheduleModal}
+            isOpen={showScheduleModal}
             onClose={() => setShowScheduleModal(false)}
-            selectedVehicle={vehicle}
+            selectedVehicle={vehicle ? {
+              id: vehicle.id,
+              brand: vehicle.brand,
+              model: vehicle.model,
+              year: vehicle.year,
+              price: vehicle.price.toString(),
+              image: images[0]?.image_url
+            } : null}
           />
         )}
       </div>

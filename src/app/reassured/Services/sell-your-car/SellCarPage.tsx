@@ -224,7 +224,7 @@ export default function SellCarPage() {
         </div>
 
         {/* Client Component */}
-        <SellCarClient trustSignals={trustSignals} />
+        <SellCarClient />
 
         {/* SEO Footer Content */}
         <footer className="bg-gray-50 border-t border-gray-200 mt-20">
@@ -282,7 +282,7 @@ export default function SellCarPage() {
 
             {/* Bottom Footer */}
             <div className="border-t border-gray-200 pt-8 text-center text-sm text-gray-600">
-              <p>© 2024 YourBrand. India's Most Trusted Used Car Marketplace.</p>
+              <p>© 2024 YourBrand. India&apos;s Most Trusted Used Car Marketplace.</p>
               <p className="mt-2">
                 <a href="/privacy" className="hover:text-black">Privacy Policy</a>
                 {' • '}

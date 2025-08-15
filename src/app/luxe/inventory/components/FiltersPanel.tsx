@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { Filter, X, ChevronDown, ChevronUp, Car, Settings, Palette, Zap, Search, Menu, SortAsc } from "lucide-react";
+import { Filter, X, ChevronDown, ChevronUp, Car, Settings, Palette, Zap, Search, SortAsc } from "lucide-react";
 
 export interface FiltersState {
   brand: string[];
@@ -48,10 +48,7 @@ const MODELS_BY_BRAND: Record<string, string[]> = {
 };
 const FUEL_TYPES = ["Petrol", "Diesel", "Electric", "Hybrid"];
 const TRANSMISSIONS = ["Automatic", "Manual"];
-const OWNERSHIP_OPTIONS = ["1st", "2nd", "3rd+"];
 const BODY_TYPES = ["SUV", "Sedan", "Coupe", "Convertible"];
-const DRIVE_TYPES = ["AWD", "RWD", "FWD"];
-const SEATING_OPTIONS = ["2", "4", "5", "7+"];
 const COLORS = [
   { name: "Black", hex: "#000000" },
   { name: "White", hex: "#ffffff" },
@@ -60,7 +57,6 @@ const COLORS = [
   { name: "Silver", hex: "#cbd5e1" },
   { name: "Beige", hex: "#f5f5dc" },
 ];
-const CONDITIONS = ["Excellent", "Good", "Fair"];
 const FEATURES = [
   "Sunroof",
   "Ventilated Seats",
@@ -154,16 +150,6 @@ export default function PremiumCarFilter({
     [filters, setFilters]
   );
 
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1024
-  );
-  
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    setWindowWidth(window.innerWidth);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // Scroll handler for bottom navigation visibility
   useEffect(() => {
@@ -188,7 +174,6 @@ export default function PremiumCarFilter({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  const isMobile = windowWidth < 700;
 
   const clearAllFilters = () => {
     setFilters({
@@ -293,7 +278,7 @@ export default function PremiumCarFilter({
       return ((value - min) / (max - min)) * 100;
     }
 
-    function positionToValue(position: number) {
+    const positionToValue = useCallback((position: number) => {
       if (!sliderRef.current) return min;
       const rect = sliderRef.current.getBoundingClientRect();
       let relativePos = position - rect.left;
@@ -302,7 +287,7 @@ export default function PremiumCarFilter({
       let val = min + percent * (max - min);
       val = Math.round(val / step) * step;
       return Math.min(Math.max(val, min), max);
-    }
+    }, [min, max, step]);
 
     const onPointerMove = useCallback(
       (e: MouseEvent | TouchEvent) => {
@@ -318,7 +303,7 @@ export default function PremiumCarFilter({
           else if (newVal < minVal) onChangeMax(minVal);
         }
       },
-      [dragging, maxVal, minVal, min, max, onChangeMin, onChangeMax]
+      [dragging, maxVal, minVal, min, max, onChangeMin, onChangeMax, positionToValue]
     );
 
     const onPointerUp = useCallback(() => {

@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import React, { useState, useEffect , useCallback} from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Calculator, CheckCircle, Car as CarIcon, Users, Shield, Clock, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
@@ -27,7 +27,7 @@ const FinancePage = () => {
   const [emi, setEmi] = useState(0);
   const [, setTotalInterest] = useState(0);
   const [totalPayable, setTotalPayable] = useState(0);
-  const [affordableCars, setAffordableCars] = useState<CarData[]>([]);
+  const [, setAffordableCars] = useState<CarData[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
 
@@ -45,7 +45,7 @@ const FinancePage = () => {
   const [step, setStep] = useState("eligibility");
   const [eligibilityError, setEligibilityError] = useState("");
 
-  const luxuryCarDatabase = [
+  const luxuryCarDatabase = useMemo(() => [
     { brand: 'BMW', model: '3 Series', year: 2019, price: 2850000, image: '🚗', popular: true },
     { brand: 'Audi', model: 'A4', year: 2018, price: 2680000, image: '🚙', saving: true },
     { brand: 'Mercedes', model: 'C-Class', year: 2020, price: 3200000, image: '🚗', premium: true },
@@ -53,7 +53,7 @@ const FinancePage = () => {
     { brand: 'Audi', model: 'Q5', year: 2020, price: 4800000, image: '🚙' },
     { brand: 'Mercedes', model: 'GLC', year: 2019, price: 4500000, image: '🚙' },
     { brand: 'BMW', model: '5 Series', year: 2018, price: 3800000, image: '🚗', premium: true },
-  ];
+  ], []);
 
   // Form State
   const [formData, setFormData] = useState({

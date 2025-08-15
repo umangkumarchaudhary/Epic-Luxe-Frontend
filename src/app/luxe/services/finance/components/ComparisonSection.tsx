@@ -106,12 +106,13 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       throw new Error(result.error || 'Failed to submit lead');
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error submitting form:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An error occurred. Please try again.';
     setSubmitError(
-      error.message?.includes('fetch')
+      errorMessage.includes('fetch')
         ? 'Unable to connect to server. Please try again later.'
-        : error.message || 'An error occurred. Please try again.'
+        : errorMessage
     );
   } finally {
     setIsSubmitting(false);

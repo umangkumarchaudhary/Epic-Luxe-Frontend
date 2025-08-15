@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { Phone, Mail, MapPin, Check, ArrowRight, Clock, User, MessageSquare } from 'lucide-react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { Phone, Mail, MapPin, Check, ArrowRight, Clock } from 'lucide-react';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 

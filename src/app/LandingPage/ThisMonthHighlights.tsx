@@ -262,8 +262,6 @@ const LuxeTile: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
 
 // Reassured Tile Component
 const ReassuredTile: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
-  const [isHovered, setIsHovered] = useState(false)
-
   const trackAnalytics = () => {
     if (typeof window !== 'undefined' && window.dataLayer) {
       window.dataLayer.push({
@@ -278,8 +276,6 @@ const ReassuredTile: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
     <motion.div
       variants={tileReveal}
       className="relative group"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <motion.div
         className="relative bg-white rounded-2xl overflow-hidden border border-gray-200/50 shadow-2xl"
@@ -424,7 +420,7 @@ const ThisMonthsHighlights: React.FC<{ className?: string }> = ({ className = ''
                 letterSpacing: '-0.02em'
               }}
             >
-              This Month's Highlights
+              This Month&apos;s Highlights
             </motion.h2>
           </motion.div>
 

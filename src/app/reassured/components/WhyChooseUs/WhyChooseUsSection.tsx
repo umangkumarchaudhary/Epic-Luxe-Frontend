@@ -201,7 +201,7 @@ const WhyChooseUsSection = () => {
 
           {/* Desktop Grid View */}
           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-16 lg:mb-20">
-            {features.map((feature, index) => (
+            {features.map((feature) => (
               <FeatureCard key={feature.title} feature={feature} />
             ))}
           </div>
@@ -213,7 +213,7 @@ const WhyChooseUsSection = () => {
                 className="flex transition-transform duration-500 ease-in-out"
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
-                {features.map((feature, index) => (
+                {features.map((feature) => (
                   <div key={feature.title} className="w-full flex-shrink-0 px-4">
                     <FeatureCard feature={feature} />
                   </div>
