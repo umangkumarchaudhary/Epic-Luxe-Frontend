@@ -1,5 +1,7 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { ChevronRight, Sparkles, Shield, Award} from 'lucide-react';
 
 import Section2AboutEpicCars from './LandingPage/AboutEpic';
@@ -10,11 +12,42 @@ import LuxuryLeadForm from './LandingPage/LuxuryLeadForm';
 import EpicCarsPage from './LandingPage/ChooseYourJourneySection';
 
 const LandingPage = () => {
+  const router = useRouter();
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoveredSide, setHoveredSide] = useState<'luxe' | 'reassured' | null>(null);
-  const [scrolled, setScrolled] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
+
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+    const scrollThreshold = window.innerHeight * 0.5; // 50vh
+    const scrollDifference = Math.abs(currentScrollY - lastScrollY);
+    
+    // Only update if scroll difference is significant (prevents jittery behavior)
+    if (scrollDifference > 5) {
+      // Determine scroll direction
+      const newDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+      
+      // Update header visibility based on scroll position and direction
+      if (currentScrollY > scrollThreshold) {
+        // Beyond 50vh threshold
+        if (newDirection === 'down') {
+          // Scrolling down - show header
+          setHeaderVisible(true);
+        } else if (newDirection === 'up') {
+          // Scrolling up - hide header
+          setHeaderVisible(false);
+        }
+      } else {
+        // Before 50vh threshold - always hide
+        setHeaderVisible(false);
+      }
+      
+      setLastScrollY(currentScrollY);
+    }
+  }, [lastScrollY]);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -25,10 +58,6 @@ const LandingPage = () => {
     };
     checkMobile();
     
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
@@ -36,22 +65,40 @@ const LandingPage = () => {
       });
     };
     
+    // Throttled scroll handler for better performance
+    let scrollTimeout: NodeJS.Timeout;
+    const throttledScroll = () => {
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(handleScroll, 10);
+    };
+    
     window.addEventListener('resize', checkMobile);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', throttledScroll, { passive: true });
     window.addEventListener('mousemove', handleMouseMove);
     
     return () => {
       window.removeEventListener('resize', checkMobile);
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', throttledScroll);
       window.removeEventListener('mousemove', handleMouseMove);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
     };
-  }, []);
+  }, [handleScroll]);
+
+  const handleLuxeNavigation = () => {
+    router.push('/luxe');
+  };
+
+  const handleReassuredNavigation = () => {
+    router.push('/reassured');
+  };
 
   return (
     <div className="relative w-full min-h-screen overflow bg-black">
-      {/* Premium Navigation Header - Fixed for both mobile and desktop */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
-        scrolled ? 'bg-black/95 backdrop-blur-xl shadow-2xl' : 'bg-transparent'
+      {/* Premium Navigation Header - Smart visibility based on scroll */}
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out transform ${
+        headerVisible 
+          ? 'translate-y-0 opacity-100 bg-black/95 backdrop-blur-xl shadow-2xl' 
+          : '-translate-y-full opacity-0 bg-transparent'
       }`}>
         <nav className="px-4 sm:px-8 lg:px-12 py-4 sm:py-6">
           <div className="flex items-center justify-between">
@@ -79,7 +126,7 @@ const LandingPage = () => {
       </header>
 
       {/* Hero Section Container - Desktop horizontal, Mobile vertical */}
-      <section className={`relative w-full h-screen ${isMobile ? 'flex flex-col' : 'flex flex-row'}`} role="main" aria-label="Choose Your World">
+      <section className={`relative w-full ${isMobile ? 'h-screen flex flex-col' : 'h-[80vh] flex flex-row'}`} role="main" aria-label="Choose Your World">
         
         {/* Epic Luxe Section - Top on mobile, Left on desktop */}
         <div 
@@ -99,34 +146,59 @@ const LandingPage = () => {
         >
           {/* Cinematic Background */}
           <div className="absolute inset-0 overflow-hidden">
-            {/* Luxury car image placeholder with Ken Burns effect */}
+            {/* Background image with Ken Burns effect - Using Next.js Image for optimization */}
             <div 
               className="absolute inset-0 w-[120%] h-[120%] -top-[10%] -left-[10%]"
               style={{
-                background: `
-                  radial-gradient(circle at 70% 50%, rgba(212, 175, 55, 0.15), transparent 50%),
-                  radial-gradient(circle at 30% 80%, rgba(255, 215, 0, 0.08), transparent 40%),
-                  linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)
-                `,
                 animation: !isMobile ? 'kenBurnsLeft 25s ease-out infinite alternate' : 'none',
                 transform: !isMobile ? `scale(1.1) translateX(${mousePosition.x * 0.02}px) translateY(${mousePosition.y * 0.02}px)` : 'scale(1.05)'
               }}
             >
-              {/* Luxury texture overlay */}
-              <div className="absolute inset-0 opacity-20 mix-blend-overlay"
+              <Image
+                src="/assets/images/sClass.jpg"
+                alt="Epic Luxe Background"
+                fill
                 style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.3'/%3E%3C/svg%3E")`
+                  objectFit: 'cover',
+                  objectPosition: 'center',
                 }}
+                priority
+                quality={90}
+                sizes="100vw"
               />
             </div>
             
-            {/* Gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            {/* Dark-to-gold gradient overlay for text contrast */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
+            
+            {/* Subtle vignette overlay for edge darkening */}
+            <div 
+              className="absolute inset-0 z-10"
+              style={{
+                background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.8) 100%)'
+              }}
+            />
+            
+            {/* Additional hero image if needed */}
+            {/* Uncomment when epixluxehero.png is available
+            <div className="absolute bottom-4 right-4 z-20 opacity-60">
+              <Image
+                src="/assets/images/epixluxehero.png"
+                alt="Epic Luxe Hero"
+                width={200}
+                height={100}
+                style={{
+                  objectFit: 'contain',
+                }}
+                loading="lazy"
+              />
+            </div>
+            */}
           </div>
 
           {/* Content Container - Responsive padding and positioning */}
-          <div className={`relative z-20 h-full flex flex-col justify-center ${
+          <div className={`relative z-30 h-full flex flex-col justify-center ${
             isMobile 
               ? 'px-6 pt-20 pb-8' 
               : 'px-12 lg:px-20 xl:px-32 2xl:px-40'
@@ -190,24 +262,38 @@ const LandingPage = () => {
             } ${
               isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}>
-              <button className={`group/btn relative ${
+              <button 
+                onClick={handleLuxeNavigation}
+                className={`group/btn relative ${
                 isMobile 
                   ? 'px-6 py-3 text-sm' 
                   : 'px-10 py-4'
-              } overflow-hidden rounded-full transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl`}>
-                {/* Pulse glow animation - Desktop only */}
-                <div className={`absolute inset-0 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full ${
-                  !isMobile && 'animate-pulseGlow'
-                }`} />
+              } overflow-hidden rounded-full transition-all duration-700 hover:scale-[1.08] hover:shadow-[0_20px_50px_rgba(245,158,11,0.5)] hover:rotate-1 active:scale-95 active:rotate-0 transform-gpu`}>
                 
-                {/* Button background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full" />
+                {/* Animated background gradient */}
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-600 rounded-full transition-all duration-700 group-hover/btn:from-yellow-300 group-hover/btn:via-amber-400 group-hover/btn:to-yellow-500" />
+                
+                {/* Glowing border effect */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 blur-sm opacity-0 group-hover/btn:opacity-75 transition-opacity duration-500 animate-pulse" />
+                
+                {/* Ripple effect on hover */}
+                <div className="absolute inset-0 rounded-full bg-white/20 scale-0 group-hover/btn:scale-110 group-active/btn:scale-95 transition-transform duration-700 opacity-0 group-hover/btn:opacity-100" />
+                
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out" />
                 
                 {/* Button content */}
-                <span className="relative flex items-center space-x-3 text-black font-medium tracking-wide">
-                  <span>Explore Epic Luxe</span>
-                  <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                <span className="relative flex items-center space-x-3 text-black font-bold tracking-wide transition-all duration-300 group-hover/btn:text-gray-900 group-hover/btn:scale-105">
+                  <span className="transition-transform duration-300 group-hover/btn:-translate-y-0.5">Explore Epic Luxe</span>
+                  <ChevronRight className="w-5 h-5 transition-all duration-300 group-hover/btn:translate-x-1 group-hover/btn:scale-110 group-hover/btn:rotate-12" />
                 </span>
+                
+                {/* Floating particles effect */}
+                <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500">
+                  <div className="absolute top-2 left-4 w-1 h-1 bg-white/60 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                  <div className="absolute top-4 right-6 w-1 h-1 bg-white/60 rounded-full animate-bounce" style={{animationDelay: '0.3s'}}></div>
+                  <div className="absolute bottom-3 left-8 w-1 h-1 bg-white/60 rounded-full animate-bounce" style={{animationDelay: '0.5s'}}></div>
+                </div>
               </button>
             </div>
 
@@ -262,34 +348,35 @@ const LandingPage = () => {
         >
           {/* Cinematic Background */}
           <div className="absolute inset-0 overflow-hidden">
-            {/* Premium showroom image placeholder with Ken Burns effect */}
+            {/* Background image with Ken Burns effect - Using Next.js Image for optimization */}
             <div 
               className="absolute inset-0 w-[120%] h-[120%] -top-[10%] -left-[10%]"
               style={{
-                background: `
-                  radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.9), transparent 60%),
-                  radial-gradient(circle at 70% 30%, rgba(240, 240, 240, 0.8), transparent 50%),
-                  linear-gradient(135deg, #fafafa 0%, #ffffff 50%, #f5f5f5 100%)
-                `,
                 animation: !isMobile ? 'kenBurnsRight 25s ease-out infinite alternate' : 'none',
                 transform: !isMobile ? `scale(1.1) translateX(${-mousePosition.x * 0.02}px) translateY(${mousePosition.y * 0.02}px)` : 'scale(1.05)'
               }}
             >
-              {/* Subtle texture overlay */}
-              <div className="absolute inset-0 opacity-5"
+              <Image
+                src="/assets/images/epicreassuredhero.png"
+                alt="Epic Reassured Background"
+                fill
                 style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise2)' opacity='0.3'/%3E%3C/svg%3E")`
+                  objectFit: 'cover',
+                  objectPosition: 'center',
                 }}
+                priority
+                quality={90}
+                sizes="100vw"
               />
             </div>
             
             {/* Gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-l from-white/90 via-white/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-l from-white/90 via-white/60 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent z-10" />
           </div>
 
           {/* Content Container - Responsive padding */}
-          <div className={`relative z-20 h-full flex flex-col justify-center ${
+          <div className={`relative z-30 h-full flex flex-col justify-center ${
             isMobile 
               ? 'px-6 pt-8 pb-8' 
               : 'px-12 lg:px-20 xl:px-32 2xl:px-40'
@@ -353,19 +440,42 @@ const LandingPage = () => {
             } ${
               isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}>
-              <button className={`group/btn relative ${
+              <button 
+                onClick={handleReassuredNavigation}
+                className={`group/btn relative ${
                 isMobile 
                   ? 'px-6 py-3 text-sm' 
                   : 'px-10 py-4'
-              } bg-white border-2 border-gray-900 rounded-full overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_10px_40px_rgba(0,0,0,0.15)]`}>
-                {/* Hover fill effect */}
-                <div className="absolute inset-0 bg-gray-900 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500 ease-out" />
+              } bg-white border-2 border-gray-900 rounded-full overflow-hidden transition-all duration-700 hover:scale-[1.08] hover:shadow-[0_25px_50px_rgba(0,0,0,0.3)] hover:-rotate-1 active:scale-95 active:rotate-0 transform-gpu`}>
+                
+                {/* Multiple layered hover effects */}
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-black to-gray-800 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700 ease-out" />
+                
+                {/* Glowing ring effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-gray-600 to-black rounded-full blur opacity-0 group-hover/btn:opacity-50 transition-opacity duration-500" />
+                
+                {/* Expanding ring */}
+                <div className="absolute inset-0 rounded-full border-2 border-white/30 scale-100 group-hover/btn:scale-150 opacity-100 group-hover/btn:opacity-0 transition-all duration-700" />
+                
+                {/* Electric shimmer */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 translate-x-full group-hover/btn:-translate-x-full transition-transform duration-1000 ease-out" />
+                
+                {/* Pulse backdrop */}
+                <div className="absolute inset-0 rounded-full bg-white/10 scale-0 group-hover/btn:scale-110 opacity-0 group-hover/btn:opacity-100 transition-all duration-500 animate-pulse" />
                 
                 {/* Button content */}
-                <span className="relative flex items-center space-x-3 text-gray-900 group-hover/btn:text-white font-medium tracking-wide transition-colors duration-500">
-                  <span>Explore Epic Reassured</span>
-                  <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                <span className="relative flex items-center space-x-3 text-gray-900 group-hover/btn:text-white font-bold tracking-wide transition-all duration-500 group-hover/btn:scale-105">
+                  <span className="transition-transform duration-300 group-hover/btn:-translate-y-0.5">Explore Epic Reassured</span>
+                  <ChevronRight className="w-5 h-5 transition-all duration-300 group-hover/btn:translate-x-1 group-hover/btn:scale-110 group-hover/btn:-rotate-12" />
                 </span>
+                
+                {/* Floating sparkles */}
+                <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-700">
+                  <div className="absolute top-1 right-3 w-1 h-1 bg-white/80 rounded-full animate-ping" style={{animationDelay: '0.2s'}}></div>
+                  <div className="absolute bottom-2 left-5 w-1 h-1 bg-white/80 rounded-full animate-ping" style={{animationDelay: '0.4s'}}></div>
+                  <div className="absolute top-3 left-3 w-0.5 h-0.5 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0.6s'}}></div>
+                  <div className="absolute bottom-1 right-7 w-0.5 h-0.5 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0.8s'}}></div>
+                </div>
               </button>
             </div>
 

@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, useInView, Variants } from 'framer-motion';
 import { useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 
 // CSS Variables for consistency
@@ -37,9 +38,16 @@ const trackEvent = (event: string, section: string, label: string) => {
 const ChooseYourJourneySection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-10%" });
+  const router = useRouter();
 
   const handleAnalytics = (label: 'luxe' | 'reassured') => {
     trackEvent('cta_final_choose', 'choose_journey', label);
+  };
+
+  const handleNavigation = (journey: 'luxe' | 'reassured') => {
+    handleAnalytics(journey);
+    const path = journey === 'luxe' ? '/luxe' : '/reassured';
+    router.push(path);
   };
 
   // Fixed Framer Motion variants with proper typing
@@ -188,7 +196,7 @@ const ChooseYourJourneySection: React.FC = () => {
             {/* Luxe Journey Button */}
             <motion.button
               variants={buttonVariants}
-              onClick={() => handleAnalytics('luxe')}
+              onClick={() => handleNavigation('luxe')}
               className="group relative w-full md:w-80 h-20 bg-black border-2 border-yellow-500 overflow-hidden transition-all duration-700 ease-in-out hover:transform hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-yellow-500/30 focus:ring-offset-2 focus:ring-offset-transparent"
               style={{
                 fontFamily: 'Cormorant Garamond, serif',
@@ -216,7 +224,7 @@ const ChooseYourJourneySection: React.FC = () => {
             {/* Reassured Journey Button */}
             <motion.button
               variants={buttonVariants}
-              onClick={() => handleAnalytics('reassured')}
+              onClick={() => handleNavigation('reassured')}
               className="group relative w-full md:w-80 h-20 bg-white border-2 border-black overflow-hidden transition-all duration-700 ease-in-out hover:transform hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-gray-400/30 focus:ring-offset-2 focus:ring-offset-transparent"
               style={{
                 fontFamily: 'Inter, sans-serif',

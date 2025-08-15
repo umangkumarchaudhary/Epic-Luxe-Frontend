@@ -22,40 +22,40 @@ const Section2AboutEpicCars = () => {
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
 
-useEffect(() => {
-  // Scroll handler for parallax
-  const handleScroll = () => {
-    setScrollY(window.scrollY);
-  };
-  window.addEventListener('scroll', handleScroll, { passive: true });
+  useEffect(() => {
+    // Scroll handler for parallax
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-  // Intersection Observer for fade-in animations
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
-          setIsVisible(true);
-        }
-      });
-    },
-    { 
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+    // Intersection Observer for fade-in animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+            setIsVisible(true);
+          }
+        });
+      },
+      { 
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    const sectionEl = sectionRef.current; // capture ref value once
+    if (sectionEl) {
+      observer.observe(sectionEl);
     }
-  );
 
-  const sectionEl = sectionRef.current; // capture ref value once
-  if (sectionEl) {
-    observer.observe(sectionEl);
-  }
-
-  return () => {
-    window.removeEventListener('scroll', handleScroll);
-    if (sectionEl) { // use captured value
-      observer.unobserve(sectionEl);
-    }
-  };
-}, []);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (sectionEl) { // use captured value
+        observer.unobserve(sectionEl);
+      }
+    };
+  }, []);
 
   // Partner brands
   const partnerBrands = [
@@ -82,7 +82,6 @@ useEffect(() => {
         className="relative overflow-hidden py-24 md:py-25 lg:py-25"
         style={{
           background: 'linear-gradient(135deg, #0D0D0D 0%, #1A1A1A 40%, rgba(212,175,55,0.05) 60%, #0D0D0D 100%)',
-
         }}
         role="region"
         aria-label="About Epic Cars"
@@ -138,23 +137,23 @@ useEffect(() => {
 
               {/* Paragraph with fade-up delay */}
               <p 
-  className={`text-gray-400 text-base sm:text-lg lg:text-xl leading-relaxed tracking-wide transition-all duration-1000 ease-out ${
-    isVisible 
-      ? 'opacity-100 translate-y-0' 
-      : 'opacity-0 translate-y-12'
-  }`}
-  style={{
-    fontFamily: 'Inter, Manrope, sans-serif',
-    fontWeight: 300,
-    letterSpacing: '0.02em',
-    lineHeight: '1.7',
-    transitionDelay: '200ms'
-  }}
->
-  Epic Cars brings together the opulence of Epic Luxe and the assured quality of Epic Reassured. 
-  Backed by the Raam Group&apos;s decades of automotive leadership, we deliver not just cars — 
-  we deliver trust, heritage, and unmatched ownership experiences.
-</p>
+                className={`text-gray-400 text-base sm:text-lg lg:text-xl leading-relaxed tracking-wide transition-all duration-1000 ease-out ${
+                  isVisible 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-12'
+                }`}
+                style={{
+                  fontFamily: 'Inter, Manrope, sans-serif',
+                  fontWeight: 300,
+                  letterSpacing: '0.02em',
+                  lineHeight: '1.7',
+                  transitionDelay: '200ms'
+                }}
+              >
+                Epic Cars brings together the opulence of Epic Luxe and the assured quality of Epic Reassured. 
+                Backed by the Raam Group&apos;s decades of automotive leadership, we deliver not just cars — 
+                we deliver trust, heritage, and unmatched ownership experiences.
+              </p>
 
               {/* CTA Button */}
               <button
@@ -219,41 +218,37 @@ useEffect(() => {
                   </p>
                 </div>
 
-                {/* Brand logos grid with parallax */}
+                {/* Brand logos grid - FIXED: Removed individual parallax transforms */}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                   {partnerBrands.map((brand, index) => (
                     <div
                       key={brand}
-                      className={`flex items-center justify-center p-3 md:p-4 rounded-xl transition-all duration-700 hover:scale-105 ${
-                        isVisible ? 'opacity-100' : 'opacity-0'
+                      className={`flex items-center justify-center p-4 rounded-xl transition-all duration-700 hover:scale-105 hover:brightness-110 ${
+                        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                       }`}
                       style={{
                         transitionDelay: `${600 + (index * 100)}ms`,
-                        transform: `translateY(${scrollY * (index % 2 === 0 ? 0.02 : -0.02)}px)`,
+                        // REMOVED: transform: `translateY(${scrollY * (index % 2 === 0 ? 0.02 : -0.02)}px)`,
                         background: 'rgba(212, 175, 55, 0.03)',
-                        border: '1px solid rgba(212, 175, 55, 0.08)',
-                        minHeight: '80px'
+                        border: '1px solid rgba(212, 175, 55, 0.08)'
                       }}
                       aria-label={`${brand} partner logo`}
                     >
                       <span
-                        className="text-base md:text-lg lg:text-xl font-light tracking-wider select-none text-center leading-tight"
+                        className="text-xl md:text-2xl font-light tracking-wider select-none transition-all duration-300 hover:scale-105"
                         style={{
                           fontFamily: 'Cormorant Garamond, serif',
                           background: 'linear-gradient(90deg, #D4AF37 0%, #FFD700 25%, #F4E4C1 50%, #FFD700 75%, #D4AF37 100%)',
                           WebkitBackgroundClip: 'text',
                           WebkitTextFillColor: 'transparent',
                           backgroundClip: 'text',
+                          backgroundSize: '200% 100%',
+                          animation: isVisible ? `brandShimmer 4s linear infinite ${index * 0.5}s` : 'none',
                           filter: 'brightness(0.9)',
-                          opacity: 0.8,
-                          fontSize: brand === 'Mercedes-Benz' ? 'clamp(0.875rem, 2.5vw, 1.125rem)' : undefined
+                          opacity: 0.8
                         }}
                       >
-                        {brand === 'Mercedes-Benz' ? (
-                          <>
-                            Mercedes-<br />Benz
-                          </>
-                        ) : brand}
+                        {brand}
                       </span>
                     </div>
                   ))}
@@ -290,6 +285,21 @@ useEffect(() => {
           }
           100% {
             background-position: 200% 50%;
+          }
+        }
+
+        @keyframes brandShimmer {
+          0% {
+            background-position: 0% 50%;
+            opacity: 0.6;
+          }
+          50% {
+            background-position: 100% 50%;
+            opacity: 1;
+          }
+          100% {
+            background-position: 200% 50%;
+            opacity: 0.6;
           }
         }
 
