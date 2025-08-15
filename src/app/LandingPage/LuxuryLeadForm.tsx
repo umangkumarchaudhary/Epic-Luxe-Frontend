@@ -6,7 +6,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion'
 // Global type declarations (using unknown[] to match existing declaration)
 declare global {
   interface Window {
-    dataLayer?: unknown[]
+    dataLayer?: Record<string, unknown>[]
   }
 }
 

@@ -1,4 +1,4 @@
-// HeroServer.tsx - Mercedes-Benz Premium Level
+
 import { Metadata } from 'next'
 import HeroClient from './HeroClient'
 

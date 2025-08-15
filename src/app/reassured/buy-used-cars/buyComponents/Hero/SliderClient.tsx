@@ -16,9 +16,10 @@ interface Slide {
 
 interface SliderClientProps {
   slides?: Slide[]; // Make slides optional
+  priority?: boolean;
 }
 
-export default function SliderClient({ slides = [] }: SliderClientProps) {
+export default function SliderClient({ slides = [], priority = true }: SliderClientProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -99,7 +100,7 @@ export default function SliderClient({ slides = [] }: SliderClientProps) {
               alt={slide.title}
               fill
               className="object-cover"
-              priority={index === 0} // Only prioritize the first image
+              priority={priority && index === 0} // Only prioritize the first image when priority is enabled
               sizes="100vw"
             />
             <div className="absolute bottom-10 left-10 text-white drop-shadow-lg">

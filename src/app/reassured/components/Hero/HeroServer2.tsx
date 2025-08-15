@@ -1,6 +1,6 @@
 // HeroIntegrated.tsx - Server Component (No styled-jsx)
 import { Metadata } from 'next'
-import HeroClient2 from './HeroClient2'
+import HeroClient from './HeroClient'
 
 // Server-side metadata
 export const metadata: Metadata = {
@@ -102,7 +102,7 @@ export default async function HeroIntegrated() {
         Premium Luxury Car Marketplace
       </h1>
       
-      <HeroClient2 data={heroData} />
+      <HeroClient data={heroData} />
       
       {/* Server-rendered structured data for SEO */}
       <script

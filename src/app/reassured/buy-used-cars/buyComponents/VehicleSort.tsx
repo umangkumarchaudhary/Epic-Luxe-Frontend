@@ -289,10 +289,6 @@ export default function VehicleSort({
           onChange={handleSearchChange}
           style={{
             ...searchInputStyle,
-            "::placeholder": {
-              color: "#666",
-              fontWeight: 400,
-            }
           }}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
