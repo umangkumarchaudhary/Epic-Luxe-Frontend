@@ -1,6 +1,7 @@
-// HeroIntegrated.tsx - Server Component (No styled-jsx)
+// Optimized HeroServer2.tsx - Clean server component
 import { Metadata } from 'next'
 import HeroClient from './HeroClient'
+import { HeroData, defaultHeroData } from './types'
 
 // Server-side metadata
 export const metadata: Metadata = {
@@ -14,73 +15,14 @@ export const metadata: Metadata = {
   },
 }
 
-// Type definitions shared between server and client
-export interface BadgeData {
-  icon: string
-  text: string
-}
-
-export interface CTAData {
-  text: string
-  href: string
-}
-
-export interface SectionData {
-  title: string
-  description: string
-  badges: BadgeData[]
-  cta: CTAData
-}
-
-export interface HeroData {
-  buySection: SectionData
-  sellSection: SectionData
-}
-
 // Server-side data fetching function
 async function getHeroData(): Promise<HeroData> {
   // In real app, this would be an API call or database query
-  return {
-    buySection: {
-      title: "Acquire Excellence",
-      description: "Discover meticulously curated luxury vehicles. Each model represents the pinnacle of automotive craftsmanship and engineering precision.",
-      badges: [
-        {
-          icon: "shield-check",
-          text: "Certified Pre-Owned"
-        },
-        {
-          icon: "truck",
-          text: "White Glove Delivery"
-        }
-      ],
-      cta: {
-        text: "Explore Collection",
-        href: "/buy"
-      }
-    },
-    sellSection: {
-      title: "Exclusive Consignment",
-      description: "Transform your prized vehicle into opportunity. Our premium marketplace connects discerning sellers with qualified collectors.",
-      badges: [
-        {
-          icon: "trending-up",
-          text: "Market Valuation"
-        },
-        {
-          icon: "lock",
-          text: "Secure Transaction"
-        }
-      ],
-      cta: {
-        text: "Begin Consignment",
-        href: "/sell"
-      }
-    }
-  }
+  // For now, return default data
+  return defaultHeroData
 }
 
-// Server Component - NO styled-jsx here
+// Clean server component with SEO optimization
 export default async function HeroIntegrated() {
   const heroData = await getHeroData()
 
@@ -88,6 +30,7 @@ export default async function HeroIntegrated() {
 
   return (
     <main role="main" style={{ width: '100%', background: '#FFFFFF' }}>
+      {/* SEO-friendly hidden title */}
       <h1 style={{
         position: 'absolute',
         width: '1px',
@@ -104,7 +47,7 @@ export default async function HeroIntegrated() {
       
       <HeroClient data={heroData} />
       
-      {/* Server-rendered structured data for SEO */}
+      {/* Structured data for SEO */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

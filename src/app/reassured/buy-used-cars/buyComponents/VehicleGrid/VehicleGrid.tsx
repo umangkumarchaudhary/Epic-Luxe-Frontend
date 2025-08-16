@@ -59,13 +59,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ vehicles }) => {
   // Calculate stats for SEO
   const totalVehicles = vehicles.length;
   const brands = Object.keys(vehiclesByBrand);
-  // const priceRange = vehicles.reduce((acc, v) => {
-  //   const price = parseFloat(v.price.replace(/[^0-9.]/g, ''));
-  //   return {
-  //     min: Math.min(acc.min, price),
-  //     max: Math.max(acc.max, price)
-  //   };
-  // }, { min: Infinity, max: 0 });
+ 
 
   return (
     <>
@@ -186,7 +180,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ vehicles }) => {
       <div className="w-full bg-white min-h-screen">
         <div className="max-w-6xl mx-auto">
           {/* Vehicles Grid with Integrated Sections */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-6 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-6 py-2">
             {vehicles.slice(0, 9).map((vehicle) => (
               <div key={vehicle.id} className="vehicle-card-wrapper">
                 <VehicleGridClient vehicles={[vehicle]} />
@@ -197,7 +191,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ vehicles }) => {
           {/* Epic Reassured Benefits after first 9 vehicles */}
           {vehicles.length >= 9 && (
             <>
-              <div className="my-12 h-[1px] bg-black/10"></div>
+              <div className="my-2 h-[1px] bg-black/10"></div>
               <div className="w-full">
                 <EpicReassuredBenefits />
               </div>
@@ -207,7 +201,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ vehicles }) => {
           {/* Continue with next set of vehicles */}
           {vehicles.length > 9 && (
             <>
-              <div className="my-12 h-[1px] bg-black/10"></div>
+              <div className="my-2 h-[1px] bg-black/10"></div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-6 py-16">
                 {vehicles.slice(9, 18).map((vehicle) => (
                   <div key={vehicle.id} className="vehicle-card-wrapper">
@@ -221,7 +215,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ vehicles }) => {
           {/* Finance Protection Highlights after 18 vehicles */}
           {vehicles.length >= 18 && (
             <>
-              <div className="my-12 h-[1px] bg-black/10"></div>
+              <div className="my-2 h-[1px] bg-black/10"></div>
               <div className="w-full">
                 <FinanceProtectionHighlights />
               </div>

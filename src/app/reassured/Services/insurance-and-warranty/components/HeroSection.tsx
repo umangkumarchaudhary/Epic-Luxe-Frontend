@@ -6,6 +6,36 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 
 
+// Animated text component
+function AnimatedText({ text, className }: { text: string; className?: string }) {
+  const [displayedText, setDisplayedText] = useState('')
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (currentIndex < text.length) {
+        setDisplayedText(text.slice(0, currentIndex + 1))
+        setCurrentIndex(prev => prev + 1)
+      } else {
+        // Reset after completion
+        setTimeout(() => {
+          setDisplayedText('')
+          setCurrentIndex(0)
+        }, 2000) // Wait 2 seconds before restarting
+      }
+    }, 100) // Type each letter every 100ms
+
+    return () => clearInterval(interval)
+  }, [currentIndex, text])
+
+  return (
+    <span className={className}>
+      {displayedText}
+      <span className="animate-pulse">|</span>
+    </span>
+  )
+}
+
 export default function HeroSection() {
   const [scrollY, setScrollY] = useState(0)
 
@@ -25,7 +55,33 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <>
+      {/* CSS Animation for moving background */}
+      <style jsx global>{`
+        @keyframes backgroundPan {
+          0% {
+            transform: scale(1.1) translateX(-2%) translateY(-1%);
+          }
+          25% {
+            transform: scale(1.15) translateX(1%) translateY(1%);
+          }
+          50% {
+            transform: scale(1.1) translateX(2%) translateY(-0.5%);
+          }
+          75% {
+            transform: scale(1.15) translateX(-1%) translateY(0.5%);
+          }
+          100% {
+            transform: scale(1.1) translateX(-2%) translateY(-1%);
+          }
+        }
+        
+        .moving-background {
+          animation: backgroundPan 25s ease-in-out infinite;
+        }
+      `}</style>
+      
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
      
       {/* Parallax Background */}
       <div
@@ -37,7 +93,7 @@ export default function HeroSection() {
           src="/assets/images/hero-car.png"
           alt="Premium Pre-Owned Cars Hyderabad Chennai Vizag Pune"
           fill
-          className="object-cover"
+          className="object-cover moving-background"
           priority
           quality={100}
         />
@@ -51,21 +107,27 @@ export default function HeroSection() {
           whileInView="visible"
           viewport={{ once: true }}
           custom={0}
-          className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light tracking-tight leading-none mb-6"
+          className="text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-tight leading-tight mb-6"
         >
-          Your Car, Our Commitment.
+          <div className="leading-tight">Your Car,</div>
+          <div className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-medium bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            Our Commitment
+          </div>
         </motion.h1>
 
-        <motion.p
+        <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           custom={0.2}
-          className="text-xl md:text-2xl lg:text-3xl font-light mb-12 max-w-3xl mx-auto"
+          className="text-xl md:text-2xl lg:text-3xl font-light mb-12 max-w-3xl mx-auto min-h-[80px] flex items-center justify-center"
         >
-          Insurance and Warranty Coverage Designed for Total Peace of Mind
-        </motion.p>
+          <AnimatedText 
+            text="Insurance and Warranty Coverage Designed for Total Peace of Mind"
+            className="text-center"
+          />
+        </motion.div>
 
         <motion.div
           variants={fadeUp}
@@ -112,5 +174,6 @@ export default function HeroSection() {
         </svg>
       </motion.div>
     </section>
+    </>
   )
 }

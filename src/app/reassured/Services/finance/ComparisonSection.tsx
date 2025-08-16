@@ -154,7 +154,7 @@ export default function FinanceComparisonSection() {
       <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
         <div className="text-center mb-10 md:mb-14">
           <h2 className="text-3xl md:text-4xl font-bold text-black mb-3 tracking-wide">
-            Pre-Owned Car Finance: <span className="text-black">Our In-House vs Bank Finance</span>
+            EPIC REASSURED's Finance: <span className="text-black">Our trusted Partners vs Bank Finance</span>
           </h2>
           <p className="text-gray-600 text-base md:text-lg font-light max-w-2xl mx-auto leading-relaxed">
             Discover why our specialized pre-owned car finance delivers better rates, faster approval, and superior service compared to traditional bank channels.

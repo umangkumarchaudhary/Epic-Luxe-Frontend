@@ -128,7 +128,7 @@ const getBrandLogo = (brandName: string): string => {
 };
 
 // Convert readonly luxury cars data to mutable format
-const convertLuxuryCarsToMutable = (readonlyData: Record<string, Record<string, Record<string, readonly string[]>>>): LuxuryCars => {
+const convertLuxuryCarsToMutable = (readonlyData: any): LuxuryCars => {
   const mutableData: LuxuryCars = {};
   
   Object.keys(readonlyData).forEach(brand => {
@@ -150,8 +150,8 @@ const brands: Brand[] = Object.keys(luxuryCars).map(brandName => ({
 }));
 
 // Server-side utility functions
-// const normalizeCityName = (name: string): string =>
-//   name.replace(/\s+/g, '').toLowerCase().replace('ahmedabad', 'ahemdabad');
+const normalizeCityName = (name: string): string =>
+  name.replace(/\s+/g, '').toLowerCase().replace('ahmedabad', 'ahemdabad');
 
 // Server Component - SEO Friendly
 const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact, largeButtons }) => {

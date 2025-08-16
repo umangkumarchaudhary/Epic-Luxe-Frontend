@@ -238,6 +238,7 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                 <div>
   <label className="block text-white text-sm font-semibold mb-2">
     Preferred Vehicle
+    
   </label>
   <div className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-xl">
     {selectedVehicle ? (

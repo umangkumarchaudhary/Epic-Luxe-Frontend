@@ -177,7 +177,7 @@ const TestimonialCarousel = () => {
       {/* Testimonials Container */}
       <div className="relative overflow-hidden" ref={containerRef}>
         <div className="flex transition-transform duration-300 ease-in-out">
-          {memoizedTestimonials.map((testimonial) => (
+          {memoizedTestimonials.map((testimonial, index) => (
             <TestimonialCard key={testimonial.id} testimonial={testimonial} />
           ))}
         </div>

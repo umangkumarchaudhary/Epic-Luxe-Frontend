@@ -1,7 +1,7 @@
 // app/reassured/buy-used-cars/page.tsx
-import Header from "@/app/components/Header";
+import Header from "../components/Header/HeaderServer";
 import Hero from "./buyComponents/Hero/Slider";
-import Footer from "@/app/components/Footer";
+import Footer from "../components/Footer/FooterServer";
 import VehiclesPage from "./buyComponents/VehiclePage/VehiclePageServer";
 import Faq from "./buyComponents/FAQ/faq";
 

@@ -347,7 +347,7 @@ function VehicleCard({
           </div>
 
           {/* Model, Year and Location row */}
-          <div className="flex justify-between items-center mb-">
+          <div className="flex justify-between items-center mb-1">
             <p className="text-base text-gray-300 truncate leading-tight font-medium">{car.model}</p>
             <p className="text-sm text-gray-400 whitespace-nowrap leading-tight">
               {car.year} • {car.location}

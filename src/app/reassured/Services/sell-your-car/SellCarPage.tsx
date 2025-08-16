@@ -186,43 +186,6 @@ export default function SellCarPage() {
           </p>
         </header>
 
-        {/* Visible Header */}
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-light">Sell Your Car</h1>
-                <p className="text-sm text-gray-600 mt-1">Get instant valuation in 3 simple steps</p>
-              </div>
-              <div className="hidden md:flex items-center gap-6">
-                <div className="text-right">
-                  <div className="text-sm text-gray-500">Need help?</div>
-                  <a href="tel:1800123456" className="text-lg font-medium hover:underline">
-                    📞 1800-123-456
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Trust Bar */}
-        <div className="bg-gray-50 border-b border-gray-200 py-3">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-sm">
-              {features.map((feature, index) => {
-                const Icon = feature.icon;
-                return (
-                  <div key={index} className="flex items-center gap-2">
-                    <Icon className="w-4 h-4 text-gray-600" />
-                    <span className="text-gray-700">{feature.text}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
         {/* Client Component */}
         <SellCarClient />
 

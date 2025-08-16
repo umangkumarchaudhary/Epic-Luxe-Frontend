@@ -62,20 +62,39 @@ const SubmitRequestClient: React.FC = () => {
   };
 
   return (
-    <div className={`max-w-2xl mx-auto transition-all duration-700 ease-out ${
+    <div className={`max-w-3xl mx-auto transition-all duration-700 ease-out ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
     }`}>
       {!isSubmitted ? (
         <form onSubmit={handleSubmit} className="relative">
-          {/* Clean Form Container */}
-          <div className="bg-white border border-black/10 rounded-none p-8 md:p-12">
+          {/* Mercedes-Benz Premium Form Container */}
+          <div className="bg-black text-white p-8 md:p-12 relative overflow-hidden">
+            
+            {/* Premium Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute top-0 left-0 w-full h-px bg-white"></div>
+              <div className="absolute bottom-0 left-0 w-full h-px bg-white"></div>
+              <div className="absolute top-0 left-0 w-px h-full bg-white"></div>
+              <div className="absolute top-0 right-0 w-px h-full bg-white"></div>
+            </div>
+
+            {/* Form Header */}
+            <div className="text-center mb-10 relative z-10">
+              <h3 className="text-2xl md:text-3xl font-light text-white mb-3 tracking-wide">
+                Request Your Luxury Vehicle
+              </h3>
+              <div className="w-16 h-px bg-white/40 mx-auto mb-4"></div>
+              <p className="text-sm text-white/70 font-light tracking-wide">
+                Experience personalized automotive consultation
+              </p>
+            </div>
             
             {/* Car Model Input */}
-            <div className="mb-8">
+            <div className="mb-8 relative z-10">
               <label 
                 htmlFor="car-model"
-                className={`block text-xs font-medium mb-3 tracking-wider transition-colors duration-300 ${
-                  isCarModelFocused ? 'text-black' : 'text-black/60'
+                className={`block text-xs font-light mb-4 tracking-widest transition-colors duration-300 ${
+                  isCarModelFocused ? 'text-white' : 'text-white/60'
                 }`}
                 style={{ fontFamily: 'Manrope, sans-serif' }}
               >
@@ -89,33 +108,33 @@ const SubmitRequestClient: React.FC = () => {
                   onChange={(e) => setCarModel(e.target.value)}
                   onFocus={() => setIsCarModelFocused(true)}
                   onBlur={() => setIsCarModelFocused(false)}
-                  placeholder="e.g., Mercedes-Benz S-Class, BMW X5"
-                  className={`w-full px-0 py-3 bg-transparent border-b text-black placeholder-black/30 text-base focus:outline-none transition-all duration-300 ${
-                    isCarModelFocused ? 'border-black' : 'border-black/20'
+                  placeholder="e.g., Mercedes-Benz S-Class, BMW X5, Audi Q8"
+                  className={`w-full px-0 py-4 bg-transparent border-b text-white placeholder-white/30 text-lg font-light focus:outline-none transition-all duration-300 ${
+                    isCarModelFocused ? 'border-white' : 'border-white/30'
                   }`}
                   style={{ fontFamily: 'Manrope, sans-serif' }}
                   autoComplete="off"
                 />
                 {carModel && isCarModelValid && (
-                  <Check className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-black/60" />
+                  <Check className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/80" />
                 )}
               </div>
             </div>
 
             {/* Phone Number Input */}
-            <div className="mb-12">
+            <div className="mb-12 relative z-10">
               <label 
                 htmlFor="phone"
-                className={`block text-xs font-medium mb-3 tracking-wider transition-colors duration-300 ${
-                  isPhoneFocused ? 'text-black' : 'text-black/60'
+                className={`block text-xs font-light mb-4 tracking-widest transition-colors duration-300 ${
+                  isPhoneFocused ? 'text-white' : 'text-white/60'
                 }`}
                 style={{ fontFamily: 'Manrope, sans-serif' }}
               >
                 CONTACT NUMBER
               </label>
               <div className="relative">
-                <Phone className={`absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                  isPhoneFocused ? 'text-black' : 'text-black/40'
+                <Phone className={`absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors duration-300 ${
+                  isPhoneFocused ? 'text-white' : 'text-white/50'
                 }`} />
                 <input
                   id="phone"
@@ -125,72 +144,102 @@ const SubmitRequestClient: React.FC = () => {
                   onFocus={() => setIsPhoneFocused(true)}
                   onBlur={() => setIsPhoneFocused(false)}
                   placeholder="123-456-7890"
-                  className={`w-full pl-7 pr-0 py-3 bg-transparent border-b text-black placeholder-black/30 text-base focus:outline-none transition-all duration-300 ${
-                    isPhoneFocused ? 'border-black' : 'border-black/20'
+                  className={`w-full pl-8 pr-0 py-4 bg-transparent border-b text-white placeholder-white/30 text-lg font-light focus:outline-none transition-all duration-300 ${
+                    isPhoneFocused ? 'border-white' : 'border-white/30'
                   }`}
                   style={{ fontFamily: 'Manrope, sans-serif' }}
                   autoComplete="tel"
                 />
                 {phoneNumber && isPhoneValid && (
-                  <Check className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-black/60" />
+                  <Check className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/80" />
                 )}
               </div>
             </div>
 
-            {/* Submit Button - Mercedes-Benz Style */}
-            <button
-              type="submit"
-              disabled={!canSubmit}
-              className={`group relative w-full py-4 px-8 font-light text-sm tracking-wider transition-all duration-500 overflow-hidden ${
-                canSubmit
-                  ? 'bg-black text-white hover:bg-black/90'
-                  : 'bg-black/10 text-black/30 cursor-not-allowed'
-              }`}
-              style={{ fontFamily: 'Manrope, sans-serif' }}
-            >
-              {isLoading ? (
-                <span className="flex items-center justify-center">
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-3"></span>
-                  PROCESSING...
-                </span>
-              ) : (
-                <span className="flex items-center justify-center">
-                  REQUEST CONSULTATION
-                  {canSubmit && (
-                    <ChevronRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            {/* Submit Button - Premium Mercedes-Benz Style */}
+            <div className="relative z-10">
+              <button
+                type="submit"
+                disabled={!canSubmit}
+                className={`group relative w-full py-5 px-8 font-light text-sm tracking-widest transition-all duration-500 overflow-hidden border ${
+                  canSubmit
+                    ? 'bg-white text-black border-white hover:bg-white/90'
+                    : 'bg-transparent text-white/30 border-white/20 cursor-not-allowed'
+                }`}
+                style={{ fontFamily: 'Manrope, sans-serif' }}
+              >
+                {/* Button Background Effect */}
+                <div className={`absolute inset-0 bg-white transform transition-transform duration-500 ${
+                  canSubmit ? 'scale-x-100' : 'scale-x-0'
+                }`}></div>
+                
+                <span className="relative z-10">
+                  {isLoading ? (
+                    <span className="flex items-center justify-center">
+                      <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin mr-3"></span>
+                      PROCESSING REQUEST...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center">
+                      REQUEST CONSULTATION
+                      {canSubmit && (
+                        <ChevronRight className="ml-3 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                      )}
+                    </span>
                   )}
                 </span>
-              )}
-            </button>
+              </button>
+            </div>
 
             {/* Privacy Notice */}
-            <p className="mt-6 text-xs text-black/40 text-center" style={{ fontFamily: 'Manrope, sans-serif' }}>
-              By submitting this form, you agree to our privacy policy and terms of service.
-            </p>
+            <div className="mt-8 text-center relative z-10">
+              <div className="w-12 h-px bg-white/20 mx-auto mb-4"></div>
+              <p className="text-xs text-white/50 font-light tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                Your information is secure and protected. We respect your privacy.
+              </p>
+            </div>
           </div>
         </form>
       ) : (
-        /* Success State - Clean Minimal Design */
-        <div className="bg-white border border-black/10 p-12 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 bg-black rounded-full flex items-center justify-center">
-            <Check className="w-8 h-8 text-white" />
+        /* Success State - Premium Mercedes-Benz Design */
+        <div className="bg-black text-white p-12 text-center relative overflow-hidden">
+          {/* Success Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-0 left-0 w-full h-px bg-white"></div>
+            <div className="absolute bottom-0 left-0 w-full h-px bg-white"></div>
+            <div className="absolute top-0 left-0 w-px h-full bg-white"></div>
+            <div className="absolute top-0 right-0 w-px h-full bg-white"></div>
           </div>
-          <h3 
-            className="text-2xl font-light text-black mb-3"
-            style={{ fontFamily: 'Manrope, sans-serif' }}
-          >
-            Request Received
-          </h3>
-          <p 
-            className="text-base text-black/60 font-light"
-            style={{ fontFamily: 'Manrope, sans-serif' }}
-          >
-            Our luxury automotive consultant will contact you within 24 hours.
-          </p>
-          <div className="mt-8 pt-8 border-t border-black/10">
-            <p className="text-xs text-black/40" style={{ fontFamily: 'Manrope, sans-serif' }}>
-              REFERENCE NUMBER: #{Date.now().toString().slice(-6)}
+
+          <div className="relative z-10">
+            <div className="w-20 h-20 mx-auto mb-8 bg-white rounded-full flex items-center justify-center">
+              <Check className="w-10 h-10 text-black" />
+            </div>
+            
+            <h3 
+              className="text-3xl font-light text-white mb-4 tracking-wide"
+              style={{ fontFamily: 'Manrope, sans-serif' }}
+            >
+              Request Received
+            </h3>
+            
+            <div className="w-16 h-px bg-white/40 mx-auto mb-6"></div>
+            
+            <p 
+              className="text-lg text-white/80 font-light mb-8 max-w-md mx-auto"
+              style={{ fontFamily: 'Manrope, sans-serif' }}
+            >
+              Our luxury automotive consultant will contact you within 24 hours with personalized recommendations.
             </p>
+            
+            <div className="pt-8 border-t border-white/20">
+              <p className="text-xs text-white/50 font-light tracking-widest" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                REFERENCE NUMBER
+              </p>
+              <p className="text-sm text-white/80 font-light mt-1" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                #{Date.now().toString().slice(-6)}
+              </p>
+            </div>
           </div>
         </div>
       )}

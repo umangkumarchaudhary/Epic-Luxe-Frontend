@@ -256,7 +256,7 @@ export default function SellCarClient() {
   return (
     <>
       {/* Step Indicator */}
-      <StepIndicator currentStep={step} onStepClick={handleStepChange} />
+      
 
       {/* Main Content Area */}
       <div className="max-w-5xl mx-auto px-4 py-8">

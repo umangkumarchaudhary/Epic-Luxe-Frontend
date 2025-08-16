@@ -34,7 +34,7 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
   return (
     <section
       className="relative w-full bg-white text-black font-manrope"
-      style={{ height: "50vh", marginTop: "0px" }}
+      style={{ height: "50vh", marginTop: "40px" }}
     >
       <Swiper
         ref={swiperRef}

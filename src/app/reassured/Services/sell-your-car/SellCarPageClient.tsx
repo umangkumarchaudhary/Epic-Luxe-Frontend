@@ -7,8 +7,8 @@ import {
   Users, Car, FileText, CreditCard, ChevronLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Header from '@/app/components/Header';
-import Footer from '@/app/components/Footer';
+import Header from '../../components/Header/HeaderServer';
+import Footer from '../../components/Footer/FooterServer';
 import SellCarWizard from './SellCarPage'; // Your wizard component
 
 // Types - Updated to use string for icon instead of component
@@ -58,10 +58,26 @@ const iconMap = {
   ChevronLeft
 };
 
-// Hero Section
+// Enhanced Hero Section with Background Integration
 const HeroSection = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showError, setShowError] = useState(false);
+  const [currentStat, setCurrentStat] = useState(0);
+
+  // Animated statistics
+  const stats = [
+    { value: "50,000+", label: "Cars Sold", color: "from-blue-400 to-blue-600" },
+    { value: "4.9★", label: "Google Rating", color: "from-yellow-400 to-orange-500" },
+    { value: "24 Hrs", label: "Quick Sale", color: "from-green-400 to-emerald-600" },
+    { value: "₹50K+", label: "Extra Value", color: "from-purple-400 to-pink-600" }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentStat((prev) => (prev + 1) % stats.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [stats.length]);
 
   const handleQuickStart = () => {
     if (phoneNumber.length !== 10) {
@@ -74,34 +90,90 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-b from-gray-50 to-white py-20 lg:py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black" style={{ marginTop: '20px', minHeight: 'calc(100vh - 20px)' }}>
+      {/* Dynamic Background with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('/assets/images/epicreassuredsell.png')`,
+        }}
+      >
+        {/* Multi-layered Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50"></div>
+      </div>
+
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl animate-pulse delay-2000"></div>
+      </div>
+
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center min-h-full">
+          {/* Left Content - Enhanced with Glassmorphism */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-white space-y-4 lg:space-y-6"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full mb-6">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              <span className="text-sm font-medium text-green-700">Trusted by 50,000+ customers</span>
-            </div>
+            {/* Trust Badge with Glow Effect */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-2xl"
+            >
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+              <span className="text-xs sm:text-sm font-medium text-white/90">Trusted by 50,000+ customers</span>
+              <div className="flex space-x-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+            </motion.div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Sell Your Car in
-              <span className="block text-black mt-2">Just 24 Hours</span>
-            </h1>
+            {/* Main Headline with Gradient Text - Optimized sizes */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+            >
+              <span className="block text-white drop-shadow-2xl">Sell Your Car in</span>
+              <span className="block bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl">
+                Just 24 Hours
+              </span>
+            </motion.h1>
 
-            <p className="text-xl text-gray-600 mb-8">
-              Get up to <span className="font-bold text-black">₹50,000 more</span> than traditional dealers. 
-              Free inspection, instant payment, zero hassle.
-            </p>
+            {/* Enhanced Subtitle - Adjusted for better spacing */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="text-base sm:text-lg md:text-xl text-white/90 drop-shadow-lg"
+            >
+              Get up to{' '}
+              <span className="font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+                ₹50,000 more
+              </span>{' '}
+              than traditional dealers.
+              <br className="hidden sm:block" />
+              <span className="text-white/80 text-sm sm:text-base">Free inspection, instant payment, zero hassle.</span>
+            </motion.p>
 
-            {/* Quick Start Form */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 mb-8">
-              <h3 className="font-medium text-gray-900 mb-4">Get Instant Valuation</h3>
-              <div className="space-y-4">
+            {/* Enhanced Quick Start Form with Glassmorphism - Compact version */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="bg-white/10 backdrop-blur-xl p-4 sm:p-6 rounded-2xl shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300"
+            >
+              <h3 className="font-semibold text-white mb-4 text-base sm:text-lg">Get Instant Valuation</h3>
+              <div className="space-y-3">
                 <div>
                   <input
                     type="tel"
@@ -111,65 +183,164 @@ const HeroSection = () => {
                       setShowError(false);
                     }}
                     placeholder="Enter your mobile number"
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black ${
-                      showError ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 bg-white/20 backdrop-blur-md border rounded-xl focus:outline-none focus:ring-2 focus:ring-white/50 text-white placeholder-white/60 transition-all duration-300 text-sm sm:text-base ${
+                      showError ? 'border-red-400 ring-2 ring-red-400/50' : 'border-white/30 hover:border-white/50'
                     }`}
                   />
                   {showError && (
-                    <p className="text-red-500 text-sm mt-1">Please enter a valid 10-digit number</p>
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-300 text-xs mt-2"
+                    >
+                      Please enter a valid 10-digit number
+                    </motion.p>
                   )}
                 </div>
                 <button
                   onClick={handleQuickStart}
-                  className="w-full bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-900 transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-orange-500/25 flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
-                  Get Started <ArrowRight className="w-5 h-5" />
+                  <span>Get Started</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Trust Badges */}
-            <div className="flex flex-wrap gap-6">
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-green-600" />
-                <span className="text-sm text-gray-600">Free Inspection</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-green-600" />
-                <span className="text-sm text-gray-600">Instant Payment</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-green-600" />
-                <span className="text-sm text-gray-600">Best Price</span>
-              </div>
-            </div>
+            {/* Enhanced Trust Badges - More compact */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 }}
+              className="flex flex-wrap gap-4 sm:gap-6"
+            >
+              {[
+                { icon: Check, text: "Free Inspection" },
+                { icon: Check, text: "Instant Payment" },
+                { icon: Check, text: "Best Price" }
+              ].map((item, index) => (
+                <div key={index} className="flex items-center gap-2 group">
+                  <div className="p-1.5 bg-green-500/20 rounded-full group-hover:bg-green-500/30 transition-colors">
+                    <item.icon className="w-3 h-3 text-green-400" />
+                  </div>
+                  <span className="text-white/90 font-medium text-sm">{item.text}</span>
+                </div>
+              ))}
+            </motion.div>
           </motion.div>
 
-          {/* Right Stats */}
+          {/* Right Side - Enhanced Interactive Stats - More compact */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid grid-cols-2 gap-4"
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="relative"
           >
-            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-              <div className="text-3xl font-bold text-black mb-2">50,000+</div>
-              <div className="text-gray-600">Cars Sold</div>
+            {/* Floating Stats Cards */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
+                  className={`relative group cursor-pointer ${
+                    currentStat === index ? 'transform scale-105' : ''
+                  } transition-all duration-500`}
+                >
+                  {/* Glow Effect */}
+                  {currentStat === index && (
+                    <div className={`absolute -inset-0.5 bg-gradient-to-r ${stat.color} rounded-xl blur-lg opacity-75 group-hover:opacity-100 transition duration-1000`}></div>
+                  )}
+                  
+                  {/* Card Content */}
+                  <div className="relative bg-white/10 backdrop-blur-xl p-4 sm:p-6 rounded-xl shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300">
+                    <div className={`text-2xl sm:text-3xl font-bold mb-2 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+                      {stat.value}
+                    </div>
+                    <div className="text-white/80 font-medium text-xs sm:text-sm">{stat.label}</div>
+                    
+                    {/* Animated Progress Bar */}
+                    {currentStat === index && (
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 3 }}
+                        className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r ${stat.color} rounded-b-xl`}
+                      />
+                    )}
+                  </div>
+                </motion.div>
+              ))}
             </div>
-            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-              <div className="text-3xl font-bold text-black mb-2">4.9★</div>
-              <div className="text-gray-600">Google Rating</div>
-            </div>
-            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-              <div className="text-3xl font-bold text-black mb-2">24 Hrs</div>
-              <div className="text-gray-600">Quick Sale</div>
-            </div>
-            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-              <div className="text-3xl font-bold text-black mb-2">₹50K+</div>
-              <div className="text-gray-600">Extra Value</div>
-            </div>
+
+            {/* Floating Call-to-Action - More compact */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+              className="mt-4 sm:mt-6 text-center"
+            >
+              <div className="bg-white/5 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-white/10">
+                <p className="text-white/80 mb-3 text-sm">Need immediate assistance?</p>
+                <div className="flex gap-2 sm:gap-3 justify-center">
+                  <button
+                    onClick={() => window.location.href = 'tel:18001234567'}
+                    className="flex items-center gap-2 bg-white/20 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-white/30 transition-all duration-300 backdrop-blur-md text-xs sm:text-sm"
+                  >
+                    <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">Call Now</span>
+                    <span className="sm:hidden">Call</span>
+                  </button>
+                  <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 text-xs sm:text-sm">
+                    Live Chat
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
+
+        {/* Bottom Floating Elements - Adjusted position */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.0 }}
+          className="absolute bottom-4 left-1/2 transform -translate-x-1/2"
+        >
+          <div className="flex items-center gap-2 text-white/60">
+            <motion.div
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <ChevronDown className="w-5 h-5" />
+            </motion.div>
+            <span className="text-xs sm:text-sm">Scroll to explore</span>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Particle Effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-white/20 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -100],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
       </div>
     </section>
   );
@@ -558,8 +729,9 @@ export default function SellCarPageClient({
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Hero Section */}
+      {/* Enhanced Hero Section with Background Integration */}
       <HeroSection />
+      <SellCarWizard />
       
       {/* How It Works */}
       <HowItWorksSection />
@@ -569,21 +741,6 @@ export default function SellCarPageClient({
       
       {/* Testimonials */}
       <TestimonialsSection />
-      
-      {/* Sell Car Wizard */}
-      <section id="sell-wizard" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Start Selling Your Car
-            </h2>
-            <p className="text-xl text-gray-600">
-              Fill the form below to get instant valuation
-            </p>
-          </div>
-          <SellCarWizard />
-        </div>
-      </section>
       
       {/* FAQ Section */}
       <FAQSection faqs={faqsData} />

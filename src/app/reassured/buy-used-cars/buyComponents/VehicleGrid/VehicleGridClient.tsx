@@ -262,8 +262,8 @@ function VehicleCard({
     <div className="group relative bg-white border border-black/10 hover:border-black/20 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 h-full flex flex-col overflow-hidden"
          style={{ fontFamily: 'Manrope, sans-serif' }}>
       
-      {/* Image Container */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100 rounded-t-xl">
+      {/* Image Container - Reduced height */}
+      <div className="relative aspect-[16/8] w-full overflow-hidden bg-gray-100 rounded-t-xl">
         <Image
           src={car.image}
           alt={`${car.brand} ${car.model}`}
@@ -303,31 +303,28 @@ function VehicleCard({
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex flex-col flex-grow p-4">
-        {/* Header */}
-        <div className="mb-3">
-          {/* Brand & Year */}
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="uppercase tracking-[0.15em] text-[10px] text-black/50 font-medium">
-              {car.brand}
-            </h3>
-            <span className="text-[10px] text-black/60">{car.year}</span>
-          </div>
-          
-          {/* Model */}
-          <h2 className="text-base font-light text-black mb-2">
-            {car.model}
+      {/* Content - Compact Layout */}
+      <div className="flex flex-col flex-grow p-3">
+        {/* Row 1: Brand Model Variant in one line */}
+        <div className="mb-2">
+          <h2 className="text-sm font-medium text-black truncate">
+            {car.brand} {car.model} {car.variant ? car.variant : ''}
           </h2>
-          
-          {/* Price */}
-          <p className="text-xl font-light text-black">
-            {car.price}
-          </p>
         </div>
 
-        {/* Specs */}
-        <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-black/60 py-2 border-b border-black/10">
+        {/* Row 2: Price on left, Year and Location on right */}
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-lg font-light text-black">
+            {car.price}
+          </p>
+          <div className="text-right">
+            <div className="text-xs text-black/60">{car.year}</div>
+            <div className="text-xs text-black/60">{car.location}</div>
+          </div>
+        </div>
+
+        {/* Specs in compact format */}
+        <div className="flex flex-wrap gap-x-2 gap-y-1 text-[10px] text-black/60 pb-2 border-b border-black/10">
           <span>{car.mileage}</span>
           <span>•</span>
           <span>{car.fuelType}</span>
@@ -335,30 +332,23 @@ function VehicleCard({
           <span>{car.transmission}</span>
         </div>
 
-        {/* Location */}
-        <div className="py-2 border-b border-black/10">
-          <p className="text-[11px] text-black/60">
-            Available at <span className="text-black font-medium">{car.location}</span>
-          </p>
-        </div>
-
-        {/* EMI Section */}
+        {/* EMI Section - Compact */}
         <div className="py-2 border-b border-black/10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] text-black/60 mb-1">EMI STARTING FROM</p>
-              <p className="text-base font-light text-black">
-                ₹{emiValue.toLocaleString('en-IN')}<span className="text-[11px] text-black/60">/month</span>
+              <p className="text-[9px] text-black/60 mb-0.5">EMI FROM</p>
+              <p className="text-sm font-light text-black">
+                ₹{emiValue.toLocaleString('en-IN')}<span className="text-[10px] text-black/60">/mo</span>
               </p>
             </div>
             <button
               type="button"
               onClick={openEMI}
-              className="flex items-center gap-2 px-3 py-1.5 border border-black/20 text-black rounded-lg hover:bg-black hover:text-white transition-all duration-200"
+              className="flex items-center gap-1 px-2 py-1 border border-black/20 text-black rounded hover:bg-black hover:text-white transition-all duration-200"
               aria-label="Calculate EMI"
             >
-              <Calculator size={12} />
-              <span className="text-[10px] font-medium tracking-wide">CALCULATE</span>
+              <Calculator size={10} />
+              <span className="text-[9px] font-medium">Options</span>
             </button>
           </div>
         </div>
@@ -366,28 +356,28 @@ function VehicleCard({
         {/* Spacer */}
         <div className="flex-grow"></div>
 
-        {/* Action Buttons - Premium Style */}
-        <div className="space-y-2 mt-4">
+        {/* Action Buttons - Compact */}
+        <div className="space-y-1.5 mt-3">
           {/* Primary Actions */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-1.5">
             <button
               type="button"
               onClick={openDetails}
-              className="py-2 px-4 bg-black text-white text-xs font-medium tracking-wide rounded-lg hover:bg-white hover:text-black border border-transparent hover:border-black transition-all duration-200"
+              className="py-1.5 px-3 bg-black text-white text-[10px] font-medium tracking-wide rounded hover:bg-white hover:text-black border border-transparent hover:border-black transition-all duration-200"
             >
-              VIEW DETAILS
+              VIEW
             </button>
             <button
               type="button"
               onClick={onCompare}
               aria-pressed={inCompare}
-              className={`py-2 px-4 text-xs font-medium tracking-wide rounded-lg transition-all duration-200 ${
+              className={`py-1.5 px-3 text-[10px] font-medium tracking-wide rounded transition-all duration-200 ${
                 inCompare
                   ? 'bg-black text-white'
                   : 'bg-white border border-black text-black hover:bg-black hover:text-white'
               }`}
             >
-              {inCompare ? 'COMPARING' : 'COMPARE'}
+              {inCompare ? 'ADDED' : 'COMPARE'}
             </button>
           </div>
 
@@ -395,11 +385,11 @@ function VehicleCard({
           <button
             type="button"
             onClick={openSchedule}
-            className="w-full py-2 px-4 bg-white border border-black text-black font-medium tracking-wide text-xs rounded-lg hover:bg-black hover:text-white transition-all duration-200 flex items-center justify-center gap-2"
+            className="w-full py-1.5 px-3 bg-white border border-black text-black font-medium tracking-wide text-[10px] rounded hover:bg-black hover:text-white transition-all duration-200 flex items-center justify-center gap-1"
             aria-label="Book a test drive"
           >
-            <Calendar size={14} />
-            <span>BOOK TEST DRIVE</span>
+            <Calendar size={12} />
+            <span>TEST DRIVE</span>
           </button>
         </div>
       </div>

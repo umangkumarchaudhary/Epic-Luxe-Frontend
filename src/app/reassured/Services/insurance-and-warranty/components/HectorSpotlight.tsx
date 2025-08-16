@@ -18,14 +18,14 @@ export default function HectorSpotlight() {
               Drive the Hector,<br />Worry-Free for 3 Years
             </h2>
             <p className="text-xl text-gray-300 mb-8">
-              As an authorized MG partner, we&apos;re offering an exclusive 3-Year Warranty on every new Hector.
+              As an authorized MG partner, we&apos;re offering an exclusive 3-Year Warranty on every Hector vehicle.
             </p>
             
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 mb-8">
               <ul className="space-y-4">
                 <li className="flex items-center">
                   <span className="text-2xl mr-4">✓</span>
-                  <span className="text-lg">Unlimited Kilometres Coverage</span>
+                  <span className="text-lg">Premium Quality</span>
                 </li>
                 <li className="flex items-center">
                   <span className="text-2xl mr-4">✓</span>
@@ -33,7 +33,7 @@ export default function HectorSpotlight() {
                 </li>
                 <li className="flex items-center">
                   <span className="text-2xl mr-4">✓</span>
-                  <span className="text-lg">24x7 Roadside Assistance</span>
+                  <span className="text-lg">24x7 Call Support Available</span>
                 </li>
               </ul>
             </div>

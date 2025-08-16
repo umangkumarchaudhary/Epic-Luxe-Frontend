@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Calculator, CheckCircle, Car, Users, Shield, Clock, Phone, ChevronDown, ChevronUp, X, Star, Award, CreditCard, FileText, DollarSign } from 'lucide-react';
-import Header from '@/app/components/Header';
-import Footer from '@/app/components/Footer';
+import Header from '../../components/Header/HeaderServer';
+import Footer from '../../components/Footer/FooterServer';
 import PremiumEMICalculator from './EMICalculator';
 import FinanceComparisonSection from './ComparisonSection';
 
@@ -317,7 +317,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
     }, [delay, startTyping]);
 
     return (
-      <p className="text-xl md:text-2xl text-gray-700 max-w-4xl mx-auto font-light leading-relaxed">
+      <p className="text-xl md:text-2xl text-white max-w-4xl mx-auto font-light leading-relaxed drop-shadow-xl">
         {displayedText}
         <span className="animate-pulse">|</span>
       </p>
@@ -425,31 +425,51 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
+
+        @keyframes pan {
+          0% {
+            transform: scale(1.1) translateX(-2%);
+          }
+          25% {
+            transform: scale(1.15) translateX(1%);
+          }
+          50% {
+            transform: scale(1.1) translateX(2%);
+          }
+          75% {
+            transform: scale(1.15) translateX(-1%);
+          }
+          100% {
+            transform: scale(1.1) translateX(-2%);
+          }
+        }
       `}</style>
 
       <Header />
 
       <div className="min-h-screen bg-white text-gray-900">
-        {/* Hero Section with Mercedes-Benz Theme */}
-        <div className="relative overflow-hidden mercedes-gradient">
+        {/* Hero Section with Moving Background */}
+        <div className="relative overflow-hidden min-h-screen">
+          {/* Moving Background Image */}
           <div className="absolute inset-0">
             <Image
-              src="/assets/images/used-cars-hero.jpg"
-              alt="Pre-Owned Cars South India"
+              src="/assets/images/innova2.jpg"
+              alt="Innova Pre-Owned Car Finance"
               fill
-              className="object-cover object-center opacity-20"
+              className="object-cover object-center animate-[pan_20s_ease-in-out_infinite]"
               priority
               sizes="100vw"
             />
           </div>
 
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/90 to-white/95"></div>
-          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white/98 to-transparent"></div>
+          {/* Dark overlay for better text visibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"></div>
+          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/80 to-transparent"></div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
             <div className="text-center">
-              <h1 className="text-5xl md:text-7xl font-heading font-bold text-gradient mb-8 tracking-tight leading-tight">
-                Pre-Owned Car Finance
+              <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-8 tracking-tight leading-tight drop-shadow-2xl">
+                EPIC REASSURED's Car Finance
               </h1>
               
               <AnimatedMarketingText />
@@ -457,14 +477,14 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
               <div className="flex flex-col sm:flex-row gap-6 justify-center mt-8">
                 <button 
                   onClick={() => document.getElementById('eligibility')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="mercedes-button text-white px-10 py-4 rounded-full font-medium text-lg shadow-lg"
+                  className="bg-white text-black px-10 py-4 rounded-full font-medium text-lg shadow-lg hover:bg-gray-100 transition-all duration-300"
                 >
                   <CheckCircle className="inline-block w-5 h-5 mr-2" />
                   Check Eligibility
                 </button>
                 <button 
                   onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="bg-transparent border-2 border-black text-black px-10 py-4 rounded-full font-medium text-lg hover:bg-black hover:text-white transition-all duration-300"
+                  className="bg-transparent border-2 border-white text-white px-10 py-4 rounded-full font-medium text-lg hover:bg-white hover:text-black transition-all duration-300"
                 >
                   <Calculator className="inline-block w-5 h-5 mr-2" />
                   EMI Calculator
@@ -474,7 +494,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
               {/* Location badges */}
               <div className="mt-12 flex flex-wrap justify-center gap-3">
                 {locationData.states.slice(0, 3).map((state: State, index: number) => (
-                  <span key={index} className="bg-black/5 text-black px-4 py-2 rounded-full text-sm font-medium">
+                  <span key={index} className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium border border-white/30">
                     {state.name}
                   </span>
                 ))}
@@ -485,47 +505,75 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
         </div>
 
         {/* Why Choose Pre-Owned Cars Section */}
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-10 relative overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <Image
+              src="/assets/images/whytrustus.png"
+              alt="Why Trust Us Background"
+              fill
+              className="object-cover object-center"
+              sizes="100vw"
+            />
+          </div>
+          
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-white/85 backdrop-blur-sm"></div>
+          
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-heading font-bold text-black mb-4">
-                Why Choose Pre-Owned Cars?
+                Why Choose EPIC REASURRED's Pre-Owned Cars?
               </h2>
               <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-                Smart financing solutions for budget-conscious buyers across South India
+                Smart financing solutions for budget-conscious buyers across country
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <div className="premium-card rounded-2xl p-8 text-center">
+              <div className="bg-white/90 backdrop-blur-sm border border-white/50 shadow-xl rounded-2xl p-8 text-center hover:bg-white/95 transition-all duration-300">
                 <DollarSign className="w-12 h-12 text-black mx-auto mb-6" />
-                <h3 className="text-xl font-semibold mb-4">Lower EMIs</h3>
-                <p className="text-gray-600">EMIs starting from just ₹8,000 for quality pre-owned vehicles</p>
+                <h3 className="text-xl font-semibold mb-4 text-black">Lower EMIs</h3>
+                <p className="text-gray-700">EMIs starting from just ₹8,000 for quality pre-owned vehicles</p>
               </div>
 
-              <div className="premium-card rounded-2xl p-8 text-center">
+              <div className="bg-white/90 backdrop-blur-sm border border-white/50 shadow-xl rounded-2xl p-8 text-center hover:bg-white/95 transition-all duration-300">
                 <Award className="w-12 h-12 text-black mx-auto mb-6" />
-                <h3 className="text-xl font-semibold mb-4">Quality Assured</h3>
-                <p className="text-gray-600">Multi-point inspection ensures vehicle quality and reliability</p>
+                <h3 className="text-xl font-semibold mb-4 text-black">Quality Assured</h3>
+                <p className="text-gray-700">Multi-point inspection ensures vehicle quality and reliability</p>
               </div>
 
-              <div className="premium-card rounded-2xl p-8 text-center">
+              <div className="bg-white/90 backdrop-blur-sm border border-white/50 shadow-xl rounded-2xl p-8 text-center hover:bg-white/95 transition-all duration-300">
                 <Clock className="w-12 h-12 text-black mx-auto mb-6" />
-                <h3 className="text-xl font-semibold mb-4">Quick Approval</h3>
-                <p className="text-gray-600">Get loan approval in 30 minutes with minimal documentation</p>
+                <h3 className="text-xl font-semibold mb-4 text-black">Quick Approval</h3>
+                <p className="text-gray-700">Get loan approval in 30 minutes with minimal documentation</p>
               </div>
 
-              <div className="premium-card rounded-2xl p-8 text-center">
+              <div className="bg-white/90 backdrop-blur-sm border border-white/50 shadow-xl rounded-2xl p-8 text-center hover:bg-white/95 transition-all duration-300">
                 <Shield className="w-12 h-12 text-black mx-auto mb-6" />
-                <h3 className="text-xl font-semibold mb-4">Transparent Process</h3>
-                <p className="text-gray-600">No hidden charges, clear terms, and competitive interest rates</p>
+                <h3 className="text-xl font-semibold mb-4 text-black">Transparent Process</h3>
+                <p className="text-gray-700">No hidden charges, clear terms, and competitive interest rates</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* Eligibility Checker Section */}
-        <section id="eligibility" className="py-24 bg-white relative overflow-hidden">
+        <section id="eligibility" className="py-10 relative overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <Image
+              src="/assets/images/eligibility.png"
+              alt="Eligibility Background"
+              fill
+              className="object-cover object-center opacity-40"
+              sizes="100vw"
+            />
+          </div>
+          
+          {/* Light overlay for text readability */}
+          <div className="absolute inset-0 bg-white/75"></div>
+          
           <div className="relative z-10 max-w-5xl mx-auto px-6 flex flex-col items-center justify-center">
             <div className="text-center mb-12 w-full">
               <h2 className="text-5xl font-heading font-bold text-black mb-4">
@@ -537,7 +585,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
             </div>
 
             {step === "eligibility" && (
-              <div className="premium-card rounded-3xl p-10 mercedes-shadow w-full max-w-5xl mx-auto">
+              <div className="bg-white border-2 border-gray-200 rounded-3xl p-10 shadow-2xl w-full max-w-5xl mx-auto">
                 <div className="grid md:grid-cols-3 gap-8 mb-6">
                   <div>
                     <label className="block text-sm text-gray-600 mb-2 font-medium">Monthly Income</label>
@@ -588,7 +636,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
                 <div className="flex justify-center">
                   <button
                     onClick={checkEligibility}
-                    className="mercedes-button text-white font-semibold text-lg py-4 px-16 rounded-lg transition-all"
+                    className="bg-black hover:bg-gray-800 text-white font-semibold text-lg py-4 px-16 rounded-lg shadow-lg transition-all duration-300"
                   >
                     Check Eligibility Instantly
                   </button>
@@ -598,7 +646,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
 
             {step === "approval" && (
               <div className="mt-8 flex flex-col items-center w-full">
-                <div className="premium-card rounded-2xl p-8 w-full max-w-2xl mx-auto mercedes-shadow">
+                <div className="bg-white border-2 border-gray-200 rounded-2xl p-8 w-full max-w-2xl mx-auto shadow-2xl">
                   <div className="text-center">
                     <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4 animate-bounce" />
                     <h3 className="text-3xl font-heading font-bold text-black mb-2">
@@ -660,7 +708,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`mercedes-button text-white text-lg px-12 py-4 rounded-lg transition-all relative flex items-center justify-center ${isSubmitting ? "opacity-60 cursor-not-allowed" : ""}`}
+                        className={`bg-black hover:bg-gray-800 text-white text-lg px-12 py-4 rounded-lg shadow-lg transition-all duration-300 relative flex items-center justify-center ${isSubmitting ? "opacity-60 cursor-not-allowed" : ""}`}
                       >
                         {isSubmitting ? (
                           <span className="flex items-center gap-2">
@@ -686,14 +734,14 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
             )}
 
             {showPopup && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                <div className="premium-card rounded-3xl px-8 py-10 mercedes-shadow w-full max-w-md mx-4 text-center relative">
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+                <div className="bg-white border-2 border-gray-200 rounded-3xl px-8 py-10 shadow-2xl w-full max-w-md mx-4 text-center relative">
                   <CheckCircle className="w-14 h-14 text-green-600 mx-auto mb-4" />
                   <h2 className="text-2xl font-heading font-bold text-black mb-3">Application Submitted!</h2>
                   <p className="text-gray-600 mb-6">Thank you for your interest.<br />Our experts will contact you soon.</p>
                   <button
                     onClick={handlePopupOk}
-                    className="mercedes-button text-white font-semibold text-lg px-8 py-3 rounded-lg transition-all"
+                    className="bg-black hover:bg-gray-800 text-white font-semibold text-lg px-8 py-3 rounded-lg shadow-lg transition-all duration-300"
                     autoFocus
                   >
                     OK
@@ -1095,13 +1143,13 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
         </section>
 
         {/* Call to Action Banner */}
-        <section className="py-16 bg-black">
+        <section className="py-10 bg-black">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
               Ready to Drive Your Dream Pre-Owned Car?
             </h2>
             <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-              Join thousands of satisfied customers across South India. Get instant pre-approval and drive home today!
+              Join thousands of satisfied customers across India. Get instant pre-approval and drive home today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
