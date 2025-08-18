@@ -133,6 +133,7 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
       
       return newData;
     });
+    SellNowWizardClient.displayName = "SellNowWizardClient";
     
     // Auto-progression logic
     setTimeout(() => {
@@ -203,10 +204,10 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
   }, [formData.brand, formData.model, formData.fuel, luxuryCars]);
 
   // Optimized filter functions
-  const filterItems = useCallback((items: any[], searchTerm: string, key = 'name') => {
+  const filterItems = useCallback((items: unknown[], searchTerm: string, key = 'name') => {
     if (!searchTerm) return items;
     return items.filter(item => 
-      (typeof item === 'string' ? item : item[key])
+  (typeof item === 'string' ? item : (item as Record<string, string>)[key])
         .toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, []);
@@ -296,6 +297,7 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
       </div>
     </div>
   ));
+  ProgressBar.displayName = "ProgressBar";
 
   // Selection Display Component
   const SelectionDisplay = React.memo(() => {
@@ -330,6 +332,7 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
       </div>
     );
   });
+  SelectionDisplay.displayName = "SelectionDisplay";
 
   // Optimized render functions
   const renderVehicleInfo = () => (
@@ -391,14 +394,14 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                     {filterItems(modelsData.popular, searchTerms.model).map((model) => (
                       <button
-                        key={model}
+                        key={model as string}
                         className="p-3 rounded-lg border border-gray-200 hover:border-black hover:bg-gray-50 transition-all text-left"
                         onClick={() => {
-                          updateFormData('model', model);
+                          updateFormData('model', model as string);
                           setSearchTerms(prev => ({ ...prev, model: '' }));
                         }}
                       >
-                        <span className="text-sm font-semibold text-black">{model}</span>
+                        <span className="text-sm font-semibold text-black">{model as string}</span>
                       </button>
                     ))}
                   </div>
@@ -411,14 +414,14 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-40 overflow-y-auto">
                     {filterItems(modelsData.other, searchTerms.model).map((model) => (
                       <button
-                        key={model}
+                        key={model as string}
                         className="p-2 text-sm rounded-lg border border-gray-200 hover:border-black hover:bg-gray-50 transition-all"
                         onClick={() => {
-                          updateFormData('model', model);
+                          updateFormData('model', model as string);
                           setSearchTerms(prev => ({ ...prev, model: '' }));
                         }}
                       >
-                        {model}
+                        {model as string}
                       </button>
                     ))}
                   </div>
@@ -523,22 +526,22 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {filterItems(popularCities.slice(0, 12), searchTerms.city).map((city) => (
                   <button
-                    key={city.name}
+                    key={(city as { name: string }).name}
                     onClick={() => {
-                      updateFormData('city', city.name);
+                      updateFormData('city', (city as { name: string }).name);
                       setSearchTerms(prev => ({ ...prev, city: '' }));
                     }}
                     className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-all ${
-                      formData.city === city.name
+                      formData.city === (city as { name: string }).name
                         ? 'border-black bg-gray-50'
                         : 'border-gray-200 hover:border-black hover:bg-gray-50'
                     }`}
                   >
                     <div className="w-8 h-8 rounded overflow-hidden">
-                      {getMonumentImage(city.name, cityImageMap)}
+                      {getMonumentImage((city as { name: string }).name, cityImageMap)}
                     </div>
                     <span className="text-xs font-semibold text-center leading-tight text-black">
-                      {city.name}
+                      {(city as { name: string }).name}
                     </span>
                   </button>
                 ))}
@@ -551,9 +554,9 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 max-h-32 overflow-y-auto">
                 {filterItems(otherCities.slice(0, 20), searchTerms.city).map((city) => (
                   <button
-                    key={city}
+                    key={city as string}
                     onClick={() => {
-                      updateFormData('city', city);
+                      updateFormData('city', city as string);
                       setSearchTerms(prev => ({ ...prev, city: '' }));
                     }}
                     className={`p-2 rounded border text-xs font-semibold transition-all ${
@@ -562,7 +565,7 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
                         : 'border-gray-200 text-black hover:border-black hover:bg-gray-50'
                     }`}
                   >
-                    {city}
+                    {city as string}
                   </button>
                 ))}
               </div>

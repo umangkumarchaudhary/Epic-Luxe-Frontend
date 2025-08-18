@@ -12,7 +12,7 @@ interface Blog {
 }
 
 // Mock blog storage (in production, this would be a database)
-let blogs: Array<Blog & { id: number; slug: string; createdAt: string; updatedAt: string; publishedAt?: string }> = [];
+const blogs: Array<Blog & { id: number; slug: string; createdAt: string; updatedAt: string; publishedAt?: string }> = [];
 let nextId = 1;
 
 function generateSlug(title: string): string {

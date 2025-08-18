@@ -128,19 +128,18 @@ const getBrandLogo = (brandName: string): string => {
 };
 
 // Convert readonly luxury cars data to mutable format
-const convertLuxuryCarsToMutable = (readonlyData: any): LuxuryCars => {
+const convertLuxuryCarsToMutable = (readonlyData: unknown): LuxuryCars => {
   const mutableData: LuxuryCars = {};
-  
-  Object.keys(readonlyData).forEach(brand => {
+  const data = readonlyData as Record<string, Record<string, Record<string, string[]>>>;
+  Object.keys(data).forEach(brand => {
     mutableData[brand] = {};
-    Object.keys(readonlyData[brand]).forEach(model => {
+    Object.keys(data[brand]).forEach(model => {
       mutableData[brand][model] = {};
-      Object.keys(readonlyData[brand][model]).forEach(fuelType => {
-        mutableData[brand][model][fuelType] = [...readonlyData[brand][model][fuelType]];
+      Object.keys(data[brand][model]).forEach(fuelType => {
+        mutableData[brand][model][fuelType] = [...data[brand][model][fuelType]];
       });
     });
   });
-  
   return mutableData;
 };
 

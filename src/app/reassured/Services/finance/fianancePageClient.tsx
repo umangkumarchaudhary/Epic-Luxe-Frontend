@@ -256,11 +256,11 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
   const faqs: FAQ[] = [
     {
       question: "What is the minimum down payment for pre-owned cars?",
-      answer: "For pre-owned cars, we typically require a minimum down payment of 15-20% of the car's value. This helps reduce your EMI and improves loan approval chances."
+  answer: "For pre-owned cars, we typically require a minimum down payment of 15-20% of the car&apos;s value. This helps reduce your EMI and improves loan approval chances."
     },
     {
       question: "Can I get a loan for cars older than 5 years?",
-      answer: "Yes, we provide financing for cars up to 8 years old at the time of loan application. However, interest rates may vary based on the car's age and condition."
+  answer: "Yes, we provide financing for cars up to 8 years old at the time of loan application. However, interest rates may vary based on the car&apos;s age and condition."
     },
     {
       question: "What documents are required for pre-owned car finance?",
@@ -469,7 +469,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
             <div className="text-center">
               <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-8 tracking-tight leading-tight drop-shadow-2xl">
-                EPIC REASSURED's Car Finance
+                EPIC REASSURED&apos;s Car Finance
               </h1>
               
               <AnimatedMarketingText />
@@ -523,7 +523,7 @@ const FinancePageClient: React.FC<FinancePageClientProps> = ({ locationData, pop
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-heading font-bold text-black mb-4">
-                Why Choose EPIC REASURRED's Pre-Owned Cars?
+                Why Choose EPIC REASURRED&apos;s Pre-Owned Cars?
               </h2>
               <p className="text-gray-600 text-lg max-w-3xl mx-auto">
                 Smart financing solutions for budget-conscious buyers across country

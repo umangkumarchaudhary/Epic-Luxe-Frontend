@@ -33,75 +33,6 @@ const STEPS = [
   { id: 4, title: 'Contact', subtitle: 'Get Valuation' },
 ];
 
-// Simplified Step Indicator
-const StepIndicator: React.FC<{ currentStep: number; onStepClick: (step: number) => void }> = ({ 
-  currentStep, 
-  onStepClick 
-}) => {
-  return (
-    <div className="bg-white border-b border-gray-200 sticky top-[73px] z-40">
-      <div className="max-w-5xl mx-auto px-4 py-4">
-        {/* Desktop Progress */}
-        <div className="hidden md:block">
-          <div className="flex items-center justify-between relative">
-            {/* Progress Line */}
-            <div className="absolute left-0 right-0 top-5 h-[2px] bg-gray-200">
-              <div 
-                className="h-full bg-black transition-all duration-500"
-                style={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
-              />
-            </div>
-            
-            {/* Step Circles */}
-            {STEPS.map((step) => (
-              <button
-                key={step.id}
-                onClick={() => onStepClick(step.id)}
-                className="relative z-10 group"
-              >
-                <div className={`
-                  w-10 h-10 rounded-full flex items-center justify-center
-                  transition-all duration-300 border-2
-                  ${currentStep >= step.id 
-                    ? 'bg-black border-black text-white' 
-                    : 'bg-white border-gray-300 text-gray-400 hover:border-gray-400'}
-                `}>
-                  {currentStep > step.id ? (
-                    <Check className="w-5 h-5" />
-                  ) : (
-                    <span className="text-sm font-medium">{step.id + 1}</span>
-                  )}
-                </div>
-                <div className="absolute top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                  <div className="text-xs font-medium text-gray-900">{step.title}</div>
-                  <div className="text-xs text-gray-500">{step.subtitle}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile Progress */}
-        <div className="md:hidden">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">Step {currentStep + 1} of {STEPS.length}</span>
-            <span className="text-sm text-gray-500">{Math.round((currentStep / (STEPS.length - 1)) * 100)}%</span>
-          </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-black transition-all duration-500"
-              style={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
-            />
-          </div>
-          <div className="mt-2">
-            <div className="text-sm font-medium">{STEPS[currentStep].title}</div>
-            <div className="text-xs text-gray-500">{STEPS[currentStep].subtitle}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 // Car Details Summary Bar
 const CarDetailsSummary: React.FC<{ formData: FormData }> = ({ formData }) => {
@@ -177,24 +108,11 @@ export default function SellCarClient() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleStepChange = (newStep: number) => {
-    if (newStep <= step || isStepAccessible()) {
-      setDirection(newStep > step ? 'next' : 'back');
-      setStep(newStep);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
 
   // const handleFormDataChange = (newData: Partial<FormData>) => {
   //   setFormData((prev) => ({ ...prev, ...newData }));
   // };
 
-  // Check if step is accessible based on form completion
-  const isStepAccessible = () => {
-    // Logic to check if previous steps are completed
-    // For simplicity, allowing all navigation in this example
-    return true;
-  };
 
   // Handle form submission
   const handleSubmit = () => {

@@ -55,9 +55,9 @@ const popularSearches = {
 
 interface HeaderClientProps {
   seoData?: {
-    metadata: any;
-    cities: any;
-    services: any;
+  metadata: unknown;
+  cities: unknown;
+  services: unknown;
   };
 }
 

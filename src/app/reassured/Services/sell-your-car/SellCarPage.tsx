@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import SellCarClient from './SellCarClient';
-import { Shield, Award, Users, Star, Clock, CheckCircle, TrendingUp, Truck } from 'lucide-react';
+import { Shield, Award, Users, Star, Clock } from 'lucide-react';
 
 // SEO-Optimized Metadata beating competitors
 export const metadata: Metadata = {
@@ -79,13 +79,6 @@ const trustSignals = [
   },
 ];
 
-// Additional trust features for SEO
-const features = [
-  { icon: CheckCircle, text: "Free Doorstep Inspection" },
-  { icon: TrendingUp, text: "Instant Bank Transfer" },
-  { icon: Truck, text: "Free Car Pickup Service" },
-  { icon: Shield, text: "Complete Documentation Support" },
-];
 
 // JSON-LD Structured Data for SEO
 const jsonLd = {

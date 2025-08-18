@@ -1,0 +1,52 @@
+# ============================
+# Epic Cars - Robots.txt
+# Optimized for SEO & Crawl Budget
+# ============================
+
+User-agent: *
+Allow: /
+
+# ✅ Priority Pages (ensure indexing)
+Allow: /luxe
+Allow: /luxe/buy-luxury-cars
+Allow: /reassured
+Allow: /reassured/buy-used-cars
+Allow: /cars
+Allow: /locations
+Allow: /about
+Allow: /contact
+Allow: /sell-car
+Allow: /finance
+Allow: /reviews
+
+# 🚫 Disallow admin, technical & duplicate pages
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /_next/
+Disallow: /dashboard/
+Disallow: /drafts/
+Disallow: /temp/
+Disallow: /*?*     # block query-string duplicates (e.g., ?sort=, ?filter=)
+
+# ✅ Allow all images & media for SEO (Google Images + PageRank via image search)
+Allow: /assets/images/
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.webp$
+Allow: /*.svg$
+Allow: /*.mp4$
+Allow: /*.webm$
+
+# ✅ Sitemap locations (submit to Search Console too)
+Sitemap: https://epic-cars.in/sitemap.xml
+Sitemap: https://epic-cars.in/cars-sitemap.xml
+Sitemap: https://epic-cars.in/locations-sitemap.xml
+Sitemap: https://epic-cars.in/blog-sitemap.xml
+
+# ⏱️ Crawl-delay (optional, most modern bots ignore this)
+Crawl-delay: 1
+
+# ✅ Host directive (canonical domain enforcement)
+Host: https://epic-cars.in
