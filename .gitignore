@@ -2,7 +2,9 @@
 
 # dependencies
 /node_modules
-/src\app\luxe\pageLoader
+/srcapp/luxe/pageLoader/
+src/app/luxe/inventory/[slug]/raam-preowned/
+
 /dummyHero.tsx
 /.pnp
 .pnp.*

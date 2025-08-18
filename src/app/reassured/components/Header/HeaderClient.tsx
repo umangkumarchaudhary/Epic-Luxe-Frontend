@@ -23,10 +23,7 @@ import {
 
 // Cities data for luxury car markets in India
 const cities = [
-  'Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Chennai', 'Hyderabad', 
-  'Kolkata', 'Ahmedabad', 'Nashik', 'Aurangabad', 'Vizag', 'Kolhapur',
-  'Gurgaon', 'Noida', 'Faridabad', 'Thane', 'Navi Mumbai', 'Jaipur',
-  'Lucknow', 'Chandigarh', 'Indore', 'Bhopal', 'Nagpur', 'Surat'
+  'Pune', 'Hyderabad', 'Chennai', 'Vizag', 'Aurangabad','Nashik'
 ];
 
 const services = [
@@ -34,14 +31,14 @@ const services = [
   { name: 'Sell Your Car', icon: Crown, href: '/reassured/Services/sell-your-car', description: 'Best market price' },
   { name: 'Free Valuation', icon: Shield, href: '/reassured/Services/sell-your-car', description: '200+ point inspection' },
   { name: 'Car Finance', icon: CreditCard, href: '/reassured/Services/finance', description: 'Easy loan options' },
-  { name: 'Insurance', icon: FileText, href: '/reassured/Services/', description: 'Comprehensive coverage' },
+  { name: 'Insurance', icon: FileText, href: '/reassured/Services/insurance-and-warranty', description: 'Comprehensive coverage' },
   { name: 'Trade In', icon: ArrowUpDown, href: '/reassured/Services/TradeIn', description: 'Exchange program' },
 ];
 
 const navItems = [
-  { name: 'Home', href: '/' },
-  { name: 'Contact', href: '/luxe/contact' },
-  { name: 'About', href: '/luxe/AboutUs' },
+  { name: 'Home', href: '/reassured' },
+  { name: 'Contact', href: '/contact' },
+  { name: 'About', href: '/AboutUs' },
 ];
 
 const insightsItems = [

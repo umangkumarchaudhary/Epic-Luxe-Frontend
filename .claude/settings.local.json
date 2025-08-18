@@ -1,5 +1,11 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npx tsc:*)",
+      "Bash(taskkill:*)"
+    ],
     "defaultMode": "acceptEdits"
   }
 }

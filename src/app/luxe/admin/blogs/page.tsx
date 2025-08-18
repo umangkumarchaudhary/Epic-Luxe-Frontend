@@ -1,334 +1,1017 @@
-'use client'
+"use client";
 
-import React, { useState, useCallback, useMemo } from 'react'
-import Image from 'next/image'
-import { Star, Users, Clock, ArrowRight, Tag, Calendar, User } from 'lucide-react'
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import Link from "next/link";
+import axios, { AxiosError } from "axios";
+import { 
+  PenTool, 
+  Eye, 
+  EyeOff, 
+  Star, 
+  StarOff, 
+  Trash2, 
+  Edit3, 
+  Plus, 
+  Calendar,
+  TrendingUp,
+  FileText,
+  Users,
+  BarChart3,
+  Search,
+  Filter
+} from "lucide-react";
 
-const EpicLuxeBlog = () => {
-  const [activeFilter, setActiveFilter] = useState('All')
-  const [email, setEmail] = useState('')
-
-  const categories = ['All', 'Buying Guides', 'Car Reviews', 'Ownership Tips', 'Finance & Insurance']
-  
-  const featuredPost = {
-    id: 1,
-    title: "The Art of Buying Pre-Owned Luxury: A Complete Guide",
-    subtitle: "Navigate the world of pre-owned luxury cars with confidence. From inspection secrets to negotiation tactics.",
-    image: "data:image/svg+xml,%3Csvg width='1200' height='600' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23333'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%23fff' text-anchor='middle' dy='.3em'%3ELuxury Car - Featured%3C/text%3E%3C/svg%3E",
-    tag: "Editor's Pick",
-    author: "Arjun Mehta",
-    date: "Dec 15, 2024",
-    readTime: "12 min read"
-  }
-
-  const blogPosts = useMemo(() => [
-    {
-      id: 2,
-      title: "2024 Porsche 911: Pre-Owned Performance Excellence",
-      excerpt: "Why the 911 remains the ultimate sports car investment, and what to look for in the pre-owned market.",
-      image: "data:image/svg+xml,%3Csvg width='800' height='600' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23444'/%3E%3Ctext x='50%25' y='50%25' font-size='18' fill='%23fff' text-anchor='middle' dy='.3em'%3EPorsche 911%3C/text%3E%3C/svg%3E",
-      category: "Car Reviews",
-      author: "Priya Singh",
-      date: "Dec 12, 2024",
-      readTime: "8 min read"
-    },
-    {
-      id: 3,
-      title: "Luxury Car Financing: Smart Strategies for 2025",
-      excerpt: "Navigate interest rates, loan terms, and hidden costs when financing your dream luxury vehicle.",
-      image: "data:image/svg+xml,%3Csvg width='800' height='600' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23555'/%3E%3Ctext x='50%25' y='50%25' font-size='18' fill='%23fff' text-anchor='middle' dy='.3em'%3EFinancing Guide%3C/text%3E%3C/svg%3E",
-      category: "Finance & Insurance",
-      author: "Raj Kapoor",
-      date: "Dec 10, 2024",
-      readTime: "10 min read"
-    },
-    {
-      id: 4,
-      title: "Mercedes-Benz S-Class: Ownership Experience Decoded",
-      excerpt: "Real owner insights into maintaining and enjoying the flagship luxury sedan experience.",
-      image: "data:image/svg+xml,%3Csvg width='800' height='600' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23666'/%3E%3Ctext x='50%25' y='50%25' font-size='18' fill='%23fff' text-anchor='middle' dy='.3em'%3EMercedes S-Class%3C/text%3E%3C/svg%3E",
-      category: "Ownership Tips",
-      author: "Kavya Nair",
-      date: "Dec 8, 2024",
-      readTime: "15 min read"
-    },
-    {
-      id: 5,
-      title: "BMW M Series: Track to Street Performance Guide",
-      excerpt: "Understanding the M badge heritage and what makes these performance machines special in the pre-owned space.",
-      image: "data:image/svg+xml,%3Csvg width='800' height='600' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23777'/%3E%3Ctext x='50%25' y='50%25' font-size='18' fill='%23fff' text-anchor='middle' dy='.3em'%3EBMW M Series%3C/text%3E%3C/svg%3E",
-      category: "Car Reviews",
-      author: "Vikram Shah",
-      date: "Dec 5, 2024",
-      readTime: "12 min read"
-    },
-    {
-      id: 6,
-      title: "Inspection Checklist: What Every Luxury Car Buyer Needs",
-      excerpt: "Professional tips to evaluate pre-owned luxury vehicles like an expert before making your purchase.",
-      image: "data:image/svg+xml,%3Csvg width='800' height='600' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23888'/%3E%3Ctext x='50%25' y='50%25' font-size='18' fill='%23fff' text-anchor='middle' dy='.3em'%3EInspection Guide%3C/text%3E%3C/svg%3E",
-      category: "Buying Guides",
-      author: "Anita Desai",
-      date: "Dec 3, 2024",
-      readTime: "18 min read"
-    },
-    {
-      id: 7,
-      title: "Audi Quattro Heritage: All-Weather Luxury Performance",
-      excerpt: "Exploring Audi's legendary all-wheel-drive system and its impact on luxury car ownership.",
-      image: "data:image/svg+xml,%3Csvg width='800' height='600' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23999'/%3E%3Ctext x='50%25' y='50%25' font-size='18' fill='%23fff' text-anchor='middle' dy='.3em'%3EAudi Quattro%3C/text%3E%3C/svg%3E",
-      category: "Car Reviews",
-      author: "Rohit Sharma",
-      date: "Nov 30, 2024",
-      readTime: "14 min read"
-    }
-  ], [])
-
-  const filteredPosts = useMemo(() => 
-    activeFilter === 'All' 
-      ? blogPosts 
-      : blogPosts.filter(post => post.category === activeFilter),
-    [activeFilter, blogPosts]
-  )
-
-  const handleEmailSubmit = useCallback(() => {
-    if (!email.trim()) return
-    console.log('Newsletter signup:', email)
-    setEmail('')
-    // Add your newsletter signup logic here
-  }, [email])
-
-  const handleFilterChange = useCallback((category: string) => {
-    setActiveFilter(category)
-  }, [])
-
-  return (
-    <div className="min-h-screen bg-gray-900" style={{ backgroundColor: '#0e0e0e' }}>
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
-              Epic Luxe <span className="text-yellow-500" style={{ color: '#d4af37' }}>Journal</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Stories, insights & advice from the world of pre-owned luxury cars.
-            </p>
-            
-            {/* Newsletter Subscribe */}
-            <div className="max-w-md mx-auto">
-              <div className="relative">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full px-6 py-4 bg-black/50 border border-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition-all duration-300"
-                  style={{ borderColor: '#d4af37' }}
-                />
-                <button
-                  onClick={handleEmailSubmit}
-                  className="absolute right-2 top-2 px-6 py-2 bg-yellow-500 text-black rounded-full font-semibold hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105"
-                  style={{ backgroundColor: '#d4af37' }}
-                >
-                  Subscribe
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Featured Blog Post */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-        <div className="relative group cursor-pointer">
-          <div className="relative overflow-hidden rounded-3xl bg-gray-800 shadow-2xl hover:shadow-yellow-500/20 transition-all duration-500 transform hover:scale-[1.02]">
-            <div className="aspect-[21/9] relative overflow-hidden">
-              <Image
-                src={featuredPost.image}
-                alt={featuredPost.title}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-                priority
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-            </div>
-            
-            <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
-              <div className="flex items-center gap-4 mb-4">
-                <span className="px-4 py-2 bg-yellow-500 text-black text-sm font-bold rounded-full" style={{ backgroundColor: '#d4af37' }}>
-                  <Tag className="w-4 h-4 inline mr-2" />
-                  {featuredPost.tag}
-                </span>
-                <div className="flex items-center text-gray-300 text-sm">
-                  <User className="w-4 h-4 mr-2" />
-                  {featuredPost.author}
-                  <Calendar className="w-4 h-4 ml-4 mr-2" />
-                  {featuredPost.date}
-                  <Clock className="w-4 h-4 ml-4 mr-2" />
-                  {featuredPost.readTime}
-                </div>
-              </div>
-              
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-                {featuredPost.title}
-              </h2>
-              <p className="text-xl text-gray-300 mb-8 max-w-3xl leading-relaxed">
-                {featuredPost.subtitle}
-              </p>
-              
-              <button className="group inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white font-semibold hover:bg-yellow-500 hover:text-black hover:border-yellow-500 transition-all duration-300">
-                Read Now
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Category Filter */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        <div className="flex flex-wrap gap-4 justify-center">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => handleFilterChange(category)}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                activeFilter === category
-                  ? 'bg-yellow-500 text-black'
-                  : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
-              }`}
-              style={{
-                backgroundColor: activeFilter === category ? '#d4af37' : undefined
-              }}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Blog Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.map((post) => (
-            <article
-              key={post.id}
-              className="group cursor-pointer bg-gray-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-yellow-500/10 transition-all duration-500 transform hover:scale-[1.03] hover:-translate-y-2"
-            >
-              <div className="aspect-[16/9] relative overflow-hidden">
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
-                    {post.category}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-3 leading-tight group-hover:text-yellow-500 transition-colors duration-300">
-                  {post.title}
-                </h3>
-                <p className="text-gray-400 mb-4 leading-relaxed line-clamp-2">
-                  {post.excerpt}
-                </p>
-                
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center gap-4">
-                    <span className="flex items-center">
-                      <User className="w-4 h-4 mr-1" />
-                      {post.author}
-                    </span>
-                    <span className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      {post.date}
-                    </span>
-                  </div>
-                  <span className="flex items-center">
-                    <Clock className="w-4 h-4 mr-1" />
-                    {post.readTime}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" style={{ background: 'linear-gradient(to right, transparent, #d4af37, transparent)' }}></div>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      {/* Newsletter CTA Section */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-        <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-3xl p-12 text-center border border-gray-700">
-          <h3 className="text-3xl font-bold text-white mb-4">
-            Stay Updated with Luxury Car Insights
-          </h3>
-          <p className="text-xl text-gray-300 mb-8">
-            Get the latest stories, buying guides, and expert advice delivered to your inbox weekly.
-          </p>
-          
-          <div className="max-w-lg mx-auto">
-            <div className="flex gap-4">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email address"
-                className="flex-1 px-6 py-4 bg-black/50 border border-yellow-500 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                style={{ borderColor: '#d4af37' }}
-                required
-              />
-              <button
-                onClick={handleEmailSubmit}
-                className="px-8 py-4 bg-yellow-500 text-black font-bold rounded-full hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105"
-                style={{ backgroundColor: '#d4af37' }}
-              >
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Trust/Readership Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="flex flex-wrap items-center justify-center gap-8 text-gray-400 text-sm">
-          <div className="flex items-center">
-            <Users className="w-5 h-5 mr-2 text-yellow-500" style={{ color: '#d4af37' }} />
-            Trusted by 5,000+ readers
-          </div>
-          <div className="flex items-center">
-            <Clock className="w-5 h-5 mr-2 text-yellow-500" style={{ color: '#d4af37' }} />
-            Updated weekly
-          </div>
-          <div className="flex items-center">
-            <Star className="w-5 h-5 mr-2 text-yellow-500" style={{ color: '#d4af37' }} />
-            4.9★ Rated
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-2xl font-bold text-white mb-4">
-            Epic Luxe <span className="text-yellow-500" style={{ color: '#d4af37' }}>Journal</span>
-          </div>
-          <p className="text-gray-400">
-            © 2024 Epic Luxe. Elevating luxury car ownership experiences.
-          </p>
-        </div>
-      </footer>
-    </div>
-  )
+interface Blog {
+  id: number;
+  title: string;
+  subtitle?: string;
+  content: string;
+  category: string;
+  status: 'draft' | 'published';
+  featured: boolean;
+  image?: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
 }
 
-export default EpicLuxeBlog
+interface BlogStats {
+  total: number;
+  published: number;
+  featured: number;
+  draft: number;
+}
+
+interface ApiError {
+  message?: string;
+  error?: string;
+}
+
+const COLORS = {
+  background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)",
+  cardBg: "#1a1a1a",
+  cardHover: "#2a2a2a",
+  textPrimary: "#D4AF37",
+  textSecondary: "#FFFFFF",
+  textMuted: "#999999",
+  buttonBg: "#2a2a2a",
+  buttonHover: "#D4AF37",
+  border: "#333333",
+  featuredBg: "linear-gradient(135deg, #D4AF37 0%, #BFA980 100%)",
+  featuredText: "#0a0a0a",
+  publishedBg: "#1e2a1e",
+  draftBg: "#2a1e1e",
+  successBg: "#166534",
+  errorBg: "#991b1b",
+  gradient: "linear-gradient(135deg, #D4AF37 0%, #BFA980 100%)",
+};
+
+export default function AdminBlogs() {
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [stats, setStats] = useState<BlogStats>({ total: 0, published: 0, featured: 0, draft: 0 });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft" | "featured">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title">("newest");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 9;
+
+  const axiosInstance = useMemo(() => {
+    const instance = axios.create();
+    instance.interceptors.request.use(
+      (config) => {
+        console.log('[DEBUG] Frontend request:', {
+          method: config.method?.toUpperCase(),
+          url: config.url,
+          data: config.data,
+          timestamp: new Date().toISOString()
+        });
+        return config;
+      },
+      (error) => {
+        console.error('[ERROR] Frontend request error:', error);
+        return Promise.reject(error);
+      }
+    );
+    instance.interceptors.response.use(
+      (response) => {
+        console.log('[DEBUG] Frontend response received:', {
+          status: response.status,
+          url: response.config.url,
+          data: response.data,
+          timestamp: new Date().toISOString()
+        });
+        return response;
+      },
+      (error) => {
+        console.error('[ERROR] Frontend API error:', {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          url: error.config?.url,
+          data: error.response?.data,
+          message: error.message,
+          timestamp: new Date().toISOString()
+        });
+        return Promise.reject(error);
+      }
+    );
+    return instance;
+  }, []);
+
+  // Fetch blogs and stats
+  const fetchBlogs = useCallback(async () => {
+    console.log('[DEBUG] Starting to fetch blogs and stats');
+    setLoading(true);
+    setError(null);
+    try {
+      const [blogsRes, statsRes] = await Promise.all([
+        axiosInstance.get<{ success: boolean; data: Blog[] }>('http://localhost:5000/admin/blogs'),
+        axiosInstance.get<{ success: boolean; data: BlogStats }>('http://localhost:5000/admin/blogs-stats')
+      ]);
+
+      console.log('[DEBUG] Fetch results:', {
+        blogsSuccess: blogsRes.data.success,
+        blogsCount: blogsRes.data.data?.length || 0,
+        statsSuccess: statsRes.data.success,
+        stats: statsRes.data.data
+      });
+
+      if (blogsRes.data.success) {
+        setBlogs(blogsRes.data.data || []);
+        console.log('[DEBUG] Blogs set in state:', blogsRes.data.data?.length || 0);
+      } else {
+        console.error('[ERROR] Blogs fetch failed:', blogsRes.data);
+      }
+      if (statsRes.data.success) {
+        setStats(statsRes.data.data);
+        console.log('[DEBUG] Stats set in state:', statsRes.data.data);
+      } else {
+        console.error('[ERROR] Stats fetch failed:', statsRes.data);
+      }
+    } catch (error) {
+      console.error('[ERROR] Failed to fetch blogs:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString()
+      });
+      setError("Failed to fetch blogs");
+    } finally {
+      setLoading(false);
+      console.log('[DEBUG] Fetch blogs completed');
+    }
+  }, [axiosInstance]);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
+
+  // Clear messages after 5 seconds
+  useEffect(() => {
+    if (message || error) {
+      const timer = setTimeout(() => {
+        setMessage(null);
+        setError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message, error]);
+
+  // Toggle publish status
+  const togglePublished = useCallback(async (blog: Blog) => {
+    console.log('[DEBUG] Toggling publish status for blog:', {
+      id: blog.id,
+      slug: blog.slug,
+      currentStatus: blog.status,
+      title: blog.title
+    });
+    try {
+      const newStatus = blog.status === 'published' ? 'draft' : 'published';
+      console.log('[DEBUG] Sending status update request:', {
+        slug: blog.slug,
+        newStatus,
+        url: `http://localhost:5000/api/blogs/${blog.slug}`
+      });
+      await axiosInstance.put(`http://localhost:5000/api/blogs/${blog.slug}`, {
+        status: newStatus,
+      });
+      console.log('[DEBUG] Status update successful for:', blog.slug);
+      setMessage(`${blog.title} is now ${newStatus}.`);
+      fetchBlogs();
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
+      console.error('[ERROR] Failed to update blog status:', {
+        blogSlug: blog.slug,
+        error: error.response?.data || error.message,
+        status: error.response?.status,
+        timestamp: new Date().toISOString()
+      });
+      setError("Failed to update blog status: " + (error.response?.data?.message || error.message));
+    }
+  }, [axiosInstance, fetchBlogs]);
+
+  // Toggle featured status
+  const toggleFeatured = useCallback(async (blog: Blog) => {
+    console.log('[DEBUG] Toggling featured status for blog:', {
+      id: blog.id,
+      slug: blog.slug,
+      currentFeatured: blog.featured,
+      title: blog.title
+    });
+    try {
+      const newFeatured = !blog.featured;
+      console.log('[DEBUG] Sending featured update request:', {
+        slug: blog.slug,
+        newFeatured,
+        url: `http://localhost:5000/api/blogs/${blog.slug}`
+      });
+      await axiosInstance.put(`http://localhost:5000/api/blogs/${blog.slug}`, {
+        featured: newFeatured,
+      });
+      console.log('[DEBUG] Featured update successful for:', blog.slug);
+      setMessage(`${blog.title} is now ${newFeatured ? "featured" : "unfeatured"}.`);
+      fetchBlogs();
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
+      console.error('[ERROR] Failed to update featured status:', {
+        blogSlug: blog.slug,
+        error: error.response?.data || error.message,
+        status: error.response?.status,
+        timestamp: new Date().toISOString()
+      });
+      setError("Failed to update featured status: " + (error.response?.data?.message || error.message));
+    }
+  }, [axiosInstance, fetchBlogs]);
+
+  // Delete blog
+  const deleteBlog = useCallback(async (slug: string, title: string) => {
+    console.log('[DEBUG] Delete blog requested:', { slug, title });
+    if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+      console.log('[DEBUG] Delete cancelled by user');
+      return;
+    }
+    try {
+      console.log('[DEBUG] Sending delete request:', {
+        slug,
+        url: `http://localhost:5000/api/blogs/${slug}?removeImage=true`
+      });
+      await axiosInstance.delete(`http://localhost:5000/api/blogs/${slug}?removeImage=true`);
+      console.log('[DEBUG] Blog deleted successfully:', slug);
+      setMessage("Blog deleted successfully.");
+      fetchBlogs();
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
+      console.error('[ERROR] Failed to delete blog:', {
+        slug,
+        title,
+        error: error.response?.data || error.message,
+        status: error.response?.status,
+        timestamp: new Date().toISOString()
+      });
+      setError("Failed to delete blog: " + (error.response?.data?.message || error.message));
+    }
+  }, [axiosInstance, fetchBlogs]);
+
+  // Filter and sort blogs
+  const filteredAndSortedBlogs = useMemo(() => {
+    let filtered = blogs;
+
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const lower = searchTerm.toLowerCase();
+      filtered = filtered.filter(blog =>
+        blog.title.toLowerCase().includes(lower) ||
+        blog.subtitle?.toLowerCase().includes(lower) ||
+        blog.content.toLowerCase().includes(lower) ||
+        blog.category.toLowerCase().includes(lower)
+      );
+    }
+
+    // Filter by status
+    if (statusFilter === "published") {
+      filtered = filtered.filter(blog => blog.status === "published");
+    } else if (statusFilter === "draft") {
+      filtered = filtered.filter(blog => blog.status === "draft");
+    } else if (statusFilter === "featured") {
+      filtered = filtered.filter(blog => blog.featured);
+    }
+
+    // Filter by category
+    if (categoryFilter !== "all") {
+      filtered = filtered.filter(blog => blog.category === categoryFilter);
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "oldest":
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case "title":
+          return a.title.localeCompare(b.title);
+        case "newest":
+        default:
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+    });
+
+    return filtered;
+  }, [blogs, searchTerm, statusFilter, categoryFilter, sortBy]);
+
+  // Get unique categories
+  const categories = useMemo(() => {
+    const uniqueCategories = Array.from(new Set(blogs.map(blog => blog.category)));
+    return uniqueCategories.sort();
+  }, [blogs]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredAndSortedBlogs.length / ITEMS_PER_PAGE);
+  const paginatedBlogs = filteredAndSortedBlogs.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, categoryFilter, sortBy]);
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: COLORS.background,
+      color: COLORS.textSecondary,
+      fontFamily: "'Inter', sans-serif",
+    }}>
+      {/* Header */}
+      <header style={{
+        padding: "2rem 1rem",
+        textAlign: "center",
+        background: "rgba(26, 26, 26, 0.8)",
+        backdropFilter: "blur(10px)",
+        borderBottom: `1px solid ${COLORS.border}`,
+      }}>
+        <h1 style={{
+          fontSize: "clamp(2.5rem, 5vw, 4rem)",
+          fontWeight: "800",
+          background: COLORS.gradient,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+          letterSpacing: "0.02em",
+          marginBottom: "0.5rem",
+        }}>
+          Blog Management Studio
+        </h1>
+        <p style={{ 
+          fontSize: "1.2rem", 
+          color: COLORS.textMuted,
+          fontWeight: "300",
+        }}>
+          Create, manage, and publish exceptional content
+        </p>
+      </header>
+
+      <main style={{ maxWidth: "1600px", margin: "0 auto", padding: "2rem 1rem" }}>
+        {/* Stats Dashboard */}
+        <section style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: "1.5rem",
+          marginBottom: "2rem",
+        }}>
+          {[
+            { label: "Total Blogs", value: stats.total, icon: FileText, color: "#3B82F6" },
+            { label: "Published", value: stats.published, icon: Eye, color: "#10B981" },
+            { label: "Featured", value: stats.featured, icon: Star, color: COLORS.textPrimary },
+            { label: "Drafts", value: stats.draft, icon: PenTool, color: "#F59E0B" },
+          ].map((stat, index) => (
+            <div key={index} style={{
+              background: COLORS.cardBg,
+              borderRadius: "16px",
+              padding: "2rem",
+              border: `1px solid ${COLORS.border}`,
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = `0 10px 30px rgba(212, 175, 55, 0.1)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "none";
+            }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div>
+                  <p style={{ color: COLORS.textMuted, fontSize: "0.9rem", marginBottom: "0.5rem" }}>
+                    {stat.label}
+                  </p>
+                  <p style={{ 
+                    fontSize: "2.5rem", 
+                    fontWeight: "700", 
+                    color: stat.color,
+                    lineHeight: "1",
+                  }}>
+                    {stat.value}
+                  </p>
+                </div>
+                <stat.icon size={48} style={{ color: stat.color, opacity: 0.8 }} />
+              </div>
+            </div>
+          ))}
+        </section>
+
+        {/* Controls */}
+        <section style={{
+          background: COLORS.cardBg,
+          borderRadius: "16px",
+          padding: "2rem",
+          marginBottom: "2rem",
+          border: `1px solid ${COLORS.border}`,
+        }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr 1fr 1fr auto",
+            gap: "1rem",
+            alignItems: "end",
+            marginBottom: "1rem",
+          }}>
+            {/* Search */}
+            <div>
+              <label style={{ 
+                display: "block", 
+                marginBottom: "0.5rem", 
+                color: COLORS.textMuted,
+                fontSize: "0.9rem",
+                fontWeight: "500",
+              }}>
+                Search Content
+              </label>
+              <div style={{ position: "relative" }}>
+                <Search size={20} style={{
+                  position: "absolute",
+                  left: "1rem",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: COLORS.textMuted,
+                }} />
+                <input
+                  type="search"
+                  placeholder="Search by title, content, or category..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem 1rem 0.75rem 3rem",
+                    borderRadius: "8px",
+                    border: `2px solid ${COLORS.border}`,
+                    backgroundColor: "#0a0a0a",
+                    color: COLORS.textSecondary,
+                    fontSize: "1rem",
+                    outline: "none",
+                    transition: "all 0.3s ease",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = COLORS.textPrimary;
+                    e.currentTarget.style.boxShadow = `0 0 0 3px ${COLORS.textPrimary}20`;
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = COLORS.border;
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Status Filter */}
+            <div>
+              <label style={{ 
+                display: "block", 
+                marginBottom: "0.5rem", 
+                color: COLORS.textMuted,
+                fontSize: "0.9rem",
+                fontWeight: "500",
+              }}>
+                Status
+              </label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+                style={{
+                  width: "100%",
+                  padding: "0.75rem",
+                  borderRadius: "8px",
+                  border: `2px solid ${COLORS.border}`,
+                  backgroundColor: "#0a0a0a",
+                  color: COLORS.textSecondary,
+                  fontSize: "1rem",
+                  outline: "none",
+                }}
+              >
+                <option value="all">All Status</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+                <option value="featured">Featured</option>
+              </select>
+            </div>
+
+            {/* Category Filter */}
+            <div>
+              <label style={{ 
+                display: "block", 
+                marginBottom: "0.5rem", 
+                color: COLORS.textMuted,
+                fontSize: "0.9rem",
+                fontWeight: "500",
+              }}>
+                Category
+              </label>
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "0.75rem",
+                  borderRadius: "8px",
+                  border: `2px solid ${COLORS.border}`,
+                  backgroundColor: "#0a0a0a",
+                  color: COLORS.textSecondary,
+                  fontSize: "1rem",
+                  outline: "none",
+                }}
+              >
+                <option value="all">All Categories</option>
+                {categories.map(category => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div>
+              <label style={{ 
+                display: "block", 
+                marginBottom: "0.5rem", 
+                color: COLORS.textMuted,
+                fontSize: "0.9rem",
+                fontWeight: "500",
+              }}>
+                Sort By
+              </label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                style={{
+                  width: "100%",
+                  padding: "0.75rem",
+                  borderRadius: "8px",
+                  border: `2px solid ${COLORS.border}`,
+                  backgroundColor: "#0a0a0a",
+                  color: COLORS.textSecondary,
+                  fontSize: "1rem",
+                  outline: "none",
+                }}
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="title">Title A-Z</option>
+              </select>
+            </div>
+
+            {/* Create New Blog Button */}
+            <Link href="/luxe/admin/blogs/create" style={{ textDecoration: "none" }}>
+              <button style={{
+                background: COLORS.gradient,
+                color: COLORS.featuredText,
+                border: "none",
+                borderRadius: "12px",
+                padding: "0.75rem 1.5rem",
+                fontSize: "1rem",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                whiteSpace: "nowrap",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = `0 8px 25px rgba(212, 175, 55, 0.4)`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}>
+                <Plus size={20} />
+                Create Blog
+              </button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Messages */}
+        {(message || error) && (
+          <div style={{
+            marginBottom: "2rem",
+            padding: "1rem 1.5rem",
+            borderRadius: "12px",
+            color: "#fff",
+            background: message 
+              ? `linear-gradient(135deg, ${COLORS.successBg} 0%, #15803d 100%)`
+              : `linear-gradient(135deg, ${COLORS.errorBg} 0%, #dc2626 100%)`,
+            fontWeight: "600",
+            textAlign: "center",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          }}>
+            {message ?? error}
+          </div>
+        )}
+
+        {/* Content */}
+        {loading ? (
+          <div style={{
+            padding: "4rem",
+            textAlign: "center",
+            color: COLORS.textPrimary,
+            fontSize: "1.2rem",
+          }}>
+            <div style={{ 
+              display: "inline-block",
+              fontSize: "3rem",
+              marginBottom: "1rem",
+              animation: "spin 1s linear infinite",
+            }}>
+              ⚙️
+            </div>
+            <p>Loading your content...</p>
+          </div>
+        ) : paginatedBlogs.length === 0 ? (
+          <div style={{
+            padding: "4rem",
+            textAlign: "center",
+            color: COLORS.textMuted,
+            fontSize: "1.1rem",
+          }}>
+            <PenTool size={64} style={{ marginBottom: "1rem", opacity: 0.5 }} />
+            <p>No blogs found matching your criteria.</p>
+            <Link href="/luxe/admin/blogs/create" style={{ textDecoration: "none" }}>
+              <button style={{
+                marginTop: "1rem",
+                background: COLORS.gradient,
+                color: COLORS.featuredText,
+                border: "none",
+                borderRadius: "8px",
+                padding: "0.75rem 1.5rem",
+                fontSize: "1rem",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}>
+                Create Your First Blog
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <>
+            {/* Blog Grid */}
+            <section style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
+              gap: "2rem",
+              marginBottom: "2rem",
+            }}>
+              {paginatedBlogs.map((blog) => (
+                <article key={blog.id} style={{
+                  background: COLORS.cardBg,
+                  borderRadius: "16px",
+                  overflow: "hidden",
+                  border: `1px solid ${blog.featured ? COLORS.textPrimary : COLORS.border}`,
+                  transition: "all 0.3s ease",
+                  position: "relative",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow = `0 10px 30px rgba(212, 175, 55, 0.1)`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}>
+                  {/* Featured Badge */}
+                  {blog.featured && (
+                    <div style={{
+                      position: "absolute",
+                      top: "1rem",
+                      right: "1rem",
+                      background: COLORS.featuredBg,
+                      color: COLORS.featuredText,
+                      padding: "0.5rem 1rem",
+                      borderRadius: "20px",
+                      fontSize: "0.8rem",
+                      fontWeight: "700",
+                      zIndex: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.25rem",
+                    }}>
+                      <Star size={14} />
+                      FEATURED
+                    </div>
+                  )}
+
+                  {/* Image */}
+                  {blog.image && (
+                    <div style={{
+                      height: "200px",
+                      backgroundImage: `url(${blog.image})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      position: "relative",
+                    }}>
+                      <div style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: "50%",
+                        background: "linear-gradient(transparent, rgba(0,0,0,0.7))",
+                      }} />
+                    </div>
+                  )}
+
+                  {/* Content */}
+                  <div style={{ padding: "1.5rem" }}>
+                    {/* Status and Category */}
+                    <div style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "1rem",
+                    }}>
+                      <span style={{
+                        background: blog.status === 'published' ? "#10B981" : "#F59E0B",
+                        color: "white",
+                        padding: "0.25rem 0.75rem",
+                        borderRadius: "12px",
+                        fontSize: "0.8rem",
+                        fontWeight: "600",
+                        textTransform: "uppercase",
+                      }}>
+                        {blog.status}
+                      </span>
+                      <span style={{
+                        color: COLORS.textMuted,
+                        fontSize: "0.9rem",
+                        background: "rgba(212, 175, 55, 0.1)",
+                        padding: "0.25rem 0.75rem",
+                        borderRadius: "12px",
+                      }}>
+                        {blog.category}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 style={{
+                      color: COLORS.textPrimary,
+                      fontSize: "1.25rem",
+                      fontWeight: "700",
+                      marginBottom: "0.5rem",
+                      lineHeight: "1.3",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}>
+                      {blog.title}
+                    </h3>
+
+                    {/* Subtitle */}
+                    {blog.subtitle && (
+                      <p style={{
+                        color: COLORS.textSecondary,
+                        fontSize: "0.95rem",
+                        marginBottom: "1rem",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        lineHeight: "1.4",
+                      }}>
+                        {blog.subtitle}
+                      </p>
+                    )}
+
+                    {/* Dates */}
+                    <div style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "1rem",
+                      marginBottom: "1.5rem",
+                      fontSize: "0.85rem",
+                      color: COLORS.textMuted,
+                    }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+                        <Calendar size={14} />
+                        Created: {new Date(blog.createdAt).toLocaleDateString()}
+                      </div>
+                      {blog.publishedAt && (
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+                          <Eye size={14} />
+                          Published: {new Date(blog.publishedAt).toLocaleDateString()}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                      gap: "0.5rem",
+                    }}>
+                      <button
+                        onClick={() => togglePublished(blog)}
+                        style={{
+                          background: blog.status === 'published' ? "#EF4444" : "#10B981",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "8px",
+                          padding: "0.5rem",
+                          cursor: "pointer",
+                          fontSize: "0.8rem",
+                          fontWeight: "600",
+                          transition: "all 0.3s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        {blog.status === 'published' ? <EyeOff size={14} /> : <Eye size={14} />}
+                        {blog.status === 'published' ? 'Unpublish' : 'Publish'}
+                      </button>
+
+                      <button
+                        onClick={() => toggleFeatured(blog)}
+                        style={{
+                          background: blog.featured ? "#6B7280" : COLORS.textPrimary,
+                          color: blog.featured ? "white" : COLORS.featuredText,
+                          border: "none",
+                          borderRadius: "8px",
+                          padding: "0.5rem",
+                          cursor: "pointer",
+                          fontSize: "0.8rem",
+                          fontWeight: "600",
+                          transition: "all 0.3s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        {blog.featured ? <StarOff size={14} /> : <Star size={14} />}
+                        {blog.featured ? 'Unfeature' : 'Feature'}
+                      </button>
+
+                      <Link href={`/luxe/admin/blogs/edit/${blog.slug}`} style={{ textDecoration: "none" }}>
+                        <button style={{
+                          background: "transparent",
+                          color: COLORS.textPrimary,
+                          border: `2px solid ${COLORS.textPrimary}`,
+                          borderRadius: "8px",
+                          padding: "0.5rem",
+                          cursor: "pointer",
+                          fontSize: "0.8rem",
+                          fontWeight: "600",
+                          transition: "all 0.3s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.25rem",
+                          width: "100%",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = COLORS.textPrimary;
+                          e.currentTarget.style.color = COLORS.featuredText;
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "transparent";
+                          e.currentTarget.style.color = COLORS.textPrimary;
+                        }}>
+                          <Edit3 size={14} />
+                          Edit
+                        </button>
+                      </Link>
+
+                      <button
+                        onClick={() => deleteBlog(blog.slug, blog.title)}
+                        style={{
+                          background: "#EF4444",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "8px",
+                          padding: "0.5rem",
+                          cursor: "pointer",
+                          fontSize: "0.8rem",
+                          fontWeight: "600",
+                          transition: "all 0.3s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.25rem",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "#DC2626";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "#EF4444";
+                        }}
+                      >
+                        <Trash2 size={14} />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </section>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <nav style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginTop: "2rem",
+              }}>
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  style={{
+                    padding: "0.75rem 1rem",
+                    borderRadius: "8px",
+                    background: currentPage === 1 ? "transparent" : COLORS.cardBg,
+                    color: currentPage === 1 ? COLORS.textMuted : COLORS.textPrimary,
+                    border: `2px solid ${COLORS.textPrimary}`,
+                    cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                    fontWeight: "600",
+                    opacity: currentPage === 1 ? 0.5 : 1,
+                  }}
+                >
+                  Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    style={{
+                      padding: "0.75rem 1rem",
+                      borderRadius: "8px",
+                      background: page === currentPage ? COLORS.textPrimary : "transparent",
+                      color: page === currentPage ? COLORS.featuredText : COLORS.textPrimary,
+                      border: `2px solid ${COLORS.textPrimary}`,
+                      cursor: "pointer",
+                      fontWeight: "600",
+                      minWidth: "2.5rem",
+                    }}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  style={{
+                    padding: "0.75rem 1rem",
+                    borderRadius: "8px",
+                    background: currentPage === totalPages ? "transparent" : COLORS.cardBg,
+                    color: currentPage === totalPages ? COLORS.textMuted : COLORS.textPrimary,
+                    border: `2px solid ${COLORS.textPrimary}`,
+                    cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                    fontWeight: "600",
+                    opacity: currentPage === totalPages ? 0.5 : 1,
+                  }}
+                >
+                  Next
+                </button>
+              </nav>
+            )}
+          </>
+        )}
+      </main>
+
+      <style jsx>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+}

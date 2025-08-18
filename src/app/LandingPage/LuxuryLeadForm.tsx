@@ -124,13 +124,30 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!validateForm()) return
+    console.log('[DEBUG] Luxury lead form submission started:', {
+      formData: {
+        name: formData.name,
+        phone: formData.phone ? '[REDACTED]' : '',
+        email: formData.email ? '[REDACTED]' : '',
+        interest: formData.interest,
+        utm_source: formData.utm_source,
+        utm_medium: formData.utm_medium,
+        utm_campaign: formData.utm_campaign
+      },
+      timestamp: new Date().toISOString()
+    });
+    
+    if (!validateForm()) {
+      console.log('[DEBUG] Form validation failed, submission aborted');
+      return;
+    }
 
     setIsSubmitting(true)
     setErrors({})
 
     // Analytics tracking
     if (typeof window !== 'undefined' && window.dataLayer) {
+      console.log('[DEBUG] Pushing analytics event: epic_cars_form_submit');
       window.dataLayer.push({
         event: 'epic_cars_form_submit',
         section: 'lead_form',
@@ -139,25 +156,49 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
     }
 
     try {
+      const payload = {
+        ...formData,
+        source: 'EpicCars_Landing'
+      };
+      
+      console.log('[DEBUG] Sending lead form request:', {
+        url: '/api/leads',
+        method: 'POST',
+        payloadKeys: Object.keys(payload),
+        source: payload.source,
+        timestamp: new Date().toISOString()
+      });
+      
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          source: 'EpicCars_Landing'
-        }),
+        body: JSON.stringify(payload),
       })
+      
+      console.log('[DEBUG] Lead form response received:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        timestamp: new Date().toISOString()
+      });
 
       if (!response.ok) {
+        console.error('[ERROR] Lead form submission failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          timestamp: new Date().toISOString()
+        });
         throw new Error('Failed to submit form')
       }
 
+      console.log('[DEBUG] Lead form submitted successfully');
       setIsSuccess(true)
       
       // Analytics success tracking
       if (typeof window !== 'undefined' && window.dataLayer) {
+        console.log('[DEBUG] Pushing analytics event: epic_cars_form_success');
         window.dataLayer.push({
           event: 'epic_cars_form_success',
           section: 'lead_form',
@@ -165,12 +206,24 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
         })
       }
 
-    } catch {
+    } catch (error) {
+      console.error('[ERROR] Lead form submission error:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        formData: {
+          interest: formData.interest,
+          hasName: !!formData.name,
+          hasPhone: !!formData.phone,
+          hasEmail: !!formData.email
+        },
+        timestamp: new Date().toISOString()
+      });
       setErrors({ 
         submit: 'We encountered an issue. Please try again or call us directly.' 
       })
     } finally {
       setIsSubmitting(false)
+      console.log('[DEBUG] Lead form submission process completed');
     }
   }
 
