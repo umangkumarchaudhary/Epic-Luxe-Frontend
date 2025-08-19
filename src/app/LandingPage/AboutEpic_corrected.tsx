@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
 // Analytics helper with safeguard
@@ -58,13 +59,27 @@ const Section2AboutEpicCars = () => {
   }, []);
 
   // Partner brands
-  const partnerBrands = [
-    'Mercedes-Benz',
-    'MG',
-    'Toyota', 
-    'Honda',
-    'Ather',
-    'AltiGreen',
+  const partnerBrandImages = [
+    {
+      src: '/assets/images/mercedes-benz-logo.jpg',
+      alt: 'Mercedes-Benz',
+    },
+    {
+      src: '/assets/images/MG-logo.jpg',
+      alt: 'MG',
+    },
+    {
+      src: '/assets/images/toyota-logo.webp',
+      alt: 'Toyota',
+    },
+    {
+      src: '/assets/images/Honda-logo.png',
+      alt: 'Honda',
+    },
+    {
+      src: '/assets/images/ather-logo.avif',
+      alt: 'Ather',
+    },
   ];
 
   return (
@@ -118,18 +133,14 @@ const Section2AboutEpicCars = () => {
                   isVisible 
                     ? 'opacity-100 translate-y-0' 
                     : 'opacity-0 translate-y-12'
-                }`}
-                style={{
-                  fontFamily: 'Cormorant Garamond, Playfair Display, serif',
-                  fontWeight: 300,
-                  background: 'linear-gradient(90deg, #D4AF37 0%, #FFD700 25%, #F4E4C1 50%, #FFD700 75%, #D4AF37 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  backgroundSize: '200% 100%',
-                  animation: isVisible ? 'goldShimmer 8s linear infinite' : 'none',
-                  transitionDelay: '0ms'
-                }}
+                } bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent`}
+        style={{
+          fontFamily: 'Manrope, sans-serif',
+          fontWeight: 700,
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          transitionDelay: '0ms'
+        }}
               >
                 A New Era of<br />
                 Pre-Owned Excellence
@@ -143,8 +154,8 @@ const Section2AboutEpicCars = () => {
                     : 'opacity-0 translate-y-12'
                 }`}
                 style={{
-                  fontFamily: 'Inter, Manrope, sans-serif',
-                  fontWeight: 300,
+                  fontFamily: 'Manrope, sans-serif',
+                  fontWeight: 400,
                   letterSpacing: '0.02em',
                   lineHeight: '1.7',
                   transitionDelay: '200ms'
@@ -167,14 +178,12 @@ const Section2AboutEpicCars = () => {
                 aria-label="Discover our collection"
               >
                 <span 
-                  className="text-sm uppercase tracking-[0.2em] transition-colors duration-300"
+                  className="text-sm uppercase tracking-[0.2em] transition-colors duration-300 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent"
                   style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 500,
-                    background: 'linear-gradient(90deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%)',
+                    fontFamily: 'Manrope, sans-serif',
+                    fontWeight: 600,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
                   }}
                 >
                   Discover Our Legacy
@@ -220,36 +229,38 @@ const Section2AboutEpicCars = () => {
 
                 {/* Brand logos grid - FIXED: Removed individual parallax transforms */}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-                  {partnerBrands.map((brand, index) => (
+                  {partnerBrandImages.map((brand, index) => (
                     <div
-                      key={brand}
+                      key={brand.alt}
                       className={`flex items-center justify-center p-4 rounded-xl transition-all duration-700 hover:scale-105 hover:brightness-110 ${
                         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                       }`}
                       style={{
                         transitionDelay: `${600 + (index * 100)}ms`,
-                        // REMOVED: transform: `translateY(${scrollY * (index % 2 === 0 ? 0.02 : -0.02)}px)`,
-                        background: 'rgba(212, 175, 55, 0.03)',
-                        border: '1px solid rgba(212, 175, 55, 0.08)'
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: '90px',
+                        minWidth: '90px',
                       }}
-                      aria-label={`${brand} partner logo`}
+                      aria-label={`${brand.alt} partner logo`}
                     >
-                      <span
-                        className="text-xl md:text-2xl font-light tracking-wider select-none transition-all duration-300 hover:scale-105"
+                      <Image
+                        src={brand.src}
+                        alt={brand.alt}
+                        width={90}
+                        height={90}
                         style={{
-                          fontFamily: 'Cormorant Garamond, serif',
-                          background: 'linear-gradient(90deg, #D4AF37 0%, #FFD700 25%, #F4E4C1 50%, #FFD700 75%, #D4AF37 100%)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          backgroundClip: 'text',
-                          backgroundSize: '200% 100%',
-                          animation: isVisible ? `brandShimmer 4s linear infinite ${index * 0.5}s` : 'none',
-                          filter: 'brightness(0.9)',
-                          opacity: 0.8
+                          objectFit: 'contain',
+                          filter: 'drop-shadow(0 2px 8px #d4af37a0)',
+                          borderRadius: '1rem',
+                          background: 'rgba(255,255,255,0.03)',
+                          padding: '0.5rem',
+                          maxHeight: '70px',
+                          maxWidth: '70px',
                         }}
-                      >
-                        {brand}
-                      </span>
+                        priority={index < 2}
+                      />
                     </div>
                   ))}
                 </div>

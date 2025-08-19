@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import LandingPageClient from './components/LandingPageClient';
 
-// Generate structured data for SEO
+
 const generateStructuredData = () => {
   return {
     "@context": "https://schema.org",
@@ -291,7 +291,7 @@ export default function HomePage() {
       
       {/* SEO-friendly semantic structure */}
       <main>
-        {/* Hidden SEO content for better indexing */}
+        
         <div className="sr-only">
           <h1>Epic Cars - Premium Used Car Dealer in India</h1>
           <h2>Buy Certified Pre-owned Vehicles in Pune, Hyderabad, Nashik, Visakhapatnam, and Chennai</h2>

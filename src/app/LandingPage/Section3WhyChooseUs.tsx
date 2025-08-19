@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useRef} from 'react'
+import React, { useRef } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
-
 import Head from 'next/head'
 
 // Animation variants
@@ -177,7 +176,7 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
 
       <section 
         ref={sectionRef}
-        className={`relative min-h-screen overflow-hidden ${className}`}
+        className={`relative min-h-[60vh] overflow-hidden ${className}`}
         style={{
           '--luxe-black': '#000000',
           '--luxe-gold': '#D4AF37',
@@ -208,7 +207,7 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
           />
         </motion.div>
 
-        <div className="relative z-10 container mx-auto px-6 py-24 lg:py-32">
+        <div className="relative z-10 container mx-auto px-6 py-12 lg:py-16">
           <motion.div
             initial="initial"
             animate={isInView ? "animate" : "initial"}
@@ -218,27 +217,23 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
             {/* Section Header */}
             <motion.div 
               variants={fadeUp}
-              className="text-center mb-20"
+              className="text-center mb-12"
             >
               <motion.h2
-  id="why-choose-heading"
-  className="font-serif text-4xl md:text-5xl lg:text-6xl font-light mb-6"
-  style={{
-    fontFamily: 'Cormorant Garamond, serif',
-    background: 'linear-gradient(90deg, #D4AF37 0%, #FFD700 25%, #F4E4C1 50%, #FFD700 75%, #D4AF37 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    letterSpacing: '-0.02em'
-  }}
->
-  Why Choose Epic Cars
-</motion.h2>
-
+                id="why-choose-heading"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent"
+                style={{
+                  fontFamily: 'Manrope, sans-serif',
+                  letterSpacing: '-0.02em'
+                }}
+              >
+                Why Choose Epic Cars
+              </motion.h2>
               
               {/* Gold hairline divider */}
               <motion.div 
                 className="w-24 h-px mx-auto"
-                style={{ backgroundColor: 'var(--luxe-gold)' }}
+                style={{ background: 'linear-gradient(to right, #D4AF37, #BFA980)' }}
                 initial={{ scaleX: 0 }}
                 animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
@@ -248,7 +243,7 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
             {/* Two-column luxury grid */}
             <motion.div 
               variants={stagger}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12"
             >
               {whyChoosePoints.map((point, index) => (
                 <motion.div
@@ -261,12 +256,12 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
                   role="button"
                   aria-label={`Learn more about ${point.title}`}
                 >
-                  <div className="flex items-start space-x-6 p-8 rounded-lg transition-all duration-500 hover:bg-black/20 focus:bg-black/20 focus:outline-2 focus:outline-offset-2 focus:outline-yellow-400">
+                  <div className="flex items-start space-x-6 p-6 rounded-lg transition-all duration-500 hover:bg-black/10 focus:bg-black/10 focus:outline-2 focus:outline-offset-2 focus:outline-yellow-400">
                     {/* Icon */}
                     <motion.div
                       variants={iconDelayed}
                       className="flex-shrink-0 w-12 h-12 flex items-center justify-center"
-                      style={{ color: 'var(--luxe-gold)' }}
+                      style={{ color: '#D4AF37' }}
                     >
                       {point.icon}
                     </motion.div>
@@ -274,10 +269,10 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
                     {/* Content */}
                     <div className="flex-1">
                       <h3 
-                        className="text-xl lg:text-2xl font-light leading-relaxed group-hover:scale-[1.02] transition-transform duration-300"
+                        className="text-xl lg:text-2xl font-semibold leading-relaxed group-hover:scale-[1.02] transition-transform duration-300"
                         style={{ 
-                          fontFamily: 'Inter, sans-serif',
-                          color: 'var(--ivory)',
+                          fontFamily: 'Manrope, sans-serif',
+                          color: '#FAFAFA',
                           letterSpacing: '-0.01em'
                         }}
                       >
@@ -290,7 +285,7 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
                   {index < whyChoosePoints.length - 1 && (
                     <motion.div 
                       className="mt-8 h-px"
-                      style={{ backgroundColor: 'var(--mid-grey)', opacity: 0.1 }}
+                      style={{ backgroundColor: '#D3D3D3', opacity: 0.1 }}
                       initial={{ scaleX: 0 }}
                       animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
                       transition={{ duration: 0.6, delay: 0.1 * index }}
@@ -303,19 +298,16 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
             {/* Subtle call-to-action */}
             <motion.div
               variants={fadeUp}
-              className="text-center mt-20"
+              className="text-center mt-12"
             >
               <motion.p
-                className="text-lg font-light opacity-80 max-w-2xl mx-auto leading-relaxed"
+                className="text-lg font-medium opacity-90 max-w-2xl mx-auto leading-relaxed bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent"
                 style={{ 
-                  fontFamily: 'Inter, sans-serif',
-                  color: 'var(--mid-grey)',
+                  fontFamily: 'Manrope, sans-serif',
                   letterSpacing: '0.01em'
                 }}
               >
-                Experience the difference that comes with choosing 
-                <span style={{ color: 'var(--champagne)' }}> Epic Cars</span>
-                —where luxury meets uncompromising service.
+                Experience the difference that comes with choosing Epic Cars — where luxury meets uncompromising service.
               </motion.p>
             </motion.div>
           </motion.div>
@@ -336,4 +328,4 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
   )
 }
 
-export default Section3WhyChooseUs;
+export default Section3WhyChooseUs

@@ -67,7 +67,12 @@ export default function CompareDrawer({
     vehicles.forEach(v => {
       newImageSources[v.id] = v.image;
     });
-    setImageSources(newImageSources);
+    // Only update if different
+    const isDifferent = Object.keys(newImageSources).length !== Object.keys(imageSources).length ||
+      Object.entries(newImageSources).some(([id, src]) => imageSources[Number(id)] !== src);
+    if (isDifferent) {
+      setImageSources(newImageSources);
+    }
   }, [vehicles]);
 
   const handleImageError = (vehicleId: number) => {

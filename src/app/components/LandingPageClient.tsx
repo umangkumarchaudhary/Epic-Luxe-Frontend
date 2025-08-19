@@ -1,10 +1,10 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { ChevronRight, Sparkles, Shield, Award} from 'lucide-react';
+import { ChevronRight, Sparkles, Shield, Award, ChevronDown, Phone, MessageCircle, X} from 'lucide-react';
 
-import Section2AboutEpicCars from '../LandingPage/AboutEpic';
+import Section2AboutEpicCars from '../LandingPage/AboutEpic_corrected';
 import Section3WhyChooseUs from '../LandingPage/Section3WhyChooseUs';
 import ThisMonthsHighlights from '../LandingPage/ThisMonthHighlights';
 import VoicesOfDistinction from '../LandingPage/VoicesOfDistinction';
@@ -15,102 +15,189 @@ const LandingPageClient = () => {
   const router = useRouter();
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoveredSide, setHoveredSide] = useState<'luxe' | 'reassured' | null>(null);
-  const [headerVisible, setHeaderVisible] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  const [isLuxeLoading, setIsLuxeLoading] = useState(false);
+  const [isReassuredLoading, setIsReassuredLoading] = useState(false);
+  const [buyDropdownOpen, setBuyDropdownOpen] = useState(false);
+  const [sellDropdownOpen, setSellDropdownOpen] = useState(false);
+  const [whatsappVisible, setWhatsappVisible] = useState(true);
+  const [whatsappMessageIndex, setWhatsappMessageIndex] = useState(0);
+  const [showWhatsappMessage, setShowWhatsappMessage] = useState(false);
+  const [contentLoaded, setContentLoaded] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
+  // Simplified scroll handler - header always visible
   const handleScroll = useCallback(() => {
-    const currentScrollY = window.scrollY;
-    const scrollThreshold = window.innerHeight * 0.5; // 50vh
-    const scrollDifference = Math.abs(currentScrollY - lastScrollY);
-    
-    // Only update if scroll difference is significant (prevents jittery behavior)
-    if (scrollDifference > 5) {
-      // Determine scroll direction
-      const newDirection = currentScrollY > lastScrollY ? 'down' : 'up';
-      
-      // Update header visibility based on scroll position and direction
-      if (currentScrollY > scrollThreshold) {
-        // Beyond 50vh threshold
-        if (newDirection === 'down') {
-          // Scrolling down - show header
-          setHeaderVisible(true);
-        } else if (newDirection === 'up') {
-          // Scrolling up - hide header
-          setHeaderVisible(false);
-        }
-      } else {
-        // Before 50vh threshold - always hide
-        setHeaderVisible(false);
-      }
-      
-      setLastScrollY(currentScrollY);
-    }
-  }, [lastScrollY]);
+    // Header is now always visible, no complex logic needed
+  }, []);
 
-  useEffect(() => {
-    setIsLoaded(true);
-    
-    // Check if mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    
-    const handleMouseMove = (e: MouseEvent) => {
+  // Memoized WhatsApp messages to prevent recreation
+  const whatsappMessages = useMemo(() => [
+    "Need help? Chat now! 🚗",
+    "Find your car? 💭", 
+    "Questions? Ask us! 🤝",
+    "Best deals here! 💰"
+  ], []);
+
+  // Optimized mouse move handler with throttling
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isMobile) {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100
       });
+    }
+  }, [isMobile]);
+
+  // Optimized resize handler
+  const checkMobile = useCallback(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
+  useEffect(() => {
+    // Progressive loading sequence
+    const loadSequence = async () => {
+      // Phase 1: Basic content ready
+      setContentLoaded(true);
+      
+      // Phase 2: Layout ready
+      setTimeout(() => {
+        setIsLoaded(true);
+      }, 100);
+      
+      // Phase 3: Images loaded
+      setTimeout(() => {
+        setImagesLoaded(true);
+      }, 200);
     };
     
-    // Throttled scroll handler for better performance
+    loadSequence();
+    checkMobile();
+    
+    // Throttled event listeners for performance
     let scrollTimeout: NodeJS.Timeout;
+    let mouseMoveTimeout: NodeJS.Timeout;
+    
     const throttledScroll = () => {
       if (scrollTimeout) clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(handleScroll, 10);
+      scrollTimeout = setTimeout(handleScroll, 16); // 60fps
     };
     
-    window.addEventListener('resize', checkMobile);
+    const throttledMouseMove = (e: MouseEvent) => {
+      if (mouseMoveTimeout) clearTimeout(mouseMoveTimeout);
+      mouseMoveTimeout = setTimeout(() => handleMouseMove(e), 16); // 60fps
+    };
+    
+    window.addEventListener('resize', checkMobile, { passive: true });
     window.addEventListener('scroll', throttledScroll, { passive: true });
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', throttledMouseMove, { passive: true });
+    
+    // WhatsApp message rotation with delay after content loads
+    const initialDelay = setTimeout(() => {
+      if (contentLoaded) {
+        setShowWhatsappMessage(true);
+      }
+    }, 3000);
+    
+    const messageInterval = setInterval(() => {
+      setWhatsappMessageIndex(prev => (prev + 1) % whatsappMessages.length);
+      setShowWhatsappMessage(true);
+      
+      setTimeout(() => {
+        setShowWhatsappMessage(false);
+      }, 4000);
+    }, 8000);
     
     return () => {
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('scroll', throttledScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', throttledMouseMove);
+      clearTimeout(initialDelay);
+      clearInterval(messageInterval);
       if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (mouseMoveTimeout) clearTimeout(mouseMoveTimeout);
     };
-  }, [handleScroll]);
+  }, [handleScroll, handleMouseMove, checkMobile, contentLoaded, whatsappMessages]);
 
   const handleLuxeNavigation = () => {
+    setIsLuxeLoading(true);
     router.push('/luxe');
   };
 
   const handleReassuredNavigation = () => {
+    setIsReassuredLoading(true);
     router.push('/reassured');
   };
 
+  // Loading skeleton component
+  const LoadingSkeleton = () => (
+    <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-pulse">
+          <div 
+            className="text-2xl sm:text-3xl font-light tracking-[0.25em] mb-4"
+            style={{
+              fontFamily: 'Manrope, sans-serif',
+              background: 'linear-gradient(90deg, #D4AF37 0%, #BFA980 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            EPIC CARS
+          </div>
+          <div className="w-16 h-1 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] mx-auto rounded-full animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="relative w-full min-h-screen overflow bg-black">
-      {/* Premium Navigation Header - Smart visibility based on scroll */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out transform ${
-        headerVisible 
-          ? 'translate-y-0 opacity-100 bg-black/95 backdrop-blur-xl shadow-2xl' 
-          : '-translate-y-full opacity-0 bg-transparent'
-      }`}>
-        <nav className="px-4 sm:px-8 lg:px-12 py-4 sm:py-6" role="navigation" aria-label="Main navigation">
+    <div className="relative w-full min-h-screen overflow bg-black" style={{ fontFamily: 'Manrope, sans-serif' }}>
+      {/* Loading Skeleton - Show until content is ready */}
+      {!contentLoaded && <LoadingSkeleton />}
+      
+      {/* Font Preloading for Performance */}
+      <link 
+        rel="preload" 
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" 
+        as="style"
+        onLoad={() => {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = 'https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap';
+          document.head.appendChild(link);
+        }}
+      />
+      
+      {/* SEO Meta Content - Hidden but indexed */}
+      <div className="sr-only">
+        <h1>Epic Cars - Premium Used Cars in India | Luxury & Reliable Pre-owned Vehicles</h1>
+        <p>Discover Epic Cars, India's premier destination for luxury and reliable used cars. Epic Luxe offers premium pre-owned vehicles while Epic Reassured provides quality certified cars in Pune, Hyderabad, Chennai, Nashik, and Visakhapatnam.</p>
+        <div itemScope itemType="https://schema.org/AutoDealer">
+          <span itemProp="name">Epic Cars</span>
+          <span itemProp="description">Premium used cars dealership offering luxury and reliable pre-owned vehicles</span>
+          <div itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
+            <span itemProp="addressCountry">India</span>
+            <span itemProp="addressLocality">Pune, Hyderabad, Chennai, Nashik, Visakhapatnam</span>
+          </div>
+        </div>
+      </div>
+      {/* Premium Navigation Header - Always visible */}
+  <header className="fixed top-0 left-0 right-0 z-[9999] translate-y-0 opacity-100 bg-black/98 backdrop-blur-2xl border-b border-[#D4AF37]/20 shadow-lg transition-all duration-700 ease-out">
+    <nav className="px-6 sm:px-8 lg:px-12 py-2 sm:py-3 z-[10000]" role="navigation" aria-label="Main navigation">
           <div className="flex items-center justify-between">
-            {/* Logo - Responsive sizing */}
+            {/* Logo - Left */}
             <div className={`transition-all duration-1000 transform ${
-              isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'
+              contentLoaded ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'
             }`}>
               <h1 
-                className="text-xl sm:text-2xl lg:text-3xl font-light tracking-[0.2em] sm:tracking-[0.3em] cursor-pointer"
+                className="text-lg sm:text-xl lg:text-2xl font-light tracking-[0.25em] cursor-pointer"
                 style={{
-                  fontFamily: 'Cormorant Garamond, Playfair Display, serif',
-                  background: 'linear-gradient(90deg, #D4AF37 0%, #FFD700 25%, #F4E4C1 50%, #FFD700 75%, #D4AF37 100%)',
+                  fontFamily: 'Manrope, sans-serif',
+                  background: 'linear-gradient(90deg, #D4AF37 0%, #BFA980 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -121,13 +208,31 @@ const LandingPageClient = () => {
                 EPIC CARS
               </h1>
             </div>
+
+            {/* Central Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              {/* Buy Now and Sell Now removed for clean re-addition */}
+            </div>
+
+            {/* Call Now Button - Right */}
+            <div className={`transition-all duration-1000 transform ${
+              contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+            }`}>
+              <a 
+                href="tel:+919876543210" 
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-semibold rounded-full hover:shadow-lg hover:shadow-[#D4AF37]/25 hover:scale-105 transition-all duration-300 group"
+              >
+                <Phone className="w-4 h-4 group-hover:animate-pulse" />
+                <span className="font-medium tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>Call Now</span>
+              </a>
+            </div>
           </div>
         </nav>
       </header>
 
       {/* Hero Section Container - Desktop horizontal, Mobile vertical */}
       <section 
-        className={`relative w-full ${isMobile ? 'h-screen flex flex-col' : 'h-[80vh] flex flex-row'}`} 
+        className={`relative w-full ${isMobile ? 'h-screen flex flex-col pt-20' : 'h-[80vh] flex flex-row pt-16'}`} 
         role="main" 
         aria-label="Choose Your World"
       >
@@ -166,8 +271,12 @@ const LandingPageClient = () => {
                   objectPosition: 'center',
                 }}
                 priority
-                quality={90}
-                sizes="100vw"
+                quality={85}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                onLoad={() => setImagesLoaded(true)}
+                loading="eager"
               />
             </div>
             
@@ -191,8 +300,8 @@ const LandingPageClient = () => {
               : 'px-12 lg:px-20 xl:px-32 2xl:px-40'
           }`}>
             {/* Luxury Badge - Hidden on mobile for space */}
-            <div className={`${isMobile ? 'mb-4' : 'mb-8'} transition-all duration-1000 transform ${
-              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            <div className={`${isMobile ? 'mb-4' : 'mb-8'} transition-all duration-1000 delay-200 transform ${
+              contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             } ${isMobile ? 'hidden' : 'block'}`}>
               <div className="inline-flex items-center space-x-3">
                 <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-amber-500/60" />
@@ -208,9 +317,9 @@ const LandingPageClient = () => {
               className={`${isMobile ? 'mb-4' : 'mb-6'} transition-all duration-1000 delay-100 transform ${
                 !isMobile && 'group-hover:-translate-y-2'
               } ${
-                isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
               }`}
-              style={{ fontFamily: 'Cormorant Garamond, Playfair Display, serif' }}
+              style={{ fontFamily: 'Manrope, sans-serif' }}
             >
               <h2 className={`block ${
                 isMobile 
@@ -223,31 +332,18 @@ const LandingPageClient = () => {
                 isMobile 
                   ? 'text-4xl mt-1' 
                   : 'text-4xl lg:text-5xl xl:text-6xl mt-2'
-              } font-light text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500`}>
+              } font-light text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#BFA980]`}>
                 Who Can
               </h3>
             </header>
 
             {/* Subtext - Responsive sizing */}
-            <p className={`text-gray-400 ${
-              isMobile 
-                ? 'text-sm mb-6' 
-                : 'text-base lg:text-lg mb-10'
-            } font-light leading-relaxed max-w-md transition-all duration-1000 delay-200 transform ${
-              !isMobile && 'group-hover:-translate-y-1'
-            } ${
-              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}
-              style={{ fontFamily: 'Inter, Manrope, sans-serif', letterSpacing: '0.02em' }}
-            >
-              Curated luxury vehicles for those who appreciate perfection in every detail
-            </p>
-
+            
             {/* CTA Button - Responsive sizing */}
             <div className={`transition-all duration-1000 delay-300 transform ${
               !isMobile && 'group-hover:-translate-y-2'
             } ${
-              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+              contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}>
               <button 
                 onClick={handleLuxeNavigation}
@@ -260,10 +356,10 @@ const LandingPageClient = () => {
               >
                 
                 {/* Animated background gradient */}
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-600 rounded-full transition-all duration-700 group-hover/btn:from-yellow-300 group-hover/btn:via-amber-400 group-hover/btn:to-yellow-500" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] rounded-full transition-all duration-700 group-hover/btn:from-[#BFA980] group-hover/btn:to-[#D4AF37]" />
                 
                 {/* Glowing border effect */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 blur-sm opacity-0 group-hover/btn:opacity-75 transition-opacity duration-500 animate-pulse" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] blur-sm opacity-0 group-hover/btn:opacity-75 transition-opacity duration-500 animate-pulse" />
                 
                 {/* Ripple effect on hover */}
                 <div className="absolute inset-0 rounded-full bg-white/20 scale-0 group-hover/btn:scale-110 group-active/btn:scale-95 transition-transform duration-700 opacity-0 group-hover/btn:opacity-100" />
@@ -274,7 +370,11 @@ const LandingPageClient = () => {
                 {/* Button content */}
                 <span className="relative flex items-center space-x-3 text-black font-bold tracking-wide transition-all duration-300 group-hover/btn:text-gray-900 group-hover/btn:scale-105">
                   <span className="transition-transform duration-300 group-hover/btn:-translate-y-0.5">Explore Epic Luxe</span>
-                  <ChevronRight className="w-5 h-5 transition-all duration-300 group-hover/btn:translate-x-1 group-hover/btn:scale-110 group-hover/btn:rotate-12" />
+                  {isLuxeLoading ? (
+                    <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 transition-all duration-300 group-hover/btn:translate-x-1 group-hover/btn:scale-110 group-hover/btn:rotate-12" />
+                  )}
                 </span>
                 
                 {/* Floating particles effect */}
@@ -292,7 +392,7 @@ const LandingPageClient = () => {
                 ? 'mt-6 flex items-center space-x-4' 
                 : 'mt-12 flex items-center space-x-8'
             } transition-all duration-1000 delay-500 ${
-              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+              contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             } ${isMobile ? 'hidden' : 'flex'}`}>
               <div className="flex items-center space-x-2">
                 <Award className="w-4 h-4 text-amber-500/60" />
@@ -353,8 +453,10 @@ const LandingPageClient = () => {
                   objectPosition: 'center',
                 }}
                 priority
-                quality={90}
-                sizes="100vw"
+                quality={85}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAICAYAAADA+m62AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAVElEQVQYlWNhQAJMDAwMDAz/GRj+MzD8Z/jPwMDw/z8DAwPDfwYGhv8MDAwM/xkYGBj+MzAwMPxnYGBg+M/AwMDwn4GBgeE/AwMDw38GBgaG/wwMDACwEAoHNDqH+gAAAABJRU5ErkJggg=="
               />
             </div>
             
@@ -371,7 +473,7 @@ const LandingPageClient = () => {
           }`}>
             {/* Trust Badge - Hidden on mobile */}
             <div className={`${isMobile ? 'mb-4' : 'mb-8'} transition-all duration-1000 transform ${
-              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+              contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             } ${isMobile ? 'hidden' : 'block'}`}>
               <div className="inline-flex items-center space-x-3">
                 <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-gray-400/60" />
@@ -387,9 +489,9 @@ const LandingPageClient = () => {
               className={`${isMobile ? 'mb-4' : 'mb-6'} transition-all duration-1000 delay-100 transform ${
                 !isMobile && 'group-hover:-translate-y-2'
               } ${
-                isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
               }`}
-              style={{ fontFamily: 'Cormorant Garamond, Playfair Display, serif' }}
+              style={{ fontFamily: 'Manrope, sans-serif' }}
             >
               <h2 className={`block ${
                 isMobile 
@@ -408,25 +510,13 @@ const LandingPageClient = () => {
             </header>
 
             {/* Subtext - Responsive */}
-            <p className={`text-gray-600 ${
-              isMobile 
-                ? 'text-sm mb-6' 
-                : 'text-base lg:text-lg mb-10'
-            } font-light leading-relaxed max-w-md transition-all duration-1000 delay-200 transform ${
-              !isMobile && 'group-hover:-translate-y-1'
-            } ${
-              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}
-              style={{ fontFamily: 'Inter, Manrope, sans-serif', letterSpacing: '0.02em' }}
-            >
-              Premium vehicles that combine reliability with refined performance
-            </p>
+            
 
             {/* CTA Button - Responsive */}
             <div className={`transition-all duration-1000 delay-300 transform ${
               !isMobile && 'group-hover:-translate-y-2'
             } ${
-              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+              contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}>
               <button 
                 onClick={handleReassuredNavigation}
@@ -456,7 +546,11 @@ const LandingPageClient = () => {
                 {/* Button content */}
                 <span className="relative flex items-center space-x-3 text-gray-900 group-hover/btn:text-white font-bold tracking-wide transition-all duration-500 group-hover/btn:scale-105">
                   <span className="transition-transform duration-300 group-hover/btn:-translate-y-0.5">Explore Epic Reassured</span>
-                  <ChevronRight className="w-5 h-5 transition-all duration-300 group-hover/btn:translate-x-1 group-hover/btn:scale-110 group-hover/btn:-rotate-12" />
+                  {isReassuredLoading ? (
+                    <div className="w-5 h-5 border-2 border-gray-400/30 border-t-gray-900 group-hover/btn:border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 transition-all duration-300 group-hover/btn:translate-x-1 group-hover/btn:scale-110 group-hover/btn:-rotate-12" />
+                  )}
                 </span>
                 
                 {/* Floating sparkles */}
@@ -475,7 +569,7 @@ const LandingPageClient = () => {
                 ? 'mt-6 flex items-center space-x-4' 
                 : 'mt-12 flex items-center space-x-8'
             } transition-all duration-1000 delay-500 ${
-              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+              contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             } ${isMobile ? 'hidden' : 'flex'}`}>
               <div className="flex items-center space-x-2">
                 <Shield className="w-4 h-4 text-gray-600" />
@@ -492,16 +586,16 @@ const LandingPageClient = () => {
 
       {/* Tagline Below Hero - Hidden on mobile to maintain clean split */}
       {!isMobile && (
-        <section className={`relative w-full py-16 bg-gradient-to-b from-black via-gray-900 to-black transition-all duration-1500 transform ${
-          isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+        <section className={`relative w-full py-12 bg-gradient-to-b from-black via-gray-900 to-black transition-all duration-1500 transform ${
+          contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
         }`}>
           <div className="text-center">
-            <p className="text-3xl lg:text-4xl">
-              <span style={{ fontFamily: 'Cormorant Garamond, serif' }} className="font-light text-gray-400">
+            <p className="text-2xl lg:text-3xl">
+              <span style={{ fontFamily: 'Manrope, sans-serif' }} className="font-light text-gray-400">
                 Two Journeys
               </span>
               <span className="mx-3 text-amber-500/60">·</span>
-              <span style={{ fontFamily: 'Inter, sans-serif' }} className="font-light text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500">
+              <span style={{ fontFamily: 'Manrope, sans-serif' }} className="font-light text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#BFA980]">
                 One Epic Destination
               </span>
             </p>
@@ -549,8 +643,80 @@ const LandingPageClient = () => {
       <LuxuryLeadForm/>
       <EpicCarsPage/>
 
-      {/* Styles for animations */}
+      {/* WhatsApp Floating Widget - Compact & Subtle */}
+      {whatsappVisible && (
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
+          {/* Message Bubble - Side positioned */}
+          <div className={`absolute bottom-2 right-14 sm:right-16 transition-all duration-500 transform ${
+            showWhatsappMessage 
+              ? 'opacity-100 translate-x-0 scale-100' 
+              : 'opacity-0 translate-x-4 scale-95 pointer-events-none'
+          }`}>
+            <div className="relative">
+              {/* Compact Message Content */}
+              <div className="bg-white rounded-lg shadow-lg px-3 py-2 max-w-[200px] sm:max-w-[220px] border border-green-100">
+                <div className="flex items-start justify-between">
+                  <p className="text-xs text-gray-700 font-medium pr-1" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                    {[
+                      "Need help? Chat now! 🚗",
+                      "Find your car? 💭", 
+                      "Questions? Ask us! 🤝",
+                      "Best deals here! 💰"
+                    ][whatsappMessageIndex]}
+                  </p>
+                  <button 
+                    onClick={() => setShowWhatsappMessage(false)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 ml-1"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+                <div className="text-[10px] text-green-600 mt-0.5 font-medium">Epic Cars</div>
+              </div>
+              {/* Arrow pointing to WhatsApp button - from side */}
+              <div className="absolute bottom-3 right-0 transform translate-x-1/2">
+                <div className="w-2 h-2 bg-white border-r border-b border-green-100 rotate-45"></div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Smaller WhatsApp Button */}
+          <a
+            href="https://wa.me/919876543210?text=Hi%20Epic%20Cars%2C%20I%20need%20help%20with%20finding%20a%20car"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 group"
+          >
+            {/* Smaller WhatsApp Icon */}
+            <svg 
+              className="w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:scale-110 transition-transform duration-300" 
+              fill="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.570-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.886 3.75"/>
+            </svg>
+            
+            {/* Subtle pulse effect */}
+            <div className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-10"></div>
+          </a>
+        </div>
+      )}
+
+      {/* Optimized Styles for animations */}
       <style jsx>{`
+        /* Performance optimizations */
+        * {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Prevent layout shifts */
+        img {
+          content-visibility: auto;
+          contain: layout style paint;
+        }
+        
+        /* Hardware acceleration for animations */
         @keyframes goldShimmer {
           0% { background-position: 0% 50%; }
           100% { background-position: 200% 50%; }
@@ -558,19 +724,21 @@ const LandingPageClient = () => {
         
         @keyframes kenBurnsLeft {
           0% {
-            transform: scale(1.1) translate(0, 0);
+            transform: scale(1.1) translate3d(0, 0, 0);
+            will-change: transform;
           }
           100% {
-            transform: scale(1.2) translate(-2%, -1%);
+            transform: scale(1.2) translate3d(-2%, -1%, 0);
           }
         }
         
         @keyframes kenBurnsRight {
           0% {
-            transform: scale(1.1) translate(0, 0);
+            transform: scale(1.1) translate3d(0, 0, 0);
+            will-change: transform;
           }
           100% {
-            transform: scale(1.2) translate(2%, -1%);
+            transform: scale(1.2) translate3d(2%, -1%, 0);
           }
         }
         
@@ -587,6 +755,26 @@ const LandingPageClient = () => {
         
         .animate-pulseGlow {
           animation: pulseGlow 6s ease-in-out infinite;
+        }
+        
+        /* Critical CSS for above-the-fold content */
+        .hero-container {
+          contain: layout style paint;
+          content-visibility: auto;
+        }
+        
+        /* Optimize backdrop-blur for performance */
+        .backdrop-blur-xl, .backdrop-blur-2xl {
+          -webkit-backdrop-filter: blur(24px);
+          backdrop-filter: blur(24px);
+          contain: layout style paint;
+        }
+        
+        /* Font loading optimization */
+        @font-face {
+          font-family: 'Manrope';
+          font-display: swap;
+          src: local('Manrope');
         }
       `}</style>
     </div>

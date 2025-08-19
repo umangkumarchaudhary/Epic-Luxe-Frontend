@@ -127,13 +127,11 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; className?: string }
       <motion.div
         className={`relative p-6 lg:p-8 rounded-2xl overflow-hidden ${
           testimonial.type === 'luxe' 
-            ? 'bg-black border border-yellow-600/20' 
-            : 'bg-white border border-gray-300'
+            ? 'bg-black' 
+            : 'bg-white'
         }`}
         style={{
-          boxShadow: testimonial.type === 'luxe'
-            ? '0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1)'
-            : '0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.1)'
+          fontFamily: 'Manrope, sans-serif',
         }}
       >
         {/* Glow effect for luxe cards */}
@@ -156,22 +154,20 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; className?: string }
         <blockquote className="mb-6 relative">
           {/* Opening quote mark */}
           <span
-  className={`
-    absolute -top-3 -left-1 text-5xl font-serif leading-none
-    ${testimonial?.type === 'luxe' ? 'text-yellow-600/30' : 'text-gray-400/60'}
-  `}
-  style={{ fontFamily: 'Cormorant Garamond, serif' }}
->
-  &quot;
-</span>
-
-          
+            className={`
+              absolute -top-3 -left-1 text-5xl leading-none
+              ${testimonial?.type === 'luxe' ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent' : 'text-gray-400/60'}
+            `}
+            style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700 }}
+          >
+            &quot;
+          </span>
           <p 
             className={`text-base lg:text-lg leading-relaxed relative z-10 ${
               testimonial.type === 'luxe' ? 'text-white' : 'text-gray-900'
             }`}
             style={{ 
-              fontFamily: 'Inter, sans-serif',
+              fontFamily: 'Manrope, sans-serif',
               letterSpacing: '-0.01em',
               lineHeight: '1.6'
             }}
@@ -184,16 +180,15 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; className?: string }
         <div className="flex items-center space-x-4">
           {/* Avatar with 3D pan effect */}
           <motion.div
-  className={`relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-offset-2 flex-shrink-0 ${
-    testimonial.type === 'luxe' ? 'ring-[rgba(212,175,55,0.3)] ring-offset-black' : 'ring-[rgba(0,0,0,0.15)] ring-offset-white'
-  }`}
-  whileHover={{
-    scale: 1.1,
-    rotateY: 15,
-    transition: { duration: 0.6, ease: "easeOut" }
-  }}
->
-
+            className={`relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-offset-2 flex-shrink-0 ${
+              testimonial.type === 'luxe' ? 'ring-[rgba(212,175,55,0.3)] ring-offset-black' : 'ring-[rgba(0,0,0,0.15)] ring-offset-white'
+            }`}
+            whileHover={{
+              scale: 1.1,
+              rotateY: 15,
+              transition: { duration: 0.6, ease: "easeOut" }
+            }}
+          >
             <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center">
               <span className="text-gray-600 font-medium text-base">
                 {testimonial.author.split(' ')[0][0]}
@@ -206,15 +201,15 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; className?: string }
               className={`font-semibold text-base whitespace-nowrap ${
                 testimonial.type === 'luxe' ? 'text-white' : 'text-gray-900'
               }`}
-              style={{ fontFamily: 'Inter, sans-serif' }}
+              style={{ fontFamily: 'Manrope, sans-serif' }}
             >
               {testimonial.author}
             </h4>
             <p 
               className={`text-sm tracking-wider uppercase font-medium whitespace-nowrap ${
-                testimonial.type === 'luxe' ? 'text-yellow-600/80' : 'text-gray-600'
+                testimonial.type === 'luxe' ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent' : 'text-gray-600'
               }`}
-              style={{ letterSpacing: '0.1em' }}
+              style={{ letterSpacing: '0.1em', fontFamily: 'Manrope, sans-serif' }}
             >
               {testimonial.location}
             </p>
@@ -233,7 +228,6 @@ const TestimonialCarousel: React.FC<{
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length)
@@ -272,8 +266,8 @@ const TestimonialCarousel: React.FC<{
             onClick={() => setCurrentIndex(index)}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
               index === currentIndex
-                ? 'bg-yellow-600 scale-125'
-                : 'bg-yellow-600/30 hover:bg-yellow-600/50'
+                ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] scale-125'
+                : 'bg-[#BFA980]/30 hover:bg-[#BFA980]/50'
             }`}
           />
         ))}
@@ -304,7 +298,7 @@ const VoicesOfDistinction: React.FC<{ className?: string }> = ({ className = '' 
   return (
     <section 
       ref={sectionRef}
-      className={`relative min-h-screen overflow-hidden ${className}`}
+      className={`relative min-h-[60vh] overflow-hidden ${className}`}
       aria-labelledby="testimonials-heading"
     >
       {/* Split background */}
@@ -312,7 +306,7 @@ const VoicesOfDistinction: React.FC<{ className?: string }> = ({ className = '' 
         <div className="w-full h-full bg-black" />
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 py-24 lg:py-32">
+      <div className="relative z-10 container mx-auto px-6 py-12 lg:py-16">
         <motion.div
           initial="initial"
           animate={isInView ? "animate" : "initial"}
@@ -321,20 +315,16 @@ const VoicesOfDistinction: React.FC<{ className?: string }> = ({ className = '' 
           {/* Section Header */}
           <motion.div 
             variants={fadeInUp}
-            className="text-center mb-16 lg:mb-20"
+            className="text-center mb-12 lg:mb-16"
           >
             <motion.h2 
               ref={headingRef}
               id="testimonials-heading"
               animate={shimmerControls}
-              className="text-5xl md:text-6xl lg:text-7xl font-light"
+              className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent"
               style={{ 
-                fontFamily: 'Cormorant Garamond, serif',
-                background: 'linear-gradient(90deg, #D4AF37 0%, #FFD700 25%, #F4E4C1 50%, #FFD700 75%, #D4AF37 100%)',
+                fontFamily: 'Manrope, sans-serif',
                 backgroundSize: '200% 100%',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
                 letterSpacing: '-0.02em'
               }}
             >
@@ -342,9 +332,9 @@ const VoicesOfDistinction: React.FC<{ className?: string }> = ({ className = '' 
             </motion.h2>
             <motion.p
               variants={fadeInUp}
-              className="text-lg lg:text-xl font-light mt-6 text-gray-300 lg:text-gray-600 max-w-3xl mx-auto"
+              className="text-lg lg:text-xl font-medium mt-6 text-gray-300 lg:text-gray-600 max-w-3xl mx-auto"
               style={{ 
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: 'Manrope, sans-serif',
                 letterSpacing: '-0.005em'
               }}
             >
@@ -363,20 +353,11 @@ const VoicesOfDistinction: React.FC<{ className?: string }> = ({ className = '' 
               />
             </motion.div>
           </div>
-
-          {/* Mobile: Combined carousel */}
-          <div className="lg:hidden">
-            <motion.div variants={fadeInUp} className="max-w-lg mx-auto">
-              <TestimonialCarousel 
-                testimonials={[...luxeTestimonials, ...reassuredTestimonials]} 
-              />
-            </motion.div>
-          </div>
         </motion.div>
       </div>
 
       {/* Elegant divider line for desktop */}
-      <div className="hidden lg:block absolute top-24 bottom-24 left-1/2 transform -translate-x-px w-px bg-gradient-to-b from-transparent via-yellow-600/20 to-transparent" />
+      <div className="hidden lg:block absolute top-24 bottom-24 left-1/2 transform -translate-x-px w-px bg-gradient-to-b from-transparent via-[#BFA980]/20 to-transparent" />
 
       {/* Reduced motion support */}
       <style jsx>{`
