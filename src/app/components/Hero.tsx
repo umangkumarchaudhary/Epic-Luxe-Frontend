@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, FormEvent } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Car, DollarSign, Shield, Search, Phone, Star, TrendingUp, Eye, Clock, Home, User, MessageCircle, X, Loader2, CheckCircle, ArrowRight } from 'lucide-react';
 
 // Type definitions
@@ -42,6 +44,72 @@ const luxuryCarModels: string[] = [
   'Rolls-Royce Ghost', 'Mercedes AMG GT', 'BMW M8 Competition', 'Audi R8',
   'Maserati MC20', 'Other'
 ];
+
+// Trust badges for Buy and Sell cards
+const buyTrustBadges = [
+  { icon: Star, text: 'Certified Quality' },
+  { icon: Shield, text: 'Comprehensive Warranty' },
+  { icon: CheckCircle, text: 'Verified Documentation' },
+  { icon: TrendingUp, text: 'Expert Inspection' }
+];
+
+const sellTrustBadges = [
+  { icon: TrendingUp, text: 'Instant Valuation' },
+  { icon: Clock, text: 'Quick Settlement' },
+  { icon: CheckCircle, text: 'Market Best Price' },
+  { icon: Shield, text: 'Secure Transaction' }
+];
+
+// Animated Trust Badges Component
+const AnimatedTrustBadges: React.FC<{ badges: typeof buyTrustBadges }> = ({ badges }) => {
+  const [currentGroup, setCurrentGroup] = useState(0);
+  
+  // Group badges in pairs (2 badges per group)
+  const badgeGroups = [
+    badges.slice(0, 2), // First 2 badges
+    badges.slice(2, 4)  // Last 2 badges
+  ];
+
+  // Auto-rotate groups every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentGroup((prev) => (prev + 1) % badgeGroups.length);
+    }, 2000);
+    
+    return () => clearInterval(interval);
+  }, [badgeGroups.length]);
+
+  const currentBadges = badgeGroups[currentGroup];
+
+  return (
+    <div className="flex items-center justify-between space-x-6">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentGroup}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center space-x-2 text-sm text-white/60"
+        >
+          {React.createElement(currentBadges[0].icon, { className: "w-4 h-4 text-[#BFA980]" })}
+          <span className="font-medium">{currentBadges[0].text}</span>
+        </motion.div>
+        <motion.div
+          key={`${currentGroup}-second`}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex items-center space-x-2 text-sm text-white/60"
+        >
+          {React.createElement(currentBadges[1].icon, { className: "w-4 h-4 text-[#BFA980]" })}
+          <span className="font-medium">{currentBadges[1].text}</span>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+};
 
 // Quote Form Component
 function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactElement | null {
@@ -298,15 +366,24 @@ function BottomNav(): React.ReactElement {
 }
 
 export default function LuxuryVehicleHero(): React.ReactElement {
+  const router = useRouter();
   const [banners, setBanners] = useState<Banner[]>([]);
   const [loadingBanners, setLoadingBanners] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<string>('');
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
-  const [parallax, setParallax] = useState<ParallaxState>({ x: 0, y: 0 });
   const [activeTab, setActiveTab] = useState<'buy' | 'sell'>('buy');
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [formType, setFormType] = useState<'buy' | 'sell'>('buy');
+
+  // Navigation functions
+  const navigateToBrowseCars = (): void => {
+    router.push('/buy-used-cars');
+  };
+
+  const navigateToSellCar = (): void => {
+    router.push('/services/SellYourCarNow');
+  };
 
   const openQuoteForm = (type: 'buy' | 'sell'): void => {
     setFormType(type);
@@ -393,6 +470,19 @@ export default function LuxuryVehicleHero(): React.ReactElement {
     }
   };
 
+
+  useEffect(() => {
+    function updateHeroPadding() {
+      const header = document.querySelector('header');
+      if (header) {
+        setHeroPaddingTop(header.offsetHeight);
+      }
+    }
+    updateHeroPadding();
+    window.addEventListener('resize', updateHeroPadding);
+    return () => window.removeEventListener('resize', updateHeroPadding);
+  }, []);
+
   return (
     <div className="min-h-screen w-full relative overflow-hidden bg-black manrope-font" id="hero-section">
 
@@ -411,28 +501,26 @@ export default function LuxuryVehicleHero(): React.ReactElement {
 
       {/* Main slider */}
       {!loadingBanners && currentBanner && (
-        <section aria-label="Featured Luxury Vehicle Banner" className="pt-[10vh] h-[60vh] md:h-[60vh] w-full relative overflow-hidden">
+    <section
+      aria-label="Featured Luxury Vehicle Banner"
+      style={{
+        paddingTop: 10,
+        height: '60vh'
+      }}
+      className="w-full relative overflow-hidden"
+    >
 
           {/* Background Image with Enhanced Gradient Overlay */}
-          <div
-            className="absolute inset-0 transition-all duration-1000"
-            style={{
-              transform: `scale(1.1) translateX(${parallax.x * 20}px) translateY(${parallax.y * 10}px)`,
-              opacity: isTransitioning ? 0.7 : 1
-            }}
-          >
-            <Image
-              src={currentBanner.image_url}
-              alt={currentBanner.title}
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/70"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40"></div>
-            <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/90 to-transparent"></div>
-          </div>
+            <div className="absolute inset-0 w-full h-full">
+              <Image
+                src={currentBanner.image_url}
+                alt={currentBanner.title}
+                fill
+                className="object-cover w-full h-full"
+                priority
+                sizes="100vw"
+              />
+            </div>
 
           {/* Desktop Content Overlay */}
           <div className="hidden md:flex absolute inset-0 flex-col justify-center px-8 lg:px-16 z-20">
@@ -479,37 +567,34 @@ export default function LuxuryVehicleHero(): React.ReactElement {
 
           {/* Mobile Content Overlay */}
           <div className="md:hidden absolute bottom-0 left-0 right-0 z-20">
-            <div className={`transition-all duration-700 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+            <div className={`transition-all duration-700 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}> 
               <div className="px-6 pb-6">
-
                 {/* Badge */}
-                <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-gradient-to-r from-[#D4AF37]/10 to-[#BFA980]/10 backdrop-blur-sm mb-4">
-                  <div className="w-1.5 h-1.5 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] rounded-full mr-2 animate-pulse"></div>
-                  <span className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-transparent bg-clip-text font-bold text-xs tracking-wider">
+                <div className="inline-flex items-center px-3 py-1.5 rounded-full mb-4">
+                  <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full mr-2 animate-pulse"></div>
+                  <span className="text-[#D4AF37] font-bold text-xs tracking-wider">
                     {currentBanner.badge}
                   </span>
                 </div>
-
                 {/* Mobile Typography */}
-                <h1 className="text-3xl font-bold text-white mb-2 leading-tight drop-shadow-2xl tracking-wide">
+                <h1 className="text-3xl font-bold text-white mb-2 leading-tight tracking-wide">
                   {currentBanner.title}
                 </h1>
-                <h2 className="text-lg font-light bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-transparent bg-clip-text mb-3 drop-shadow-sm leading-snug">
+                <h2 className="text-lg font-light text-[#D4AF37] mb-3 leading-snug">
                   {currentBanner.subtitle}
                 </h2>
-
                 {/* Mobile CTA Buttons */}
                 <div className="flex space-x-3" role="group" aria-label="Mobile call to action buttons">
                   <button
                     onClick={() => handleCTAButtonClick(currentBanner.cta1_text, currentBanner.cta1_url_or_action)}
-                    className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold hover:from-[#BFA980] hover:to-[#D4AF37] transition-all transform hover:scale-105 shadow-xl text-sm"
+                    className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-[#D4AF37] text-black font-bold transition-all text-sm"
                   >
                     <Eye className="w-4 h-4" />
                     <span>{currentBanner.cta1_text || 'Explore'}</span>
                   </button>
                   <button
                     onClick={() => handleCTAButtonClick(currentBanner.cta2_text, currentBanner.cta2_url_or_action)}
-                    className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-black/30 backdrop-blur-sm border border-[#D4AF37]/40 text-white font-bold hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#BFA980] hover:text-black hover:border-transparent transition-all transform hover:scale-105 text-sm"
+                    className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-black border border-[#D4AF37] text-white font-bold transition-all text-sm"
                   >
                     <DollarSign className="w-4 h-4" />
                     <span>{currentBanner.cta2_text || 'Quote'}</span>
@@ -522,7 +607,7 @@ export default function LuxuryVehicleHero(): React.ReactElement {
       )}
 
       {/* Buy/Sell Cards Section - DESKTOP ONLY */}
-      <div className="hidden md:block py-4 md:py-6 w-full px-6 md:px-8 lg:px-12">
+      <div className="hidden md:block py-4 md:py-2 w-full px-6 md:px-8 lg:px-12">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
 
@@ -541,20 +626,11 @@ export default function LuxuryVehicleHero(): React.ReactElement {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between space-x-6">
-                    <div className="flex items-center space-x-2 text-sm text-white/60">
-                      <Star className="w-4 h-4 text-[#BFA980]" />
-                      <span className="font-medium">Certified Quality</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm text-white/60">
-                      <Shield className="w-4 h-4 text-[#BFA980]" />
-                      <span className="font-medium">Comprehensive Warranty</span>
-                    </div>
-                  </div>
+                  <AnimatedTrustBadges badges={buyTrustBadges} />
                 </div>
 
                 <button
-                  onClick={() => openQuoteForm('buy')}
+                  onClick={navigateToBrowseCars}
                   className="w-full mt-4 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] font-semibold hover:shadow-lg hover:shadow-[#D4AF37]/20 transition-all duration-300 group-hover:scale-105"
                   aria-label="Browse Cars for Buying"
                 >
@@ -580,20 +656,11 @@ export default function LuxuryVehicleHero(): React.ReactElement {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between space-x-6">
-                    <div className="flex items-center space-x-2 text-sm text-white/60">
-                      <TrendingUp className="w-4 h-4 text-[#BFA980]" />
-                      <span className="font-medium">Instant Valuation</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm text-white/60">
-                      <Clock className="w-4 h-4 text-[#BFA980]" />
-                      <span className="font-medium">Quick Settlement</span>
-                    </div>
-                  </div>
+                  <AnimatedTrustBadges badges={sellTrustBadges} />
                 </div>
 
                 <button
-                  onClick={() => openQuoteForm('sell')}
+                  onClick={navigateToSellCar}
                   className="w-full mt-4 flex items-center justify-center space-x-2 px-6 py-3 rounded-full border-2 border-[#BFA980] text-[#BFA980] font-semibold hover:bg-[#BFA980] hover:text-[#0e0e0e] transition-all duration-300 group-hover:scale-105"
                   aria-label="Get Valuation for Selling"
                 >

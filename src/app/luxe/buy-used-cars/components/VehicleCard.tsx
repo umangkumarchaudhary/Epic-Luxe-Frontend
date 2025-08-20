@@ -96,14 +96,14 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
             openDetails={() => {
               // Use slug for navigation instead of ID
               if (car.slug) {
-                router.push(`/inventory/${car.slug}`);
+                router.push(`/luxe/buy-used-cars/${car.slug}`);
               } else {
                 // Fallback: generate slug from available data
                 const fallbackSlug = `${car.brand.toLowerCase()}-${car.model.toLowerCase()}-${car.year}`
                   .replace(/[^a-z0-9]/g, '-')
                   .replace(/-+/g, '-')
                   .trim();
-                router.push(`/inventory/${fallbackSlug}`);
+                router.push(`/luxe/buy-used-cars/${fallbackSlug}`);
               }
             }}
             openSchedule={() => {
@@ -112,8 +112,8 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
             }}
             openShare={() => {
               const shareUrl = car.slug 
-                ? `${window.location.origin}/inventory/${car.slug}`
-                : `${window.location.origin}/inventory/${car.brand.toLowerCase()}-${car.model.toLowerCase()}-${car.year}`.replace(/[^a-z0-9/]/g, '-');
+                ? `${window.location.origin}/luxe/buy-used-cars/${car.slug}`
+                : `${window.location.origin}/luxe/buy-used-cars/${car.brand.toLowerCase()}-${car.model.toLowerCase()}-${car.year}`.replace(/[^a-z0-9/]/g, '-');
               
               if (navigator.share) {
                 navigator.share({

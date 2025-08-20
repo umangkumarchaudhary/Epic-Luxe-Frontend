@@ -120,7 +120,7 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
   return (
     <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4 transition-all duration-300">
       <div 
-        className={`bg-black border border-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+        className={`bg-black border border-gray-800 rounded-2xl shadow-2xl w-full max-w-lg transform transition-all duration-300 ${
           isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
         }`}
       >
@@ -128,12 +128,12 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
           // Confirmation Modal
           <div className="p-8 text-center">
             <div className="mb-6">
-              <div className="w-16 h-16 bg-gold/10 border border-gold rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-[#D4AF37]/10 border border-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-3xl font-bold text-gold mb-4">
+              <h2 className="text-3xl font-bold text-[#D4AF37] mb-4">
                 Test Drive Booked!
               </h2>
               <p className="text-white text-lg leading-relaxed mb-4">
@@ -155,13 +155,13 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                   {formData.preferredTime}
                 </p>
               </div>
-              <p className="text-gold text-sm">
+              <p className="text-[#D4AF37] text-sm">
                 Our team will contact you shortly to confirm the details.
               </p>
             </div>
             <button
               onClick={handleClose}
-              className="bg-gold text-black px-8 py-3 rounded-xl hover:bg-gold/90 transition-all duration-300 ease-in-out font-semibold"
+              className="bg-[#D4AF37] text-black px-8 py-3 rounded-xl hover:bg-[#D4AF37]/90 transition-all duration-300 ease-in-out font-semibold"
             >
               Great!
             </button>
@@ -169,23 +169,23 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
         ) : (
           // Main Form
           <>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-gold mb-2">
+            <div className="p-4">
+              <div className="text-center mb-4">
+                <h1 className="text-2xl font-bold text-[#D4AF37] mb-1">
                   Book A Test Drive
                 </h1>
-                <div className="w-16 h-px bg-gold mx-auto mt-4"></div>
+                <div className="w-16 h-px bg-[#D4AF37] mx-auto mt-2"></div>
               </div>
 
               {/* Privacy Policy Notice */}
-              <div className="mb-6 p-4 bg-gray-900/50 rounded-xl border border-gray-800">
-                <p className="text-gray-300 text-sm text-center">
+              <div className="mb-3 p-2 bg-gray-900/50 rounded-xl border border-gray-800">
+                <p className="text-gray-300 text-xs text-center">
                   By submitting this form, you are agreeing with our{' '}
                   <a 
                     href="/luxe/PrivacyPolicy" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-gold hover:underline"
+                    className="text-[#D4AF37] hover:underline"
                   >
                     Privacy Policy
                   </a>
@@ -194,17 +194,17 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                     href="/luxe/TermsOfUse" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-gold hover:underline"
+                    className="text-[#D4AF37] hover:underline"
                   >
                     Terms of Use
                   </a>
                 </p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {/* Name */}
                 <div>
-                  <label className="block text-white text-sm font-semibold mb-2">
+                  <label className="block text-white text-xs font-semibold mb-1">
                     Name *
                   </label>
                   <input
@@ -212,15 +212,15 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-xl focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all duration-300 hover:border-gray-600"
+                    className="w-full bg-gray-900 border border-gray-700 text-white px-3 py-2 rounded-xl focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300 hover:border-gray-600 text-sm"
                     placeholder="Enter your full name"
                   />
-                  {errors.fullName && <p className="text-red-400 text-sm mt-1">{errors.fullName}</p>}
+                  {errors.fullName && <p className="text-red-400 text-xs mt-1">{errors.fullName}</p>}
                 </div>
 
                 {/* Phone Number */}
                 <div>
-                  <label className="block text-white text-sm font-semibold mb-2">
+                  <label className="block text-white text-xs font-semibold mb-1">
                     Phone Number *
                   </label>
                   <input
@@ -228,52 +228,46 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
-                    className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-xl focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all duration-300 hover:border-gray-600"
+                    className="w-full bg-gray-900 border border-gray-700 text-white px-3 py-2 rounded-xl focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300 hover:border-gray-600 text-sm"
                     placeholder="Enter your phone number"
                   />
-                  {errors.phoneNumber && <p className="text-red-400 text-sm mt-1">{errors.phoneNumber}</p>}
+                  {errors.phoneNumber && <p className="text-red-400 text-xs mt-1">{errors.phoneNumber}</p>}
                 </div>
 
                 {/* Preferred Vehicle */}
                 <div>
-  <label className="block text-white text-sm font-semibold mb-2">
-    Preferred Vehicle
-    
-  </label>
-  <div className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-xl">
-    {selectedVehicle ? (
-      <div className="flex items-center space-x-3">
-        {selectedVehicle.image && (
-          <div className="relative w-12 h-8">
-            <Image
-              src={selectedVehicle.image}
-              alt={`${selectedVehicle.brand} ${selectedVehicle.model}`}
-              fill
-              className="object-cover rounded"
-              onError={() => {
-                selectedVehicle.image =
-                  'https://images.unsplash.com/photo-1555215695-3004980ad54e?fit=crop&w=600&h=400';
-              }}
-            />
-          </div>
-        )}
-        <div>
-          <p className="font-semibold">
-            {selectedVehicle.year} {selectedVehicle.brand} {selectedVehicle.model}
-          </p>
-          <p className="text-gold text-sm">{selectedVehicle.price}</p>
-        </div>
-      </div>
-    ) : (
-      <p className="text-gray-400">No vehicle selected</p>
-    )}
-  </div>
-</div>
-
+                  <label className="block text-white text-xs font-semibold mb-1">
+                    Preferred Vehicle
+                  </label>
+                  <div className="w-full bg-gray-900 border border-gray-700 text-white px-3 py-2 rounded-xl flex items-center">
+                    {selectedVehicle ? (
+                      <>
+                        {selectedVehicle.image && (
+                          <div className="relative w-10 h-7 mr-2">
+                            <Image
+                              src={selectedVehicle.image}
+                              alt={`${selectedVehicle.brand} ${selectedVehicle.model}`}
+                              fill
+                              className="object-cover rounded"
+                            />
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-semibold text-xs">
+                            {selectedVehicle.year} {selectedVehicle.brand} {selectedVehicle.model}
+                          </p>
+                          <p className="text-[#D4AF37] text-xs">{selectedVehicle.price}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-gray-400 text-xs">No vehicle selected</p>
+                    )}
+                  </div>
+                </div>
 
                 {/* Date */}
                 <div>
-                  <label className="block text-white text-sm font-semibold mb-2">
+                  <label className="block text-white text-xs font-semibold mb-1">
                     Preferred Date *
                   </label>
                   <input
@@ -282,37 +276,37 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                     value={formData.preferredDate}
                     onChange={handleInputChange}
                     min={getTodayDate()}
-                    className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-xl focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all duration-300 hover:border-gray-600"
+                    className="w-full bg-gray-900 border border-gray-700 text-white px-3 py-2 rounded-xl focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300 hover:border-gray-600 text-sm"
                   />
-                  {errors.preferredDate && <p className="text-red-400 text-sm mt-1">{errors.preferredDate}</p>}
+                  {errors.preferredDate && <p className="text-red-400 text-xs mt-1">{errors.preferredDate}</p>}
                 </div>
 
                 {/* Time */}
                 <div>
-                  <label className="block text-white text-sm font-semibold mb-2">
+                  <label className="block text-white text-xs font-semibold mb-1">
                     Preferred Time *
                   </label>
                   <select
                     name="preferredTime"
                     value={formData.preferredTime}
                     onChange={handleInputChange}
-                    className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-xl focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all duration-300 hover:border-gray-600"
+                    className="w-full bg-gray-900 border border-gray-700 text-white px-3 py-2 rounded-xl focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300 hover:border-gray-600 text-sm"
                   >
                     <option value="">Select time</option>
                     {timeSlots.map(time => (
                       <option key={time} value={time} className="bg-gray-900">{time}</option>
                     ))}
                   </select>
-                  {errors.preferredTime && <p className="text-red-400 text-sm mt-1">{errors.preferredTime}</p>}
+                  {errors.preferredTime && <p className="text-red-400 text-xs mt-1">{errors.preferredTime}</p>}
                 </div>
 
                 {/* Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                <div className="flex flex-col sm:flex-row gap-2 pt-3">
                   <button
                     type="button"
                     onClick={handleSubmit}
                     disabled={isLoading}
-                    className="flex-1 bg-gold text-black px-8 py-4 rounded-xl hover:bg-gold/90 transition-all duration-300 ease-in-out font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="flex-1 bg-[#D4AF37] text-black px-6 py-3 rounded-xl hover:bg-[#D4AF37]/90 transition-all duration-300 ease-in-out font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm"
                   >
                     {isLoading ? (
                       <>
@@ -329,7 +323,7 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="bg-transparent border border-gray-600 text-white px-8 py-4 rounded-xl hover:border-white transition-all duration-300 ease-in-out font-semibold"
+                    className="bg-transparent border border-gray-600 text-white px-6 py-3 rounded-xl hover:border-white transition-all duration-300 ease-in-out font-semibold text-sm"
                   >
                     Cancel
                   </button>

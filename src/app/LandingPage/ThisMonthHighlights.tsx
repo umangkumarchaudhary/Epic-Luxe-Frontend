@@ -118,7 +118,7 @@ const LuxeTile: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
       }, 8000)
       return () => clearInterval(interval)
     }
-  }, [isHovered])
+  }, [isHovered, glowControls])
 
   // Memoized spec chips
   const specChips = useMemo(() => 

@@ -14,6 +14,7 @@ import {
   Eye,
   Loader
 } from 'lucide-react';
+import ScheduleDemo from '../luxe/buy-used-cars/components/Schedule';
 
 interface Vehicle {
   id: number;
@@ -91,11 +92,7 @@ const getColorHex = (colorName: string) => {
 };
 
 // Helper function to generate description if not provided
-const generateDescription = (vehicle: Vehicle) => {
-  if (vehicle.description) return vehicle.description;
-  
-  return `Experience the perfect blend of luxury and performance with this exceptional ${vehicle.brand} ${vehicle.model}${vehicle.variant ? ` ${vehicle.variant}` : ''}. Meticulously maintained and ready to deliver an unparalleled driving experience.`;
-};
+
 
 const FeaturedInventory: React.FC = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -105,6 +102,8 @@ const FeaturedInventory: React.FC = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [currentSpecIndex, setCurrentSpecIndex] = useState(0);
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [scheduleVehicle, setScheduleVehicle] = useState<Vehicle | null>(null);
 
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -258,8 +257,8 @@ const FeaturedInventory: React.FC = () => {
     return (
       <section className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden w-full flex items-center justify-center">
         <div className="text-center">
-          <Loader className="w-12 h-12 text-yellow-500 animate-spin mx-auto mb-4" />
-          <p className="text-white text-lg">Loading Premium Vehicles...</p>
+          <Loader className="w-12 h-12 text-[#D4AF37] animate-spin mx-auto mb-4" />
+          <p className="text-white text-lg font-manrope">Loading Premium Vehicles...</p>
         </div>
       </section>
     );
@@ -270,12 +269,12 @@ const FeaturedInventory: React.FC = () => {
     return (
       <section className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden w-full flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 text-lg mb-4">
+          <p className="text-red-400 text-lg mb-4 font-manrope">
             {error || 'No featured vehicles available at the moment'}
           </p>
           <button 
             onClick={() => window.location.reload()} 
-            className="px-6 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-600 transition-colors"
+            className="px-6 py-2 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black rounded-lg hover:from-[#BFA980] hover:to-[#D4AF37] transition-colors font-manrope"
           >
             Retry
           </button>
@@ -284,21 +283,24 @@ const FeaturedInventory: React.FC = () => {
     );
   }
 
+  // Limit to 6 featured vehicles
+  const featuredVehicles = vehicles.slice(0, 6);
+
   return (
-    <section className="bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden w-full py-12 md:py-16">
+    <section className="bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden w-full py-12 md:py-16 font-manrope">
       
       {/* Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-yellow-500/5 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tl from-yellow-600/5 to-transparent rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-yellow-500/3 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tl from-[#D4AF37]/5 to-transparent rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-[#D4AF37]/3 to-transparent rounded-full blur-3xl"></div>
       </div>
 
       {/* Grain Texture Overlay */}
       <div className="absolute inset-0 opacity-20 bg-noise"></div>
 
       <div 
-        className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8"
+        className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 font-manrope"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -308,12 +310,12 @@ const FeaturedInventory: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-8 md:mb-12"
+          className="text-center mb-8 md:mb-12 font-manrope"
         >
-          <h1 className="manrope-font text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-2 tracking-tight">
-            Premium <span className="bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent font-bold">Featured Inventory</span>
+          <h1 className="font-manrope text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-2 tracking-tight">
+            Premium <span className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-bold">Featured Inventory</span>
           </h1>
-          <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto">
+          <p className="font-manrope text-gray-400 text-sm md:text-base max-w-2xl mx-auto">
             Discover our hand-picked selection of exceptional luxury vehicles
           </p>
         </motion.div>
@@ -327,7 +329,7 @@ const FeaturedInventory: React.FC = () => {
         >
           {/* Desktop View - Horizontal Scroll */}
           <div className="hidden md:flex justify-center gap-2 overflow-x-auto pb-4 pt-2 px-4">
-            {vehicles.map((vehicle, index) => (
+            {featuredVehicles.map((vehicle, index) => (
               <motion.button
                 key={vehicle.id}
                 onClick={() => {
@@ -355,12 +357,12 @@ const FeaturedInventory: React.FC = () => {
 
                 {/* Vehicle Name Below - Desktop */}
                 <div className="mt-1 text-center leading-tight">
-                  <div className={`text-xs font-medium ${
-                    index === selectedVehicle ? 'text-yellow-500' : 'text-gray-400'
+                  <div className={`text-xs font-medium font-manrope ${
+                    index === selectedVehicle ? 'text-[#D4AF37]' : 'text-gray-400'
                   }`}>
                     {vehicle.brand}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 font-manrope">
                     {vehicle.model}
                   </div>
                 </div>
@@ -380,7 +382,7 @@ const FeaturedInventory: React.FC = () => {
             style={{ touchAction: 'none' }}
           >
             <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto">
-              {vehicles.map((vehicle, index) => (
+              {featuredVehicles.map((vehicle, index) => (
                 <motion.button
                   key={vehicle.id}
                   onClick={() => {
@@ -408,12 +410,12 @@ const FeaturedInventory: React.FC = () => {
 
                   {/* Vehicle Name Below - Mobile */}
                   <div className="mt-1.5 text-center leading-tight">
-                    <div className={`text-xs font-medium ${
-                      index === selectedVehicle ? 'text-yellow-500' : 'text-gray-400'
+                    <div className={`text-xs font-medium font-manrope ${
+                      index === selectedVehicle ? 'text-[#D4AF37]' : 'text-gray-400'
                     }`}>
                       {vehicle.brand}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500 font-manrope">
                       {vehicle.model}
                     </div>
                   </div>
@@ -467,7 +469,7 @@ const FeaturedInventory: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
         >
           <div className="flex justify-center gap-2">
-            {vehicles.map((_, index) => (
+            {featuredVehicles.map((_, index) => (
               <button
                 key={index}
                 onClick={() => {
@@ -476,7 +478,7 @@ const FeaturedInventory: React.FC = () => {
                 }}
                 className={`h-2 rounded-full transition-all duration-500 ${
                   index === selectedVehicle 
-                    ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 w-8' 
+                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] w-8' 
                     : 'bg-white/20 hover:bg-white/40 w-2'
                 }`}
               />
@@ -526,9 +528,9 @@ const FeaturedInventory: React.FC = () => {
               {/* Left Navigation Arrow - Desktop (Outside Image) */}
               <button
                 onClick={() => navigateVehicle('prev')}
-                className="absolute -left-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-black/40 hover:border-yellow-500/30 transition-all duration-300 group"
+                className="absolute -left-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-black/40 hover:border-[#D4AF37]/30 transition-all duration-300 group"
               >
-                <ChevronLeft className="w-5 h-5 text-white group-hover:text-yellow-500 transition-colors" />
+                <ChevronLeft className="w-5 h-5 text-white group-hover:text-[#D4AF37] transition-colors" />
               </button>
             </div>
           </motion.div>
@@ -543,9 +545,9 @@ const FeaturedInventory: React.FC = () => {
             {/* Right Navigation Arrow - Desktop (Next to text content) */}
             <button
               onClick={() => navigateVehicle('next')}
-              className="hidden lg:flex absolute -right-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 items-center justify-center hover:bg-black/40 hover:border-yellow-500/30 transition-all duration-300 group"
+              className="hidden lg:flex absolute -right-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 items-center justify-center hover:bg-black/40 hover:border-[#D4AF37]/30 transition-all duration-300 group"
             >
-              <ChevronRight className="w-5 h-5 text-white group-hover:text-yellow-500 transition-colors" />
+              <ChevronRight className="w-5 h-5 text-white group-hover:text-[#D4AF37] transition-colors" />
             </button>
             
             {/* Top Section - Title & Info */}
@@ -560,10 +562,10 @@ const FeaturedInventory: React.FC = () => {
                   className="space-y-3"
                 >
                   <div className="space-y-1.5">
-                    <h2 className="text-xl md:text-2xl lg:text-3xl font-thin text-white tracking-tight">
+                    <h2 className="text-xl md:text-2xl lg:text-3xl font-thin text-white tracking-tight font-manrope">
                       {currentVehicle.brand}
                     </h2>
-                    <h3 className="text-base md:text-lg text-yellow-500 font-light">
+                    <h3 className="text-base md:text-lg text-[#D4AF37] font-light font-manrope">
                       {currentVehicle.model} {currentVehicle.variant || ''}
                     </h3>
                   </div>
@@ -572,10 +574,10 @@ const FeaturedInventory: React.FC = () => {
                   <div className="flex items-center gap-4 text-gray-400">
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4" />
-                      <span className="text-sm">{currentVehicle.location}</span>
+                      <span className="text-sm font-manrope">{currentVehicle.location}</span>
                     </div>
                     <div className="w-1 h-1 rounded-full bg-gray-600"></div>
-                    <span className="text-sm">{currentVehicle.dealer_name || 'Premium Dealer'}</span>
+                    <span className="text-sm font-manrope">{currentVehicle.dealer_name || 'Premium Dealer'}</span>
                   </div>
 
                   {/* Safety Rating - Desktop Only */}
@@ -586,17 +588,17 @@ const FeaturedInventory: React.FC = () => {
                           key={i}
                           className={`w-4 h-4 ${
                             i < (currentVehicle.safety_rating || 4)
-                              ? 'text-yellow-500 fill-current' 
+                              ? 'text-[#D4AF37] fill-current' 
                               : 'text-gray-600'
                           }`}
                         />
                       ))}
                     </div>
-                    <span className="text-sm text-gray-400">Safety Rating</span>
+                    <span className="text-sm text-gray-400 font-manrope">Safety Rating</span>
                     {(currentVehicle.certified_pre_owned !== false) && (
                       <>
                         <div className="w-1 h-1 rounded-full bg-gray-600"></div>
-                        <span className="text-sm text-green-400">Certified Pre-Owned</span>
+                        <span className="text-sm text-green-400 font-manrope">Certified Pre-Owned</span>
                       </>
                     )}
                   </div>
@@ -610,19 +612,19 @@ const FeaturedInventory: React.FC = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
               >
-                <div className="flex items-center gap-2 text-xs text-gray-400 font-light">
+                <div className="flex items-center gap-2 text-xs text-gray-400 font-light font-manrope">
                   <span>Starting from</span>
                 </div>
                 <div className="flex flex-col md:flex-row md:items-baseline gap-1.5">
-                  <span className="text-lg md:text-xl font-light text-white">
+                  <span className="text-lg md:text-xl font-light text-white font-manrope">
                     {formatPrice(currentVehicle.price)}
                   </span>
                   {currentVehicle.original_price && (
                     <div className="flex items-center gap-2">
-                      <span className="text-base text-gray-500 line-through font-light">
+                      <span className="text-base text-gray-500 line-through font-light font-manrope">
                         {formatPrice(currentVehicle.original_price)}
                       </span>
-                      <span className="px-1.5 py-0.5 rounded text-xs bg-green-500/20 text-green-400 font-medium">
+                      <span className="px-1.5 py-0.5 rounded text-xs bg-green-500/20 text-green-400 font-medium font-manrope">
                         SAVE {currentVehicle.savings || Math.round(((parseFloat(currentVehicle.original_price) - parseFloat(currentVehicle.price)) / parseFloat(currentVehicle.original_price)) * 100)}%
                       </span>
                     </div>
@@ -633,13 +635,10 @@ const FeaturedInventory: React.FC = () => {
 
             {/* Middle Section - Description & Specs */}
             <div className="space-y-4">
-              {/* Description */}
-              <p className="text-sm text-gray-300 font-light leading-relaxed">
-                {generateDescription(currentVehicle)}
-              </p>
+              
 
               {/* Specifications Grid - Desktop */}
-              <div className="hidden md:grid grid-cols-4 gap-1.5">
+              <div className="hidden md:grid grid-cols-4 gap-1.5 mt-0">
                 {[
                   { icon: Calendar, label: 'Year', value: currentVehicle.year },
                   { icon: Gauge, label: 'Mileage', value: `${formatMileage(currentVehicle.mileage)} km` },
@@ -651,11 +650,11 @@ const FeaturedInventory: React.FC = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 + index * 0.1 }}
-                    className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-1.5 text-center hover:border-yellow-500/30 transition-all duration-300"
+                    className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-1.5 text-center hover:border-[#D4AF37]/30 transition-all duration-300"
                   >
-                    <spec.icon className="w-3 h-3 text-yellow-500 mx-auto mb-0.5" />
-                    <div className="text-xs text-gray-400 mb-0.5">{spec.label}</div>
-                    <div className="text-xs font-medium text-white flex items-center justify-center gap-1">
+                    <spec.icon className="w-3 h-3 text-[#D4AF37] mx-auto mb-0.5" />
+                    <div className="text-xs text-gray-400 mb-0.5 font-manrope">{spec.label}</div>
+                    <div className="text-xs font-medium text-white flex items-center justify-center gap-1 font-manrope">
                       {spec.label === 'Color' && currentVehicle.color_exterior && (
                         <div 
                           className="w-1.5 h-1.5 rounded-full border border-white/20"
@@ -671,7 +670,7 @@ const FeaturedInventory: React.FC = () => {
               {/* Mobile Single Spec Card */}
               <div className="md:hidden">
                 <div 
-                  className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3 text-center hover:border-yellow-500/30 transition-all duration-300"
+                  className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3 text-center hover:border-[#D4AF37]/30 transition-all duration-300"
                 >
                   <AnimatePresence mode="wait">
                     <motion.div
@@ -692,9 +691,9 @@ const FeaturedInventory: React.FC = () => {
                         const spec = specs[currentSpecIndex];
                         return (
                           <>
-                            <spec.icon className="w-5 h-5 text-yellow-500 mx-auto" />
-                            <div className="text-sm text-gray-400">{spec.label}</div>
-                            <div className="text-sm font-medium text-white flex items-center justify-center gap-2">
+                            <spec.icon className="w-5 h-5 text-[#D4AF37] mx-auto" />
+                            <div className="text-sm text-gray-400 font-manrope">{spec.label}</div>
+                            <div className="text-sm font-medium text-white flex items-center justify-center gap-2 font-manrope">
                               {spec.label === 'Color' && currentVehicle.color_exterior && (
                                 <div 
                                   className="w-3 h-3 rounded-full border border-white/20"
@@ -713,52 +712,65 @@ const FeaturedInventory: React.FC = () => {
             </div>
 
             {/* Desktop CTA Buttons */}
-            <div className="hidden md:flex flex-col sm:flex-row gap-2 mt-4">
+            <div className="hidden md:flex flex-row gap-6 mt-4 mb-2 justify-center">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center justify-center bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/25"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-[#D4AF37]/25 font-manrope"
+                onClick={() => window.location.href = '/buy-used-cars'}
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
-                  Inquire Now
+                  Explore Collections
                   <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </motion.button>
-              
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center justify-center px-6 py-2 rounded-lg border border-white/20 text-white text-sm hover:border-yellow-500/50 hover:bg-white/5 transition-all duration-300"
+                className="inline-flex items-center justify-center px-6 py-2 rounded-lg border border-white/20 text-white text-sm hover:border-[#D4AF37]/50 hover:bg-white/5 transition-all duration-300 font-manrope"
+                onClick={() => {
+                  setIsScheduleOpen(true);
+                  setScheduleVehicle(currentVehicle);
+                }}
               >
                 Schedule Test Drive
               </motion.button>
             </div>
 
             {/* Mobile CTA Buttons - Tighter Spacing */}
-            <div className="md:hidden flex flex-col gap-2 mt-4">
+            <div className="md:hidden flex-row flex gap-6 mt-8 justify-center">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center justify-center bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/25"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-[#D4AF37]/25 font-manrope"
+                onClick={() => window.location.href = '/buy-used-cars'}
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
-                  Inquire Now
+                  Explore Collections
                   <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </motion.button>
-              
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center justify-center px-6 py-2 rounded-lg border border-white/20 text-white text-sm hover:border-yellow-500/50 hover:bg-white/5 transition-all duration-300"
+                className="inline-flex items-center justify-center px-6 py-2 rounded-lg border border-white/20 text-white text-sm hover:border-[#D4AF37]/50 hover:bg-white/5 transition-all duration-300 font-manrope"
+                onClick={() => {
+                  setIsScheduleOpen(true);
+                  setScheduleVehicle(currentVehicle);
+                }}
               >
                 Schedule Test Drive
               </motion.button>
             </div>
           </motion.div>
         </div>
+
+        {/* Render the Schedule modal at the end */}
+        <ScheduleDemo
+          isOpen={isScheduleOpen}
+          onClose={() => setIsScheduleOpen(false)}
+          selectedVehicle={scheduleVehicle}
+        />
       </div>
     </section>
   );

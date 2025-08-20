@@ -83,7 +83,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ vehicles }) => {
               <ul>
                 {brandVehicles.map(vehicle => (
                   <li key={vehicle.id}>
-                    <a href={`/inventory/${vehicle.slug}`}>
+                    <a href={`/reassured/buy-used-cars/${vehicle.slug}`}>
                       {vehicle.year} {brand} {vehicle.model} - {vehicle.price}
                     </a>
                     <dl>

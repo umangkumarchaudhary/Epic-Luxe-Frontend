@@ -149,7 +149,7 @@ const Services = () => {
   }, [currentSlide, services.length]);
 
   // Navigation functions
-  const navigateToInventory = () => router.push('/inventory');
+  const navigateToInventory = () => router.push('/buy-used-cars');
   const navigateToSell = () => router.push('/services/SellNowYourCar');
   const navigateToValuation = () => router.push('/services/SellNowYourCar');
   const navigateToFinance = () => router.push('/services/finance');
@@ -236,7 +236,7 @@ const Services = () => {
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="manrope-font text-4xl md:text-6xl font-bold text-white/90 mb-6 tracking-tight">
+          <h2 className="font-manrope text-4xl md:text-6xl font-bold text-white/90 mb-6 tracking-tight">
             Luxury Car <span className="text-[#D4AF37]">Services Redefined</span>
           </h2>
         </div>

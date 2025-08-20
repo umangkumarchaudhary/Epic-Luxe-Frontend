@@ -80,10 +80,10 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
         className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 group"
       >
         <feature.icon className="w-8 h-8 text-[#D4AF37] mb-3 group-hover:scale-110 transition-transform" />
-        <h3 className="text-lg font-bold mb-2 text-white/90 group-hover:text-[#D4AF37] transition-colors">
+        <h3 className="text-lg font-bold mb-2 text-white/90 group-hover:bg-gradient-to-r group-hover:from-[#D4AF37] group-hover:to-[#BFA980] group-hover:bg-clip-text group-hover:text-transparent transition-colors font-manrope">
           {feature.title}
         </h3>
-        <p className="text-white/70 text-sm group-hover:text-white/80 transition-colors">{feature.desc}</p>
+        <p className="text-white/70 text-sm group-hover:text-white/80 transition-colors font-manrope">{feature.desc}</p>
       </div>
     );
   });
@@ -101,10 +101,10 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <h2 id="about-heading" className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-headline">
+          <h2 id="about-heading" className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-manrope">
             About Epic Luxe
           </h2>
-          <p className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto font-clean">
+          <p className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto font-manrope">
             Where luxury meets legacy - curating premium pre-owned vehicles with unmatched quality and trust
           </p>
         </div>
@@ -120,14 +120,14 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
             <div className="space-y-6">
               <div className="relative">
                 <Quote className="w-8 h-8 text-[#D4AF37] mb-4" />
-                <blockquote className="text-xl font-light italic text-[#D4AF37] mb-6 leading-relaxed">
+                <blockquote className="text-xl font-light italic bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent mb-6 leading-relaxed font-manrope">
                   &ldquo;Luxury isn&apos;t a product — it&apos;s an emotion we deliver with every key we hand over.&rdquo;
                 </blockquote>
               </div>
 
-              <div className="space-y-4 text-white/70">
+              <div className="space-y-4 text-white/70 font-manrope">
                 <p className="leading-relaxed">
-                  <span className="text-[#D4AF37] font-semibold">Epic Luxe</span>, powered by Raam Group, has redefined the luxury
+                  <span className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-semibold">Epic Luxe</span>, powered by Raam Group, has redefined the luxury
                   pre-owned automotive landscape in India with our unwavering commitment to excellence.
                 </p>
                 <p className="leading-relaxed">
@@ -138,7 +138,7 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
 
               <div className="pt-4">
                 <button 
-                  className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-3 rounded-lg font-semibold hover:shadow-xl hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                  className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-3 rounded-lg font-semibold hover:shadow-xl hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 font-manrope"
                   aria-label="Learn more about Epic Luxe"
                 >
                   Learn More About Us
@@ -168,8 +168,8 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
                   const CurrentIcon = features[currentFeature].icon;
                   return <CurrentIcon className="w-10 h-10 text-[#D4AF37] mb-4" aria-hidden="true" />;
                 })()}
-                <h3 className="text-xl font-bold mb-3 text-white/90">{features[currentFeature].title}</h3>
-                <p className="text-white/70">{features[currentFeature].desc}</p>
+                <h3 className="text-xl font-bold mb-3 text-white/90 font-manrope">{features[currentFeature].title}</h3>
+                <p className="text-white/70 font-manrope">{features[currentFeature].desc}</p>
               </div>
 
               {/* Mobile Indicators */}
@@ -179,7 +179,7 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
                     key={i}
                     aria-label={`Go to feature ${i + 1}`}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      i === currentFeature ? 'bg-[#D4AF37] scale-125' : 'bg-white/30'
+                      i === currentFeature ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] scale-125' : 'bg-white/30'
                     }`}
                     onClick={() => setCurrentFeature(i)}
                   />
@@ -190,14 +190,6 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
         </div>
       </div>
 
-      <style jsx>{`
-        .font-headline {
-          font-family: 'Playfair Display', serif;
-        }
-        .font-clean {
-          font-family: 'Inter', 'Helvetica Neue', sans-serif;
-        }
-      `}</style>
     </section>
   );
 });
@@ -368,9 +360,9 @@ const HomeContactSection = React.memo(function HomeContactSection() {
         <div className="flex items-center gap-4">
           <card.icon className="w-8 h-8 text-[#D4AF37]" aria-hidden="true" />
           <div>
-            <h3 className="text-lg font-bold text-white">{card.title}</h3>
-            <p className="text-[#D4AF37] font-semibold">{card.subtitle}</p>
-            <p className="text-white/80 text-sm">{card.desc}</p>
+            <h3 className="text-lg font-bold text-white font-manrope">{card.title}</h3>
+            <p className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-semibold font-manrope">{card.subtitle}</p>
+            <p className="text-white/80 text-sm font-manrope">{card.desc}</p>
           </div>
           <ChevronRight className="w-5 h-5 text-[#D4AF37]" aria-hidden="true" />
         </div>
@@ -387,10 +379,10 @@ const HomeContactSection = React.memo(function HomeContactSection() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className={`text-center mb-12 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-          <h2 id="contact-heading" className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-headline">
+          <h2 id="contact-heading" className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-manrope">
             Contact Epic Luxe
           </h2>
-          <p className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto font-clean">
+          <p className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto font-manrope">
             Ready to find your perfect luxury vehicle? Let&apos;s start the conversation
           </p>
         </div>
@@ -399,7 +391,7 @@ const HomeContactSection = React.memo(function HomeContactSection() {
           {/* Left Form */}
           <div>
             <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] backdrop-blur-lg p-8 rounded-2xl border border-[#D4AF37]/30">
-              <h3 className="text-2xl font-bold mb-6 text-white">Send us a message</h3>
+              <h3 className="text-2xl font-bold mb-6 text-white font-manrope">Send us a message</h3>
               <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                 {/* NAME & PHONE */}
                 <div className="grid md:grid-cols-2 gap-4">
@@ -411,9 +403,9 @@ const HomeContactSection = React.memo(function HomeContactSection() {
                       onChange={handleInputChange}
                       placeholder="Your Name"
                       aria-label="Your Name"
-                      className={`w-full bg-white/10 text-white placeholder-white/60 border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${errors.name ? 'border-red-500' : 'border-[#D4AF37]/30'}`}
+                      className={`w-full bg-white/10 text-white placeholder-white/60 border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-manrope ${errors.name ? 'border-red-500' : 'border-[#D4AF37]/30'}`}
                     />
-                    {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
+                    {errors.name && <p className="text-red-400 text-sm mt-1 font-manrope">{errors.name}</p>}
                   </div>
                   <div>
                     <input
@@ -423,9 +415,9 @@ const HomeContactSection = React.memo(function HomeContactSection() {
                       onChange={handleInputChange}
                       placeholder="Phone Number"
                       aria-label="Phone Number"
-                      className={`w-full bg-white/10 text-white placeholder-white/60 border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${errors.phone ? 'border-red-500' : 'border-[#D4AF37]/30'}`}
+                      className={`w-full bg-white/10 text-white placeholder-white/60 border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-manrope ${errors.phone ? 'border-red-500' : 'border-[#D4AF37]/30'}`}
                     />
-                    {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
+                    {errors.phone && <p className="text-red-400 text-sm mt-1 font-manrope">{errors.phone}</p>}
                   </div>
                 </div>
 
@@ -437,7 +429,7 @@ const HomeContactSection = React.memo(function HomeContactSection() {
                     name="service"
                     value={formData.service}
                     onChange={handleInputChange}
-                    className="w-full bg-white/10 text-white border border-[#D4AF37]/30 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                    className="w-full bg-white/10 text-white border border-[#D4AF37]/30 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-manrope"
                     aria-label="Select service"
                   >
                     <option value="buy">Buy</option>
@@ -457,16 +449,16 @@ const HomeContactSection = React.memo(function HomeContactSection() {
                     placeholder="Tell us what you're looking for..."
                     aria-label="Your Message"
                     rows={4}
-                    className={`w-full bg-white/10 text-white placeholder-white/60 border rounded-lg px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${errors.message ? 'border-red-500' : 'border-[#D4AF37]/30'}`}
+                    className={`w-full bg-white/10 text-white placeholder-white/60 border rounded-lg px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-manrope ${errors.message ? 'border-red-500' : 'border-[#D4AF37]/30'}`}
                   />
-                  {errors.message && <p className="text-red-400 text-sm mt-1">{errors.message}</p>}
+                  {errors.message && <p className="text-red-400 text-sm mt-1 font-manrope">{errors.message}</p>}
                 </div>
 
                 {/* BUTTON */}
                 <button
                   type="submit"
                   disabled={isLoading || isSubmitted}
-                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 font-manrope ${
                     isSubmitted 
                       ? 'bg-green-600 text-white' 
                       : 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black hover:shadow-lg hover:shadow-[#D4AF37]/20'

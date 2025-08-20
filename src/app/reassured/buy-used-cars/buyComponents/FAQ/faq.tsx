@@ -18,7 +18,7 @@ const FAQ = () => {
     {
       id: 1,
       category: 'Quality & Inspection',
-      question: 'How does EPIC Reassured ensure certified pre-owned car quality compared to Cars24 and Spinny?',
+      question: 'How does EPIC Reassured ensure certified pre-owned car quality compared to other preowned dealers?',
       answer: 'EPIC Reassured conducts a comprehensive 200-point inspection on every used car, exceeding industry standards. Our certified technicians examine engine performance, transmission, brakes, electrical systems, AC, body condition, and interior quality. Unlike other platforms, we provide a detailed inspection report with photographic evidence, ensuring complete transparency in our pre-owned luxury car certification process.',
       keywords: 'certified pre-owned cars, used car inspection, quality assurance, pre-owned luxury cars, car certification process',
       icon: "Shield" as const // Use 'as const' to ensure literal type
@@ -66,8 +66,8 @@ const FAQ = () => {
     {
       id: 7,
       category: 'Pricing & Value',
-      question: 'How competitive are EPIC Reassured prices compared to Cars24, Spinny, and OLX?',
-      answer: 'We guarantee the most competitive prices in the market with our Best Price Promise. Our transparent pricing includes all costs with no hidden charges. We regularly benchmark against Cars24, Spinny, CarDekho, and other platforms to ensure 10-15% better value. Additionally, we offer price protection for 30 days and seasonal discounts up to ₹2 lakhs on luxury pre-owned cars.',
+      question: 'How competitive are EPIC Reassured prices compared to others?',
+      answer: 'We guarantee the most competitive prices in the market with our Best Price Promise. Our transparent pricing includes all costs with no hidden charges. We regularly benchmark against other platforms to ensure 10-15% better value. Additionally, we offer price protection for 30 days and seasonal discounts up to ₹2 lakhs on luxury pre-owned cars.',
       keywords: 'best used car prices, competitive pricing, transparent pricing, no hidden charges, price comparison, discount offers',
       icon: "Award" as const
     },
@@ -152,8 +152,7 @@ const FAQ = () => {
             </h2>
             <p className="text-gray-600 font-light max-w-3xl mx-auto leading-relaxed">
               Get answers to the most common questions about our certified pre-owned cars, financing options, 
-              warranty coverage, and why EPIC Reassured is India&apos;s most trusted alternative to Cars24, Spinny, 
-              and other used car platforms.
+              warranty coverage, and why EPIC Reassured is India&apos;s most trusted alternative.
             </p>
             <div className="w-16 h-0.5 bg-gray-900 mx-auto mt-6"></div>
           </header>
@@ -178,7 +177,7 @@ const FAQ = () => {
           {/* Additional SEO Content */}
           <aside className="mt-16 bg-gray-50 border border-gray-200 p-8">
             <h3 className="text-2xl font-light text-gray-900 mb-6 text-center">
-              Why Choose EPIC Reassured Over Cars24 and Spinny?
+              Why Choose EPIC Reassured Over others Brand?
             </h3>
             <div className="grid md:grid-cols-2 gap-8">
               <div>

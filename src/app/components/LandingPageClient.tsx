@@ -12,12 +12,15 @@ import LuxuryLeadForm from '../LandingPage/LuxuryLeadForm';
 import EpicCarsPage from '../LandingPage/ChooseYourJourneySection';
 
 const LandingPageClient = () => {
+  const animationFrameRef = React.useRef<number | null>(null);
   const router = useRouter();
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoveredSide, setHoveredSide] = useState<'luxe' | 'reassured' | null>(null);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [scrollY, setScrollY] = useState(0);
+  const [autoParallax, setAutoParallax] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
   const [isLuxeLoading, setIsLuxeLoading] = useState(false);
   const [isReassuredLoading, setIsReassuredLoading] = useState(false);
@@ -46,8 +49,8 @@ const LandingPageClient = () => {
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isMobile) {
       setMousePosition({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100
+        x: e.clientX,
+        y: e.clientY
       });
     }
   }, [isMobile]);
@@ -56,6 +59,30 @@ const LandingPageClient = () => {
   const checkMobile = useCallback(() => {
     setIsMobile(window.innerWidth < 768);
   }, []);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    // Automatic parallax animation
+    let t = 0;
+    const animateParallax = () => {
+      t += 0.016; // ~60fps
+      setAutoParallax({
+        x: Math.sin(t * 0.3) * 120,
+        y: Math.cos(t * 0.2) * 60
+      });
+      animationFrameRef.current = requestAnimationFrame(animateParallax);
+    };
+    animateParallax();
+    const handleClickOutside = () => {
+      setBuyDropdownOpen(false);
+      setSellDropdownOpen(false);
+    };
+
+    if (buyDropdownOpen || sellDropdownOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [buyDropdownOpen, sellDropdownOpen]);
 
   useEffect(() => {
     // Progressive loading sequence
@@ -83,7 +110,10 @@ const LandingPageClient = () => {
     
     const throttledScroll = () => {
       if (scrollTimeout) clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(handleScroll, 16); // 60fps
+      scrollTimeout = setTimeout(() => {
+        setScrollY(window.scrollY);
+        handleScroll();
+      }, 16); // 60fps
     };
     
     const throttledMouseMove = (e: MouseEvent) => {
@@ -119,6 +149,9 @@ const LandingPageClient = () => {
       clearInterval(messageInterval);
       if (scrollTimeout) clearTimeout(scrollTimeout);
       if (mouseMoveTimeout) clearTimeout(mouseMoveTimeout);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, [handleScroll, handleMouseMove, checkMobile, contentLoaded, whatsappMessages]);
 
@@ -130,6 +163,25 @@ const LandingPageClient = () => {
   const handleReassuredNavigation = () => {
     setIsReassuredLoading(true);
     router.push('/reassured');
+  };
+
+  // Navigation dropdown handlers
+  const handleBuyDropdown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setBuyDropdownOpen(!buyDropdownOpen);
+    setSellDropdownOpen(false);
+  };
+
+  const handleSellDropdown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSellDropdownOpen(!sellDropdownOpen);
+    setBuyDropdownOpen(false);
+  };
+
+  const handleNavigation = (path: string) => {
+    router.push(path);
+    setBuyDropdownOpen(false);
+    setSellDropdownOpen(false);
   };
 
   // Loading skeleton component
@@ -185,9 +237,10 @@ const LandingPageClient = () => {
           </div>
         </div>
       </div>
+
       {/* Premium Navigation Header - Always visible */}
-  <header className="fixed top-0 left-0 right-0 z-[9999] translate-y-0 opacity-100 bg-black/98 backdrop-blur-2xl border-b border-[#D4AF37]/20 shadow-lg transition-all duration-700 ease-out">
-    <nav className="px-6 sm:px-8 lg:px-12 py-2 sm:py-3 z-[10000]" role="navigation" aria-label="Main navigation">
+      <header className="fixed top-0 left-0 right-0 z-[9999] translate-y-0 opacity-100 bg-black/98 backdrop-blur-2xl border-b border-[#D4AF37]/20 shadow-lg transition-all duration-700 ease-out">
+        <nav className="px-6 sm:px-8 lg:px-12 py-2 sm:py-3 relative" role="navigation" aria-label="Main navigation">
           <div className="flex items-center justify-between">
             {/* Logo - Left */}
             <div className={`transition-all duration-1000 transform ${
@@ -195,6 +248,7 @@ const LandingPageClient = () => {
             }`}>
               <h1 
                 className="text-lg sm:text-xl lg:text-2xl font-light tracking-[0.25em] cursor-pointer"
+                onClick={() => router.push('/')}
                 style={{
                   fontFamily: 'Manrope, sans-serif',
                   background: 'linear-gradient(90deg, #D4AF37 0%, #BFA980 100%)',
@@ -209,9 +263,44 @@ const LandingPageClient = () => {
               </h1>
             </div>
 
-            {/* Central Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              {/* Buy Now and Sell Now removed for clean re-addition */}
+            {/* Central Navigation - Buy Now and Sell Now with Dropdowns */}
+            <div className={`hidden md:flex items-center space-x-8 transition-all duration-1000 delay-200 transform ${
+              contentLoaded ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'
+            }`}>
+              
+              {/* Buy Now Dropdown */}
+              <div className="relative">
+                <button 
+                  onClick={handleBuyDropdown}
+                  className="group flex items-center space-x-2 px-6 py-2 text-white hover:text-[#D4AF37] transition-all duration-300 font-medium tracking-wide hover:scale-105"
+                  style={{ fontFamily: 'Manrope, sans-serif' }}
+                  aria-expanded={buyDropdownOpen}
+                  aria-haspopup="true"
+                >
+                  <span className="relative">
+                    Buy Now
+                    <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] group-hover:w-full transition-all duration-300"></div>
+                  </span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${buyDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+              </div>
+
+              {/* Sell Now Dropdown */}
+              <div className="relative">
+                <button 
+                  onClick={handleSellDropdown}
+                  className="group flex items-center space-x-2 px-6 py-2 text-white hover:text-[#D4AF37] transition-all duration-300 font-medium tracking-wide hover:scale-105"
+                  style={{ fontFamily: 'Manrope, sans-serif' }}
+                  aria-expanded={sellDropdownOpen}
+                  aria-haspopup="true"
+                >
+                  <span className="relative">
+                    Sell Now
+                    <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] group-hover:w-full transition-all duration-300"></div>
+                  </span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${sellDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+              </div>
             </div>
 
             {/* Call Now Button - Right */}
@@ -229,6 +318,104 @@ const LandingPageClient = () => {
           </div>
         </nav>
       </header>
+
+      {/* Buy Now Dropdown Portal - Fixed positioning */}
+      {buyDropdownOpen && (
+        <div className="fixed top-16 left-1/2 transform -translate-x-32 z-[99999] w-64 bg-black/95 backdrop-blur-xl border border-[#D4AF37]/20 rounded-xl shadow-2xl transition-all duration-300">
+          <div className="p-2">
+            {/* Epic Luxe Option */}
+            <button
+              onClick={() => handleNavigation('/luxe')}
+              className="group/item w-full text-left p-4 rounded-lg hover:bg-gradient-to-r hover:from-[#D4AF37]/10 hover:to-[#BFA980]/10 transition-all duration-300 hover:scale-[1.02]"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-[#D4AF37] font-semibold text-lg tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                    Epic Luxe
+                  </h3>
+                </div>
+                <ChevronRight className="w-5 h-5 text-[#D4AF37] group-hover/item:translate-x-1 transition-transform duration-300" />
+              </div>
+              <div className="mt-2 flex items-center space-x-2">
+                <Sparkles className="w-3 h-3 text-amber-500/60" />
+                <span className="text-xs text-gray-500 tracking-wider">Exclusive Collection</span>
+              </div>
+            </button>
+            
+            {/* Divider */}
+            <div className="my-2 mx-4 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent"></div>
+            
+            {/* Epic Reassured Option */}
+            <button
+              onClick={() => handleNavigation('/reassured')}
+              className="group/item w-full text-left p-4 rounded-lg hover:bg-gradient-to-r hover:from-gray-800/30 hover:to-gray-700/30 transition-all duration-300 hover:scale-[1.02]"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-white font-semibold text-lg tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                    Epic Reassured
+                  </h3>
+                  
+                </div>
+                <ChevronRight className="w-5 h-5 text-white group-hover/item:translate-x-1 transition-transform duration-300" />
+              </div>
+              <div className="mt-2 flex items-center space-x-2">
+                <Shield className="w-3 h-3 text-gray-500" />
+                <span className="text-xs text-gray-500 tracking-wider">Verified Quality</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Sell Now Dropdown Portal - Fixed positioning */}
+      {sellDropdownOpen && (
+        <div className="fixed top-16 left-1/2 transform translate-x-8 z-[99999] w-64 bg-black/95 backdrop-blur-xl border border-[#D4AF37]/20 rounded-xl shadow-2xl transition-all duration-300">
+          <div className="p-2">
+            {/* Sell to Epic Luxe */}
+            <button
+              onClick={() => handleNavigation('/sell/luxe')}
+              className="group/item w-full text-left p-4 rounded-lg hover:bg-gradient-to-r hover:from-[#D4AF37]/10 hover:to-[#BFA980]/10 transition-all duration-300 hover:scale-[1.02]"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-[#D4AF37] font-semibold text-lg tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                    Sell to Epic Luxe
+                  </h3>
+                </div>
+                <ChevronRight className="w-5 h-5 text-[#D4AF37] group-hover/item:translate-x-1 transition-transform duration-300" />
+              </div>
+              <div className="mt-2 flex items-center space-x-2">
+                <Award className="w-3 h-3 text-amber-500/60" />
+                <span className="text-xs text-gray-500 tracking-wider">Best Prices</span>
+              </div>
+            </button>
+            
+            {/* Divider */}
+            <div className="my-2 mx-4 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent"></div>
+            
+            {/* Sell to Epic Reassured */}
+            <button
+              onClick={() => handleNavigation('/sell/reassured')}
+              className="group/item w-full text-left p-4 rounded-lg hover:bg-gradient-to-r hover:from-gray-800/30 hover:to-gray-700/30 transition-all duration-300 hover:scale-[1.02]"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-white font-semibold text-lg tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                    Sell to Epic Reassured
+                  </h3>
+                 
+                </div>
+                <ChevronRight className="w-5 h-5 text-white group-hover/item:translate-x-1 transition-transform duration-300" />
+              </div>
+              <div className="mt-2 flex items-center space-x-2">
+                <Shield className="w-3 h-3 text-gray-500" />
+                <span className="text-xs text-gray-500 tracking-wider">Hassle Free</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section Container - Desktop horizontal, Mobile vertical */}
       <section 
@@ -254,12 +441,15 @@ const LandingPageClient = () => {
         >
           {/* Cinematic Background */}
           <div className="absolute inset-0 overflow-hidden">
-            {/* Background image with Ken Burns effect - Using Next.js Image for optimization */}
-            <div 
-              className="absolute inset-0 w-[120%] h-[120%] -top-[10%] -left-[10%]"
+            {/* Parallax Background image - Layer 1 (Epic Luxe) */}
+            <div
+              className="absolute inset-0 w-[120%] h-[120%] -top-[10%] -left-[10%] pointer-events-none"
               style={{
-                animation: !isMobile ? 'kenBurnsLeft 25s ease-out infinite alternate' : 'none',
-                transform: !isMobile ? `scale(1.1) translateX(${mousePosition.x * 0.02}px) translateY(${mousePosition.y * 0.02}px)` : 'scale(1.05)'
+                willChange: 'transform',
+                transition: 'transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)',
+                transform: !isMobile
+                  ? `scale(${1.12 + Math.sin(autoParallax.x * 0.01) * 0.04}) translateX(${autoParallax.x + scrollY * 0.12}px) translateY(${autoParallax.y + scrollY * 0.06}px)`
+                  : 'scale(1.05)'
               }}
             >
               <Image
@@ -337,8 +527,6 @@ const LandingPageClient = () => {
               </h3>
             </header>
 
-            {/* Subtext - Responsive sizing */}
-            
             {/* CTA Button - Responsive sizing */}
             <div className={`transition-all duration-1000 delay-300 transform ${
               !isMobile && 'group-hover:-translate-y-2'
@@ -436,12 +624,15 @@ const LandingPageClient = () => {
         >
           {/* Cinematic Background */}
           <div className="absolute inset-0 overflow-hidden">
-            {/* Background image with Ken Burns effect - Using Next.js Image for optimization */}
-            <div 
-              className="absolute inset-0 w-[120%] h-[120%] -top-[10%] -left-[10%]"
+            {/* Parallax Background image - Layer 2 (Epic Reassured) */}
+            <div
+              className="absolute inset-0 w-[120%] h-[120%] -top-[10%] -left-[10%] pointer-events-none"
               style={{
-                animation: !isMobile ? 'kenBurnsRight 25s ease-out infinite alternate' : 'none',
-                transform: !isMobile ? `scale(1.1) translateX(${-mousePosition.x * 0.02}px) translateY(${mousePosition.y * 0.02}px)` : 'scale(1.05)'
+                willChange: 'transform',
+                transition: 'transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)',
+                transform: !isMobile
+                  ? `scale(${1.09 + Math.cos(autoParallax.y * 0.01) * 0.03}) translateX(${autoParallax.x * 0.7 + -scrollY * 0.08}px) translateY(${autoParallax.y * 0.7 + scrollY * 0.03}px)`
+                  : 'scale(1.05)'
               }}
             >
               <Image
@@ -508,9 +699,6 @@ const LandingPageClient = () => {
                 in Every Drive
               </h3>
             </header>
-
-            {/* Subtext - Responsive */}
-            
 
             {/* CTA Button - Responsive */}
             <div className={`transition-all duration-1000 delay-300 transform ${

@@ -7,7 +7,7 @@ import Services from "@/app/components/Services"
 import WhyChooseUsSection from "@/app/components/WhyChooseUsSection"
 import Footer from "@/app/components/Footer"
 import BrowseSection from "../components/BrowseBy"
-import TestimonialsCarousel from "../components/Testimonials"
+
 import HomeAboutContact from "../components/HomeAboutContact"
 
 
@@ -16,8 +16,9 @@ import HomeAboutContact from "../components/HomeAboutContact"
 export default function HomePage(){
   return (
     <main>
-      <Hero/>
       <Header/>
+      <Hero/>
+      
     
       <FeaturedInventory/>
       
@@ -25,7 +26,7 @@ export default function HomePage(){
       <BrowseSection/>
       
       <WhyChooseUsSection/>
-      <TestimonialsCarousel/>
+      
       <HomeAboutContact/>
       <Footer/>
     

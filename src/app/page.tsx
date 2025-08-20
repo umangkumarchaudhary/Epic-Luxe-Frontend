@@ -8,10 +8,10 @@ const generateStructuredData = () => {
     "@graph": [
       {
         "@type": "Organization",
-        "@id": "https://epiccars.com/#organization",
+        "@id": "https://epic-cars.in/#organization",
         "name": "Epic Cars",
-        "url": "https://epiccars.com",
-        "logo": "https://epiccars.com/assets/images/epic-cars-logo.png",
+        "url": "https://epic-cars.in",
+        "logo": "https://epic-cars.in/assets/images/epic-cars-logo.png",
         "description": "Premium used car dealership in India offering luxury and reliable vehicles in Pune, Hyderabad, Nashik, Vizag, and Chennai",
         "address": [
           {
@@ -47,7 +47,7 @@ const generateStructuredData = () => {
         ],
         "contactPoint": {
           "@type": "ContactPoint",
-          "telephone": "+91-XXXXXXXXXX",
+          "telephone": "+91-",
           "contactType": "Customer Service"
         },
         "sameAs": [
@@ -58,10 +58,10 @@ const generateStructuredData = () => {
       },
       {
         "@type": "AutoDealer",
-        "@id": "https://epiccars.com/#autodealer",
+        "@id": "https://epic-cars.in/#autodealer",
         "name": "Epic Cars - Premium Used Car Dealer",
         "description": "Leading used car dealership specializing in luxury and reliable pre-owned vehicles across major Indian cities",
-        "url": "https://epiccars.com",
+        "url": "https://epic-cars.in",
         "priceRange": "₹₹₹₹",
         "paymentAccepted": ["Cash", "Credit Card", "Bank Transfer", "Car Loan"],
         "currenciesAccepted": "INR",
@@ -110,26 +110,26 @@ const generateStructuredData = () => {
       },
       {
         "@type": "WebSite",
-        "@id": "https://epiccars.com/#website",
-        "url": "https://epiccars.com",
+        "@id": "https://epic-cars.in/#website",
+        "url": "https://epic-cars.in",
         "name": "Epic Cars",
-        "description": "Buy premium used cars in India - Epic Luxe for luxury vehicles, Epic Reassured for reliable cars",
+        "description": "Buy premium used cars in India - Epic Luxe for luxury vehicles, Epic Reassured for used cars",
         "inLanguage": "en-IN",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://epiccars.com/search?q={search_term_string}",
+          "target": "https://epic-cars.in/search?q={search_term_string}",
           "query-input": "required name=search_term_string"
         }
       },
       {
         "@type": "BreadcrumbList",
-        "@id": "https://epiccars.com/#breadcrumb",
+        "@id": "https://epic-cars.in/#breadcrumb",
         "itemListElement": [
           {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://epiccars.com"
+            "item": "https://epic-cars.in"
           }
         ]
       }
@@ -204,20 +204,20 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://epiccars.com',
+    url: 'https://epic-cars.in',
     siteName: 'Epic Cars',
     title: 'Epic Cars - Premium Used Cars in India | Luxury & Reliable Pre-owned Vehicles',
     description: 'Buy certified used cars from Epic Cars across Pune, Hyderabad, Nashik, Vizag & Chennai. Epic Luxe for luxury cars, Epic Reassured for reliable vehicles. Quality assured, best prices.',
     images: [
       {
-        url: 'https://epiccars.com/assets/images/epic-cars-og-image.jpg',
+        url: 'https://epic-cars.in/assets/images/epic-cars-og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Epic Cars - Premium Used Car Dealer in India',
         type: 'image/jpeg',
       },
       {
-        url: 'https://epiccars.com/assets/images/luxury-cars-collection.jpg',
+        url: 'https://epic-cars.in/assets/images/luxury-cars-collection.jpg',
         width: 1200,
         height: 630,
         alt: 'Luxury Used Cars Collection - Epic Luxe',
@@ -232,14 +232,14 @@ export const metadata: Metadata = {
     creator: '@epiccars',
     title: 'Epic Cars - Premium Used Cars in India | Pune, Hyderabad, Nashik, Vizag, Chennai',
     description: 'Buy certified luxury & reliable used cars from Epic Cars. Best pre-owned vehicle deals across major Indian cities. Quality guaranteed.',
-    images: ['https://epiccars.com/assets/images/epic-cars-twitter-image.jpg'],
+    images: ['https://epic-cars.in/assets/images/epic-cars-twitter-image.jpg'],
   },
   
   alternates: {
-    canonical: 'https://epiccars.com',
+    canonical: 'https://epic-cars.in',
     languages: {
-      'en-IN': 'https://epiccars.com',
-      'hi-IN': 'https://epiccars.com/hi',
+      'en-IN': 'https://epic-cars.in',
+      'hi-IN': 'https://epic-cars.in/hi',
     },
   },
   
@@ -320,11 +320,11 @@ export default function HomePage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            "@id": "https://epiccars.com/#localbusiness",
+            "@id": "https://epic-cars.in/#localbusiness",
             "name": "Epic Cars",
-            "image": "https://epiccars.com/assets/images/epic-cars-storefront.jpg",
+            "image": "https://epic-cars.in/assets/images/epic-cars-storefront.jpg",
             "telephone": "+91-XXXXXXXXXX",
-            "url": "https://epiccars.com",
+            "url": "https://epic-cars.in",
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "Your Street Address",

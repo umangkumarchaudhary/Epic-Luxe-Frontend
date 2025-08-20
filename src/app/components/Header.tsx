@@ -24,7 +24,7 @@ const cities = [
 ];
 
 const services = [
-  { name: 'Buy Now', icon: Car, href: '/luxe/inventory' },
+  { name: 'Buy Now', icon: Car, href: '/luxe/buy-used-cars' },
   { name: 'Sell Now', icon: Crown, href: '/luxe/services/SellNowYourCar' },
   { name: 'Free Evaluation', icon: Shield, href: '/services/SellNowYourCar' },
   { name: 'Finance', icon: CreditCard, href: '/luxe/services/finance' },
@@ -245,8 +245,8 @@ export default function Header() {
     setSearchQuery(query);
     if (query.length > 2) {
       const mockResults = [
-        { type: 'vehicle' as const, title: 'BMW M3 Competition', category: 'Luxury Cars', href: '/inventory/bmw-m3' },
-        { type: 'vehicle' as const, title: 'Porsche 911 Carrera', category: 'Sports Cars', href: '/inventory/porsche-911' },
+        { type: 'vehicle' as const, title: 'BMW M3 Competition', category: 'Luxury Cars', href: '/buy-used-cars/bmw-m3' },
+        { type: 'vehicle' as const, title: 'Porsche 911 Carrera', category: 'Sports Cars', href: '/buy-used-cars/porsche-911' },
         { type: 'blog' as const, title: 'Best Luxury Cars 2024', category: 'Blog Posts', href: '/insights/blogs/luxury-cars-2024' },
         { type: 'service' as const, title: 'Car Financing Options', category: 'Services', href: '/services/financing' },
       ].filter(
@@ -330,7 +330,7 @@ export default function Header() {
     if (typeof window === 'undefined') return;
     
     const currentPath = window.location.pathname;
-    const isBuySellPage = currentPath.includes('/inventory') || 
+    const isBuySellPage = currentPath.includes('/buy-used-cars') || 
                           currentPath.includes('/sell') || 
                           currentPath.includes('/buy') ||
                           currentPath.includes('/services') ||

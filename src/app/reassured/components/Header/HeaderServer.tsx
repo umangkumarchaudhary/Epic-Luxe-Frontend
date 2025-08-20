@@ -1,6 +1,5 @@
 // HeaderServer.tsx
 import React from 'react';
-import Image from 'next/image';
 import HeaderClient from './HeaderClient';
 
 // SEO-rich metadata for luxury used cars in India

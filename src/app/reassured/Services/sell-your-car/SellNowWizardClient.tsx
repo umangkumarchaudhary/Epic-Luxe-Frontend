@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { Fuel, Zap, Leaf, Car, MapPin, Activity, Phone, Check, Search, Upload, ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 

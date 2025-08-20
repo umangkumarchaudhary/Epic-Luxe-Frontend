@@ -83,8 +83,8 @@ export default function VehicleGridClient({ vehicles }: VehicleGridClientProps) 
 
   const handleShare = useCallback((car: Vehicle) => {
     const shareUrl = car.slug 
-      ? `${window.location.origin}/inventory/${car.slug}`
-      : `${window.location.origin}/inventory/${car.brand.toLowerCase()}-${car.model.toLowerCase()}-${car.year}`.replace(/[^a-z0-9/]/g, '-');
+      ? `${window.location.origin}/reassured/buy-used-cars/${car.slug}`
+      : `${window.location.origin}/reassured/buy-used-cars/${car.brand.toLowerCase()}-${car.model.toLowerCase()}-${car.year}`.replace(/[^a-z0-9/]/g, '-');
     
     if (navigator.share) {
       navigator.share({
@@ -115,13 +115,13 @@ export default function VehicleGridClient({ vehicles }: VehicleGridClientProps) 
           openEMI={() => setEmiOpen({ open: true, car })}
           openDetails={() => {
             if (car.slug) {
-              router.push(`/inventory/${car.slug}`);
+              router.push(`/reassured/buy-used-cars/${car.slug}`);
             } else {
               const fallbackSlug = `${car.brand.toLowerCase()}-${car.model.toLowerCase()}-${car.year}`
                 .replace(/[^a-z0-9]/g, '-')
                 .replace(/-+/g, '-')
                 .trim();
-              router.push(`/inventory/${fallbackSlug}`);
+              router.push(`/reassured/buy-used-cars/${fallbackSlug}`);
             }
           }}
           openSchedule={() => {

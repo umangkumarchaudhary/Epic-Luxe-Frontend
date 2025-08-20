@@ -356,7 +356,7 @@ export default async function VehiclesPage() {
                 <dt>Key Features:</dt>
                 <dd>{vehicle.features.join(', ')}</dd>
               </dl>
-              <a href={`/inventory/${vehicle.slug}`}>View Details</a>
+              <a href={`/reassured/buy-used-cars/${vehicle.slug}`}>View Details</a>
             </article>
           ))}
         </section>
