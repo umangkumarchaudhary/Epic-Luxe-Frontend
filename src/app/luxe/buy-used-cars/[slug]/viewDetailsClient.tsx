@@ -318,7 +318,7 @@ const ImageGallery = React.memo(({ images }: { images: VehicleImage[] }) => {
 ImageGallery.displayName = 'ImageGallery';
 
 // --- MAIN COMPONENT ---
-export function ViewDetailsClient({ vehicleData, slug: _slug }: ViewDetailsClientProps) {
+export function ViewDetailsClient({ vehicleData }: ViewDetailsClientProps) {
   const router = useRouter();
   const { vehicle, images, features } = vehicleData;
 

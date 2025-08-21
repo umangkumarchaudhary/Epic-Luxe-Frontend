@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 
 // Analytics helper with safeguard
@@ -22,6 +23,7 @@ const Section2AboutEpicCars = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     // Scroll handler for parallax
@@ -58,29 +60,6 @@ const Section2AboutEpicCars = () => {
     };
   }, []);
 
-  // Partner brands
-  const partnerBrandImages = [
-    {
-      src: '/assets/images/mercedes-benz-logo.jpg',
-      alt: 'Mercedes-Benz',
-    },
-    {
-      src: '/assets/images/MG-logo.jpg',
-      alt: 'MG',
-    },
-    {
-      src: '/assets/images/toyota-logo.webp',
-      alt: 'Toyota',
-    },
-    {
-      src: '/assets/images/Honda-logo.png',
-      alt: 'Honda',
-    },
-    {
-      src: '/assets/images/ather-logo.avif',
-      alt: 'Ather',
-    },
-  ];
 
   return (
     <>
@@ -168,7 +147,10 @@ const Section2AboutEpicCars = () => {
 
               {/* CTA Button */}
               <button
-                onClick={() => trackEvent('cta_click', 'about_epic_cars', 'discover_collection')}
+                onClick={() => {
+                  trackEvent('cta_click', 'about_epic_cars', 'discover_collection');
+                  router.push('/AboutUs');
+                }}
                 className={`group inline-flex items-center space-x-3 transition-all duration-1000 ease-out hover:scale-[1.02] ${
                   isVisible 
                     ? 'opacity-100 translate-y-0' 
@@ -214,55 +196,31 @@ const Section2AboutEpicCars = () => {
                   boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
                 }}
               >
-                {/* Section label */}
-                <div className="text-center mb-10">
-                  <p 
-                    className="text-xs uppercase tracking-[0.3em] font-light"
+                {/* Main About Us Image */}
+                <div className="flex items-center justify-center">
+                  <div
+                    className={`transition-all duration-1000 ease-out ${
+                      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                    }`}
                     style={{
-                      fontFamily: 'Inter, sans-serif',
-                      color: 'rgba(212, 175, 55, 0.6)'
+                      transitionDelay: '600ms'
                     }}
                   >
-                    Trusted Partners
-                  </p>
-                </div>
-
-                {/* Brand logos grid - FIXED: Removed individual parallax transforms */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-                  {partnerBrandImages.map((brand, index) => (
-                    <div
-                      key={brand.alt}
-                      className={`flex items-center justify-center p-4 rounded-xl transition-all duration-700 hover:scale-105 hover:brightness-110 ${
-                        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                      }`}
+                    <Image
+                      src="/assets/images/mainAboutUs.jpg"
+                      alt="About Epic Cars - Our Brand Story"
+                      width={500}
+                      height={300}
+                      className="rounded-2xl"
                       style={{
-                        transitionDelay: `${600 + (index * 100)}ms`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        minHeight: '90px',
-                        minWidth: '90px',
+                        objectFit: 'cover',
+                        width: '100%',
+                        height: 'auto',
+                        maxWidth: '500px'
                       }}
-                      aria-label={`${brand.alt} partner logo`}
-                    >
-                      <Image
-                        src={brand.src}
-                        alt={brand.alt}
-                        width={90}
-                        height={90}
-                        style={{
-                          objectFit: 'contain',
-                          filter: 'drop-shadow(0 2px 8px #d4af37a0)',
-                          borderRadius: '1rem',
-                          background: 'rgba(255,255,255,0.03)',
-                          padding: '0.5rem',
-                          maxHeight: '70px',
-                          maxWidth: '70px',
-                        }}
-                        priority={index < 2}
-                      />
-                    </div>
-                  ))}
+                      priority
+                    />
+                  </div>
                 </div>
 
                 {/* Bottom accent */}
