@@ -21,7 +21,7 @@ interface ApiError {
 }
 
 // API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
+const API_BASE_URL = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
 
 // API Endpoints
 const API_ENDPOINTS = {
@@ -191,8 +191,8 @@ export default function Inventory() {
       console.log("Deleting vehicle ID:", id);
       await axiosInstance.delete(API_ENDPOINTS.vehicle(id));
       setMessage("Vehicle deleted successfully.");
-      // Re-fetch to update list
-      setViewFilter((prev) => prev);
+      // Remove deleted vehicle from local state immediately
+      setVehicles(prevVehicles => prevVehicles.filter(vehicle => vehicle.id !== id));
     } catch (err) {
       const error = err as AxiosError<ApiError>;
       console.error("Delete vehicle error:", error.message || error);
