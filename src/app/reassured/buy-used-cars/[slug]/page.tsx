@@ -13,7 +13,7 @@ import {
 
 import EMIModal from '../buyComponents/EMIModal/EMIModal';
 import ScheduleDemo from '../buyComponents/Schedule';
-import { RecommendedVehiclesClient } from './recommended-vehicles/RecommendedVehiclesClient';
+import RecommendedVehiclesServer from './recommended-vehicles/RecommendedVehiclesServer';
 
 // --- TYPES ---
 interface VehicleImage {
@@ -873,7 +873,7 @@ export default function VehicleDetailsPage() {
 
         {/* Recommended Vehicles Section */}
         {vehicle && (
-          <RecommendedVehiclesClient
+          <RecommendedVehiclesServer
             currentVehicleId={vehicle.id}
             currentBrand={vehicle.brand}
             currentFuelType={vehicle.fuel_type}

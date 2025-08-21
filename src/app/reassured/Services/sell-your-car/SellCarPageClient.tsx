@@ -579,9 +579,10 @@ const ContactSection: React.FC<{ contactData: ContactData }> = ({ contactData })
 
 // Main Client Component
 export default function SellCarPageClient({ 
+  // benefitsData removed (was unused)
   faqsData, 
   contactData 
-}: Omit<SellCarPageClientProps, 'benefitsData'>) {
+}: SellCarPageClientProps) {
   useEffect(() => {
     // Smooth scrolling behavior
     document.documentElement.style.scrollBehavior = 'smooth';

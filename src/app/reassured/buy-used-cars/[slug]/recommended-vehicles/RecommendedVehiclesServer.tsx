@@ -61,8 +61,9 @@ async function fetchRecommendedVehicles(
       params.append('price_max', currentPriceRange.max.toString());
     }
 
+    const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
     const response = await fetch(
-      `http://localhost:5000/admin/vehicles/recommended?${params.toString()}`,
+      `${baseUrl}/vehicles/recommended?${params.toString()}`,
       { 
         cache: 'no-store' // Ensure fresh data
       }
@@ -71,7 +72,7 @@ async function fetchRecommendedVehicles(
     if (!response.ok) {
       // Fallback to general featured vehicles if recommendation API fails
       const fallbackResponse = await fetch(
-        'http://localhost:5000/admin/vehicles/featured?limit=6',
+        `${baseUrl}/vehicles/featured?limit=6`,
         { cache: 'no-store' }
       );
       
@@ -100,8 +101,9 @@ async function fetchRecommendedVehicles(
     
     // Final fallback: try to get any published vehicles
     try {
+      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
       const fallbackResponse = await fetch(
-        'http://localhost:5000/admin/vehicles?published=true&limit=6',
+        `${baseUrl}/vehicles?published=true&limit=6`,
         { cache: 'no-store' }
       );
       

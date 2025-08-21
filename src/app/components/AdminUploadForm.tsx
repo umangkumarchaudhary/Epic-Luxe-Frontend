@@ -186,8 +186,8 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
       images.forEach((img) => form.append("images", img));
 
       const url = vehicleId
-        ? `http://localhost:5000/admin/vehicle/${vehicleId}`
-        : "http://localhost:5000/admin/upload-vehicle";
+        ? `${process.env.NEXT_PUBLIC_HERO_URL}/vehicle/${vehicleId}`
+        : `${process.env.NEXT_PUBLIC_HERO_URL}/upload-vehicle`;
       const method = vehicleId ? "PUT" : "POST";
 
       const res = await fetch(url, { method, body: form });

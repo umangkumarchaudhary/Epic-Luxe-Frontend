@@ -29,7 +29,7 @@ const API_ENDPOINTS = {
   vehiclesFeatured: `${API_BASE_URL}/vehicles/featured`,
   vehiclesPublished: `${API_BASE_URL}/vehicles/published`,
   vehicle: (id: number) => `${API_BASE_URL}/vehicle/${id}`,
-} as const;
+};
 
 const COLORS = {
   background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)",

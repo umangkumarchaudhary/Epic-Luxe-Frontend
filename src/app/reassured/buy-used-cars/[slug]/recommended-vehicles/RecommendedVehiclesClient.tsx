@@ -39,11 +39,8 @@ interface Vehicle {
 }
 
 interface RecommendedVehiclesClientProps {
+  vehicles: Vehicle[];
   currentVehicleId: number;
-  currentBrand?: string;
-  currentFuelType?: string;
-  currentTransmission?: string;
-  currentPriceRange?: { min: number; max: number };
 }
 
 const formatPrice = (price: number): string => {
@@ -57,146 +54,18 @@ const formatMileage = (mileage: string | undefined): string => {
 };
 
 export function RecommendedVehiclesClient({ 
-  currentVehicleId,
-  currentBrand,
-  currentFuelType,
-  currentTransmission,
-  currentPriceRange
+  vehicles,
+  currentVehicleId
 }: RecommendedVehiclesClientProps) {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [likedVehicles, setLikedVehicles] = useState<Set<number>>(new Set());
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Fetch recommended vehicles
-  React.useEffect(() => {
-    const fetchRecommendedVehicles = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  // Filter out the current vehicle as a safety check
+  const filteredVehicles = vehicles.filter(vehicle => vehicle.id !== currentVehicleId);
 
-        // Build API parameters
-        const params = new URLSearchParams({
-          exclude: currentVehicleId.toString(),
-          limit: '6',
-          published: 'true'
-        });
 
-        // Add filters for better recommendations
-        if (currentBrand) {
-          params.append('brand', currentBrand);
-        }
-        if (currentFuelType) {
-          params.append('fuel_type', currentFuelType);
-        }
-        if (currentTransmission) {
-          params.append('transmission', currentTransmission);
-        }
-        if (currentPriceRange) {
-          params.append('price_min', currentPriceRange.min.toString());
-          params.append('price_max', currentPriceRange.max.toString());
-        }
-
-        const response = await fetch(
-          `http://localhost:5000/admin/vehicles/recommended?${params.toString()}`,
-          { cache: 'no-store' }
-        );
-
-        if (!response.ok) {
-          // Fallback to general featured vehicles if recommendation API fails
-          const fallbackResponse = await fetch(
-            'http://localhost:5000/admin/vehicles/featured?limit=6',
-            { cache: 'no-store' }
-          );
-          
-          if (!fallbackResponse.ok) {
-            throw new Error('Failed to fetch fallback vehicles');
-          }
-          
-          const fallbackData = await fallbackResponse.json();
-          if (fallbackData.success && fallbackData.vehicles) {
-            // Filter out current vehicle from fallback results
-            const filteredVehicles = fallbackData.vehicles
-              .filter((vehicle: Vehicle) => vehicle.id !== currentVehicleId)
-              .slice(0, 6);
-            setVehicles(filteredVehicles);
-          } else {
-            setVehicles([]);
-          }
-          return;
-        }
-
-        const data = await response.json();
-        if (data.success && data.vehicles) {
-          setVehicles(data.vehicles);
-        } else {
-          setVehicles([]);
-        }
-      } catch (error) {
-        console.error('Error fetching recommended vehicles:', error);
-        setError('Failed to load recommendations');
-        
-        // Final fallback: try to get any published vehicles
-        try {
-          const fallbackResponse = await fetch(
-            'http://localhost:5000/admin/vehicles?published=true&limit=6',
-            { cache: 'no-store' }
-          );
-          
-          if (fallbackResponse.ok) {
-            const fallbackData = await fallbackResponse.json();
-            if (fallbackData.success && fallbackData.vehicles) {
-              const filteredVehicles = fallbackData.vehicles
-                .filter((vehicle: Vehicle) => vehicle.id !== currentVehicleId)
-                .slice(0, 6);
-              setVehicles(filteredVehicles);
-              setError(null);
-            }
-          }
-        } catch (fallbackError) {
-          console.error('Error in fallback fetch:', fallbackError);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecommendedVehicles();
-  }, [currentVehicleId, currentBrand, currentFuelType, currentTransmission, currentPriceRange]);
-
-  if (loading) {
-    return (
-      <section className="py-16 px-4 bg-black">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-gray-700 border-t-[#D4AF37] rounded-full animate-spin mx-auto mb-4"></div>
-            <h3 className="text-xl font-bold text-white mb-2 font-manrope">Loading Recommendations</h3>
-            <p className="text-gray-400 font-manrope">Finding vehicles you might like...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error && vehicles.length === 0) {
-    return (
-      <section className="py-16 px-4 bg-black">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-gray-800/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Car size={32} className="text-gray-600" />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2 font-manrope">Unable to Load Recommendations</h3>
-            <p className="text-gray-400 font-manrope">Please try refreshing the page or check back later.</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (!vehicles || vehicles.length === 0) {
+  if (!filteredVehicles || filteredVehicles.length === 0) {
     return (
       <section className="py-16 px-4 bg-black">
         <div className="max-w-7xl mx-auto">
@@ -218,13 +87,13 @@ export function RecommendedVehiclesClient({
 
   const nextSlide = () => {
     setCurrentIndex((prev) => 
-      prev + 3 >= vehicles.length ? 0 : prev + 3
+      prev + 3 >= filteredVehicles.length ? 0 : prev + 3
     );
   };
 
   const prevSlide = () => {
     setCurrentIndex((prev) => 
-      prev - 3 < 0 ? Math.max(0, vehicles.length - 3) : prev - 3
+      prev - 3 < 0 ? Math.max(0, filteredVehicles.length - 3) : prev - 3
     );
   };
 
@@ -241,9 +110,9 @@ export function RecommendedVehiclesClient({
     });
   };
 
-  const visibleVehicles = vehicles.slice(currentIndex, currentIndex + 3);
+  const visibleVehicles = filteredVehicles.slice(currentIndex, currentIndex + 3);
   const canScrollLeft = currentIndex > 0;
-  const canScrollRight = currentIndex + 3 < vehicles.length;
+  const canScrollRight = currentIndex + 3 < filteredVehicles.length;
 
   return (
     <section className="py-16 px-4 bg-black">
@@ -407,7 +276,7 @@ export function RecommendedVehiclesClient({
 
           {/* Mobile Navigation Dots */}
           <div className="lg:hidden flex justify-center mt-8 gap-2">
-            {Array.from({ length: Math.ceil(vehicles.length / 3) }).map((_, index) => (
+            {Array.from({ length: Math.ceil(filteredVehicles.length / 3) }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index * 3)}

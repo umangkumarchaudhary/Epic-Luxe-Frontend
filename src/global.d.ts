@@ -1,3 +1,4 @@
+declare module 'js-cookie';
 // src/global.d.ts
 export {};
 

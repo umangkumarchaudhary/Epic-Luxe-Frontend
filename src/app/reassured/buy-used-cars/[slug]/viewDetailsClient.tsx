@@ -21,10 +21,10 @@ const ScheduleDemo = dynamic(() => import('../buyComponents/Schedule').then(mod 
   ssr: false
 });
 
-const RecommendedVehiclesClient = dynamic(() => 
-  import('./recommended-vehicles/RecommendedVehiclesClient').then(mod => ({ default: mod.RecommendedVehiclesClient })), {
+const RecommendedVehiclesServer = dynamic(() => 
+  import('./recommended-vehicles/RecommendedVehiclesServer'), {
   loading: () => <div className="animate-pulse bg-gray-800 rounded-lg h-64" />,
-  ssr: false
+  ssr: true
 });
 
 interface VehicleImage {
@@ -760,7 +760,7 @@ export default function ViewDetailsClient({ vehicleData }: Props) {
         </div>
       </main>
 
-      <RecommendedVehiclesClient
+      <RecommendedVehiclesServer
         currentVehicleId={vehicle.id}
         currentBrand={vehicle.brand}
         currentFuelType={vehicle.fuel_type}
