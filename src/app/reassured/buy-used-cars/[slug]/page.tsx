@@ -28,6 +28,11 @@ interface VehicleFeature {
   feature: string;
 }
 
+// Define a proper type for features_detailed
+interface FeaturesDetailed {
+  [key: string]: string | number | boolean;
+}
+
 interface VehicleDetails {
   id: number;
   brand: string;
@@ -61,7 +66,7 @@ interface VehicleDetails {
   slug: string;
   created_at: string;
   image_urls?: string[];  // Added for multiple images from backend
-  features_detailed?: any;  // Added for features from backend
+  features_detailed?: FeaturesDetailed | string[];  // Properly typed for features from backend
   is_liked?: boolean;
   views?: number;
 }
@@ -308,8 +313,8 @@ export default function VehicleDetailsPage() {
             }));
           } else if (typeof vehicleData.features_detailed === 'object') {
             try {
-              const featuresArray = Object.values(vehicleData.features_detailed);
-              features = featuresArray.map((feature: any, index: number) => ({
+              const featuresArray = Object.values(vehicleData.features_detailed) as (string | number | boolean)[];
+              features = featuresArray.map((feature, index) => ({
                 id: index + 1,
                 vehicle_id: vehicleData.id,
                 feature: feature.toString()

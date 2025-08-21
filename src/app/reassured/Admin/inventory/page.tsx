@@ -1,8 +1,10 @@
 "use client";
 
+
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import axios, { AxiosError } from "axios";
+
 
 interface Vehicle {
   id: number;
@@ -34,7 +36,7 @@ interface Vehicle {
   video_url?: string;
   published: boolean;
   featured: boolean;
-  features_detailed?: any;
+  features_detailed?: Record<string, unknown>;
   image_urls?: string[];
   is_liked?: boolean;
   views?: number;
@@ -42,13 +44,16 @@ interface Vehicle {
   created_at?: string;
 }
 
+
 interface ApiError {
   message?: string;
   error?: string;
 }
 
+
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+
 
 // API Endpoints for Reassured Vehicles
 const API_ENDPOINTS = {
@@ -57,6 +62,7 @@ const API_ENDPOINTS = {
   vehiclesPublished: `${API_BASE_URL}/reassured-vehicles/published`,
   vehicle: (id: number) => `${API_BASE_URL}/reassured-vehicle/${id}`,
 };
+
 
 const COLORS = {
   background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)",
@@ -81,10 +87,12 @@ const COLORS = {
   errorBg: "#991b1b",
 };
 
+
 interface PaginationStyleProps {
   active: boolean;
   disabled?: boolean;
 }
+
 
 export default function Inventory() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -97,7 +105,9 @@ export default function Inventory() {
   >("all");
   const [currentPage, setCurrentPage] = useState(1);
 
+
   const ITEMS_PER_PAGE = 12;
+
 
   const axiosInstance = useMemo(() => {
     const instance = axios.create();
@@ -118,12 +128,14 @@ export default function Inventory() {
     return instance;
   }, []);
 
+
   // Fetch vehicles depending on the current filter
   useEffect(() => {
     async function fetchVehiclesFiltered() {
       setLoading(true);
       setError(null);
       setMessage(null);
+
 
       try {
         let apiUrl = API_ENDPOINTS.vehicles;
@@ -144,10 +156,12 @@ export default function Inventory() {
     fetchVehiclesFiltered();
   }, [viewFilter, axiosInstance]);
 
+
   // Reset to first page on filter or search change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, viewFilter]);
+
 
   // Clear messages after 5 seconds
   useEffect(() => {
@@ -159,6 +173,7 @@ export default function Inventory() {
       return () => clearTimeout(timer);
     }
   }, [message, error]);
+
 
   // Toggle publish status for a vehicle
   const togglePublished = useCallback(async (vehicle: Vehicle) => {
@@ -186,6 +201,7 @@ export default function Inventory() {
     }
   }, [axiosInstance]);
 
+
   // Toggle featured status with the 6-feature max enforced by backend
   const toggleFeatured = useCallback(async (vehicle: Vehicle) => {
     try {
@@ -211,6 +227,7 @@ export default function Inventory() {
     }
   }, [axiosInstance]);
 
+
   // Delete vehicle handler
   const deleteVehicle = useCallback(async (id: number) => {
     if (!confirm("Are you sure you want to delete this vehicle?")) return;
@@ -227,6 +244,7 @@ export default function Inventory() {
     }
   }, [axiosInstance]);
 
+
   // Client side filtering on search term
   const filteredVehicles = useMemo(() => {
     if (!searchTerm.trim()) return vehicles;
@@ -237,6 +255,7 @@ export default function Inventory() {
     );
   }, [vehicles, searchTerm]);
 
+
   // Filter for draft tab if applicable
   const displayedVehicles = useMemo(() => {
     if (viewFilter === "draft") {
@@ -245,12 +264,14 @@ export default function Inventory() {
     return filteredVehicles;
   }, [filteredVehicles, viewFilter]);
 
+
   // Pagination
   const totalPages = Math.ceil(displayedVehicles.length / ITEMS_PER_PAGE);
   const paginatedVehicles = displayedVehicles.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
+
 
   const paginationStyle = ({ active, disabled = false }: PaginationStyleProps): React.CSSProperties => {
     return {
@@ -266,6 +287,7 @@ export default function Inventory() {
       transition: "all 0.3s ease",
     };
   };
+
 
   return (
     <div
@@ -304,6 +326,7 @@ export default function Inventory() {
           Manage Your Luxury Vehicle Collection
         </p>
       </header>
+
 
       <main style={{ maxWidth: 1400, margin: "0 auto" }}>
         {/* Controls */}
@@ -347,6 +370,7 @@ export default function Inventory() {
             }}
           />
 
+
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: "0 1 auto" }}>
             {(["all", "published", "draft", "featured"] as const).map((filter) => (
               <button
@@ -387,6 +411,7 @@ export default function Inventory() {
             ))}
           </div>
 
+
           <Link href="/reassured/Admin/inventory/vehicle-new" style={{ flex: "0 0 auto" }}>
             <button
               type="button"
@@ -417,6 +442,7 @@ export default function Inventory() {
           </Link>
         </section>
 
+
         {/* Messages */}
         {(message || error) && (
           <div
@@ -440,6 +466,7 @@ export default function Inventory() {
             {message ?? error}
           </div>
         )}
+
 
         {loading ? (
           <div
@@ -533,6 +560,7 @@ export default function Inventory() {
                     </div>
                   )}
 
+
                   <div style={{ paddingTop: v.featured ? 20 : 0 }}>
                     <h2
                       style={{
@@ -581,6 +609,7 @@ export default function Inventory() {
                       </p>
                     </div>
                   </div>
+
 
                   <div
                     style={{
@@ -692,6 +721,7 @@ export default function Inventory() {
               ))}
             </section>
 
+
             {/* Pagination */}
             {totalPages > 1 && (
               <nav
@@ -766,6 +796,7 @@ export default function Inventory() {
           </>
         )}
       </main>
+
 
       <style jsx>{`
         @keyframes slideIn {

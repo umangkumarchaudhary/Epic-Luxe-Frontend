@@ -39,6 +39,11 @@ interface Vehicle {
   created_at: string;
 }
 
+interface ApiResponse {
+  success: boolean;
+  vehicles: Vehicle[];
+}
+
 interface RecommendedVehiclesClientProps {
   vehicles: Vehicle[];
   currentVehicleId: number;
@@ -81,13 +86,13 @@ export function RecommendedVehiclesClient({
             throw new Error('Failed to fetch vehicles');
           }
           
-          const data = await response.json();
+          const data: ApiResponse = await response.json();
           if (data.success && data.vehicles) {
             // Filter out current vehicle and limit to 6
             const filteredVehicles = data.vehicles
               .filter((vehicle: Vehicle) => vehicle.id !== currentVehicleId)
               .slice(0, 6)
-              .map((vehicle: any) => ({
+              .map((vehicle: Vehicle) => ({
                 ...vehicle,
                 image_url: vehicle.image_urls?.[0] || '/placeholder-car.jpg'
               }));

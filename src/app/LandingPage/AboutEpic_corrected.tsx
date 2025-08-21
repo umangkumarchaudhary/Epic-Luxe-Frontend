@@ -207,7 +207,7 @@ const Section2AboutEpicCars = () => {
                     }}
                   >
                     <Image
-                      src="/assets/images/mainAboutUs.jpg"
+                      src="/assets/images/newAboutUs.jpeg"
                       alt="About Epic Cars - Our Brand Story"
                       width={500}
                       height={300}

@@ -38,7 +38,7 @@ export interface BackendVehicle {
   created_at: string;
   updated_at?: string;
   image_urls?: string[];
-  features_detailed?: any;
+  features_detailed?: Record<string, unknown> | string[] | string;
   is_liked?: boolean;
   views?: number;
   // Legacy support for old schema if needed
@@ -142,15 +142,20 @@ function transformBackendToFrontend(backendVehicle: BackendVehicle): FrontendVeh
   // Handle features_detailed or features array
   let features: string[] = [];
   if (backendVehicle.features_detailed) {
-    if (typeof backendVehicle.features_detailed === 'object' && Array.isArray(backendVehicle.features_detailed)) {
-      features = backendVehicle.features_detailed;
+    if (Array.isArray(backendVehicle.features_detailed)) {
+      features = backendVehicle.features_detailed.map(f => String(f));
     } else if (typeof backendVehicle.features_detailed === 'string') {
       try {
         const parsed = JSON.parse(backendVehicle.features_detailed);
-        features = Array.isArray(parsed) ? parsed : [];
+        features = Array.isArray(parsed) ? parsed.map(f => String(f)) : [];
       } catch {
-        features = [];
+        features = [backendVehicle.features_detailed];
       }
+    } else if (typeof backendVehicle.features_detailed === 'object') {
+      // Handle Record<string, unknown> case
+      features = Object.entries(backendVehicle.features_detailed)
+        .map(([key, value]) => `${key}: ${String(value)}`)
+        .filter(Boolean);
     }
   } else if (backendVehicle.features) {
     features = backendVehicle.features.map(f => f.feature);
