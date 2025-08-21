@@ -61,7 +61,7 @@ interface HeaderClientProps {
   };
 }
 
-export default function HeaderClient({ seoData: _seoData }: HeaderClientProps) {
+export default function HeaderClient({}: HeaderClientProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isInsightsOpen, setIsInsightsOpen] = useState(false);

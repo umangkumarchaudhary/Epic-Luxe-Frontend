@@ -20,6 +20,17 @@ interface ApiError {
   error?: string;
 }
 
+// API Configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
+
+// API Endpoints
+const API_ENDPOINTS = {
+  vehicles: `${API_BASE_URL}/vehicles`,
+  vehiclesFeatured: `${API_BASE_URL}/vehicles/featured`,
+  vehiclesPublished: `${API_BASE_URL}/vehicles/published`,
+  vehicle: (id: number) => `${API_BASE_URL}/vehicle/${id}`,
+} as const;
+
 const COLORS = {
   background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)",
   cardBg: "#1a1a1a",
@@ -88,11 +99,11 @@ export default function Inventory() {
       setMessage(null);
 
       try {
-        let apiUrl = "http://localhost:5000/admin/vehicles";
+        let apiUrl = API_ENDPOINTS.vehicles;
         if (viewFilter === "featured") {
-          apiUrl = "http://localhost:5000/admin/vehicles/featured";
+          apiUrl = API_ENDPOINTS.vehiclesFeatured;
         } else if (viewFilter === "published") {
-          apiUrl = "http://localhost:5000/admin/vehicles/published";
+          apiUrl = API_ENDPOINTS.vehiclesPublished;
         }
         const res = await axiosInstance.get<{ vehicles: Vehicle[] }>(apiUrl);
         setVehicles(res.data.vehicles || []);
@@ -128,7 +139,7 @@ export default function Inventory() {
       console.log(
         `Toggling published for vehicle ID: ${vehicle.id}, current: ${vehicle.published}`
       );
-      const url = `http://localhost:5000/admin/vehicle/${vehicle.id}`;
+      const url = API_ENDPOINTS.vehicle(vehicle.id);
       const resp = await axiosInstance.put(url, {
         published: !vehicle.published,
       });
@@ -154,7 +165,7 @@ export default function Inventory() {
       console.log(
         `Toggling featured for vehicle ID: ${vehicle.id}, current: ${vehicle.featured}`
       );
-      const url = `http://localhost:5000/admin/vehicle/${vehicle.id}`;
+      const url = API_ENDPOINTS.vehicle(vehicle.id);
       await axiosInstance.put(url, {
         featured: !vehicle.featured,
       });
@@ -178,7 +189,7 @@ export default function Inventory() {
     if (!confirm("Are you sure you want to delete this vehicle?")) return;
     try {
       console.log("Deleting vehicle ID:", id);
-      await axiosInstance.delete(`http://localhost:5000/admin/vehicle/${id}`);
+      await axiosInstance.delete(API_ENDPOINTS.vehicle(id));
       setMessage("Vehicle deleted successfully.");
       // Re-fetch to update list
       setViewFilter((prev) => prev);

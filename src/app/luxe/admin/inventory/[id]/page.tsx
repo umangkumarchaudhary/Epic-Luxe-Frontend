@@ -3,6 +3,14 @@
 import { useEffect, useState } from "react";
 import AdminUploadForm from '@/app/components/AdminUploadForm';
 
+// API Configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
+
+// API Endpoints
+const API_ENDPOINTS = {
+  vehicle: (id: string) => `${API_BASE_URL}/vehicle/${id}`,
+} as const;
+
 // Define a proper Vehicle type instead of using `any`
 interface Vehicle {
   id: string;
@@ -37,7 +45,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     if (!id) return;
     async function fetchVehicle() {
       try {
-        const res = await fetch(`http://localhost:5000/admin/vehicle/${id}`);
+        const res = await fetch(API_ENDPOINTS.vehicle(id!));
         const data = await res.json();
         if (res.ok) setVehicle(data.vehicle);
         else setError("Vehicle not found");
