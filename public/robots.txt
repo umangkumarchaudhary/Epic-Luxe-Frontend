@@ -18,9 +18,10 @@ Allow: /contact
 Allow: /sell-car
 Allow: /finance
 Allow: /reviews
+Allow: /admin
 
 # 🚫 Disallow admin, technical & duplicate pages
-Disallow: /admin/
+
 Disallow: /api/
 Disallow: /private/
 Disallow: /_next/
