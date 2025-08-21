@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 // Define proper types for vehicle data
 interface VehicleData {
@@ -490,12 +491,11 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
                   backgroundColor: theme.inputBg,
                   aspectRatio: "1",
                 }}>
-                  <img
+                  <Image
                     src={URL.createObjectURL(file)}
                     alt={`Preview ${index + 1}`}
+                    fill
                     style={{
-                      width: "100%",
-                      height: "100%",
                       objectFit: "cover",
                     }}
                     onLoad={(e) => {
@@ -575,7 +575,7 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
               marginTop: 6, 
               fontStyle: "italic" 
             }}>
-              💡 Click "Choose Files" again to add more images from different folders
+              💡 Click &quot;Choose Files&quot; again to add more images from different folders
             </p>
           </div>
         )}
