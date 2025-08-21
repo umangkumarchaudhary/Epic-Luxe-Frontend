@@ -105,6 +105,8 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showAddAnother, setShowAddAnother] = useState(false);
 
   useEffect(() => {
     if (existingData) {
@@ -162,7 +164,68 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
-    setImages(Array.from(e.target.files));
+    const newFiles = Array.from(e.target.files);
+    // Add new files to existing images instead of replacing
+    setImages(prevImages => [...prevImages, ...newFiles]);
+    
+    // Reset the file input so same files can be selected again if needed
+    e.target.value = '';
+  }
+
+  function removeImage(indexToRemove: number) {
+    setImages(prevImages => prevImages.filter((_, index) => index !== indexToRemove));
+  }
+
+  function clearAllImages() {
+    setImages([]);
+    const fileInput = document.getElementById('images') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
+  function resetFormForNewVehicle() {
+    setFormData({
+      brand: "",
+      model: "",
+      variant: "",
+      year: "",
+      price: "",
+      original_price: "",
+      savings: "",
+      mileage: "",
+      fuel_type: "",
+      transmission: "",
+      engine_capacity: "",
+      drivetrain: "",
+      seating: "",
+      horsepower: "",
+      torque: "",
+      location: "",
+      condition: "",
+      ownership: "",
+      health_engine: "",
+      health_tyres: "",
+      health_paint: "",
+      health_interior: "",
+      health_electrical: "",
+      color_exterior: "",
+      color_interior: "",
+      video_url: "",
+      published: false,
+      featured: false,
+      features: "",
+    });
+    setImages([]);
+    setMessage("");
+    setIsSuccess(false);
+    setShowAddAnother(false);
+    
+    // Reset file input
+    const fileInput = document.getElementById('images') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -194,44 +257,16 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
       const data = await res.json();
 
       if (res.ok) {
-        setMessage(vehicleId ? "Vehicle updated successfully" : "Vehicle uploaded successfully");
+        const successMsg = vehicleId ? "Vehicle updated successfully" : "Vehicle uploaded successfully! 🎉";
+        setMessage(successMsg);
+        setIsSuccess(true);
         if (!vehicleId) {
-          // Reset form after new upload
-          setFormData({
-            brand: "",
-            model: "",
-            variant: "",
-            year: "",
-            price: "",
-            original_price: "",
-            savings: "",
-            mileage: "",
-            fuel_type: "",
-            transmission: "",
-            engine_capacity: "",
-            drivetrain: "",
-            seating: "",
-            horsepower: "",
-            torque: "",
-            location: "",
-            condition: "",
-            ownership: "",
-            health_engine: "",
-            health_tyres: "",
-            health_paint: "",
-            health_interior: "",
-            health_electrical: "",
-            color_exterior: "",
-            color_interior: "",
-            video_url: "",
-            published: false,
-            featured: false,
-            features: "",
-          });
-          setImages([]);
+          setShowAddAnother(true);
+          // Don't reset form immediately, let user choose
         }
       } else {
         setMessage("Failed: " + data.error);
+        setIsSuccess(false);
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
@@ -406,9 +441,143 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
           }}
         />
         {images.length > 0 && (
-          <p style={{ color: theme.inputText, marginTop: 6 }}>
-            {images.length} image{images.length > 1 ? "s" : ""} selected
-          </p>
+          <div style={{ marginTop: 12 }}>
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "space-between", 
+              alignItems: "center", 
+              marginBottom: 8 
+            }}>
+              <p style={{ color: theme.inputText, fontWeight: 600, margin: 0 }}>
+                {images.length} image{images.length > 1 ? "s" : ""} selected
+              </p>
+              <button
+                type="button"
+                onClick={clearAllImages}
+                style={{
+                  padding: "4px 8px",
+                  borderRadius: 4,
+                  backgroundColor: "#660000",
+                  border: "1px solid #cc0000",
+                  color: "#fff",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#990000";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#660000";
+                }}
+              >
+                🗑️ Clear All
+              </button>
+            </div>
+            <div style={{ 
+              display: "grid", 
+              gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", 
+              gap: 8,
+              marginTop: 8 
+            }}>
+              {images.slice(0, 8).map((file, index) => (
+                <div key={index} style={{ 
+                  position: "relative",
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  border: `1px solid ${theme.border}`,
+                  backgroundColor: theme.inputBg,
+                  aspectRatio: "1",
+                }}>
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`Preview ${index + 1}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    onLoad={(e) => {
+                      // Clean up object URL after image loads
+                      URL.revokeObjectURL((e.target as HTMLImageElement).src);
+                    }}
+                  />
+                  {/* Remove individual image button */}
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    style={{
+                      position: "absolute",
+                      top: 2,
+                      right: 2,
+                      backgroundColor: "rgba(255,0,0,0.8)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: 18,
+                      height: 18,
+                      fontSize: 10,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 600,
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "rgba(255,0,0,1)";
+                      e.currentTarget.style.transform = "scale(1.1)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "rgba(255,0,0,0.8)";
+                      e.currentTarget.style.transform = "scale(1)";
+                    }}
+                  >
+                    ×
+                  </button>
+                  {/* Image number badge */}
+                  <div style={{
+                    position: "absolute",
+                    bottom: 2,
+                    right: 2,
+                    backgroundColor: "rgba(0,0,0,0.7)",
+                    color: "white",
+                    fontSize: 10,
+                    padding: "2px 4px",
+                    borderRadius: 3,
+                    fontWeight: 600
+                  }}>
+                    {index + 1}
+                  </div>
+                </div>
+              ))}
+              {images.length > 8 && (
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: `1px dashed ${theme.border}`,
+                  borderRadius: 8,
+                  color: theme.inputText,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  aspectRatio: "1",
+                  backgroundColor: theme.inputBg,
+                }}>
+                  +{images.length - 8} more
+                </div>
+              )}
+            </div>
+            <p style={{ 
+              color: "#888", 
+              fontSize: 12, 
+              marginTop: 6, 
+              fontStyle: "italic" 
+            }}>
+              💡 Click "Choose Files" again to add more images from different folders
+            </p>
+          </div>
         )}
       </div>
 
@@ -470,22 +639,88 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
       </div>
 
       {message && (
-        <p
-          style={{
-            gridColumn: "1 / -1",
-            marginTop: 18,
-            padding: "10px",
-            fontWeight: 700,
-            fontSize: 16,
-            textAlign: "center",
-            backgroundColor: message.startsWith("Failed") || message.startsWith("Error") ? "#440000" : "#222222",
-            color: "#fff",
-            borderRadius: 8,
-            userSelect: "none",
-          }}
-        >
-          {message}
-        </p>
+        <div style={{ gridColumn: "1 / -1", marginTop: 18 }}>
+          <p
+            style={{
+              padding: "12px",
+              fontWeight: 700,
+              fontSize: 16,
+              textAlign: "center",
+              backgroundColor: message.startsWith("Failed") || message.startsWith("Error") ? "#440000" : 
+                            isSuccess ? "#1a4f1a" : "#222222",
+              color: "#fff",
+              borderRadius: 8,
+              userSelect: "none",
+              marginBottom: isSuccess && showAddAnother ? "12px" : "0",
+            }}
+          >
+            {message}
+          </p>
+          
+          {isSuccess && showAddAnother && !vehicleId && (
+            <div style={{
+              display: "flex",
+              gap: "12px",
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}>
+              <button
+                onClick={resetFormForNewVehicle}
+                style={{
+                  padding: "12px 24px",
+                  borderRadius: 8,
+                  backgroundColor: "#1a4f1a",
+                  border: "1.5px solid #4ade80",
+                  color: "#fff",
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  letterSpacing: 1,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#22c55e";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#1a4f1a";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                ➕ Add Another Vehicle
+              </button>
+              
+              <button
+                onClick={() => {
+                  setShowAddAnother(false);
+                  setMessage("");
+                }}
+                style={{
+                  padding: "12px 24px",
+                  borderRadius: 8,
+                  backgroundColor: "transparent",
+                  border: "1.5px solid #666",
+                  color: "#ccc",
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  letterSpacing: 1,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "#999";
+                  e.currentTarget.style.color = "#fff";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#666";
+                  e.currentTarget.style.color = "#ccc";
+                }}
+              >
+                ✓ Done
+              </button>
+            </div>
+          )}
+        </div>
       )}
     </form>
   );
