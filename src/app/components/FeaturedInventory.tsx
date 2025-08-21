@@ -143,7 +143,7 @@ const FeaturedInventory: React.FC = () => {
     const fetchVehicles = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/admin/vehicles/featured');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin'}/vehicles/featured`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

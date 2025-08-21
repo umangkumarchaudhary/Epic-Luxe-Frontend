@@ -37,10 +37,18 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     if (!id) return;
     async function fetchVehicle() {
       try {
-        const res = await fetch(`http://localhost:5000/admin/vehicle/${id}`);
+        const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+        console.log("🔍 Frontend: Fetching vehicle details from:", `${baseUrl}/reassured-vehicle/${id}`);
+        const res = await fetch(`${baseUrl}/reassured-vehicle/${id}`);
         const data = await res.json();
-        if (res.ok) setVehicle(data.vehicle);
-        else setError("Vehicle not found");
+        console.log("📋 Frontend: Vehicle data response:", data);
+        if (res.ok) {
+          setVehicle(data.vehicle || data); // Handle both formats
+          console.log("✅ Frontend: Vehicle loaded successfully");
+        } else {
+          console.log("❌ Frontend: Failed to load vehicle:", data);
+          setError("Vehicle not found");
+        }
       } catch {
         setError("Failed to fetch vehicle");
       } finally {

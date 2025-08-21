@@ -73,6 +73,8 @@ export function RecommendedVehiclesClient({
   // Fetch recommended vehicles
   React.useEffect(() => {
     const fetchRecommendedVehicles = async () => {
+      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
+      
       try {
         setLoading(true);
         setError(null);
@@ -98,16 +100,15 @@ export function RecommendedVehiclesClient({
           params.append('price_min', currentPriceRange.min.toString());
           params.append('price_max', currentPriceRange.max.toString());
         }
-
         const response = await fetch(
-          `http://localhost:5000/admin/vehicles/recommended?${params.toString()}`,
+          `${baseUrl}/vehicles/recommended?${params.toString()}`,
           { cache: 'no-store' }
         );
 
         if (!response.ok) {
           // Fallback to general featured vehicles if recommendation API fails
           const fallbackResponse = await fetch(
-            'http://localhost:5000/admin/vehicles/featured?limit=6',
+            `${baseUrl}/vehicles/featured?limit=6`,
             { cache: 'no-store' }
           );
           
@@ -141,7 +142,7 @@ export function RecommendedVehiclesClient({
         // Final fallback: try to get any published vehicles
         try {
           const fallbackResponse = await fetch(
-            'http://localhost:5000/admin/vehicles?published=true&limit=6',
+            `${baseUrl}/vehicles?published=true&limit=6`,
             { cache: 'no-store' }
           );
           

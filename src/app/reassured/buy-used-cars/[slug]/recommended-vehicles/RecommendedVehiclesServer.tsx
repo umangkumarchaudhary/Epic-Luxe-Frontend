@@ -61,7 +61,7 @@ async function fetchRecommendedVehicles(
       params.append('price_max', currentPriceRange.max.toString());
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
+    const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
     const response = await fetch(
       `${baseUrl}/vehicles/recommended?${params.toString()}`,
       { 
@@ -101,7 +101,7 @@ async function fetchRecommendedVehicles(
     
     // Final fallback: try to get any published vehicles
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
+      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
       const fallbackResponse = await fetch(
         `${baseUrl}/vehicles?published=true&limit=6`,
         { cache: 'no-store' }

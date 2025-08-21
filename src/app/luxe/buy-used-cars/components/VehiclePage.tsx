@@ -196,7 +196,8 @@ export default function VehiclesPage() {
         setError(null);
         
         // Fetch vehicles from your backend
-        const response = await fetch('http://localhost:5000/admin/vehicles');
+        const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
+        const response = await fetch(`${baseUrl}/vehicles`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -212,7 +213,7 @@ export default function VehiclesPage() {
         const vehiclesWithDetails = await Promise.all(
           data.vehicles.map(async (vehicle: BackendVehicle) => {
             try {
-              const detailResponse = await fetch(`http://localhost:5000/admin/vehicle/${vehicle.id}`);
+              const detailResponse = await fetch(`${baseUrl}/vehicle/${vehicle.id}`);
               
               if (detailResponse.ok) {
                 const detailData = await detailResponse.json();

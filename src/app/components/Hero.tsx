@@ -400,7 +400,7 @@ export default function LuxuryVehicleHero(): React.ReactElement {
       try {
         setLoadingBanners(true);
         setLoadError('');
-        const res = await fetch('http://localhost:5000/admin/banners');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin'}/banners`);
         if (!res.ok) throw new Error('Failed to fetch banners');
         const json = await res.json();
         // Sort banners by position ascending

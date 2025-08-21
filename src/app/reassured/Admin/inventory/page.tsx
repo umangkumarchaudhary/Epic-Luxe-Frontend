@@ -8,17 +8,55 @@ interface Vehicle {
   id: number;
   brand: string;
   model: string;
+  variant?: string;
   year: number;
   price: number;
-  location: string;
+  original_price?: number;
+  savings?: number;
+  mileage?: number;
+  fuel_type?: string;
+  transmission?: string;
+  seating?: number;
+  location?: string;
+  condition?: string;
+  ownership?: number;
+  health_engine?: number;
+  health_tyres?: number;
+  health_paint?: number;
+  health_interior?: number;
+  health_electrical?: number;
+  color_exterior?: string;
+  color_interior?: string;
+  drivetrain?: string;
+  engine_capacity?: number;
+  horsepower?: number;
+  torque?: number;
+  video_url?: string;
   published: boolean;
   featured: boolean;
+  features_detailed?: any;
+  image_urls?: string[];
+  is_liked?: boolean;
+  views?: number;
+  slug?: string;
+  created_at?: string;
 }
 
 interface ApiError {
   message?: string;
   error?: string;
 }
+
+// API Configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+
+// API Endpoints for Reassured Vehicles
+const API_ENDPOINTS = {
+  vehicles: `${API_BASE_URL}/reassured-vehicles`,
+  vehiclesFeatured: `${API_BASE_URL}/reassured-vehicles/featured`,
+  vehiclesPublished: `${API_BASE_URL}/reassured-vehicles/published`,
+  vehicle: (id: number) => `${API_BASE_URL}/reassured-vehicle/${id}`,
+};
 
 const COLORS = {
   background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)",
@@ -88,11 +126,11 @@ export default function Inventory() {
       setMessage(null);
 
       try {
-        let apiUrl = "http://localhost:5000/admin/vehicles";
+        let apiUrl = API_ENDPOINTS.vehicles;
         if (viewFilter === "featured") {
-          apiUrl = "http://localhost:5000/admin/vehicles/featured";
+          apiUrl = API_ENDPOINTS.vehiclesFeatured;
         } else if (viewFilter === "published") {
-          apiUrl = "http://localhost:5000/admin/vehicles/published";
+          apiUrl = API_ENDPOINTS.vehiclesPublished;
         }
         const res = await axiosInstance.get<{ vehicles: Vehicle[] }>(apiUrl);
         setVehicles(res.data.vehicles || []);
@@ -128,7 +166,7 @@ export default function Inventory() {
       console.log(
         `Toggling published for vehicle ID: ${vehicle.id}, current: ${vehicle.published}`
       );
-      const url = `http://localhost:5000/admin/vehicle/${vehicle.id}`;
+      const url = API_ENDPOINTS.vehicle(vehicle.id);
       const resp = await axiosInstance.put(url, {
         published: !vehicle.published,
       });
@@ -154,7 +192,7 @@ export default function Inventory() {
       console.log(
         `Toggling featured for vehicle ID: ${vehicle.id}, current: ${vehicle.featured}`
       );
-      const url = `http://localhost:5000/admin/vehicle/${vehicle.id}`;
+      const url = API_ENDPOINTS.vehicle(vehicle.id);
       await axiosInstance.put(url, {
         featured: !vehicle.featured,
       });
@@ -178,10 +216,10 @@ export default function Inventory() {
     if (!confirm("Are you sure you want to delete this vehicle?")) return;
     try {
       console.log("Deleting vehicle ID:", id);
-      await axiosInstance.delete(`http://localhost:5000/admin/vehicle/${id}`);
+      await axiosInstance.delete(API_ENDPOINTS.vehicle(id));
       setMessage("Vehicle deleted successfully.");
-      // Re-fetch to update list
-      setViewFilter((prev) => prev);
+      // Remove deleted vehicle from local state immediately
+      setVehicles(prevVehicles => prevVehicles.filter(vehicle => vehicle.id !== id));
     } catch (err) {
       const error = err as AxiosError<ApiError>;
       console.error("Delete vehicle error:", error.message || error);
@@ -260,7 +298,7 @@ export default function Inventory() {
             textTransform: "uppercase",
           }}
         >
-          Epic Luxe Inventory
+          Epic Reassured Inventory
         </h1>
         <p style={{ fontSize: "1.1rem", color: COLORS.textMuted }}>
           Manage Your Luxury Vehicle Collection
@@ -349,7 +387,7 @@ export default function Inventory() {
             ))}
           </div>
 
-          <Link href="/luxe/admin/vehicle-new" style={{ flex: "0 0 auto" }}>
+          <Link href="/reassured/Admin/inventory/vehicle-new" style={{ flex: "0 0 auto" }}>
             <button
               type="button"
               style={{
@@ -596,7 +634,7 @@ export default function Inventory() {
                       {v.featured ? "Unfeature" : "Feature"}
                     </button>
                     
-                    <Link href={`/luxe/admin/vehicle/${v.id}`} style={{ textDecoration: "none" }}>
+                    <Link href={`/reassured/Admin/inventory/${v.id}`} style={{ textDecoration: "none" }}>
                       <button
                         aria-label={`Edit ${v.brand} ${v.model}`}
                         style={{

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { 
@@ -24,13 +24,14 @@ interface Vehicle {
   price: number;
   original_price?: number;
   savings?: number;
-  mileage?: string;
+  mileage?: number | string;  // Can be either number or string
   fuel_type?: string;
   transmission?: string;
   location?: string;
   condition?: string;
-  ownership?: string;
-  image_url: string;
+  ownership?: number | string;  // Can be either number or string
+  image_url?: string;  // Optional since it might come from image_urls
+  image_urls?: string[];  // Array of image URLs from backend
   slug: string;
   views?: number;
   published: boolean;
@@ -47,23 +48,96 @@ const formatPrice = (price: number): string => {
   return price ? `₹${(price / 100000).toFixed(1)} Lakh` : '--';
 };
 
-const formatMileage = (mileage: string | undefined): string => {
+const formatMileage = (mileage: number | string | undefined): string => {
   if (!mileage) return 'N/A';
+  if (typeof mileage === 'number') {
+    return `${mileage.toLocaleString()} km`;
+  }
   const numMileage = parseFloat(mileage);
   return isNaN(numMileage) ? mileage : `${numMileage.toLocaleString()} km`;
 };
 
 export function RecommendedVehiclesClient({ 
-  vehicles,
+  vehicles: initialVehicles,
   currentVehicleId
 }: RecommendedVehiclesClientProps) {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [likedVehicles, setLikedVehicles] = useState<Set<number>>(new Set());
+  const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles);
+  const [loading, setLoading] = useState(initialVehicles.length === 0);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch vehicles if not provided
+  useEffect(() => {
+    if (initialVehicles.length === 0) {
+      const fetchRecommendedVehicles = async () => {
+        try {
+          setLoading(true);
+          const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+          const response = await fetch(`${baseUrl}/reassured-vehicles?limit=6&published=true`);
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch vehicles');
+          }
+          
+          const data = await response.json();
+          if (data.success && data.vehicles) {
+            // Filter out current vehicle and limit to 6
+            const filteredVehicles = data.vehicles
+              .filter((vehicle: Vehicle) => vehicle.id !== currentVehicleId)
+              .slice(0, 6)
+              .map((vehicle: any) => ({
+                ...vehicle,
+                image_url: vehicle.image_urls?.[0] || '/placeholder-car.jpg'
+              }));
+            setVehicles(filteredVehicles);
+          }
+        } catch (err) {
+          console.error('Error fetching recommended vehicles:', err);
+          setError('Failed to load recommendations');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchRecommendedVehicles();
+    }
+  }, [currentVehicleId, initialVehicles.length]);
 
   // Filter out the current vehicle as a safety check
   const filteredVehicles = vehicles.filter(vehicle => vehicle.id !== currentVehicleId);
 
+
+  if (loading) {
+    return (
+      <section className="py-16 px-4 bg-black">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-gray-700 border-t-[#D4AF37] rounded-full animate-spin mx-auto mb-4"></div>
+            <h3 className="text-xl font-bold text-white mb-2 font-manrope">Loading Recommendations</h3>
+            <p className="text-gray-400 font-manrope">Finding vehicles you might like...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error && filteredVehicles.length === 0) {
+    return (
+      <section className="py-16 px-4 bg-black">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-800/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Car size={32} className="text-gray-600" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2 font-manrope">Unable to Load Recommendations</h3>
+            <p className="text-gray-400 font-manrope">Please try refreshing the page or check back later.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   if (!filteredVehicles || filteredVehicles.length === 0) {
     return (

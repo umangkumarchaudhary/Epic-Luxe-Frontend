@@ -29,7 +29,8 @@ interface Vehicle {
 // Server-side data fetching
 async function getVehiclesData() {
   try {
-    const response = await fetch('http://localhost:5000/admin/vehicles/published', {
+    const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+    const response = await fetch(`${baseUrl}/reassured-vehicles/published`, {
       cache: 'no-store',
     });
     const data = await response.json();

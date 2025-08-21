@@ -216,8 +216,9 @@ export default function AdminHeroBanners() {
     setLoadingBanners(true);
     setLoadBannersError("");
     try {
+      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
       const res = await axios.get<{ banners: Banner[] }>(
-        "http://localhost:5000/admin/banners"
+        `${baseUrl}/banners`
       );
       setBanners(res.data.banners);
     } catch (error) {
@@ -357,8 +358,9 @@ export default function AdminHeroBanners() {
         formData.append("cta2_text", newBanners[i].cta2_text);
         formData.append("cta2_url_or_action", newBanners[i].cta2_url_or_action);
 
+        const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
         const res = await axios.post(
-          "http://localhost:5000/admin/upload-hero",
+          `${baseUrl}/upload-hero`,
           formData,
           {
             headers: {
@@ -403,7 +405,8 @@ export default function AdminHeroBanners() {
   const deleteBanner = async (id: number | string) => {
     if (!confirm("Are you sure you want to delete this banner?")) return;
     try {
-      await axios.delete(`http://localhost:5000/admin/delete-hero/${id}`);
+      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+      await axios.delete(`${baseUrl}/delete-hero/${id}`);
       await fetchBanners();
       setGlobalMessage("Banner deleted successfully.");
     } catch (error) {
@@ -503,7 +506,8 @@ export default function AdminHeroBanners() {
         cta2_url_or_action: editState.cta2_url_or_action,
       };
 
-      await axios.put(`http://localhost:5000/admin/update-hero/${id}`, updatePayload);
+      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+      await axios.put(`${baseUrl}/update-hero/${id}`, updatePayload);
       setEditStates((prev) => {
         const copy = { ...prev };
         delete copy[id];

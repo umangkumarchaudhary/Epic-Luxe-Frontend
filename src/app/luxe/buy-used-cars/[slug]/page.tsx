@@ -265,7 +265,8 @@ export default function VehicleDetailsPage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`http://localhost:5000/admin/vehicle/slug/${slug}`);
+        const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
+        const response = await fetch(`${baseUrl}/vehicle/slug/${slug}`);
         if (!response.ok) {
           setError(response.status === 404 ? 'Vehicle not found' : `HTTP error! status: ${response.status}`);
           return;

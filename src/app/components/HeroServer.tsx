@@ -21,7 +21,7 @@ export type Banner = {
 async function getBanners(): Promise<Banner[]> {
   try {
     // In production, replace with your actual API endpoint
-    const res = await fetch('http://localhost:5000/admin/banners', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin'}/banners`, {
       cache: 'no-store', // For dynamic content, use 'force-cache' for static content
     });
     

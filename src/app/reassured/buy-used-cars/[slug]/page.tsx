@@ -13,7 +13,7 @@ import {
 
 import EMIModal from '../buyComponents/EMIModal/EMIModal';
 import ScheduleDemo from '../buyComponents/Schedule';
-import RecommendedVehiclesServer from './recommended-vehicles/RecommendedVehiclesServer';
+import { RecommendedVehiclesClient } from './recommended-vehicles/RecommendedVehiclesClient';
 
 // --- TYPES ---
 interface VehicleImage {
@@ -37,15 +37,17 @@ interface VehicleDetails {
   price: number;
   original_price?: number;
   savings?: number;
-  mileage?: string;
+  mileage?: number;  // Changed from string to number to match backend
   fuel_type?: string;
   transmission?: string;
-  engine_capacity?: string;
-  horsepower?: string;
-  torque?: string;
+  engine_capacity?: number;  // Changed from string to number
+  drivetrain?: string;
+  seating?: number;
+  horsepower?: number;  // Changed from string to number
+  torque?: number;  // Changed from string to number
   location?: string;
   condition?: string;
-  ownership?: string;
+  ownership?: number;  // Changed from string to number
   health_engine?: number;
   health_tyres?: number;
   health_paint?: number;
@@ -53,8 +55,15 @@ interface VehicleDetails {
   health_electrical?: number;
   color_exterior?: string;
   color_interior?: string;
+  video_url?: string;
+  published?: boolean;
+  featured?: boolean;
   slug: string;
   created_at: string;
+  image_urls?: string[];  // Added for multiple images from backend
+  features_detailed?: any;  // Added for features from backend
+  is_liked?: boolean;
+  views?: number;
 }
 
 // --- UTILITIES ---
@@ -263,7 +272,8 @@ export default function VehicleDetailsPage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`http://localhost:5000/admin/vehicle/slug/${slug}`);
+        const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+        const response = await fetch(`${baseUrl}/reassured-vehicle/slug/${slug}`);
         if (!response.ok) {
           setError(response.status === 404 ? 'Vehicle not found' : `HTTP error! status: ${response.status}`);
           return;
@@ -272,9 +282,45 @@ export default function VehicleDetailsPage() {
         const data = await response.json();
         if (!data.success) throw new Error(data.error || 'Failed to fetch vehicle details');
         
-        setVehicle(data.vehicle);
-        setImages(data.images || []);
-        setFeatures(data.features || []);
+        const vehicleData = data.vehicle;
+        setVehicle(vehicleData);
+        
+        // Handle images from the new backend structure
+        if (vehicleData.image_urls && vehicleData.image_urls.length > 0) {
+          // Convert image URLs to the expected format
+          const imageObjects = vehicleData.image_urls.map((url: string, index: number) => ({
+            id: index + 1,
+            vehicle_id: vehicleData.id,
+            image_url: url
+          }));
+          setImages(imageObjects);
+        }
+        
+        // Handle features from the new backend structure
+        if (vehicleData.features_detailed) {
+          let features: VehicleFeature[] = [];
+          
+          if (Array.isArray(vehicleData.features_detailed)) {
+            features = vehicleData.features_detailed.map((feature: string, index: number) => ({
+              id: index + 1,
+              vehicle_id: vehicleData.id,
+              feature: feature
+            }));
+          } else if (typeof vehicleData.features_detailed === 'object') {
+            try {
+              const featuresArray = Object.values(vehicleData.features_detailed);
+              features = featuresArray.map((feature: any, index: number) => ({
+                id: index + 1,
+                vehicle_id: vehicleData.id,
+                feature: feature.toString()
+              }));
+            } catch (e) {
+              console.error('Error parsing features_detailed:', e);
+            }
+          }
+          
+          setFeatures(features);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load vehicle details');
       } finally {
@@ -357,7 +403,7 @@ export default function VehicleDetailsPage() {
           </p>
           <div className="space-y-3">
             <button
-              onClick={() => router.push('/luxe/buy-used-cars')}
+              onClick={() => router.push('/reassured/buy-used-cars')}
               className="w-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-3 rounded-2xl font-semibold hover:shadow-lg hover:shadow-[#D4AF37]/25 transition-all font-manrope"
             >
               Browse All Vehicles
@@ -473,7 +519,11 @@ export default function VehicleDetailsPage() {
                           <Gauge size={20} className="text-[#D4AF37]" />
                           <div>
                             <p className="text-gray-400 text-xs font-manrope">Mileage</p>
-                            <p className="text-white font-bold font-manrope">{vehicle.mileage}</p>
+                            <p className="text-white font-bold font-manrope">
+                              {typeof vehicle.mileage === 'number' 
+                                ? `${vehicle.mileage.toLocaleString()} km` 
+                                : vehicle.mileage}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -605,7 +655,11 @@ export default function VehicleDetailsPage() {
                     {vehicle.ownership && (
                       <div className="flex items-center gap-2 p-3 bg-gray-900/50 rounded-xl border border-gray-700/50 col-span-2">
                         <Users size={16} className="text-[#D4AF37]" />
-                        <span className="text-white font-manrope text-sm">{vehicle.ownership}</span>
+                        <span className="text-white font-manrope text-sm">
+                          {typeof vehicle.ownership === 'number' 
+                            ? `${vehicle.ownership} Owner` 
+                            : vehicle.ownership}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -691,19 +745,31 @@ export default function VehicleDetailsPage() {
                     {vehicle.engine_capacity && (
                       <div className="flex justify-between items-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
                         <span className="text-gray-400 font-manrope">Engine Capacity</span>
-                        <span className="font-bold text-[#D4AF37] font-manrope">{vehicle.engine_capacity}</span>
+                        <span className="font-bold text-[#D4AF37] font-manrope">
+                          {typeof vehicle.engine_capacity === 'number' 
+                            ? `${vehicle.engine_capacity}L` 
+                            : vehicle.engine_capacity}
+                        </span>
                       </div>
                     )}
                     {vehicle.horsepower && (
                       <div className="flex justify-between items-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
                         <span className="text-gray-400 font-manrope">Power Output</span>
-                        <span className="font-bold text-[#D4AF37] font-manrope">{vehicle.horsepower}</span>
+                        <span className="font-bold text-[#D4AF37] font-manrope">
+                          {typeof vehicle.horsepower === 'number' 
+                            ? `${vehicle.horsepower} HP` 
+                            : vehicle.horsepower}
+                        </span>
                       </div>
                     )}
                     {vehicle.torque && (
                       <div className="flex justify-between items-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
                         <span className="text-gray-400 font-manrope">Torque</span>
-                        <span className="font-bold text-[#D4AF37] font-manrope">{vehicle.torque}</span>
+                        <span className="font-bold text-[#D4AF37] font-manrope">
+                          {typeof vehicle.torque === 'number' 
+                            ? `${vehicle.torque} Nm` 
+                            : vehicle.torque}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -873,15 +939,9 @@ export default function VehicleDetailsPage() {
 
         {/* Recommended Vehicles Section */}
         {vehicle && (
-          <RecommendedVehiclesServer
+          <RecommendedVehiclesClient
+            vehicles={[]} // Empty initially, will be fetched by the client component
             currentVehicleId={vehicle.id}
-            currentBrand={vehicle.brand}
-            currentFuelType={vehicle.fuel_type}
-            currentTransmission={vehicle.transmission}
-            currentPriceRange={{
-              min: Math.max(0, vehicle.price - (vehicle.price * 0.3)),
-              max: vehicle.price + (vehicle.price * 0.3)
-            }}
           />
         )}
 
@@ -932,10 +992,14 @@ export default function VehicleDetailsPage() {
               price: vehicle.price.toString(),
               originalPrice: vehicle.original_price?.toString() || vehicle.price.toString(),
               image: images[0]?.image_url || '/placeholder-car.jpg',
-              mileage: vehicle.mileage || 'N/A',
+              mileage: vehicle.mileage 
+                ? (typeof vehicle.mileage === 'number' 
+                   ? `${vehicle.mileage.toLocaleString()} km` 
+                   : vehicle.mileage)
+                : 'N/A',
               fuelType: vehicle.fuel_type || 'Petrol',
-              transmission: vehicle.transmission,
-              seating: 5, // Default value as it's not in VehicleDetails
+              transmission: vehicle.transmission || 'Manual',
+              seating: vehicle.seating || 5,
               location: vehicle.location || 'India',
               condition: vehicle.condition || 'Excellent',
               features: features.map(f => f.feature),

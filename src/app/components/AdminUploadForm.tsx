@@ -233,6 +233,10 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+    console.log("🚀 Frontend: Starting form submission...");
+    console.log("📝 Form data:", formData);
+    console.log("📷 Images count:", images.length);
+    
     try {
       const form = new FormData();
 
@@ -250,12 +254,18 @@ export default function AdminUploadForm({ existingData, vehicleId }: Props) {
       images.forEach((img) => form.append("images", img));
 
       const url = vehicleId
-        ? `${process.env.NEXT_PUBLIC_HERO_URL}/vehicle/${vehicleId}`
-        : `${process.env.NEXT_PUBLIC_HERO_URL}/upload-vehicle`;
+        ? `${process.env.NEXT_PUBLIC_HERO_URL}/reassured-vehicle/${vehicleId}`
+        : `${process.env.NEXT_PUBLIC_HERO_URL}/upload-reassured-vehicle`;
       const method = vehicleId ? "PUT" : "POST";
 
+      console.log("🌐 Frontend: Making request to:", url);
+      console.log("📤 Frontend: Method:", method);
+      
       const res = await fetch(url, { method, body: form });
+      console.log("📥 Frontend: Response status:", res.status);
+      
       const data = await res.json();
+      console.log("📋 Frontend: Response data:", data);
 
       if (res.ok) {
         const successMsg = vehicleId ? "Vehicle updated successfully" : "Vehicle uploaded successfully! 🎉";

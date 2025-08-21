@@ -3,7 +3,7 @@ import React from 'react';
 import VehiclesPageClient from './VehiclePage';
 import { Metadata } from 'next';
 
-// Backend vehicle type
+// Backend vehicle type for reassured vehicles
 export interface BackendVehicle {
   id: number;
   brand: string;
@@ -13,15 +13,17 @@ export interface BackendVehicle {
   price: number;
   original_price?: number;
   savings?: number;
-  mileage?: string;
+  mileage?: number;
   fuel_type?: string;
   transmission?: string;
-  engine_capacity?: string;
-  horsepower?: string;
-  torque?: string;
+  engine_capacity?: number;
+  drivetrain?: string;
+  seating?: number;
+  horsepower?: number;
+  torque?: number;
   location?: string;
   condition?: string;
-  ownership?: string;
+  ownership?: number;
   health_engine?: number;
   health_tyres?: number;
   health_paint?: number;
@@ -35,6 +37,11 @@ export interface BackendVehicle {
   slug: string;
   created_at: string;
   updated_at?: string;
+  image_urls?: string[];
+  features_detailed?: any;
+  is_liked?: boolean;
+  views?: number;
+  // Legacy support for old schema if needed
   images?: Array<{
     id: number;
     vehicle_id: number;
@@ -125,19 +132,29 @@ function formatPrice(price: number): string {
 
 // Transform backend to frontend format
 function transformBackendToFrontend(backendVehicle: BackendVehicle): FrontendVehicle {
-  const primaryImage = backendVehicle.images && backendVehicle.images.length > 0 
-    ? backendVehicle.images.sort((a, b) => a.sort_order - b.sort_order)[0].image_url
+  // Handle image_urls array from reassured vehicles backend
+  const primaryImage = backendVehicle.image_urls && backendVehicle.image_urls.length > 0
+    ? backendVehicle.image_urls[0]
     : '/placeholder-car.jpg';
 
-  const allImages = backendVehicle.images 
-    ? backendVehicle.images
-        .sort((a, b) => a.sort_order - b.sort_order)
-        .map(img => img.image_url)
-    : [];
+  const allImages = backendVehicle.image_urls || [];
 
-  const features = backendVehicle.features 
-    ? backendVehicle.features.map(f => f.feature)
-    : [];
+  // Handle features_detailed or features array
+  let features: string[] = [];
+  if (backendVehicle.features_detailed) {
+    if (typeof backendVehicle.features_detailed === 'object' && Array.isArray(backendVehicle.features_detailed)) {
+      features = backendVehicle.features_detailed;
+    } else if (typeof backendVehicle.features_detailed === 'string') {
+      try {
+        const parsed = JSON.parse(backendVehicle.features_detailed);
+        features = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        features = [];
+      }
+    }
+  } else if (backendVehicle.features) {
+    features = backendVehicle.features.map(f => f.feature);
+  }
 
   return {
     id: backendVehicle.id,
@@ -148,15 +165,15 @@ function transformBackendToFrontend(backendVehicle: BackendVehicle): FrontendVeh
     price: formatPrice(backendVehicle.price),
     originalPrice: backendVehicle.original_price ? formatPrice(backendVehicle.original_price) : undefined,
     savings: backendVehicle.savings ? formatPrice(backendVehicle.savings) : undefined,
-    mileage: backendVehicle.mileage || '0 km',
+    mileage: backendVehicle.mileage ? `${backendVehicle.mileage.toLocaleString()} km` : '0 km',
     fuelType: backendVehicle.fuel_type || 'Petrol',
     transmission: backendVehicle.transmission || 'Manual',
-    engineCapacity: backendVehicle.engine_capacity,
-    horsepower: backendVehicle.horsepower,
-    torque: backendVehicle.torque,
+    engineCapacity: backendVehicle.engine_capacity ? `${backendVehicle.engine_capacity}L` : undefined,
+    horsepower: backendVehicle.horsepower ? `${backendVehicle.horsepower} HP` : undefined,
+    torque: backendVehicle.torque ? `${backendVehicle.torque} Nm` : undefined,
     location: backendVehicle.location || 'Mumbai',
     condition: backendVehicle.condition || 'Excellent',
-    ownership: backendVehicle.ownership,
+    ownership: backendVehicle.ownership ? `${backendVehicle.ownership} Owner` : undefined,
     colorExterior: backendVehicle.color_exterior,
     colorInterior: backendVehicle.color_interior,
     image: primaryImage,
@@ -167,14 +184,15 @@ function transformBackendToFrontend(backendVehicle: BackendVehicle): FrontendVeh
     views: Math.floor(Math.random() * 500) + 100,
     bodyType: 'Sedan',
     driveType: 'FWD',
-    seating: 5,
+    seating: backendVehicle.seating || 5,
   };
 }
 
 // Server-side data fetching
 async function getVehicles(): Promise<FrontendVehicle[]> {
   try {
-    const response = await fetch('http://localhost:5000/admin/vehicles', {
+    const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+    const response = await fetch(`${baseUrl}/reassured-vehicles`, {
       next: { revalidate: 300 }, // Revalidate every 5 minutes
       cache: 'no-store' // For real-time data
     });
@@ -189,42 +207,8 @@ async function getVehicles(): Promise<FrontendVehicle[]> {
       throw new Error(data.error || 'Failed to fetch vehicles');
     }
 
-    // Transform vehicles
-    const vehiclesWithDetails = await Promise.all(
-      data.vehicles.map(async (vehicle: BackendVehicle) => {
-        try {
-          const detailResponse = await fetch(`http://localhost:5000/admin/vehicle/${vehicle.id}`, {
-            next: { revalidate: 300 }
-          });
-          
-          if (detailResponse.ok) {
-            const detailData = await detailResponse.json();
-            if (detailData.success) {
-              return {
-                ...vehicle,
-                images: detailData.images || [],
-                features: detailData.features || []
-              };
-            }
-          }
-          
-          return {
-            ...vehicle,
-            images: [],
-            features: []
-          };
-        } catch (err) {
-          console.error(`Error fetching details for vehicle ${vehicle.id}:`, err);
-          return {
-            ...vehicle,
-            images: [],
-            features: []
-          };
-        }
-      })
-    );
-
-    return vehiclesWithDetails.map(transformBackendToFrontend);
+    // The reassured vehicles API returns all data in one call, no need for individual detail calls
+    return data.vehicles.map((vehicle: BackendVehicle) => transformBackendToFrontend(vehicle));
   } catch (error) {
     console.error('Error fetching vehicles:', error);
     return [];

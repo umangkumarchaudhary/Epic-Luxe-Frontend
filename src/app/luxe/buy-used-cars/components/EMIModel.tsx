@@ -135,8 +135,9 @@ const EMIModal: React.FC<EMIModalProps> = ({ visible, onClose, vehicle }) => {
     };
 
     try {
-      // Mock API call — replace URL with your actual endpoint
-      const response = await fetch('https://your-api.example.com/loanApplications', {
+      // API call to hosted backend server
+      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
+      const response = await fetch(`${baseUrl}/loan-applications`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSave),
