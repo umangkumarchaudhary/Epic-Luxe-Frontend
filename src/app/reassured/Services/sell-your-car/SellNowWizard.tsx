@@ -148,9 +148,7 @@ const brands: Brand[] = Object.keys(luxuryCars).map(brandName => ({
   logo: getBrandLogo(brandName),
 }));
 
-// Server-side utility functions
-const normalizeCityName = (name: string): string =>
-  name.replace(/\s+/g, '').toLowerCase().replace('ahmedabad', 'ahemdabad');
+
 
 // Server Component - SEO Friendly
 const SellNowWizard: React.FC<SellNowWizardProps> = ({ compact, largeButtons }) => {

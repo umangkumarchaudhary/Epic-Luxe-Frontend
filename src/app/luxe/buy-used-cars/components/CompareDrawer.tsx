@@ -73,7 +73,7 @@ export default function CompareDrawer({
     if (isDifferent) {
       setImageSources(newImageSources);
     }
-  }, [vehicles]);
+    }, [vehicles, imageSources]);
 
   const handleImageError = (vehicleId: number) => {
     setImageSources(prev => ({

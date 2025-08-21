@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic';
 import {
   ArrowLeft, Calendar, Calculator, Share2, Heart, Phone, MapPin, Fuel,
   Settings, Gauge, Car, Shield, Award, Eye, ChevronLeft, ChevronRight,
-  MessageCircle, Users, Zap
+  MessageCircle, Users
 } from 'lucide-react';
 
 // Dynamic imports for better performance
@@ -318,7 +318,7 @@ const ImageGallery = React.memo(({ images }: { images: VehicleImage[] }) => {
 ImageGallery.displayName = 'ImageGallery';
 
 // --- MAIN COMPONENT ---
-export function ViewDetailsClient({ vehicleData, slug }: ViewDetailsClientProps) {
+export function ViewDetailsClient({ vehicleData, slug: _slug }: ViewDetailsClientProps) {
   const router = useRouter();
   const { vehicle, images, features } = vehicleData;
 

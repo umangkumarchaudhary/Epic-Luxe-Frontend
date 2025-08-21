@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  ChevronRight, Shield, Clock, Award, Star, ArrowRight, 
-  Phone, Mail, MapPin, ChevronDown, Check, TrendingUp,
-  Users, Car, FileText, CreditCard, ChevronLeft
+ Star, ArrowRight, 
+  Phone, Mail, MapPin, ChevronDown, Check,
+  Users, Car, FileText, CreditCard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../../components/Header/HeaderServer';
@@ -38,46 +38,17 @@ interface SellCarPageClientProps {
 }
 
 // Icon mapping - Map string names to actual icon components
-const iconMap = {
-  Shield,
-  Clock,
-  Award,
-  Star,
-  Phone,
-  Mail,
-  MapPin,
-  Check,
-  TrendingUp,
-  Users,
-  Car,
-  FileText,
-  CreditCard,
-  ChevronRight,
-  ArrowRight,
-  ChevronDown,
-  ChevronLeft
-};
+// ...existing code...
 
 // Enhanced Hero Section with Background Integration
 const HeroSection = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showError, setShowError] = useState(false);
-  const [currentStat, setCurrentStat] = useState(0);
+  // ...existing code...
 
   // Animated statistics
-  const stats = [
-    { value: "50,000+", label: "Cars Sold", color: "from-blue-400 to-blue-600" },
-    { value: "4.9★", label: "Google Rating", color: "from-yellow-400 to-orange-500" },
-    { value: "24 Hrs", label: "Quick Sale", color: "from-green-400 to-emerald-600" },
-    { value: "₹50K+", label: "Extra Value", color: "from-purple-400 to-pink-600" }
-  ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentStat((prev) => (prev + 1) % stats.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [stats.length]);
+
 
   const handleQuickStart = () => {
     if (phoneNumber.length !== 10) {
@@ -90,18 +61,16 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black" style={{ marginTop: '20px', minHeight: 'calc(100vh - 20px)' }}>
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-black font-manrope" style={{ marginTop: '20px', minHeight: 'calc(100vh - 20px)' }}>
       {/* Dynamic Background with Overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/assets/images/epicreassuredsell.png')`,
+          backgroundImage: `url('/assets/images/sell your car banner.jpg')`,
         }}
       >
-        {/* Multi-layered Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50"></div>
+        {/* Black overlay for B&W theme */}
+        <div className="absolute inset-0 bg-black/80"></div>
       </div>
 
       {/* Animated Background Elements */}
@@ -125,13 +94,13 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-2xl"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-2xl font-manrope"
             >
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
-              <span className="text-xs sm:text-sm font-medium text-white/90">Trusted by 50,000+ customers</span>
+              <span className="text-xs sm:text-sm font-medium text-green-400">Trusted by 50,000+ customers</span>
               <div className="flex space-x-0.5">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                  <Star key={i} className="w-3 h-3 fill-green-400 text-green-400" />
                 ))}
               </div>
             </motion.div>
@@ -141,10 +110,10 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-manrope"
             >
               <span className="block text-white drop-shadow-2xl">Sell Your Car in</span>
-              <span className="block bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl">
+              <span className="block bg-gradient-to-r from-[#D4AF37] to-[#F4E076] bg-clip-text text-transparent drop-shadow-2xl">
                 Just 24 Hours
               </span>
             </motion.h1>
@@ -154,12 +123,10 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="text-base sm:text-lg md:text-xl text-white/90 drop-shadow-lg"
+              className="text-base sm:text-lg md:text-xl text-white/90 drop-shadow-lg font-manrope"
             >
-              Get up to{' '}
-              <span className="font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
-                ₹50,000 more
-              </span>{' '}
+              Get{' '}
+              <span className="font-bold text-white">more valuation value</span>{' '}
               than traditional dealers.
               <br className="hidden sm:block" />
               <span className="text-white/80 text-sm sm:text-base">Free inspection, instant payment, zero hassle.</span>
@@ -170,9 +137,9 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="bg-white/10 backdrop-blur-xl p-4 sm:p-6 rounded-2xl shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300"
+              className="bg-white/10 backdrop-blur-xl p-4 sm:p-6 rounded-none shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 font-manrope"
             >
-              <h3 className="font-semibold text-white mb-4 text-base sm:text-lg">Get Instant Valuation</h3>
+              <h3 className="font-semibold text-white mb-4 text-base sm:text-lg font-manrope">Get Instant Valuation</h3>
               <div className="space-y-3">
                 <div>
                   <input
@@ -183,7 +150,7 @@ const HeroSection = () => {
                       setShowError(false);
                     }}
                     placeholder="Enter your mobile number"
-                    className={`w-full px-4 py-3 bg-white/20 backdrop-blur-md border rounded-xl focus:outline-none focus:ring-2 focus:ring-white/50 text-white placeholder-white/60 transition-all duration-300 text-sm sm:text-base ${
+                    className={`w-full px-4 py-3 bg-white/20 backdrop-blur-md border rounded-none focus:outline-none focus:ring-2 focus:ring-white/50 text-white placeholder-white/60 transition-all duration-300 text-sm sm:text-base font-manrope ${
                       showError ? 'border-red-400 ring-2 ring-red-400/50' : 'border-white/30 hover:border-white/50'
                     }`}
                   />
@@ -191,7 +158,7 @@ const HeroSection = () => {
                     <motion.p
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="text-red-300 text-xs mt-2"
+                      className="text-red-300 text-xs mt-2 font-manrope"
                     >
                       Please enter a valid 10-digit number
                     </motion.p>
@@ -199,7 +166,7 @@ const HeroSection = () => {
                 </div>
                 <button
                   onClick={handleQuickStart}
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-orange-500/25 flex items-center justify-center gap-2 text-sm sm:text-base"
+                  className="w-full bg-white text-black py-3 px-6 rounded-none font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl flex items-center justify-center gap-2 text-sm sm:text-base font-manrope border border-black"
                 >
                   <span>Get Started</span>
                   <ArrowRight className="w-4 h-4" />
@@ -212,7 +179,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.9 }}
-              className="flex flex-wrap gap-4 sm:gap-6"
+              className="flex flex-wrap gap-4 sm:gap-6 font-manrope"
             >
               {[
                 { icon: Check, text: "Free Inspection" },
@@ -236,68 +203,9 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="relative"
           >
-            {/* Floating Stats Cards */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
-                  className={`relative group cursor-pointer ${
-                    currentStat === index ? 'transform scale-105' : ''
-                  } transition-all duration-500`}
-                >
-                  {/* Glow Effect */}
-                  {currentStat === index && (
-                    <div className={`absolute -inset-0.5 bg-gradient-to-r ${stat.color} rounded-xl blur-lg opacity-75 group-hover:opacity-100 transition duration-1000`}></div>
-                  )}
-                  
-                  {/* Card Content */}
-                  <div className="relative bg-white/10 backdrop-blur-xl p-4 sm:p-6 rounded-xl shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300">
-                    <div className={`text-2xl sm:text-3xl font-bold mb-2 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
-                      {stat.value}
-                    </div>
-                    <div className="text-white/80 font-medium text-xs sm:text-sm">{stat.label}</div>
-                    
-                    {/* Animated Progress Bar */}
-                    {currentStat === index && (
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: 3 }}
-                        className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r ${stat.color} rounded-b-xl`}
-                      />
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            
 
-            {/* Floating Call-to-Action - More compact */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.2 }}
-              className="mt-4 sm:mt-6 text-center"
-            >
-              <div className="bg-white/5 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-white/10">
-                <p className="text-white/80 mb-3 text-sm">Need immediate assistance?</p>
-                <div className="flex gap-2 sm:gap-3 justify-center">
-                  <button
-                    onClick={() => window.location.href = 'tel:18001234567'}
-                    className="flex items-center gap-2 bg-white/20 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-white/30 transition-all duration-300 backdrop-blur-md text-xs sm:text-sm"
-                  >
-                    <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
-                    <span className="hidden sm:inline">Call Now</span>
-                    <span className="sm:hidden">Call</span>
-                  </button>
-                  <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 text-xs sm:text-sm">
-                    Live Chat
-                  </button>
-                </div>
-              </div>
-            </motion.div>
+            
           </motion.div>
         </div>
 
@@ -376,7 +284,7 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-white">
+  <section className="py-20 bg-white font-manrope">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -421,47 +329,6 @@ const HowItWorksSection = () => {
   );
 };
 
-// Benefits Section - Updated to handle string icon names
-const BenefitsSection: React.FC<{ benefits: Benefit[] }> = ({ benefits }) => {
-  return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Why Choose Us?
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Experience the difference of working with India&apos;s most trusted car selling platform
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {benefits.map((benefit, index) => {
-            // Get the icon component from the icon map using the string name
-            const Icon = iconMap[benefit.icon as keyof typeof iconMap] || Shield;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-gray-200"
-              >
-                <div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
-                  <Icon className="w-7 h-7 text-black" />
-                </div>
-                <div className="text-2xl font-bold text-black mb-2">{benefit.stat}</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{benefit.title}</h3>
-                <p className="text-gray-600 text-sm">{benefit.description}</p>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-};
 
 // Testimonials Section
 const TestimonialsSection = () => {
@@ -493,7 +360,7 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-white">
+  <section className="py-20 bg-white font-manrope">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -539,7 +406,7 @@ const FAQSection: React.FC<{ faqs: FAQ[] }> = ({ faqs }) => {
   const [openFAQ, setOpenFAQ] = useState<number | null>(0);
 
   return (
-    <section className="py-20 bg-white">
+  <section className="py-20 bg-white font-manrope">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -597,7 +464,7 @@ const FAQSection: React.FC<{ faqs: FAQ[] }> = ({ faqs }) => {
 // CTA Banner Section
 const CTABanner = () => {
   return (
-    <section className="py-16 bg-black">
+  <section className="py-16 bg-black font-manrope">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="text-white">
@@ -610,13 +477,13 @@ const CTABanner = () => {
                 const element = document.getElementById('sell-wizard');
                 element?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-white text-black px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+              className="bg-white text-black px-6 py-3 rounded-none font-medium hover:bg-gray-100 transition-colors border border-black font-manrope"
             >
               Sell Now
             </button>
             <a
               href="tel:18001234567"
-              className="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-black transition-all flex items-center gap-2"
+              className="border border-white text-white px-6 py-3 rounded-none font-medium hover:bg-white hover:text-black transition-all flex items-center gap-2 font-manrope"
             >
               <Phone className="w-4 h-4" />
               Call Us
@@ -631,7 +498,7 @@ const CTABanner = () => {
 // Contact Section
 const ContactSection: React.FC<{ contactData: ContactData }> = ({ contactData }) => {
   return (
-    <section className="py-20 bg-gray-50">
+  <section className="py-20 bg-gray-50 font-manrope">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -712,10 +579,9 @@ const ContactSection: React.FC<{ contactData: ContactData }> = ({ contactData })
 
 // Main Client Component
 export default function SellCarPageClient({ 
-  benefitsData, 
   faqsData, 
   contactData 
-}: SellCarPageClientProps) {
+}: Omit<SellCarPageClientProps, 'benefitsData'>) {
   useEffect(() => {
     // Smooth scrolling behavior
     document.documentElement.style.scrollBehavior = 'smooth';
@@ -726,7 +592,7 @@ export default function SellCarPageClient({
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white font-manrope">
       <Header />
       
       {/* Enhanced Hero Section with Background Integration */}
@@ -737,7 +603,7 @@ export default function SellCarPageClient({
       <HowItWorksSection />
       
       {/* Benefits Section */}
-      <BenefitsSection benefits={benefitsData} />
+   
       
       {/* Testimonials */}
       <TestimonialsSection />

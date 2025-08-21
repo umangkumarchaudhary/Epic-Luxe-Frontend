@@ -12,11 +12,16 @@ import {
   Eye,
   DollarSign,
   ChevronRight,
+  Monitor,
+  Smartphone,
+  Upload,
+  X,
 } from "lucide-react";
 
 interface Banner {
   id: number | string;
   image_url: string;
+  mobile_image_url?: string;
   title: string;
   subtitle: string;
   badge: string;
@@ -29,7 +34,9 @@ interface Banner {
 
 interface NewBannerInput {
   file: File;
+  mobileFile?: File;
   previewUrl: string;
+  mobilePreviewUrl?: string;
   title: string;
   subtitle: string;
   badge: string;
@@ -49,49 +56,140 @@ interface ErrorResponse {
 
 const goldGradient = "bg-gradient-to-r from-[#D4AF37] to-[#BFA980]";
 
-/** Component to show live banner preview */
+/** Component to show live banner preview with desktop/mobile toggle */
 function LiveBannerPreview({
   banner,
 }: {
   banner: Partial<Omit<Banner, "id" | "position">> & {
     previewUrl?: string;
+    mobilePreviewUrl?: string;
   };
 }) {
+  const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
+  const [showMobileToggle, setShowMobileToggle] = useState(false);
+
+  // Check if mobile image is available
+  const hasMobileImage = banner.mobilePreviewUrl || banner.mobile_image_url;
+  
+  // Show mobile toggle if mobile image exists
+  useEffect(() => {
+    setShowMobileToggle(!!hasMobileImage);
+  }, [hasMobileImage]);
+
+  // Get current image source based on preview mode
+  const getCurrentImageSrc = () => {
+    if (previewMode === 'mobile' && hasMobileImage) {
+      return banner.mobilePreviewUrl ?? banner.mobile_image_url ?? "";
+    }
+    return banner.previewUrl ?? banner.image_url ?? "";
+  };
+
+  const containerClasses = previewMode === 'mobile' 
+    ? "relative w-48 h-80 mx-auto" // Mobile aspect ratio
+    : "relative w-full md:w-96 h-52"; // Desktop aspect ratio
+
   return (
-    <div className="relative w-full md:w-96 h-52 rounded-lg overflow-hidden border border-[#D4AF37]/70 shadow-lg bg-black/90 text-white select-none">
-      <div className="relative w-full h-full">
-        <Image
-          src={banner.previewUrl ?? banner.image_url ?? ""}
-          alt={banner.title ?? "Banner Preview"}
-          fill
-          style={{ objectFit: "cover" }}
-          unoptimized={!banner.previewUrl} // Optimize remote images only
-          priority
-        />
+    <div className="space-y-3">
+      {/* Device Toggle Buttons */}
+      {showMobileToggle && (
+        <div className="flex justify-center space-x-2">
+          <button
+            type="button"
+            onClick={() => setPreviewMode('desktop')}
+            className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              previewMode === 'desktop'
+                ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black'
+                : 'border border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37]/10'
+            }`}
+          >
+            <Monitor className="w-4 h-4" />
+            <span>Desktop</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setPreviewMode('mobile')}
+            className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              previewMode === 'mobile'
+                ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black'
+                : 'border border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37]/10'
+            }`}
+          >
+            <Smartphone className="w-4 h-4" />
+            <span>Mobile</span>
+          </button>
+        </div>
+      )}
+
+      {/* Preview Container */}
+      <div className={`${containerClasses} rounded-lg overflow-hidden border border-[#D4AF37]/70 shadow-xl bg-black/90 text-white select-none transform transition-all duration-300 hover:shadow-2xl hover:shadow-[#D4AF37]/20`}>
+        <div className="relative w-full h-full">
+          <Image
+            src={getCurrentImageSrc()}
+            alt={`${banner.title ?? "Banner"} Preview - ${previewMode}`}
+            fill
+            style={{ objectFit: "cover" }}
+            unoptimized={!banner.previewUrl && !banner.mobilePreviewUrl}
+            priority
+            className="transition-opacity duration-300"
+          />
+          {/* Gradient overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
+        </div>
+        
+        {/* Badge */}
+        <div className="absolute top-3 left-3 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] px-2.5 py-1 rounded-full font-bold text-xs shadow-lg">
+          {banner.badge ?? "BADGE"}
+        </div>
+        
+        {/* Device indicator */}
+        <div className="absolute top-3 right-3 flex items-center space-x-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full text-xs">
+          {previewMode === 'desktop' ? (
+            <><Monitor className="w-3 h-3" /><span>Desktop</span></>
+          ) : (
+            <><Smartphone className="w-3 h-3" /><span>Mobile</span></>
+          )}
+        </div>
+        
+        {/* Content */}
+        <div className={`absolute ${previewMode === 'mobile' ? 'bottom-20 left-3 right-3' : 'bottom-16 left-4 right-4'}`}>
+          <h3 className={`font-bold drop-shadow-lg ${previewMode === 'mobile' ? 'text-lg' : 'text-xl'}`}>
+            {banner.title ?? "Title Here"}
+          </h3>
+          <p className={`drop-shadow-md text-gray-200 ${previewMode === 'mobile' ? 'text-xs' : 'text-sm'}`}>
+            {banner.subtitle ?? "Subtitle Here"}
+          </p>
+        </div>
+        
+        {/* CTAs */}
+        <div className={`absolute ${previewMode === 'mobile' ? 'bottom-3 left-3 right-3 flex flex-col space-y-2' : 'bottom-4 left-4 flex space-x-3'}`}>
+          <button
+            type="button"
+            className={`flex items-center justify-center space-x-1 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow ${
+              previewMode === 'mobile' ? 'px-3 py-1.5 text-xs' : 'px-4 py-1 text-xs'
+            }`}
+          >
+            <Eye className="w-3 h-3" />
+            <span>{banner.cta1_text ?? "CTA 1"}</span>
+            <ChevronRight className="w-3 h-3" />
+          </button>
+          <button
+            type="button"
+            className={`flex items-center justify-center space-x-1 border-2 border-[#D4AF37] text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow ${
+              previewMode === 'mobile' ? 'px-3 py-1.5 text-xs' : 'px-4 py-1 text-xs'
+            }`}
+          >
+            <DollarSign className="w-3 h-3 text-[#D4AF37]" />
+            <span>{banner.cta2_text ?? "CTA 2"}</span>
+          </button>
+        </div>
       </div>
-      <div className="absolute top-4 left-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] px-3 py-1.5 rounded-full font-bold text-xs">
-        {banner.badge ?? "BADGE"}
-      </div>
-      <div className="absolute bottom-16 left-4 right-4">
-        <h3 className="text-xl font-bold drop-shadow-lg">{banner.title ?? "Title Here"}</h3>
-        <p className="text-sm drop-shadow-md">{banner.subtitle ?? "Subtitle Here"}</p>
-      </div>
-      <div className="absolute bottom-4 left-4 flex space-x-3">
-        <button
-          type="button"
-          className="flex items-center space-x-1 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black rounded-full px-4 py-1 text-xs font-semibold shadow"
-        >
-          <Eye className="w-4 h-4" />
-          <span>{banner.cta1_text ?? "CTA 1"}</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          className="flex items-center space-x-1 border-2 border-[#D4AF37] text-white rounded-full px-4 py-1 text-xs font-semibold shadow"
-        >
-          <DollarSign className="w-4 h-4 text-[#D4AF37]" />
-          <span>{banner.cta2_text ?? "CTA 2"}</span>
-        </button>
+
+      {/* Preview mode label */}
+      <div className="text-center text-xs text-gray-400">
+        Preview: {previewMode === 'mobile' ? '📱 Mobile View' : '💻 Desktop View'}
+        {previewMode === 'mobile' && !hasMobileImage && (
+          <span className="block text-yellow-400 mt-1">Using desktop image (no mobile image provided)</span>
+        )}
       </div>
     </div>
   );
@@ -134,7 +232,7 @@ export default function AdminHeroBanners() {
     fetchBanners();
   }, []);
 
-  // When user selects multiple images for new banners
+  // When user selects multiple images for new banners (PC images)
   const onFilesSelected = (files: FileList | null) => {
     if (!files) return;
     // Convert file list to NewBannerInput objects with empty text fields and preview urls
@@ -153,6 +251,40 @@ export default function AdminHeroBanners() {
       uploadError: null,
     }));
     setNewBanners((prev) => [...prev, ...selections]);
+  };
+
+  // Handle mobile image selection for existing banner input
+  const onMobileFileSelected = (index: number, file: File | null) => {
+    if (!file) return;
+    setNewBanners((prev) => {
+      const updated = [...prev];
+      // Clean up old mobile preview URL if it exists
+      if (updated[index].mobilePreviewUrl) {
+        URL.revokeObjectURL(updated[index].mobilePreviewUrl!);
+      }
+      updated[index] = {
+        ...updated[index],
+        mobileFile: file,
+        mobilePreviewUrl: URL.createObjectURL(file)
+      };
+      return updated;
+    });
+  };
+
+  // Remove mobile image from banner input
+  const removeMobileImage = (index: number) => {
+    setNewBanners((prev) => {
+      const updated = [...prev];
+      if (updated[index].mobilePreviewUrl) {
+        URL.revokeObjectURL(updated[index].mobilePreviewUrl!);
+      }
+      updated[index] = {
+        ...updated[index],
+        mobileFile: undefined,
+        mobilePreviewUrl: undefined
+      };
+      return updated;
+    });
   };
 
   function updateNewBannerField(
@@ -212,6 +344,10 @@ export default function AdminHeroBanners() {
       try {
         const formData = new FormData();
         formData.append("image", newBanners[i].file);
+        // Add mobile image if provided
+        if (newBanners[i].mobileFile) {
+          formData.append("mobile_image", newBanners[i].mobileFile!);
+        }
         formData.append("title", newBanners[i].title);
         formData.append("subtitle", newBanners[i].subtitle);
         formData.append("badge", newBanners[i].badge);
@@ -252,7 +388,12 @@ export default function AdminHeroBanners() {
 
   // Clear all new banner inputs (including previews)
   const clearNewBanners = () => {
-    newBanners.forEach((banner) => URL.revokeObjectURL(banner.previewUrl));
+    newBanners.forEach((banner) => {
+      URL.revokeObjectURL(banner.previewUrl);
+      if (banner.mobilePreviewUrl) {
+        URL.revokeObjectURL(banner.mobilePreviewUrl);
+      }
+    });
     setNewBanners([]);
     setGlobalMessage(null);
     setGlobalError(null);
@@ -395,13 +536,22 @@ export default function AdminHeroBanners() {
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Upload New Hero Banners</h2>
 
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={(e) => onFilesSelected(e.target.files)}
-          className="block w-full max-w-sm mb-6 cursor-pointer rounded border border-[#BFA980] px-3 py-2 bg-black/30 hover:bg-black/50 transition"
-        />
+        <div className="bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm border border-[#D4AF37]/30 rounded-xl p-6 mb-6">
+          <div className="flex items-center space-x-3 mb-4">
+            <Upload className="w-6 h-6 text-[#D4AF37]" />
+            <h3 className="text-lg font-semibold text-white">Upload Hero Images</h3>
+          </div>
+          <p className="text-gray-300 text-sm mb-4">
+            Select images for your hero banners. You can add mobile-specific images after uploading.
+          </p>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => onFilesSelected(e.target.files)}
+            className="block w-full cursor-pointer rounded-lg border-2 border-dashed border-[#D4AF37]/40 px-4 py-3 bg-black/20 hover:bg-black/30 hover:border-[#D4AF37]/60 transition-all duration-200 text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-[#D4AF37] file:to-[#BFA980] file:text-black hover:file:scale-105 file:transition-transform"
+          />
+        </div>
 
         {newBanners.length === 0 && (
           <p className="text-gray-400">Select images above to start adding banners</p>
@@ -410,114 +560,235 @@ export default function AdminHeroBanners() {
         {newBanners.map((banner, idx) => (
           <div
             key={banner.previewUrl + idx}
-            className="flex flex-col md:flex-row items-center gap-6 mb-12 border border-[#BFA980]/40 rounded-lg p-4 bg-black/40"
+            className="bg-gradient-to-br from-gray-900/80 to-black/60 backdrop-blur-sm border border-[#D4AF37]/30 rounded-xl p-6 mb-8 shadow-2xl hover:shadow-[#D4AF37]/10 transition-all duration-300"
           >
-            {/* Inputs */}
-            <div className="flex flex-col w-full md:w-3/5 space-y-4 text-white">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  placeholder="Title *"
-                  value={banner.title}
-                  onChange={(e) => updateNewBannerField(idx, "title", e.target.value)}
-                  className="rounded bg-black/30 px-3 py-2 border border-[#BFA980]/50 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                />
-                <input
-                  type="text"
-                  placeholder="Subtitle *"
-                  value={banner.subtitle}
-                  onChange={(e) => updateNewBannerField(idx, "subtitle", e.target.value)}
-                  className="rounded bg-black/30 px-3 py-2 border border-[#BFA980]/50 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                />
-                <input
-                  type="text"
-                  placeholder="Badge *"
-                  value={banner.badge}
-                  onChange={(e) => updateNewBannerField(idx, "badge", e.target.value)}
-                  className="rounded bg-black/30 px-3 py-2 border border-[#BFA980]/50 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                />
-                <input
-                  type="number"
-                  min={1}
-                  placeholder="Position *"
-                  value={banner.position}
-                  onChange={(e) =>
-                    updateNewBannerField(idx, "position", e.target.value === "" ? "" : parseInt(e.target.value))
-                  }
-                  className="rounded bg-black/30 px-3 py-2 border border-[#BFA980]/50 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                />
-                <input
-                  type="text"
-                  placeholder="CTA 1 Text *"
-                  value={banner.cta1_text}
-                  onChange={(e) => updateNewBannerField(idx, "cta1_text", e.target.value)}
-                  className="rounded bg-black/30 px-3 py-2 border border-[#BFA980]/50 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                />
-                <input
-                  type="text"
-                  placeholder='CTA 1 URL or Action * (e.g. "/cars" or "Get Free Quote")'
-                  value={banner.cta1_url_or_action}
-                  onChange={(e) => updateNewBannerField(idx, "cta1_url_or_action", e.target.value)}
-                  className="rounded bg-black/30 px-3 py-2 border border-[#BFA980]/50 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                />
-                <input
-                  type="text"
-                  placeholder="CTA 2 Text *"
-                  value={banner.cta2_text}
-                  onChange={(e) => updateNewBannerField(idx, "cta2_text", e.target.value)}
-                  className="rounded bg-black/30 px-3 py-2 border border-[#BFA980]/50 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                />
-                <input
-                  type="text"
-                  placeholder='CTA 2 URL or Action * (e.g. "/quote" or "Get Free Quote")'
-                  value={banner.cta2_url_or_action}
-                  onChange={(e) => updateNewBannerField(idx, "cta2_url_or_action", e.target.value)}
-                  className="rounded bg-black/30 px-3 py-2 border border-[#BFA980]/50 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                />
-              </div>
-
-              <div className="flex items-center space-x-4">
-                {/* Uploading indicator or error */}
-                {banner.uploading ? (
-                  <div className="flex items-center text-yellow-400 space-x-2">
-                    <Loader2 className="animate-spin" size={20} />
-                    <span>Uploading...</span>
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Form Inputs Section */}
+              <div className="flex-1 space-y-6">
+                {/* Header */}
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] rounded-lg flex items-center justify-center text-black font-bold text-sm">
+                    {idx + 1}
                   </div>
-                ) : banner.uploadError ? (
-                  <span className="text-red-500 font-semibold">{banner.uploadError}</span>
-                ) : banner.uploadedId ? (
-                  <span className="text-green-400 font-semibold flex items-center space-x-1">
-                    <CheckCircle size={18} /> <span>Uploaded</span>
-                  </span>
-                ) : (
-                  <span className="italic text-gray-400">Not uploaded yet</span>
-                )}
-              </div>
-            </div>
+                  <h3 className="text-lg font-semibold text-white">Hero Banner #{idx + 1}</h3>
+                </div>
 
-            {/* Live Preview */}
-            <div className="w-full md:w-2/5">
-              <LiveBannerPreview banner={banner} />
+                {/* Basic Information */}
+                <div className="space-y-4">
+                  <h4 className="text-sm font-medium text-[#D4AF37] uppercase tracking-wider">Basic Information</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">Title *</label>
+                      <input
+                        type="text"
+                        placeholder="Enter banner title"
+                        value={banner.title}
+                        onChange={(e) => updateNewBannerField(idx, "title", e.target.value)}
+                        className="w-full rounded-lg bg-black/40 px-4 py-3 border border-[#BFA980]/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">Subtitle *</label>
+                      <input
+                        type="text"
+                        placeholder="Enter banner subtitle"
+                        value={banner.subtitle}
+                        onChange={(e) => updateNewBannerField(idx, "subtitle", e.target.value)}
+                        className="w-full rounded-lg bg-black/40 px-4 py-3 border border-[#BFA980]/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">Badge *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g., FEATURED, NEW, PREMIUM"
+                        value={banner.badge}
+                        onChange={(e) => updateNewBannerField(idx, "badge", e.target.value)}
+                        className="w-full rounded-lg bg-black/40 px-4 py-3 border border-[#BFA980]/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">Position *</label>
+                      <input
+                        type="number"
+                        min={1}
+                        placeholder="Display order (1, 2, 3...)"
+                        value={banner.position}
+                        onChange={(e) =>
+                          updateNewBannerField(idx, "position", e.target.value === "" ? "" : parseInt(e.target.value))
+                        }
+                        className="w-full rounded-lg bg-black/40 px-4 py-3 border border-[#BFA980]/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Call-to-Action Buttons */}
+                <div className="space-y-4">
+                  <h4 className="text-sm font-medium text-[#D4AF37] uppercase tracking-wider">Call-to-Action Buttons</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">CTA 1 Text *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g., View Details"
+                        value={banner.cta1_text}
+                        onChange={(e) => updateNewBannerField(idx, "cta1_text", e.target.value)}
+                        className="w-full rounded-lg bg-black/40 px-4 py-3 border border-[#BFA980]/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">CTA 1 URL/Action *</label>
+                      <input
+                        type="text"
+                        placeholder='e.g., "/cars" or "Get Free Quote"'
+                        value={banner.cta1_url_or_action}
+                        onChange={(e) => updateNewBannerField(idx, "cta1_url_or_action", e.target.value)}
+                        className="w-full rounded-lg bg-black/40 px-4 py-3 border border-[#BFA980]/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">CTA 2 Text *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Get Quote"
+                        value={banner.cta2_text}
+                        onChange={(e) => updateNewBannerField(idx, "cta2_text", e.target.value)}
+                        className="w-full rounded-lg bg-black/40 px-4 py-3 border border-[#BFA980]/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">CTA 2 URL/Action *</label>
+                      <input
+                        type="text"
+                        placeholder='e.g., "/quote" or "Get Free Quote"'
+                        value={banner.cta2_url_or_action}
+                        onChange={(e) => updateNewBannerField(idx, "cta2_url_or_action", e.target.value)}
+                        className="w-full rounded-lg bg-black/40 px-4 py-3 border border-[#BFA980]/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile Image Upload */}
+                <div className="space-y-4">
+                  <h4 className="text-sm font-medium text-[#D4AF37] uppercase tracking-wider flex items-center space-x-2">
+                    <Smartphone className="w-4 h-4" />
+                    <span>Mobile Image (Optional)</span>
+                  </h4>
+                  <div className="bg-black/20 border border-[#BFA980]/20 rounded-lg p-4">
+                    {!banner.mobileFile ? (
+                      <div className="text-center">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id={`mobile-upload-${idx}`}
+                          onChange={(e) => e.target.files?.[0] && onMobileFileSelected(idx, e.target.files[0])}
+                          className="hidden"
+                        />
+                        <label
+                          htmlFor={`mobile-upload-${idx}`}
+                          className="cursor-pointer flex flex-col items-center space-y-2 py-4 px-6 border-2 border-dashed border-[#D4AF37]/40 rounded-lg hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/5 transition-all duration-200"
+                        >
+                          <Smartphone className="w-8 h-8 text-[#D4AF37]" />
+                          <span className="text-sm text-gray-300">Upload Mobile Image</span>
+                          <span className="text-xs text-gray-400">Optimized for mobile screens</span>
+                        </label>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-3">
+                        <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-[#D4AF37]/50">
+                          <Image
+                            src={banner.mobilePreviewUrl!}
+                            alt="Mobile preview"
+                            fill
+                            style={{ objectFit: "cover" }}
+                            className="rounded-lg"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-300">Mobile image selected</p>
+                          <p className="text-xs text-gray-400">{banner.mobileFile.name}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeMobileImage(idx)}
+                          className="p-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-all duration-200"
+                          title="Remove mobile image"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Upload Status */}
+                <div className="flex items-center space-x-4 p-4 bg-black/20 rounded-lg">
+                  {banner.uploading ? (
+                    <div className="flex items-center text-yellow-400 space-x-2">
+                      <Loader2 className="animate-spin" size={20} />
+                      <span className="font-medium">Uploading...</span>
+                    </div>
+                  ) : banner.uploadError ? (
+                    <div className="flex items-center text-red-400 space-x-2">
+                      <X size={20} />
+                      <span className="font-medium">{banner.uploadError}</span>
+                    </div>
+                  ) : banner.uploadedId ? (
+                    <div className="flex items-center text-green-400 space-x-2">
+                      <CheckCircle size={20} />
+                      <span className="font-medium">Successfully Uploaded</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center text-gray-400 space-x-2">
+                      <Upload size={20} />
+                      <span className="font-medium">Ready to upload</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Live Preview Section */}
+              <div className="lg:w-96 flex-shrink-0">
+                <div className="sticky top-6">
+                  <h4 className="text-sm font-medium text-[#D4AF37] uppercase tracking-wider mb-4 text-center">Live Preview</h4>
+                  <LiveBannerPreview banner={banner} />
+                </div>
+              </div>
             </div>
           </div>
         ))}
 
         {newBanners.length > 0 && (
-          <div className="flex space-x-3 mt-2">
-            <button
-              onClick={uploadAllBanners}
-              disabled={isBatchUploading}
-              className={`${goldGradient} px-6 py-2 rounded-lg font-semibold text-black hover:scale-105 transition-transform disabled:opacity-70 disabled:cursor-not-allowed`}
-            >
-              {isBatchUploading ? "Uploading All..." : "Upload All Banners"}
-            </button>
-            <button
-              onClick={clearNewBanners}
-              disabled={isBatchUploading}
-              className="px-6 py-2 rounded-lg border border-[#D4AF37] hover:bg-[#D4AF37]/20 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              Clear
-            </button>
+          <div className="bg-gradient-to-br from-gray-900/60 to-black/40 backdrop-blur-sm border border-[#D4AF37]/30 rounded-xl p-6">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+              <button
+                onClick={uploadAllBanners}
+                disabled={isBatchUploading}
+                className={`${goldGradient} px-8 py-3 rounded-lg font-semibold text-black hover:scale-105 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl flex items-center space-x-2`}
+              >
+                {isBatchUploading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Uploading All Banners...</span>
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-5 h-5" />
+                    <span>Upload All Banners ({newBanners.length})</span>
+                  </>
+                )}
+              </button>
+              <button
+                onClick={clearNewBanners}
+                disabled={isBatchUploading}
+                className="px-6 py-3 rounded-lg border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 hover:border-[#D4AF37] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed text-white font-medium flex items-center space-x-2"
+              >
+                <X className="w-4 h-4" />
+                <span>Clear All</span>
+              </button>
+            </div>
           </div>
         )}
 

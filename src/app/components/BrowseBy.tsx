@@ -76,8 +76,8 @@ const BrowseBySection = async () => {
   }, {});
 
   return (
-    <section className="bg-black py-16 px-4 font-[Inter]">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-black py-8 sm:py-16 px-2 sm:px-4 font-[Inter] w-full overflow-x-hidden relative">
+      <div className="max-w-7xl w-full mx-auto">
         {/* Static Section Header - SEO-friendly */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -120,9 +120,9 @@ const BrowseBySection = async () => {
       </div>
 
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full filter blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gray-400 rounded-full filter blur-3xl"></div>
+      <div className="absolute inset-0 opacity-5 pointer-events-none overflow-x-hidden">
+        <div className="absolute top-0 left-1/4 w-60 sm:w-96 h-60 sm:h-96 bg-white rounded-full filter blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-60 sm:w-96 h-60 sm:h-96 bg-gray-400 rounded-full filter blur-3xl"></div>
       </div>
     </section>
   );

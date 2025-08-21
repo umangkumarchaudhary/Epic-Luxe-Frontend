@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import Header  from '@/app/components/Header'
+import Footer from '@/app/components/Footer'
 
 const EpicShieldClient = () => {
   const [, setIsVisible] = useState(false)
@@ -107,6 +109,8 @@ const EpicShieldClient = () => {
           font-family: 'Manrope', sans-serif;
         }
       `}</style>
+
+      <Header />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -377,20 +381,7 @@ const EpicShieldClient = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black py-12 px-6 border-t border-gray-800">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="text-[#D4AF37] font-bold text-2xl mb-4">EPIC LUXE</div>
-          <p className="text-gray-400 mb-4">Premium Pre-Owned Luxury Vehicles</p>
-          <div className="flex justify-center space-x-8 text-sm text-gray-500">
-            <span>© 2025 EPIC Luxe. All rights reserved.</span>
-            <span>|</span>
-            <span>Privacy Policy</span>
-            <span>|</span>
-            <span>Terms of Service</span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

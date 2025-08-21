@@ -3,10 +3,10 @@
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
+import Image from "next/image";
 import { 
   Save, 
   Upload, 
-  Eye, 
   ArrowLeft, 
   Loader2, 
   ImageIcon,
@@ -14,8 +14,7 @@ import {
   FileText,
   Tag,
   Globe,
-  Star,
-  Calendar
+  Star
 } from "lucide-react";
 
 interface ApiError {
@@ -672,9 +671,11 @@ export default function CreateBlog() {
 
                 {imagePreview ? (
                   <div style={{ position: "relative" }}>
-                    <img
+                    <Image
                       src={imagePreview}
                       alt="Preview"
+                      width={400}
+                      height={200}
                       style={{
                         width: "100%",
                         height: "200px",

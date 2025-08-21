@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { Fuel, Zap, Leaf, Car, MapPin, Activity, Phone, Check, Search, Upload, ChevronLeft } from 'lucide-react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
+import { Fuel, Zap, Leaf, Car, MapPin, Activity, Phone, Check, Search, Upload, ChevronLeft, Calendar, Users, Route, FileText } from 'lucide-react';
 import Image from 'next/image';
 
 // Optimized Types
@@ -90,14 +90,16 @@ const getMonumentImage = (cityName: string, cityImageMap: { [key: string]: strin
 const getIconComponent = (iconName: string, className: string = "w-4 h-4") => {
   const icons = {
     fuel: Fuel, zap: Zap, leaf: Leaf, car: Car, 
-    map: MapPin, activity: Activity, phone: Phone
+    map: MapPin, activity: Activity, phone: Phone,
+    calendar: Calendar, users: Users, route: Route,
+    fileText: FileText
   };
   const IconComponent = icons[iconName as keyof typeof icons] || Car;
   return <IconComponent className={className} />;
 };
 
 const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
-  brands, fuelOptions, years, ownerOptions, kmOptions, stepConfig,
+  brands, fuelOptions, years, ownerOptions, kmOptions,
   popularCities, otherCities, cityImageMap, luxuryCars
 }) => {
   // Consolidated state management
@@ -117,7 +119,21 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
   
   const wizardScrollRef = useRef<HTMLDivElement>(null);
 
-  // Optimized form data update with auto-progression
+  // Step configuration for 10 steps now
+  const steps = [
+    { id: 1, label: 'Brand', icon: 'car', shortLabel: 'Brand' },
+    { id: 2, label: 'Model', icon: 'car', shortLabel: 'Model' },
+    { id: 3, label: 'Fuel', icon: 'fuel', shortLabel: 'Fuel' },
+    { id: 4, label: 'Variant', icon: 'car', shortLabel: 'Variant' },
+    { id: 5, label: 'City', icon: 'map', shortLabel: 'City' },
+    { id: 6, label: 'Year', icon: 'calendar', shortLabel: 'Year' },
+    { id: 7, label: 'Owner', icon: 'users', shortLabel: 'Owner' },
+    { id: 8, label: 'KMs', icon: 'route', shortLabel: 'KMs' },
+    { id: 9, label: 'Contact', icon: 'phone', shortLabel: 'Contact' },
+    { id: 10, label: 'Upload', icon: 'fileText', shortLabel: 'Upload' }
+  ];
+
+  // Auto progression logic
   const updateFormData = useCallback((key: string, value: string) => {
     setFormData(prev => {
       const newData = { ...prev, [key]: value };
@@ -133,55 +149,14 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
       
       return newData;
     });
-    SellNowWizardClient.displayName = "SellNowWizardClient";
     
-    // Auto-progression logic
+    // Auto-progress to next step after selection
     setTimeout(() => {
-      if (shouldAutoProgress(key, value)) {
-        const nextElement = getNextRequiredElement();
-        if (nextElement) {
-          nextElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+      if (value) {
+        setCurrentStep(prev => prev + 1);
       }
-    }, 300);
+    }, 500);
   }, []);
-
-  // Smart auto-progression helper
-  const shouldAutoProgress = (key: string, value: string) => {
-    if (!value) return false;
-    
-    const progressRules = {
-      brand: () => true,
-      model: () => true,
-      fuel: () => true,
-      variant: () => currentStep === 1,
-      city: () => true,
-      year: () => currentStep === 2,
-      owner: () => true,
-      kms: () => currentStep === 3
-    };
-    
-    return progressRules[key as keyof typeof progressRules]?.() || false;
-  };
-
-  const getNextRequiredElement = () => {
-    const stepFields = {
-      1: ['brand', 'model', 'fuel', 'variant'],
-      2: ['city', 'year'],
-      3: ['owner', 'kms'],
-      4: ['phone']
-    };
-    
-    const currentFields = stepFields[currentStep as keyof typeof stepFields] || [];
-    const nextField = currentFields.find(field => !formData[field as keyof FormData]);
-    
-    if (!nextField && currentStep < 4) {
-      // Move to next step if current step is complete
-      setTimeout(() => setCurrentStep(prev => prev + 1), 500);
-    }
-    
-    return nextField ? document.querySelector(`[data-field="${nextField}"]`) : null;
-  };
 
   // Memoized data calculations
   const { modelsData, variantsData, availableFuels } = useMemo(() => {
@@ -203,43 +178,49 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
     };
   }, [formData.brand, formData.model, formData.fuel, luxuryCars]);
 
-  // Optimized filter functions
+  // Filter function
   const filterItems = useCallback((items: unknown[], searchTerm: string, key = 'name') => {
     if (!searchTerm) return items;
     return items.filter(item => 
-  (typeof item === 'string' ? item : (item as Record<string, string>)[key])
+      (typeof item === 'string' ? item : (item as Record<string, string>)[key])
         .toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, []);
 
   // Progress calculation
   const progressPercentage = useMemo(() => {
-    const stepProgress = (currentStep - 1) * 20;
-    const requiredFields = {
-      1: ['brand', 'model', 'fuel', 'variant'],
-      2: ['city', 'year'], 
-      3: ['owner', 'kms'],
-      4: ['phone']
-    }[currentStep] || [];
-    
-    const completedFields = requiredFields.filter(field => formData[field as keyof FormData]).length;
-    const stepCompletion = requiredFields.length > 0 ? (completedFields / requiredFields.length) * 20 : 20;
-    return Math.min(stepProgress + stepCompletion, 100);
-  }, [currentStep, formData]);
+    return (currentStep - 1) * 10;
+  }, [currentStep]);
 
   // Navigation helpers
-  const goToNextStep = () => setCurrentStep(prev => Math.min(prev + 1, 5));
   const goToPrevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
   const goToStep = (step: number) => setCurrentStep(step);
 
   // Validation
   const isPhoneValid = /^\d{10}$/.test(formData.phone);
-  const showPhoneError = touched && !isPhoneValid;
 
   // Submit handler
-  const handleSubmit = () => {
-    console.log('Form submitted:', { ...formData, timestamp: new Date().toISOString() });
-    goToNextStep();
+  const handleSubmit = async () => {
+    if (isPhoneValid) {
+      const submitData = { ...formData, timestamp: new Date().toISOString() };
+      
+      try {
+        // Send to dummy URL
+  await fetch('https://jsonplaceholder.typicode.com/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(submitData),
+        });
+        
+        console.log('Form submitted:', submitData);
+        setCurrentStep(10); // Move to upload step
+      } catch (error) {
+        console.error('Submission error:', error);
+        setCurrentStep(10); // Still proceed to upload step
+      }
+    }
   };
 
   // File upload handler
@@ -257,39 +238,39 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
     }
   };
 
-  // Optimized Progress Bar Component
+  // Progress Bar Component
   const ProgressBar = React.memo(() => (
-    <div className="mb-6 w-full max-w-4xl mx-auto">
+    <div className="mb-4 w-full max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-sm font-medium text-gray-600">Step {currentStep} of 5</span>
-        <span className="text-sm font-bold text-black">{Math.round(progressPercentage)}% Complete</span>
+        <span className="text-sm font-medium text-gray-600 font-manrope">Step {currentStep} of 10</span>
+        <span className="text-sm font-bold text-black font-manrope">{Math.round(progressPercentage)}% Complete</span>
       </div>
       
-      <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+      <div className="w-full bg-gray-100 rounded-full h-2 mb-3 shadow-inner">
         <div
-          className="bg-black h-2 rounded-full transition-all duration-700 ease-out"
+          className="bg-gradient-to-r from-black to-gray-800 h-2 rounded-full transition-all duration-700 ease-out shadow-sm"
           style={{ width: `${progressPercentage}%` }}
         />
       </div>
       
-      <div className="flex justify-between items-center">
-        {stepConfig.map((step) => (
-          <div key={step.id} className="flex flex-col items-center">
+      <div className="flex justify-between items-center overflow-x-auto pb-1">
+        {steps.map((step) => (
+          <div key={step.id} className="flex flex-col items-center min-w-[50px]">
             <button
               onClick={() => goToStep(step.id)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 border-2 cursor-pointer hover:scale-110 ${
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 border-2 cursor-pointer hover:scale-110 font-manrope ${
                 currentStep >= step.id
-                  ? 'bg-black border-black text-white scale-105 shadow-lg'
-                  : 'border-gray-300 bg-white text-gray-400 hover:border-black/50'
+                  ? 'bg-black border-black text-white scale-105 shadow-md'
+                  : 'border-gray-300 bg-white text-gray-400 hover:border-black/50 shadow-sm'
               }`}
             >
               {currentStep > step.id ? (
-                <Check className="w-4 h-4" />
+                <Check className="w-3 h-3" />
               ) : (
-                getIconComponent(step.icon, "w-4 h-4")
+                getIconComponent(step.icon, "w-3 h-3")
               )}
             </button>
-            <span className="text-xs mt-2 font-medium hidden sm:block text-center text-gray-600">
+            <span className="text-xs mt-1 font-medium hidden sm:block text-center text-gray-600 font-manrope">
               {step.shortLabel}
             </span>
           </div>
@@ -303,24 +284,25 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
   const SelectionDisplay = React.memo(() => {
     const selections = [
       { label: 'Brand', value: formData.brand, step: 1 },
-      { label: 'Model', value: formData.model, step: 1 },
-      { label: 'Fuel', value: formData.fuel, step: 1 },
-      { label: 'City', value: formData.city, step: 2 },
-      { label: 'Year', value: formData.year, step: 2 },
-      { label: 'Owner', value: formData.owner, step: 3 },
-      { label: 'KMs', value: formData.kms, step: 3 },
+      { label: 'Model', value: formData.model, step: 2 },
+      { label: 'Fuel', value: formData.fuel, step: 3 },
+      { label: 'Variant', value: formData.variant, step: 4 },
+      { label: 'City', value: formData.city, step: 5 },
+      { label: 'Year', value: formData.year, step: 6 },
+      { label: 'Owner', value: formData.owner, step: 7 },
+      { label: 'KMs', value: formData.kms, step: 8 },
     ].filter(item => item.value);
 
     if (selections.length === 0) return null;
 
     return (
-      <div className="mb-6 py-3 px-4 bg-gray-50 border border-gray-200 rounded-xl max-w-4xl mx-auto">
+      <div className="mb-4 py-2 px-4 bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-xl max-w-5xl mx-auto shadow-sm">
         <div className="flex gap-2 overflow-x-auto">
           {selections.map((item) => (
             <button
               key={item.label}
               onClick={() => goToStep(item.step)}
-              className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-lg flex-shrink-0 hover:bg-gray-50 hover:border-black transition-all duration-200"
+              className="flex items-center gap-2 px-3 py-1 bg-white border border-gray-300 rounded-lg flex-shrink-0 hover:bg-gray-50 hover:border-black transition-all duration-200 shadow-sm font-manrope"
             >
               <span className="text-xs text-gray-500 whitespace-nowrap">{item.label}:</span>
               <span className="text-xs font-bold text-black whitespace-nowrap">
@@ -334,391 +316,340 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
   });
   SelectionDisplay.displayName = "SelectionDisplay";
 
-  // Optimized render functions
-  const renderVehicleInfo = () => (
-    <div className="w-full max-w-6xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-black mb-2">Vehicle Information</h2>
-        <p className="text-gray-600">Tell us about your car</p>
+  // Step 1: Brand Selection
+  const renderBrandSelection = () => (
+    <div className="w-full max-w-4xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-black mb-2 font-manrope">Choose Your Car Brand</h2>
+  <p className="text-gray-600 font-manrope">Select your vehicle&apos;s manufacturer</p>
       </div>
 
-      <div className="space-y-8">
-        {/* Brand Selection */}
-        {!formData.brand && (
-          <div data-field="brand">
-            <h3 className="text-xl font-bold text-black mb-4">Choose Your Car Brand</h3>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-              {brands.map((brand) => (
-                <button
-                  key={brand.name}
-                  onClick={() => updateFormData('brand', brand.name)}
-                  className="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-gray-200 hover:border-black hover:bg-gray-50 transition-all duration-300"
-                >
-                  <div className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center mb-2 font-bold">
-                    {brand.logo}
-                  </div>
-                  <span className="text-sm font-semibold text-black text-center">{brand.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Model Selection */}
-        {formData.brand && !formData.model && (
-          <div data-field="model">
-            <div className="flex items-center gap-2 mb-4">
-              <button onClick={() => updateFormData('brand', '')} className="text-sm text-gray-500 hover:text-black">
-                ← Change Brand
-              </button>
-            </div>
-            <h3 className="text-xl font-bold text-black mb-4">
-              Select your <span className="text-gray-600">{formData.brand}</span> model
-            </h3>
-            
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search models..."
-                value={searchTerms.model}
-                onChange={(e) => setSearchTerms(prev => ({ ...prev, model: e.target.value }))}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:border-black focus:outline-none transition-all"
-              />
-            </div>
-
-            <div className="space-y-6">
-              {filterItems(modelsData.popular, searchTerms.model).length > 0 && (
-                <div>
-                  <h4 className="text-sm font-bold text-gray-600 mb-3 uppercase tracking-wide">Popular Models</h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                    {filterItems(modelsData.popular, searchTerms.model).map((model) => (
-                      <button
-                        key={model as string}
-                        className="p-3 rounded-lg border border-gray-200 hover:border-black hover:bg-gray-50 transition-all text-left"
-                        onClick={() => {
-                          updateFormData('model', model as string);
-                          setSearchTerms(prev => ({ ...prev, model: '' }));
-                        }}
-                      >
-                        <span className="text-sm font-semibold text-black">{model as string}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {filterItems(modelsData.other, searchTerms.model).length > 0 && (
-                <div>
-                  <h4 className="text-sm font-bold text-gray-600 mb-3 uppercase tracking-wide">All Models</h4>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-40 overflow-y-auto">
-                    {filterItems(modelsData.other, searchTerms.model).map((model) => (
-                      <button
-                        key={model as string}
-                        className="p-2 text-sm rounded-lg border border-gray-200 hover:border-black hover:bg-gray-50 transition-all"
-                        onClick={() => {
-                          updateFormData('model', model as string);
-                          setSearchTerms(prev => ({ ...prev, model: '' }));
-                        }}
-                      >
-                        {model as string}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Fuel Type Selection */}
-        {formData.brand && formData.model && !formData.fuel && (
-          <div data-field="fuel">
-            <div className="flex items-center gap-2 mb-4">
-              <button onClick={() => updateFormData('model', '')} className="text-sm text-gray-500 hover:text-black">
-                ← Change Model
-              </button>
-            </div>
-            <h3 className="text-xl font-bold text-black mb-4">Select fuel type</h3>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl">
-              {fuelOptions.filter(fuel => availableFuels.includes(fuel.key)).map((fuel) => (
-                <button
-                  key={fuel.key}
-                  className="flex flex-col items-center justify-center gap-3 p-6 rounded-xl border-2 border-gray-200 hover:border-black hover:bg-gray-50 transition-all"
-                  onClick={() => updateFormData('fuel', fuel.key)}
-                >
-                  {getIconComponent(fuel.icon, "w-8 h-8 text-black")}
-                  <span className="font-bold text-black">{fuel.key}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Variant Selection */}
-        {formData.brand && formData.model && formData.fuel && !formData.variant && (
-          <div data-field="variant">
-            <div className="flex items-center gap-2 mb-4">
-              <button onClick={() => updateFormData('fuel', '')} className="text-sm text-gray-500 hover:text-black">
-                ← Change Fuel Type
-              </button>
-            </div>
-            <h3 className="text-xl font-bold text-black mb-4">Choose variant</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-80 overflow-y-auto">
-              {variantsData.map((variant) => (
-                <button
-                  key={variant.name}
-                  className="p-4 rounded-xl border border-gray-200 hover:border-black hover:bg-gray-50 transition-all text-left"
-                  onClick={() => updateFormData('variant', variant.name)}
-                >
-                  <span className="font-bold text-black block">{variant.name}</span>
-                  <span className="text-sm text-gray-500 mt-1 block">{variant.subtitle}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Continue Button */}
-        {formData.brand && formData.model && formData.fuel && formData.variant && (
-          <div className="text-center pt-6">
+      <div className="flex justify-center">
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-3 max-w-4xl">
+          {brands.map((brand) => (
             <button
-              onClick={goToNextStep}
-              className="px-8 py-4 bg-black text-white rounded-xl font-bold text-lg hover:bg-gray-800 transition-all duration-200"
+              key={brand.name}
+              onClick={() => updateFormData('brand', brand.name)}
+              className="flex flex-col items-center justify-center p-3 rounded-xl border-2 border-gray-200 hover:border-black hover:bg-gray-50 hover:shadow-md transition-all duration-300 bg-white font-manrope"
             >
-              Continue to Location & Year
+              <div className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center mb-2 font-bold text-sm shadow-md">
+                {brand.logo}
+              </div>
+              <span className="text-xs font-semibold text-black text-center">{brand.name}</span>
             </button>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
     </div>
   );
 
-  const renderLocationYear = () => (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-black mb-2">Location & Manufacturing Year</h2>
-        <p className="text-gray-600">Where is your car registered and when was it made?</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* City Selection */}
-        <div className="space-y-4" data-field="city">
-          <h3 className="text-xl font-bold text-black">RTO Location</h3>
-          
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search cities..."
-              value={searchTerms.city}
-              onChange={(e) => setSearchTerms(prev => ({ ...prev, city: e.target.value }))}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:border-black focus:outline-none transition-all"
-            />
-          </div>
-
-          <div className="space-y-4">
-            {/* Popular Cities */}
-            <div>
-              <h4 className="text-sm font-bold text-gray-600 mb-2 uppercase tracking-wide">Popular Cities</h4>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                {filterItems(popularCities.slice(0, 12), searchTerms.city).map((city) => (
-                  <button
-                    key={(city as { name: string }).name}
-                    onClick={() => {
-                      updateFormData('city', (city as { name: string }).name);
-                      setSearchTerms(prev => ({ ...prev, city: '' }));
-                    }}
-                    className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-all ${
-                      formData.city === (city as { name: string }).name
-                        ? 'border-black bg-gray-50'
-                        : 'border-gray-200 hover:border-black hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="w-8 h-8 rounded overflow-hidden">
-                      {getMonumentImage((city as { name: string }).name, cityImageMap)}
-                    </div>
-                    <span className="text-xs font-semibold text-center leading-tight text-black">
-                      {(city as { name: string }).name}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Other Cities */}
-            <div>
-              <h4 className="text-sm font-bold text-gray-600 mb-2 uppercase tracking-wide">Other Cities</h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 max-h-32 overflow-y-auto">
-                {filterItems(otherCities.slice(0, 20), searchTerms.city).map((city) => (
-                  <button
-                    key={city as string}
-                    onClick={() => {
-                      updateFormData('city', city as string);
-                      setSearchTerms(prev => ({ ...prev, city: '' }));
-                    }}
-                    className={`p-2 rounded border text-xs font-semibold transition-all ${
-                      formData.city === city
-                        ? 'border-black bg-gray-50 text-black'
-                        : 'border-gray-200 text-black hover:border-black hover:bg-gray-50'
-                    }`}
-                  >
-                    {city as string}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Year Selection */}
-        <div className="space-y-4" data-field="year">
-          <h3 className="text-xl font-bold text-black">Manufacturing Year</h3>
-          
-          <div className="grid grid-cols-4 gap-2 max-h-80 overflow-y-auto">
-            {years.map((year) => (
-              <button
-                key={year}
-                className={`p-3 rounded-lg border font-bold transition-all ${
-                  formData.year === year 
-                    ? 'border-black bg-gray-50 text-black' 
-                    : 'border-gray-200 text-black hover:border-black hover:bg-gray-50'
-                }`}
-                onClick={() => updateFormData('year', year)}
-              >
-                {year}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Continue Button */}
-      {formData.city && formData.year && (
-        <div className="text-center mt-8">
-          <button
-            onClick={goToNextStep}
-            className="px-8 py-4 bg-black text-white rounded-xl font-bold text-lg hover:bg-gray-800 transition-all duration-200"
-          >
-            Continue to Usage History
-          </button>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderUsageHistory = () => (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-black mb-2">Usage History</h2>
-        <p className="text-gray-600">Tell us about ownership and mileage</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Ownership */}
-        <div className="space-y-4" data-field="owner">
-          <h3 className="text-xl font-bold text-black">Ownership History</h3>
-          <p className="text-sm text-gray-600">How many owners has your car had?</p>
-          
-          <div className="space-y-2">
-            {ownerOptions.map((owner) => (
-              <button
-                key={owner}
-                className={`w-full p-4 rounded-xl border font-semibold transition-all text-left ${
-                  formData.owner === owner 
-                    ? 'border-black bg-gray-50 text-black' 
-                    : 'border-gray-200 text-black hover:border-black hover:bg-gray-50'
-                }`}
-                onClick={() => updateFormData('owner', owner)}
-              >
-                {owner}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Kilometers */}
-        <div className="space-y-4" data-field="kms">
-          <h3 className="text-xl font-bold text-black">Kilometers Driven</h3>
-          <p className="text-sm text-gray-600">How many kilometers has your car covered?</p>
-          
-          <div className="grid grid-cols-1 gap-2 max-h-80 overflow-y-auto">
-            {kmOptions.map((kms) => (
-              <button
-                key={kms}
-                className={`p-3 rounded-xl border font-semibold transition-all text-left ${
-                  formData.kms === kms 
-                    ? 'border-black bg-gray-50 text-black' 
-                    : 'border-gray-200 text-black hover:border-black hover:bg-gray-50'
-                }`}
-                onClick={() => updateFormData('kms', kms)}
-              >
-                {kms}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Continue Button */}
-      {formData.owner && formData.kms && (
-        <div className="text-center mt-8">
-          <button
-            onClick={goToNextStep}
-            className="px-8 py-4 bg-black text-white rounded-xl font-bold text-lg hover:bg-gray-800 transition-all duration-200"
-          >
-            Continue to Contact Info
-          </button>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderContactInfo = () => (
-    <div className="w-full max-w-md mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-black mb-2">Get Your Car Valuation</h2>
-        <p className="text-gray-600">Enter your mobile number to receive instant valuation</p>
+  // Step 2: Model Selection
+  const renderModelSelection = () => (
+    <div className="w-full max-w-5xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-black mb-2 font-manrope">
+          Select Your <span className="text-gray-600">{formData.brand}</span> Model
+        </h2>
+        <p className="text-gray-600 font-manrope">Choose your specific vehicle model</p>
       </div>
       
-      <div className="space-y-6" data-field="phone">
+      <div className="max-w-md mx-auto mb-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search models..."
+            value={searchTerms.model}
+            onChange={(e) => setSearchTerms(prev => ({ ...prev, model: e.target.value }))}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:border-black focus:outline-none transition-all shadow-sm font-manrope text-sm"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {filterItems(modelsData.popular, searchTerms.model).length > 0 && (
+          <div>
+            <h4 className="text-sm font-bold text-gray-700 mb-3 text-center uppercase tracking-wide font-manrope">Popular Models</h4>
+            <div className="flex justify-center">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 max-w-4xl">
+                {filterItems(modelsData.popular, searchTerms.model).map((model) => (
+                  <button
+                    key={model as string}
+                    className="p-2 rounded-lg border-2 border-gray-200 hover:border-black hover:bg-gray-50 hover:shadow-md transition-all text-center bg-white font-manrope"
+                    onClick={() => {
+                      updateFormData('model', model as string);
+                      setSearchTerms(prev => ({ ...prev, model: '' }));
+                    }}
+                  >
+                    <span className="text-xs font-semibold text-black">{model as string}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {filterItems(modelsData.other, searchTerms.model).length > 0 && (
+          <div>
+            <h4 className="text-sm font-bold text-gray-700 mb-3 text-center uppercase tracking-wide font-manrope">All Models</h4>
+            <div className="flex justify-center">
+              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 gap-2 max-h-32 overflow-y-auto max-w-4xl">
+                {filterItems(modelsData.other, searchTerms.model).map((model) => (
+                  <button
+                    key={model as string}
+                    className="p-2 text-xs rounded-lg border-2 border-gray-200 hover:border-black hover:bg-gray-50 hover:shadow-md transition-all bg-white font-manrope"
+                    onClick={() => {
+                      updateFormData('model', model as string);
+                      setSearchTerms(prev => ({ ...prev, model: '' }));
+                    }}
+                  >
+                    {model as string}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  // Step 3: Fuel Selection
+  const renderFuelSelection = () => (
+    <div className="w-full max-w-2xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-black mb-2 font-manrope">Select Fuel Type</h2>
+  <p className="text-gray-600 font-manrope">Choose your vehicle&apos;s fuel type</p>
+      </div>
+      
+      <div className="flex justify-center">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-lg">
+          {fuelOptions.filter(fuel => availableFuels.includes(fuel.key)).map((fuel) => (
+            <button
+              key={fuel.key}
+              className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border-2 border-gray-200 hover:border-black hover:bg-gray-50 hover:shadow-md transition-all bg-white font-manrope"
+              onClick={() => updateFormData('fuel', fuel.key)}
+            >
+              {getIconComponent(fuel.icon, "w-8 h-8 text-black")}
+              <span className="font-bold text-black">{fuel.key}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 4: Variant Selection
+  const renderVariantSelection = () => (
+    <div className="w-full max-w-4xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-black mb-2 font-manrope">Choose Variant</h2>
+        <p className="text-gray-600 font-manrope">Select your specific vehicle variant</p>
+      </div>
+      
+      <div className="flex justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-60 overflow-y-auto max-w-4xl">
+          {variantsData.map((variant) => (
+            <button
+              key={variant.name}
+              className="p-3 rounded-xl border-2 border-gray-200 hover:border-black hover:bg-gray-50 hover:shadow-md transition-all text-left bg-white font-manrope"
+              onClick={() => updateFormData('variant', variant.name)}
+            >
+              <span className="font-bold text-black block">{variant.name}</span>
+              <span className="text-xs text-gray-500 mt-1 block">{variant.subtitle}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 5: City Selection
+  const renderCitySelection = () => (
+    <div className="w-full max-w-4xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-black mb-2 font-manrope">Select RTO Location</h2>
+        <p className="text-gray-600 font-manrope">Where is your car registered?</p>
+      </div>
+      
+      <div className="max-w-md mx-auto mb-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search cities..."
+            value={searchTerms.city}
+            onChange={(e) => setSearchTerms(prev => ({ ...prev, city: e.target.value }))}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:border-black focus:outline-none transition-all shadow-sm font-manrope text-sm"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {/* Popular Cities */}
+        <div>
+          <h4 className="text-sm font-bold text-gray-700 mb-3 text-center uppercase tracking-wide font-manrope">Popular Cities</h4>
+          <div className="flex justify-center">
+            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 max-w-4xl">
+              {filterItems(popularCities.slice(0, 16), searchTerms.city).map((city) => (
+                <button
+                  key={(city as { name: string }).name}
+                  onClick={() => {
+                    updateFormData('city', (city as { name: string }).name);
+                    setSearchTerms(prev => ({ ...prev, city: '' }));
+                  }}
+                  className="flex flex-col items-center gap-2 p-2 rounded-lg border-2 border-gray-200 hover:border-black hover:bg-gray-50 hover:shadow-md transition-all bg-white font-manrope"
+                >
+                  <div className="w-6 h-6 rounded overflow-hidden">
+                    {getMonumentImage((city as { name: string }).name, cityImageMap)}
+                  </div>
+                  <span className="text-xs font-semibold text-center leading-tight text-black">
+                    {(city as { name: string }).name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Other Cities */}
+        <div>
+          <h4 className="text-sm font-bold text-gray-700 mb-3 text-center uppercase tracking-wide font-manrope">Other Cities</h4>
+          <div className="flex justify-center">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 max-h-24 overflow-y-auto max-w-3xl">
+              {filterItems(otherCities.slice(0, 20), searchTerms.city).map((city) => (
+                <button
+                  key={city as string}
+                  onClick={() => {
+                    updateFormData('city', city as string);
+                    setSearchTerms(prev => ({ ...prev, city: '' }));
+                  }}
+                  className="p-2 rounded-lg border-2 border-gray-200 text-xs font-semibold hover:border-black hover:bg-gray-50 hover:shadow-md transition-all bg-white font-manrope"
+                >
+                  {city as string}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 6: Year Selection
+  const renderYearSelection = () => (
+    <div className="w-full max-w-3xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-black mb-2 font-manrope">Manufacturing Year</h2>
+        <p className="text-gray-600 font-manrope">When was your car manufactured?</p>
+      </div>
+      
+      <div className="flex justify-center">
+        <div className="grid grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 max-h-40 overflow-y-auto max-w-3xl">
+          {years.map((year) => (
+            <button
+              key={year}
+              className="p-2 rounded-lg border-2 border-gray-200 font-bold text-sm hover:border-black hover:bg-gray-50 hover:shadow-md transition-all bg-white font-manrope"
+              onClick={() => updateFormData('year', year)}
+            >
+              {year}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 7: Owner Selection
+  const renderOwnerSelection = () => (
+    <div className="w-full max-w-lg mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-black mb-2 font-manrope">Ownership History</h2>
+        <p className="text-gray-600 font-manrope">How many owners has your car had?</p>
+      </div>
+      
+      <div className="flex justify-center">
+        <div className="space-y-2 w-full max-w-sm">
+          {ownerOptions.map((owner) => (
+            <button
+              key={owner}
+              className="w-full p-3 rounded-lg border-2 border-gray-200 font-semibold hover:border-black hover:bg-gray-50 hover:shadow-md transition-all text-left bg-white font-manrope"
+              onClick={() => updateFormData('owner', owner)}
+            >
+              {owner}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 8: KM Selection
+  const renderKmSelection = () => (
+    <div className="w-full max-w-2xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-black mb-2 font-manrope">Kilometers Driven</h2>
+        <p className="text-gray-600 font-manrope">How many kilometers has your car covered?</p>
+      </div>
+      
+      <div className="flex justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 overflow-y-auto max-w-xl w-full">
+          {kmOptions.map((kms) => (
+            <button
+              key={kms}
+              className="p-3 rounded-lg border-2 border-gray-200 font-semibold hover:border-black hover:bg-gray-50 hover:shadow-md transition-all text-left bg-white font-manrope"
+              onClick={() => updateFormData('kms', kms)}
+            >
+              {kms}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 9: Contact Info
+  const renderContactInfo = () => (
+    <div className="w-full max-w-sm mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-black mb-2 font-manrope">Get Your Car Valuation</h2>
+        <p className="text-gray-600 font-manrope">Enter your mobile number for instant valuation</p>
+      </div>
+      
+      <div className="space-y-4">
         <div>
           <input
             type="tel"
             value={formData.phone}
-            onChange={e => updateFormData('phone', e.target.value.replace(/[^\d]/g, ''))}
+            onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value.replace(/[^\d]/g, '') }))}
             onBlur={() => setTouched(true)}
             maxLength={10}
             placeholder="Enter your mobile number"
-            className={`w-full p-4 text-lg rounded-xl border-2 font-semibold focus:outline-none transition-all ${
-              showPhoneError ? 'border-red-500' : 'border-gray-300 focus:border-black'
-            }`}
+            className="w-full p-3 text-lg rounded-lg border-2 border-gray-300 font-semibold focus:outline-none focus:border-black transition-all shadow-sm bg-white font-manrope"
           />
           
-          {showPhoneError && (
-            <span className="text-red-500 text-sm mt-2 block">Please enter a valid 10-digit mobile number.</span>
+          {touched && !isPhoneValid && (
+            <span className="text-red-500 text-sm mt-1 block font-manrope">Please enter a valid 10-digit mobile number.</span>
           )}
         </div>
         
-        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
+        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
           <input
             type="checkbox"
             checked={formData.whatsappUpdates}
-            onChange={e => updateFormData('whatsappUpdates', e.target.checked.toString())}
-            className="w-5 h-5 accent-black"
+            onChange={e => setFormData(prev => ({ ...prev, whatsappUpdates: e.target.checked }))}
+            className="w-4 h-4 accent-black"
             id="whatsapp-updates"
           />
-          <label htmlFor="whatsapp-updates" className="font-medium text-black">
+          <label htmlFor="whatsapp-updates" className="font-medium text-black font-manrope text-sm">
             Send updates on WhatsApp
           </label>
         </div>
         
         <button
-          className={`w-full py-4 text-lg rounded-xl font-bold transition-all ${
+          className={`w-full py-3 text-lg rounded-lg font-bold transition-all shadow-md font-manrope ${
             isPhoneValid 
-              ? 'bg-black text-white hover:bg-gray-800' 
+              ? 'bg-black text-white hover:bg-gray-800 hover:shadow-lg' 
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
           onClick={handleSubmit}
           disabled={!isPhoneValid}
@@ -726,13 +657,14 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
           Get Instant Valuation
         </button>
         
-        <div className="text-gray-500 text-center text-sm">
+        <div className="text-gray-500 text-center text-sm font-manrope">
           🔒 Your data is safe and secure with us
         </div>
       </div>
     </div>
   );
 
+  // Step 10: Upload Images
   const renderUploadImages = () => {
     const uploadSections = [
       { key: 'rc', title: 'RC Certificate', subtitle: 'Upload clear photo of your RC', maxFiles: 1 },
@@ -743,12 +675,15 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
 
     return (
       <div className="w-full max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-black mb-2">Upload Vehicle Images</h2>
-          <p className="text-gray-600">Help us evaluate your car better with clear photos</p>
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-black mb-2 font-manrope">Upload Vehicle Images (Optional)</h2>
+          <p className="text-gray-600 font-manrope">For more accurate pricing, please upload clear photos</p>
+          <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-green-700 font-medium font-manrope">✅ Form submitted successfully! Upload images for better evaluation.</p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {uploadSections.map((section) => {
             const files = uploadedFiles[section.key as keyof typeof uploadedFiles];
             const fileCount = Array.isArray(files) ? files.length : (files ? 1 : 0);
@@ -756,14 +691,14 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
             return (
               <div
                 key={section.key}
-                className="border-2 border-dashed rounded-xl p-6 border-gray-300 hover:border-black hover:bg-gray-50 transition-all duration-300"
+                className="border-2 border-dashed rounded-xl p-4 border-gray-300 hover:border-black hover:bg-gray-50 transition-all duration-300 bg-white shadow-sm"
               >
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Upload className="w-8 h-8 text-white" />
+                  <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
+                    <Upload className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold text-black mb-1">{section.title}</h3>
-                  <p className="text-sm text-gray-600 mb-4">{section.subtitle}</p>
+                  <h3 className="text-lg font-bold text-black mb-1 font-manrope">{section.title}</h3>
+                  <p className="text-sm text-gray-600 mb-3 font-manrope">{section.subtitle}</p>
 
                   <input
                     type="file"
@@ -776,12 +711,12 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
                   
                   <label
                     htmlFor={`upload-${section.key}`}
-                    className="inline-block px-6 py-3 bg-black text-white rounded-lg font-bold cursor-pointer hover:bg-gray-800 transition-all duration-200"
+                    className="inline-block px-4 py-2 bg-black text-white rounded-lg font-bold cursor-pointer hover:bg-gray-800 hover:shadow-md transition-all duration-200 shadow-sm font-manrope text-sm"
                   >
                     {fileCount > 0 ? `${fileCount}/${section.maxFiles} Uploaded` : 'Choose Files'}
                   </label>
                   
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="text-xs text-gray-500 mt-2 font-manrope">
                     or drag and drop images here
                   </p>
                 </div>
@@ -790,13 +725,14 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
           })}
         </div>
 
-        <div className="text-center mt-8">
+        <div className="text-center mt-6">
           <button
-            className="px-8 py-4 bg-black text-white rounded-lg font-bold text-lg hover:bg-gray-800 transition-all duration-200"
+            className="px-8 py-3 bg-black text-white rounded-xl font-bold hover:bg-gray-800 hover:shadow-lg transition-all duration-200 shadow-md font-manrope"
             onClick={() => console.log('Evaluation completed')}
           >
             Complete Evaluation
           </button>
+          <p className="text-sm text-gray-500 mt-2 font-manrope">Images are optional. You can skip this step.</p>
         </div>
       </div>
     );
@@ -804,46 +740,67 @@ const SellNowWizardClient: React.FC<SellNowWizardClientProps> = ({
 
   const renderCurrentStep = () => {
     switch (currentStep) {
-      case 1: return renderVehicleInfo();
-      case 2: return renderLocationYear();
-      case 3: return renderUsageHistory();
-      case 4: return renderContactInfo();
-      case 5: return renderUploadImages();
-      default: return <div className="text-black">Step not found</div>;
+      case 1: return renderBrandSelection();
+      case 2: return renderModelSelection();
+      case 3: return renderFuelSelection();
+      case 4: return renderVariantSelection();
+      case 5: return renderCitySelection();
+      case 6: return renderYearSelection();
+      case 7: return renderOwnerSelection();
+      case 8: return renderKmSelection();
+      case 9: return renderContactInfo();
+      case 10: return renderUploadImages();
+      default: return <div className="text-black font-manrope">Step not found</div>;
     }
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
-        {/* Progress Bar */}
-        {currentStep <= 5 && <ProgressBar />}
+    <>
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
         
-        {/* Selection Display */}
-        {currentStep > 1 && currentStep <= 4 && <SelectionDisplay />}
+        body {
+          font-family: 'Manrope', sans-serif;
+        }
+        
+        .font-manrope {
+          font-family: 'Manrope', sans-serif;
+        }
+      `}</style>
+      
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white font-manrope">
+        <div className="w-full max-w-7xl mx-auto p-6 md:p-8 lg:p-12">
+          {/* Progress Bar */}
+          {currentStep <= 10 && <ProgressBar />}
+          
+          {/* Selection Display */}
+          {currentStep > 1 && currentStep <= 9 && <SelectionDisplay />}
 
-        {/* Back Button */}
-        {currentStep > 1 && currentStep <= 4 && (
-          <div className="mb-6 max-w-4xl mx-auto">
-            <button
-              onClick={goToPrevStep}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 border border-gray-300 text-black rounded-lg hover:bg-gray-200 hover:border-gray-400 transition-all duration-300 text-sm"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Previous Step
-            </button>
-          </div>
-        )}
+          {/* Back Button */}
+          {currentStep > 1 && currentStep <= 9 && (
+            <div className="mb-4 max-w-5xl mx-auto">
+              <button
+                onClick={goToPrevStep}
+                className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-300 text-black rounded-lg hover:bg-gray-50 hover:border-black hover:shadow-md transition-all duration-300 font-medium shadow-sm font-manrope text-sm"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous Step
+              </button>
+            </div>
+          )}
 
-        {/* Main Content */}
-        <div ref={wizardScrollRef} className="min-h-[400px] flex items-start justify-center">
-          <div className="w-full">
-            {renderCurrentStep()}
+          {/* Main Content */}
+          <div ref={wizardScrollRef} className="min-h-[300px] flex items-center justify-center py-4">
+            <div className="w-full">
+              {renderCurrentStep()}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
+
+SellNowWizardClient.displayName = "SellNowWizardClient";
 
 export default SellNowWizardClient;

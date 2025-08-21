@@ -205,7 +205,7 @@ export function RecommendedVehiclesClient({
               <Car size={32} className="text-gray-600" />
             </div>
             <h3 className="text-xl font-bold text-white mb-2 font-manrope">No Recommendations Available</h3>
-            <p className="text-gray-400 font-manrope">We're currently updating our inventory. Check back soon!</p>
+            <p className="text-gray-400 font-manrope">We&apos;re currently updating our inventory. Check back soon!</p>
           </div>
         </div>
       </section>

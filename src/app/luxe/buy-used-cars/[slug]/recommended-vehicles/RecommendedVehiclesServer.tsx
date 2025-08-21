@@ -138,8 +138,11 @@ export default async function RecommendedVehiclesServer({
 
   return (
     <RecommendedVehiclesClient 
-      vehicles={recommendedVehicles}
       currentVehicleId={currentVehicleId}
+      currentBrand={currentBrand}
+      currentFuelType={currentFuelType}
+      currentTransmission={currentTransmission}
+      currentPriceRange={currentPriceRange}
     />
   );
 }

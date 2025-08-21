@@ -77,12 +77,16 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
     return (
       <div
         key={index}
-        className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 group"
+        className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 group text-center"
       >
-        <feature.icon className="w-8 h-8 text-[#D4AF37] mb-3 group-hover:scale-110 transition-transform" />
-        <h3 className="text-lg font-bold mb-2 text-white/90 group-hover:bg-gradient-to-r group-hover:from-[#D4AF37] group-hover:to-[#BFA980] group-hover:bg-clip-text group-hover:text-transparent transition-colors font-manrope">
-          {feature.title}
-        </h3>
+        {/* Icon and Title Row */}
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <feature.icon className="w-8 h-8 text-[#D4AF37] group-hover:scale-110 transition-transform" />
+          <h3 className="text-lg font-bold text-white/90 group-hover:bg-gradient-to-r group-hover:from-[#D4AF37] group-hover:to-[#BFA980] group-hover:bg-clip-text group-hover:text-transparent transition-colors font-manrope">
+            {feature.title}
+          </h3>
+        </div>
+        {/* Description Below */}
         <p className="text-white/70 text-sm group-hover:text-white/80 transition-colors font-manrope">{feature.desc}</p>
       </div>
     );
@@ -91,10 +95,10 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
   return (
     <section 
       id="about-section" 
-      className="relative py-16 px-4 bg-gradient-to-b from-[#0e0e0e] to-[#1a1a1a]"
+      className="relative py-12 px-2 sm:px-4 bg-gradient-to-b from-[#0e0e0e] to-[#1a1a1a] w-full overflow-x-hidden"
       aria-labelledby="about-heading"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl w-full mx-auto">
         {/* Section Header */}
         <div
           className={`text-center mb-12 transition-all duration-1000 ${
@@ -373,10 +377,10 @@ const HomeContactSection = React.memo(function HomeContactSection() {
   return (
     <section 
       id="contact-section" 
-      className="relative py-16 px-4 bg-gradient-to-b from-[#1a1a1a] to-[#0e0e0e]"
+      className="relative py-12 px-2 sm:px-4 bg-gradient-to-b from-[#1a1a1a] to-[#0e0e0e] w-full overflow-x-hidden"
       aria-labelledby="contact-heading"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl w-full mx-auto">
         {/* Header */}
         <div className={`text-center mb-12 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
           <h2 id="contact-heading" className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-manrope">

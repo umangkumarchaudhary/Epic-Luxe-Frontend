@@ -100,6 +100,35 @@ const FeaturedInventory: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedVehicle, setSelectedVehicle] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Add responsive styles for very small screens
+  React.useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @media (max-width: 520px) {
+        .featured-container-responsive {
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+        }
+        .featured-grid-responsive {
+          gap: 8px !important;
+          max-width: 280px !important;
+        }
+        .featured-bg-responsive {
+          width: 200px !important;
+          height: 200px !important;
+        }
+        .featured-title-responsive {
+          font-size: 1.875rem !important;
+          line-height: 2.25rem !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
   const [isHovered, setIsHovered] = useState(false);
   const [currentSpecIndex, setCurrentSpecIndex] = useState(0);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
@@ -291,16 +320,16 @@ const FeaturedInventory: React.FC = () => {
       
       {/* Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tl from-[#D4AF37]/5 to-transparent rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-[#D4AF37]/3 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-20 left-2 sm:left-10 w-60 h-60 sm:w-96 sm:h-96 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-full blur-3xl animate-pulse featured-bg-responsive"></div>
+        <div className="absolute bottom-20 right-2 sm:right-10 w-60 h-60 sm:w-96 sm:h-96 bg-gradient-to-tl from-[#D4AF37]/5 to-transparent rounded-full blur-3xl animate-pulse delay-1000 featured-bg-responsive"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] sm:w-[800px] sm:h-[800px] bg-gradient-radial from-[#D4AF37]/3 to-transparent rounded-full blur-3xl"></div>
       </div>
 
       {/* Grain Texture Overlay */}
       <div className="absolute inset-0 opacity-20 bg-noise"></div>
 
       <div 
-        className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 font-manrope"
+        className="relative z-10 max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 font-manrope featured-container-responsive"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -312,7 +341,7 @@ const FeaturedInventory: React.FC = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-8 md:mb-12 font-manrope"
         >
-          <h1 className="font-manrope text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-2 tracking-tight">
+          <h1 className="font-manrope text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-2 tracking-tight featured-title-responsive">
             Premium <span className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-bold">Featured Inventory</span>
           </h1>
           <p className="font-manrope text-gray-400 text-sm md:text-base max-w-2xl mx-auto">
@@ -328,7 +357,7 @@ const FeaturedInventory: React.FC = () => {
           className="mb-8 relative"
         >
           {/* Desktop View - Horizontal Scroll */}
-          <div className="hidden md:flex justify-center gap-2 overflow-x-auto pb-4 pt-2 px-4">
+          <div className="hidden md:flex justify-center gap-2 overflow-x-auto pb-4 pt-2 px-2 sm:px-4">
             {featuredVehicles.map((vehicle, index) => (
               <motion.button
                 key={vehicle.id}
@@ -372,7 +401,7 @@ const FeaturedInventory: React.FC = () => {
 
           {/* Mobile View - 3x3 Grid */}
           <div 
-            className="md:hidden pb-4 pt-2 px-4 relative"
+            className="md:hidden pb-4 pt-2 px-2 sm:px-4 relative"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
@@ -381,7 +410,7 @@ const FeaturedInventory: React.FC = () => {
             onMouseUp={onMouseUp}
             style={{ touchAction: 'none' }}
           >
-            <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-xs sm:max-w-sm mx-auto featured-grid-responsive">
               {featuredVehicles.map((vehicle, index) => (
                 <motion.button
                   key={vehicle.id}

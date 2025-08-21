@@ -10,6 +10,7 @@ import { ChevronRight, Car, DollarSign, Shield, Search, Phone, Star, TrendingUp,
 interface Banner {
   id: string;
   image_url: string;
+  mobile_image_url?: string; // Mobile image (optional)
   title: string;
   subtitle: string;
   badge: string;
@@ -33,10 +34,7 @@ interface QuoteFormProps {
   formType: 'buy' | 'sell';
 }
 
-interface ParallaxState {
-  x: number;
-  y: number;
-}
+
 
 const luxuryCarModels: string[] = [
   'Bugatti Chiron', 'McLaren 720S', 'Porsche 911 Turbo S', 'Ferrari F8 Tributo',
@@ -435,14 +433,10 @@ export default function LuxuryVehicleHero(): React.ReactElement {
 
   // Parallax effect - Fixed version
   useEffect(() => {
-    const handleParallax = (e: MouseEvent): void => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 0.5;
-      const y = (e.clientY / window.innerHeight - 0.5) * 0.5;
-      setParallax({ x, y });
-    };
+  // Parallax effect removed (unused variables)
 
-    window.addEventListener('mousemove', handleParallax);
-    return () => window.removeEventListener('mousemove', handleParallax);
+  // Parallax effect removed
+  return undefined;
   }, []);
 
   // Cleanup scroll style on unmount
@@ -470,18 +464,9 @@ export default function LuxuryVehicleHero(): React.ReactElement {
     }
   };
 
+  // Dynamic hero top padding based on header height
 
-  useEffect(() => {
-    function updateHeroPadding() {
-      const header = document.querySelector('header');
-      if (header) {
-        setHeroPaddingTop(header.offsetHeight);
-      }
-    }
-    updateHeroPadding();
-    window.addEventListener('resize', updateHeroPadding);
-    return () => window.removeEventListener('resize', updateHeroPadding);
-  }, []);
+  
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden bg-black manrope-font" id="hero-section">
@@ -510,13 +495,26 @@ export default function LuxuryVehicleHero(): React.ReactElement {
       className="w-full relative overflow-hidden"
     >
 
-          {/* Background Image with Enhanced Gradient Overlay */}
+          {/* Background Image with Enhanced Gradient Overlay - Responsive */}
             <div className="absolute inset-0 w-full h-full">
+              {/* Mobile Image - Show on screens smaller than 768px */}
+              {currentBanner.mobile_image_url && (
+                <Image
+                  src={currentBanner.mobile_image_url}
+                  alt={`${currentBanner.title} (Mobile)`}
+                  fill
+                  className="object-cover w-full h-full block md:hidden"
+                  priority
+                  sizes="100vw"
+                />
+              )}
+              
+              {/* PC Image - Show on screens 768px and larger, or if no mobile image */}
               <Image
                 src={currentBanner.image_url}
-                alt={currentBanner.title}
+                alt={`${currentBanner.title} (Desktop)`}
                 fill
-                className="object-cover w-full h-full"
+                className={`object-cover w-full h-full ${currentBanner.mobile_image_url ? 'hidden md:block' : 'block'}`}
                 priority
                 sizes="100vw"
               />

@@ -2,7 +2,7 @@
 
 // HeaderClient.tsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
+
 import Link from 'next/link';
 import {
   Menu,
@@ -61,7 +61,7 @@ interface HeaderClientProps {
   };
 }
 
-export default function HeaderClient({ seoData }: HeaderClientProps) {
+export default function HeaderClient({ seoData: _seoData }: HeaderClientProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isInsightsOpen, setIsInsightsOpen] = useState(false);

@@ -1,7 +1,7 @@
 'use client';
 
 // EpicReassuredBenefitsClient.tsx - Client Component (Interactive)
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 interface Benefit {
   id: number;

@@ -8,7 +8,7 @@ import Image from 'next/image';
 import {
   ArrowLeft, Calendar, Calculator, Share2, Heart, Phone, MapPin, Fuel,
   Settings, Gauge, Car, Shield, Award, Eye, ChevronLeft, ChevronRight,
-  MessageCircle, Users, Zap
+  MessageCircle, Users
 } from 'lucide-react';
 
 import EMIModal from '../buyComponents/EMIModal/EMIModal';

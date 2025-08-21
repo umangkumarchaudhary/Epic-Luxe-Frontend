@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     // Generate unique filename
     const timestamp = Date.now();
     const originalName = file.name;
-    const extension = originalName.split('.').pop();
+    
     const uniqueFileName = `${timestamp}-${originalName}`;
 
     // Create uploads directory if it doesn't exist

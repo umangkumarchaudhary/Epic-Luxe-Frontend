@@ -211,7 +211,7 @@ const Services = () => {
 
 
   return (
-    <section ref={sectionRef} className="relative py-20 px-4 overflow-hidden font-primary w-full">
+    <section ref={sectionRef} className="relative py-10 sm:py-20 px-2 sm:px-4 overflow-x-hidden font-primary w-full">
       {/* Background Image with Animation */}
       <div className="absolute inset-0">
         <div 
@@ -233,10 +233,10 @@ const Services = () => {
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tl from-[#BFA980]/5 to-transparent rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
+  <div className="relative z-10 max-w-7xl w-full mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="font-manrope text-4xl md:text-6xl font-bold text-white/90 mb-6 tracking-tight">
+          <h2 className="manrope-font text-4xl md:text-6xl font-bold text-white/90 mb-6 tracking-tight">
             Luxury Car <span className="text-[#D4AF37]">Services Redefined</span>
           </h2>
         </div>
@@ -268,7 +268,7 @@ const Services = () => {
                     {/* Services Scroll Container */}
           <div 
             ref={scrollContainerRef}
-            className="flex gap-8 overflow-x-auto scrollbar-hide px-4 snap-x snap-mandatory"
+            className="flex gap-4 sm:gap-8 overflow-x-auto scrollbar-hide px-0 sm:px-4 snap-x snap-mandatory w-full"
             style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
@@ -279,8 +279,7 @@ const Services = () => {
               <div
                 key={service.id}
                 id={service.id}
-                className="flex-shrink-0 w-full md:w-[calc(50%-16px)] lg:w-[calc(33.333%-22px)] snap-center group relative rounded-2xl border border-[#BFA980]/20 hover:border-[#D4AF37]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#D4AF37]/10 cursor-pointer my-4 flex flex-col"
-
+                className="flex-shrink-0 w-[90vw] sm:w-full md:w-[calc(50%-16px)] lg:w-[calc(33.333%-22px)] snap-center group relative rounded-2xl border border-[#BFA980]/20 hover:border-[#D4AF37]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#D4AF37]/10 cursor-pointer my-4 flex flex-col"
               >
                 {/* Card Image Section */}
                 <div className="relative h-[400px] overflow-hidden rounded-t-2xl">
@@ -321,6 +320,7 @@ const Services = () => {
                       case 'buy-premium':
                         navigateToInventory();
                         break;
+
                       case 'sell-car':
                         navigateToSell();
                         break;

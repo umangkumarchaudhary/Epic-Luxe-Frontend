@@ -18,6 +18,7 @@ export interface SectionData {
 
 export interface BackgroundData {
   images: string[]
+  mobileImages?: string[] // Mobile background images (optional)
   animationType: 'slideshow' | 'parallax' | 'float'
 }
 
@@ -34,27 +35,31 @@ export interface HeroClientProps {
 // Default hero data for fallback
 export const defaultHeroData: HeroData = {
   buySection: {
-    title: "Acquire Excellence",
-    description: "Discover meticulously curated luxury vehicles. Each model represents the pinnacle of automotive craftsmanship.",
+    title: "Buy Cars",
+    description: "Premium pre-owned vehicles from Epic Reassured",
     badges: [
-      { icon: "shield-check", text: "Certified Pre-Owned" },
-      { icon: "truck", text: "White Glove Delivery" }
+      { icon: "shield-check", text: "Certified Quality" },
+      { icon: "truck", text: "Home Delivery" }
     ],
-    cta: { text: "Explore Collection", href: "/reassured/buy-used-cars" }
+    cta: { text: "Browse Collection", href: "/reassured/buy-used-cars" }
   },
   sellSection: {
-    title: "Exclusive Consignment", 
-    description: "Transform your prized vehicle into opportunity. Our premium marketplace connects discerning sellers with qualified collectors.",
+    title: "Sell Now", 
+    description: "Get the best value for your vehicle with Epic Reassured",
     badges: [
-      { icon: "trending-up", text: "Market Valuation" },
-      { icon: "lock", text: "Secure Transaction" }
+      { icon: "trending-up", text: "Best Price Guaranteed" },
+      { icon: "lock", text: "Instant Valuation" }
     ],
-    cta: { text: "Begin Consignment", href: "/reassured/Services/sell-your-car" }
+    cta: { text: "Get Valuation", href: "/reassured/Services/sell-your-car" }
   },
   backgroundImages: {
     images: [
       "/assets/images/reassuredherobg.png",
       "/assets/images/reassuredherobg2.png"
+    ],
+    mobileImages: [
+      "/assets/images/reassuredherobg-mobile.png",
+      "/assets/images/reassuredherobg2-mobile.png"
     ],
     animationType: "slideshow"
   }

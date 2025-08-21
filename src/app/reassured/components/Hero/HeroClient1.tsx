@@ -5,7 +5,9 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { SwiperRef } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import LeadModal from "./LeadModal";
+
 
 // Import Swiper styles
 import "swiper/css";
@@ -23,11 +25,33 @@ interface Banner {
   cta1_url_or_action?: string;
   cta2_text?: string;
   cta2_url_or_action?: string;
-  image_url: string; // updated to match backend field
+  image_url: string; // PC image (required)
+  mobile_image_url?: string; // Mobile image (optional)
 }
 
 export default function HeroClient({ banners }: { banners: Banner[] }) {
   const swiperRef = useRef<SwiperRef | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentCTAText, setCurrentCTAText] = useState<string>("");
+
+  const handleCTA2Click = (e: React.MouseEvent, cta2_url_or_action?: string, cta2_text?: string) => {
+    e.preventDefault();
+    // Check if the CTA2 is meant for lead capture
+    // If it's not a proper URL (doesn't start with http/https or /), treat it as lead capture
+    const isValidUrl = cta2_url_or_action && 
+      (cta2_url_or_action.startsWith('http') || 
+       cta2_url_or_action.startsWith('/') || 
+       cta2_url_or_action.startsWith('mailto:') || 
+       cta2_url_or_action.startsWith('tel:'));
+    
+    if (!cta2_url_or_action || cta2_url_or_action === "#" || !isValidUrl) {
+      setCurrentCTAText(cta2_text || "Get Free Quote");
+      setIsModalOpen(true);
+    } else {
+      // Navigate to the URL if it's a valid link
+      window.location.href = cta2_url_or_action;
+    }
+  };
 
   if (!banners.length) return null;
 
@@ -53,16 +77,30 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
         {banners.map((banner) => (
           <SwiperSlide key={banner.id}>
             <div className="relative w-full h-full">
-              {/* Background Image */}
+              {/* Background Image - Responsive */}
               <div className="absolute inset-0">
+                {/* Mobile Image - Show on screens smaller than 768px */}
+                {banner.mobile_image_url && (
+                  <Image
+                    src={banner.mobile_image_url}
+                    alt={`${banner.title || "Hero Banner"} (Mobile)`}
+                    fill
+                    className="object-cover object-center block md:hidden"
+                    priority={banners.indexOf(banner) === 0}
+                    sizes="100vw"
+                  />
+                )}
+                
+                {/* PC Image - Show on screens 768px and larger, or if no mobile image */}
                 <Image
-                  src={banner.image_url} // now using backend Supabase URL
-                  alt={banner.title || "Hero Banner"}
+                  src={banner.image_url}
+                  alt={`${banner.title || "Hero Banner"} (Desktop)`}
                   fill
-                  className="object-cover object-center"
-                  priority={banners.indexOf(banner) === 0} // Load first image with priority
+                  className={`object-cover object-center ${banner.mobile_image_url ? 'hidden md:block' : 'block'}`}
+                  priority={banners.indexOf(banner) === 0}
                   sizes="100vw"
                 />
+                
                 {/* Overlay for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-white/10"></div>
               </div>
@@ -96,12 +134,12 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
                     </Link>
                   )}
                   {banner.cta2_text && (
-                    <Link
-                      href={banner.cta2_url_or_action || "#"}
+                    <button
+                      onClick={(e) => handleCTA2Click(e, banner.cta2_url_or_action, banner.cta2_text)}
                       className="px-6 py-3 border border-black text-black text-sm font-semibold tracking-wide hover:bg-gray-100 transition-colors"
                     >
                       {banner.cta2_text}
-                    </Link>
+                    </button>
                   )}
                 </div>
               </div>
@@ -109,6 +147,13 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
           </SwiperSlide>
         ))}
       </Swiper>
+      
+      {/* Lead Capture Modal */}
+      <LeadModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        ctaText={currentCTAText}
+      />
     </section>
   );
 }

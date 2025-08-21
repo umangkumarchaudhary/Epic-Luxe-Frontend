@@ -13,12 +13,8 @@ import {
   Edit3, 
   Plus, 
   Calendar,
-  TrendingUp,
   FileText,
-  Users,
-  BarChart3,
-  Search,
-  Filter
+  Search
 } from "lucide-react";
 
 interface Blog {

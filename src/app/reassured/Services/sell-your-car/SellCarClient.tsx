@@ -261,7 +261,7 @@ export default function SellCarClient() {
         {/* Trust Features */}
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-4">
-            <div className="text-2xl font-light mb-1">50,000+</div>
+            <div className="text-2xl font-light mb-1">5000+</div>
             <div className="text-sm text-gray-600">Cars Sold</div>
           </div>
           <div className="text-center p-4">
@@ -269,11 +269,11 @@ export default function SellCarClient() {
             <div className="text-sm text-gray-600">Google Rating</div>
           </div>
           <div className="text-center p-4">
-            <div className="text-2xl font-light mb-1">24 Hrs</div>
+            <div className="text-2xl font-light mb-1">48 Hrs</div>
             <div className="text-sm text-gray-600">Quick Sale</div>
           </div>
           <div className="text-center p-4">
-            <div className="text-2xl font-light mb-1">140+</div>
+            <div className="text-2xl font-light mb-1">200+</div>
             <div className="text-sm text-gray-600">Quality Checks</div>
           </div>
         </div>

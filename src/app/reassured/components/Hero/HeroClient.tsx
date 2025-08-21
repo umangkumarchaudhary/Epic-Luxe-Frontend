@@ -42,7 +42,7 @@ const getStyles = () => `
   .hero-container {
     width: 100%;
     position: relative;
-    padding: 3rem 2rem;
+    padding: 2rem 1.5rem;
     overflow: hidden;
     background: linear-gradient(135deg, #FAFAFA 0%, #FFFFFF 50%, #F8F8F8 100%);
   }
@@ -77,6 +77,25 @@ const getStyles = () => `
   
   .background-image.inactive { opacity: 0; }
   
+  /* Responsive background images */
+  .mobile-bg {
+    display: block;
+  }
+  
+  .desktop-bg {
+    display: none;
+  }
+  
+  @media (min-width: 768px) {
+    .mobile-bg {
+      display: none;
+    }
+    
+    .desktop-bg {
+      display: block;
+    }
+  }
+  
   @keyframes slowZoom {
     0% { transform: scale(1) translateX(0) translateY(0); }
     25% { transform: scale(1.05) translateX(-2%) translateY(-1%); }
@@ -103,12 +122,13 @@ const getStyles = () => `
   .hero-grid {
     position: relative;
     z-index: 2;
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    min-height: 320px;
+    gap: 1.5rem;
+    height: 40vh;
+    min-height: 280px;
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   
@@ -148,7 +168,7 @@ const getStyles = () => `
   
   .hero-section {
     position: relative;
-    padding: 2.5rem;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -366,22 +386,21 @@ const getStyles = () => `
   
   .cta-button {
     position: relative;
-    display: inline-flex;
+    display: flex;
+    width: 100%;
     align-items: center;
     justify-content: center;
-    padding: 0.875rem 2rem;
+    padding: 1rem 2rem;
     background: #000000;
     color: #FFFFFF;
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     letter-spacing: 0.005em;
     border: 2px solid #000000;
     border-radius: 0;
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     overflow: hidden;
-    align-self: flex-start;
-    min-width: 180px;
     z-index: 10;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     font-family: 'Manrope', sans-serif;
@@ -595,12 +614,28 @@ export default function HeroClient({ data }: HeroClientProps) {
   const renderAnimatedBackground = useMemo(() => {
     if (!data.backgroundImages?.images?.length) return null
     
+    const desktopImages = data.backgroundImages.images
+    const mobileImages = data.backgroundImages.mobileImages || desktopImages // Fallback to desktop images
+    
     return (
       <div className="hero-background">
-        {data.backgroundImages.images.map((image, index) => (
+        {/* Mobile Background Images */}
+        {mobileImages.map((image, index) => (
           <div
-            key={index}
-            className={`background-image ${index === currentImageIndex ? 'active' : 'inactive'}`}
+            key={`mobile-${index}`}
+            className={`background-image mobile-bg ${index === currentImageIndex ? 'active' : 'inactive'}`}
+            style={{
+              backgroundImage: `url(${image})`,
+              transform: `translateY(${scrollY * 0.5}px)`
+            }}
+          />
+        ))}
+        
+        {/* Desktop Background Images */}
+        {desktopImages.map((image, index) => (
+          <div
+            key={`desktop-${index}`}
+            className={`background-image desktop-bg ${index === currentImageIndex ? 'active' : 'inactive'}`}
             style={{
               backgroundImage: `url(${image})`,
               transform: `translateY(${scrollY * 0.5}px)`
@@ -609,7 +644,7 @@ export default function HeroClient({ data }: HeroClientProps) {
         ))}
       </div>
     )
-  }, [data.backgroundImages?.images, currentImageIndex, scrollY])
+  }, [data.backgroundImages?.images, data.backgroundImages?.mobileImages, currentImageIndex, scrollY])
 
   const renderSection = useCallback((sectionData: SectionData, type: 'buy' | 'sell') => (
     <section

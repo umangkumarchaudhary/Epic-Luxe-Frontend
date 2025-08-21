@@ -1,510 +1,820 @@
 'use client';
 
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { Phone, Mail, MapPin, Star, Check, Copy } from 'lucide-react';
-import Header from '@/app/components/Header';
-import Footer from '@/app/components/Footer';
+import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { Phone, Mail, MapPin, Send, Check, Calendar, ChevronRight, Eye } from 'lucide-react';
+import CustomPermissionModal from './CustomPermissionModal';
+import WhatsAppIcon from './WhatsAppIcon';
+import ContactHero from './ContactHero';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import ContactTestimonials from './ContactTestimonials';
+import { submitLead } from '../../../lib/leadSubmission';
 
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  preferredTime: string;
-  carInterest: string;
+
+// Debug override for removeChild to catch the exact error (temporarily disabled)
+// if (typeof window !== 'undefined') {
+//   const originalRemoveChild = Node.prototype.removeChild;
+//   Node.prototype.removeChild = function<T extends Node>(child: T): T {
+//     try {
+//       return originalRemoveChild.call(this, child) as T;
+//     } catch (e) {
+//       const error = e as Error;
+//       console.warn('🚨 removeChild Error Caught:', {
+//         error: error.message,
+//         child: child,
+//         parent: this,
+//         childParent: child?.parentNode,
+//         childExists: document.contains(child),
+//         parentExists: document.contains(this)
+//       });
+//       return child;
+//     }
+//   };
+// }
+
+// Google Maps TypeScript declarations
+declare global {
+  interface Window {
+    google: unknown;
+  }
+  
+  interface HTMLElement {
+    configureFromQuickBuilder?: (config: unknown) => void;
+  }
 }
 
-interface ContactCard {
-  id: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  title: string;
-  description: string;
-  contact: string;
-  primaryAction: () => void;
-  primaryText: string;
-  secondaryAction: () => void;
-  secondaryText: string;
-  secondaryIcon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  isActive: boolean;
-}
-
-interface Review {
-  name: string;
-  rating: number;
-  text: string;
-  avatar: string;
-  verified: boolean;
-}
-
-const Contact = () => {
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-    preferredTime: '',
-    carInterest: '',
-  });
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [emailCopied, setEmailCopied] = useState(false);
-  const [phoneCopied, setPhoneCopied] = useState(false);
-  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [currentSlide, setCurrentSlide] = useState<number>(0);
-  const [currentReviewSlide, setCurrentReviewSlide] = useState<number>(0);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
-
-  // Clipboard copy with feedback
-  const copyEmail = () => {
-    navigator.clipboard.writeText('luxury@raamgroup.com');
-    setEmailCopied(true);
-    setTimeout(() => setEmailCopied(false), 2000);
-  };
-
-  const copyPhone = () => {
-    navigator.clipboard.writeText('+91 98765 43210');
-    setPhoneCopied(true);
-    setTimeout(() => setPhoneCopied(false), 2000);
-  };
-
-  const contactCards: ContactCard[] = [
-    {
-      id: 'call',
-      icon: Phone,
-      title: 'Speak Directly',
-      description: 'Immediate assistance from our experts',
-      contact: '+91 98765 43210',
-      primaryAction: () => window.open('tel:+919876543210'),
-      primaryText: 'Call Now',
-      secondaryAction: copyPhone,
-      secondaryText: phoneCopied ? 'Copied' : 'Copy Number',
-      secondaryIcon: phoneCopied ? Check : Copy,
-      isActive: phoneCopied,
-    },
-    {
-      id: 'email',
-      icon: Mail,
-      title: 'Write to Us',
-      description: 'Detailed inquiries and documentation',
-      contact: 'luxury@raamgroup.com',
-      primaryAction: () => window.open('mailto:luxury@raamgroup.com'),
-      primaryText: 'Send Email',
-      secondaryAction: copyEmail,
-      secondaryText: emailCopied ? 'Copied' : 'Copy Email',
-      secondaryIcon: emailCopied ? Check : Copy,
-      isActive: emailCopied,
-    },
-    {
-      id: 'visit',
-      icon: MapPin,
-      title: 'Experience Luxury',
-      description: 'Visit our premium showroom',
-      contact: 'Hi-Tech City, Hyderabad',
-      primaryAction: () => {},
-      primaryText: 'Schedule Visit',
-      secondaryAction: () => {},
-      secondaryText: 'View on Map',
-      secondaryIcon: MapPin,
-      isActive: false,
-    },
-  ];
-
-  const reviews: Review[] = [
-    {
-      name: 'Arjun Mehta',
-      rating: 5,
-      text: 'Exceptional service! The team made buying my dream car effortless. Every detail was perfect.',
-      avatar: 'AM',
-      verified: true,
-    },
-    {
-      name: 'Priya Sharma',
-      rating: 5,
-      text: 'Premium experience from start to finish. The showroom visit was absolutely luxurious.',
-      avatar: 'PS',
-      verified: true,
-    },
-    {
-      name: 'Rajesh Kumar',
-      rating: 5,
-      text: 'Outstanding quality and transparency. Raam Group exceeded all my expectations completely.',
-      avatar: 'RK',
-      verified: true,
-    },
-  ];
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % contactCards.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isMobile, contactCards.length]);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    const interval = setInterval(() => {
-      setCurrentReviewSlide((prev) => (prev + 1) % reviews.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isMobile, reviews.length]);
-
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        message: '',
-        preferredTime: '',
-        carInterest: '',
-      });
-    }, 3000);
-  };
-
-  const renderContactCard = (
-    card: ContactCard,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _index: number,
-  ) => {
-    const Icon = card.icon;
-    const SecondaryIcon = card.secondaryIcon;
-    return (
-      <div
-        key={card.id}
-        className="group relative bg-gradient-to-br from-[#1a1a1a]/90 to-[#0e0e20]/90 backdrop-blur-sm p-4 rounded-2xl border border-[#d3b04f]/40 shadow-lg overflow-hidden w-full"
-        style={{ minWidth: '280px' }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-[#614a00]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
-        <div className="relative">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#d3b04f] to-[#b08e33] rounded-xl flex items-center justify-center mb-3 mx-auto">
-            <Icon className="w-6 h-6 text-black" />
-          </div>
-
-          <h3 className="text-lg font-semibold text-white mb-1 text-center">{card.title}</h3>
-
-          <p className="text-gray-300 text-sm text-center mb-3">{card.description}</p>
-
-          <div className="text-[#d3b04f] text-base font-semibold mb-4 text-center select-text">
-            {card.id === 'visit' ? (
-              <>
-                Hi-Tech City, Hyderabad
-                <br />
-                Telangana 500081
-                <br />
-                <span className="text-xs">Mon - Sun: 9:00 AM - 8:00 PM</span>
-              </>
-            ) : (
-              card.contact
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <button
-              onClick={card.primaryAction}
-              className="w-full bg-gradient-to-r from-[#d3b04f] to-[#b08e33] text-black rounded-lg py-2 font-semibold shadow-md hover:shadow-lg focus:outline-none transition duration-200"
-            >
-              {card.primaryText}
-            </button>
-            <button
-              onClick={card.secondaryAction}
-              className="w-full bg-transparent border border-[#d3b04f]/50 text-[#d3b04f] rounded-lg py-2 font-medium shadow-sm hover:bg-[#d3b04f]/20 transition duration-200 flex items-center justify-center gap-2"
-            >
-              <SecondaryIcon className="w-4 h-4" />
-              {card.secondaryText}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderReviewCard = (review: Review, index: number) => (
-    <div
-      key={index}
-      className="w-full p-4 bg-gradient-to-br from-[#1a1a1a]/90 to-[#0e0e20]/90 backdrop-blur-lg rounded-2xl border border-[#d3b04f]/40 shadow-lg transition hover:scale-105 duration-300"
-    >
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <div className="rounded-full bg-gradient-to-br from-[#d3b04f] to-[#b08e33] w-12 h-12 flex items-center justify-center font-semibold text-black select-text">
-            {review.avatar}
-          </div>
-          <div>
-            <div className="text-white font-semibold flex items-center gap-2">
-              {review.name}
-              {review.verified && <Check className="w-4 h-4 text-lime-400" />}
-            </div>
-            <div className="flex gap-1 mt-1">
-              {[...Array(review.rating)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-current text-[#d3b04f]" />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-      <p className="text-gray-300 text-sm leading-relaxed select-text">{review.text}</p>
-    </div>
-  );
-
+// Simple Google Maps component without DOM manipulation
+const GoogleMap = () => {
   return (
-    <div className="relative min-h-screen bg-[#0e0e10] text-white overflow-hidden manrope-font">
-      <Header />
-
-      {/* Background glow & patterns */}
-      <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
-        <div
-          className="absolute rounded-full bg-gradient-radial from-[#c6a540]/10 to-transparent opacity-80 blur-3xl transition-all duration-500"
-          style={{ left: mousePosition.x - 192, top: mousePosition.y - 192 }}
+    <div className="relative">
+      <div className="aspect-video bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] rounded-2xl border border-[#D4AF37]/20 overflow-hidden">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.1234567890123!2d78.4541113!3d17.4171759!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb91d3c8b5b5b5%3A0x1234567890abcdef!2sEpic%20Luxe%20Showroom!5e0!3m2!1sen!2sin!4v1234567890123"
+          className="w-full h-full rounded-2xl border border-[#D4AF37]/20"
+          style={{ 
+            border: 'none',
+            filter: 'grayscale(20%) contrast(120%) brightness(90%)'
+          }}
+          title="Epic Luxe Showroom Location"
         />
-        <div
-          className="absolute rounded-full bg-gradient-radial from-[#b08e33]/10 to-transparent opacity-70 blur-3xl animate-pulse"
-          style={{ left: '70%' }}
-        />
-        <div
-          className="absolute rounded-full bg-gradient-radial from-[#d3b04f]/10 to-transparent opacity-70 blur-3xl animate-pulse delay-200"
-          style={{ left: '20%', bottom: '30%' }}
-        />
+        
+        {/* Static overlay */}
+        <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm rounded-lg p-3 border border-[#D4AF37]/30">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+            <span className="text-white text-sm font-semibold">Epic Luxe Showroom</span>
+          </div>
+          <p className="text-white/70 text-xs mt-1">Silver Star Mercedes Benz, Banjara Hills</p>
+        </div>
       </div>
-
-      {/* Hero and header content */}
-      <section className="relative min-h-[75vh] flex flex-col justify-center px-6 pt-24 md:pt-32">
-        <h1 className="text-5xl font-playfair font-black mb-4 text-center leading-tight bg-clip-text text-transparent bg-gradient-to-r from-[#d3b04f] to-[#b08e33]">
-          Contact Our Luxury Specialists
-        </h1>
-        <p className="text-center text-lg text-gray-400 max-w-4xl mx-auto">
-          Connect and communicate your luxury car aspirations with our experienced team.
-        </p>
-        <div className="mt-10 flex justify-center gap-6 flex-wrap max-w-lg mx-auto">
-          <button
-            onClick={() => {
-              const contactFormElement = document.getElementById('contact-form');
-              if (contactFormElement) contactFormElement.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="bg-gradient-to-r from-[#d3b04f] to-[#b08e33] rounded-full text-black font-semibold py-3 px-8 hover:shadow-lg transition duration-300"
-          >
-            Start Conversation
-          </button>
-          <a
-            href="tel:+919876543210"
-            className="rounded-full bg-transparent border border-[#d3b04f] text-[#d3b04f] font-medium py-3 px-8 transition hover:bg-[#d3b04f] hover:text-black"
-          >
-            Call Directly
-          </a>
-        </div>
-      </section>
-
-      {/* Contact cards: mobile & desktop */}
-      <section className="relative py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          {/* Mobile slider view */}
-          <div className="md:hidden relative">
-            <div className="overflow-hidden">
-              <div
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {contactCards.map((card, idx) => (
-                  <div key={card.id} className="w-full flex-shrink-0 px-2">
-                    {renderContactCard(card, idx)}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex justify-center mt-4 space-x-2">
-              {contactCards.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                    currentSlide === idx ? 'bg-[#d3b04f]' : 'bg-[#d3b04f]/40'
-                  }`}
-                  aria-label={`Slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-          {/* Desktop view */}
-          <div className="hidden md:grid md:grid-cols-3 gap-6">
-            {contactCards.map((card, idx) => renderContactCard(card, idx))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact form */}
-      <section id="contact-form" className="py-12 px-6 bg-[#141414] max-w-4xl mx-auto rounded-xl shadow-lg">
-        <h2 className="font-playfair text-3xl mb-6 text-center text-[#d3b04f]">Get Started</h2>
-        {!isSubmitted ? (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block mb-2 font-semibold">
-                Full Name
-              </label>
-              <input
-                id="name"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                className="w-full rounded-md p-3 bg-[#222] text-white border border-[#d3b04f]"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block mb-2 font-semibold">
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="w-full rounded-md p-3 bg-[#222] text-white border border-[#d3b04f]"
-              />
-            </div>
-            <div>
-              <label htmlFor="phone" className="block mb-2 font-semibold">
-                Phone Number
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                required
-                className="w-full rounded-md p-3 bg-[#222] text-white border border-[#d3b04f]"
-              />
-            </div>
-            <div>
-              <label htmlFor="preferredTime" className="block mb-2 font-semibold">
-                Preferred Time to Contact
-              </label>
-              <input
-                id="preferredTime"
-                type="time"
-                name="preferredTime"
-                value={formData.preferredTime}
-                onChange={handleInputChange}
-                className="w-full rounded-md p-3 bg-[#222] text-white border border-[#d3b04f]"
-              />
-            </div>
-            <div>
-              <label htmlFor="carInterest" className="block mb-2 font-semibold">
-                Car Brand of Interest
-              </label>
-              <select
-                id="carInterest"
-                name="carInterest"
-                value={formData.carInterest}
-                onChange={handleInputChange}
-                className="w-full rounded-md p-3 bg-[#222] text-white border border-[#d3b04f]"
-              >
-                <option value="">Select a brand</option>
-                {[
-                  'BMW',
-                  'Mercedes',
-                  'Audi',
-                  'Porsche',
-                  'Jaguar',
-                  'Lexus',
-                  'Other',
-                ].map((brand: string) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="message" className="block mb-2 font-semibold">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleInputChange}
-                rows={4}
-                className="w-full rounded-md p-3 bg-[#222] text-white border border-[#d3b04f]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={!formData.name || !formData.email || !formData.phone}
-              className="bg-gradient-to-r from-[#d3b04f] to-[#b08e33] text-black rounded-full py-3 px-8 font-semibold transition disabled:opacity-50"
-            >
-              {isSubmitted ? (
-                <>
-                  Sent <Check className="inline w-4 h-4 ml-2" />
-                </>
-              ) : (
-                'Submit'
-              )}
-            </button>
-          </form>
-        ) : (
-          <div className="text-center text-[#d3b04f] font-semibold mt-6">
-            Thank you for reaching out! We&apos;ll get back to you shortly.
-          </div>
-        )}
-      </section>
-
-      {/* Reviews Carousel */}
-      <section className="py-12 px-6 bg-[#141414] max-w-4xl mx-auto rounded-xl shadow-lg mt-12">
-        <h2 className="font-playfair text-3xl mb-6 text-[#d3b04f] text-center">Client Reviews</h2>
-        <div className="overflow-hidden">
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentReviewSlide * 100}%)` }}
-          >
-            {reviews.map((review: Review, index: number) => renderReviewCard(review, index))}
-          </div>
-        </div>
-        <div className="flex justify-center mt-4 space-x-2">
-          {reviews.map((_, idx: number) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentReviewSlide(idx)}
-              className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                currentReviewSlide === idx ? 'bg-[#d3b04f]' : 'bg-[#d3b04f]/40'
-              }`}
-              aria-label={`Slide ${idx + 1}`}
-            />
-          ))}
-        </div>
-      </section>
-
-      <Footer />
     </div>
   );
 };
 
-export default Contact;
+const ContactUs = () => {
+  const router = useRouter();
+  const contactFormRef = useRef<HTMLElement>(null);
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    service: 'buy',
+    message: ''
+  });
+  const [errors, setErrors] = useState({
+    name: '',
+    phone: '',
+    service: '',
+    message: ''
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  
+  // Modal states
+  const [modalConfig, setModalConfig] = useState({
+    isOpen: false,
+    actionName: '',
+    actionDescription: '',
+    onProceed: () => {}
+  });
+
+  // Contact cards carousel state
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const touchStartXRef = useRef<number>(0);
+  const touchEndXRef = useRef<number>(0);
+  const [isComponentMounted, setIsComponentMounted] = useState(true);
+
+  // Simplified mouse move handler
+  useEffect(() => {
+    setIsComponentMounted(true);
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isComponentMounted) {
+        setMousePosition({ x: e.clientX, y: e.clientY });
+      }
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      setIsComponentMounted(false);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [isComponentMounted]);
+
+  // Check if mobile and handle auto-play
+  useEffect(() => {
+    const checkMobile = () => {
+      if (isComponentMounted) {
+        setIsMobile(window.innerWidth < 768);
+      }
+    };
+    
+    checkMobile();
+    const handleResize = () => checkMobile();
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isComponentMounted]);
+
+  // Handle touch interaction
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isMobile || !isComponentMounted) return;
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isMobile || !isComponentMounted) return;
+    
+    touchEndXRef.current = e.changedTouches[0].clientX;
+    const swipeDistance = touchStartXRef.current - touchEndXRef.current;
+    const swipeThreshold = 50;
+    
+    if (swipeDistance > swipeThreshold) {
+      // Swipe left - go to next card
+      setCurrentCardIndex((prev) => (prev + 1) % 3);
+    } else if (swipeDistance < -swipeThreshold) {
+      // Swipe right - go to previous card
+      setCurrentCardIndex((prev) => (prev - 1 + 3) % 3);
+    }
+  };
+
+  const handleTouchMove = () => {
+    // Touch movement detected - no auto-play functionality
+  };
+
+  // Validation functions
+  const validatePhone = (phone: string): boolean => {
+    const phoneRegex = /^[6-9]\d{9}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors = {
+      name: '',
+      phone: '',
+      service: '',
+      message: ''
+    };
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+
+    // Phone validation
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!validatePhone(formData.phone.trim())) {
+      newErrors.phone = 'Please enter a valid 10-digit phone number starting with 6, 7, 8, or 9';
+    }
+
+    // Message validation
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    }
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(error => error !== '');
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    
+    let processedValue = value;
+    
+    // Special handling for phone number
+    if (name === 'phone') {
+      // Remove all non-numeric characters
+      processedValue = value.replace(/\D/g, '');
+      // Limit to 10 digits
+      processedValue = processedValue.slice(0, 10);
+    }
+    
+    setFormData({
+      ...formData,
+      [name]: processedValue
+    });
+
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    if (formData.phone.trim()) {
+      if (!validatePhone(formData.phone.trim())) {
+        setErrors({
+          ...errors,
+          phone: 'Please enter a valid 10-digit phone number starting with 6, 7, 8, or 9'
+        });
+      }
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      try {
+        // Submit lead with type tracking
+        await submitLead({
+          type: 'Contact Page',
+          data: formData,
+          onSuccess: () => {
+            setIsSubmitted(true);
+            setTimeout(() => {
+              if (isComponentMounted) {
+                setIsSubmitted(false);
+              }
+            }, 5000);
+            // Reset form after successful submission
+            setFormData({
+              name: '',
+              phone: '',
+              service: 'buy',
+              message: ''
+            });
+            setErrors({
+              name: '',
+              phone: '',
+              service: '',
+              message: ''
+            });
+          },
+          onError: (error) => {
+            console.error('Lead submission failed:', error);
+            // Still show success to user but log the error
+            setIsSubmitted(true);
+            setTimeout(() => {
+              if (isComponentMounted) {
+                setIsSubmitted(false);
+              }
+            }, 5000);
+            setFormData({
+              name: '',
+              phone: '',
+              service: 'buy',
+              message: ''
+            });
+            setErrors({
+              name: '',
+              phone: '',
+              service: '',
+              message: ''
+            });
+          }
+        });
+      } catch (error) {
+        console.error('Form submission error:', error);
+        // Fallback to original behavior
+        setIsSubmitted(true);
+        setTimeout(() => {
+          if (isComponentMounted) {
+            setIsSubmitted(false);
+          }
+        }, 5000);
+        setFormData({
+          name: '',
+          phone: '',
+          service: 'buy',
+          message: ''
+        });
+        setErrors({
+          name: '',
+          phone: '',
+          service: '',
+          message: ''
+        });
+      }
+    }
+  };
+
+  // Contact action handlers
+  const handleCallClick = () => {
+    setModalConfig({
+      isOpen: true,
+      actionName: 'Call Epic Luxe',
+      actionDescription: 'Speak directly with our luxury car expert',
+      onProceed: () => {
+        window.location.href = 'tel:+919999999999';
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+      }
+    });
+  };
+
+  const handleEmailClick = () => {
+    setModalConfig({
+      isOpen: true,
+      actionName: 'Email Epic Luxe',
+      actionDescription: 'Send us an email with your luxury car inquiry',
+      onProceed: () => {
+        const subject = encodeURIComponent('Luxury Car Inquiry');
+        const body = encodeURIComponent('Hello, I\'d like to know more about your luxury car collection and services.');
+        window.location.href = `mailto:contact@epicluxe.com?subject=${subject}&body=${body}`;
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+      }
+    });
+  };
+
+  const handleWhatsAppClick = () => {
+    setModalConfig({
+      isOpen: true,
+      actionName: 'WhatsApp Epic Luxe',
+      actionDescription: 'Chat instantly with our luxury car expert',
+      onProceed: () => {
+        window.open('https://wa.me/919999999999', '_blank');
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+      }
+    });
+  };
+
+  const closeModal = () => {
+    setModalConfig(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const navigateToInventory = () => {
+    router.push('/inventory');
+  };
+
+  // Don't render if component is unmounting
+  if (!isComponentMounted) {
+    return null;
+  }
+
+  return (
+    <div className="bg-[#0e0e0e] min-h-screen text-white overflow-hidden font-manrope">
+      {/* Header */}
+      <Header />
+
+      {/* Contact Hero Section */}
+      <ContactHero />
+
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div 
+          className="absolute w-96 h-96 bg-gradient-radial from-[#D4AF37]/20 to-transparent rounded-full blur-3xl"
+          style={{
+            left: mousePosition.x - 192,
+            top: mousePosition.y - 192,
+            transition: 'all 0.3s ease'
+          }}
+        />
+        <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-gradient-radial from-[#BFA980]/10 to-transparent rounded-full blur-2xl animate-pulse" />
+        <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-gradient-radial from-[#D4AF37]/15 to-transparent rounded-full blur-2xl animate-pulse delay-1000" />
+      </div>
+
+      {/* Contact Form Section */}
+      <section 
+        ref={contactFormRef}
+        id="contact-form" 
+        className="relative py-20 px-4"
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-6xl font-bold mb-4 font-manrope">
+              <span className="text-white">Let&apos;s </span>
+              <span className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent">
+                Connect
+              </span>
+            </h2>
+            <p className="text-xl text-white/70 font-manrope">Share your dream, and we&apos;ll make it reality</p>
+          </div>
+
+          <div className="relative bg-gradient-to-br from-[#1a1a1a]/80 to-[#0e0e0e]/80 backdrop-blur-lg p-8 md:p-12 rounded-3xl border border-[#D4AF37]/20">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-3xl" />
+            
+            <form onSubmit={handleSubmit}>
+              <div className="relative grid md:grid-cols-2 gap-6 mb-6">
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className={`w-full bg-[#0e0e0e]/50 border rounded-lg px-4 py-4 text-white placeholder-white/50 focus:outline-none transition-all duration-300 font-manrope ${
+                      errors.name ? 'border-red-500 focus:border-red-500' : 'border-[#D4AF37]/30 focus:border-[#D4AF37]'
+                    }`}
+                    placeholder="Your Name"
+                    required
+                  />
+                  {errors.name && (
+                    <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+                  )}
+                  <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] scale-x-0 transition-transform duration-300 origin-left group-focus-within:scale-x-100" />
+                </div>
+                
+                <div className="relative">
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    onBlur={handlePhoneBlur}
+                    maxLength={10}
+                    className={`w-full bg-[#0e0e0e]/50 border rounded-lg px-4 py-4 text-white placeholder-white/50 focus:outline-none transition-all duration-300 font-manrope ${
+                      errors.phone ? 'border-red-500 focus:border-red-500' : 'border-[#D4AF37]/30 focus:border-[#D4AF37]'
+                    }`}
+                    placeholder="Your Phone Number (10 digits)"
+                    required
+                  />
+                  {errors.phone && (
+                    <p className="text-red-400 text-sm mt-1">{errors.phone}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="relative mb-6">
+                <select
+                  name="service"
+                  value={formData.service || ''}
+                  onChange={handleInputChange}
+                  className={`w-full bg-[#0e0e0e]/50 border rounded-lg px-4 py-4 text-white focus:outline-none transition-all duration-300 appearance-none cursor-pointer font-manrope ${
+                    errors.service ? 'border-red-500 focus:border-red-500' : 'border-[#D4AF37]/30 focus:border-[#D4AF37]'
+                  }`}
+                  required
+                >
+                  <option value="buy" className="text-white bg-[#0e0e0e]">Buy</option>
+                  <option value="sell" className="text-white bg-[#0e0e0e]">Sell</option>
+                  <option value="free-evaluation" className="text-white bg-[#0e0e0e]">Free Evaluation</option>
+                  <option value="finance" className="text-white bg-[#0e0e0e]">Finance</option>
+                  <option value="insurance" className="text-white bg-[#0e0e0e]">Insurance</option>
+                  <option value="trade-in" className="text-white bg-[#0e0e0e]">Trade In</option>
+                  <option value="book-test-drive" className="text-white bg-[#0e0e0e]">Book Test Drive</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <ChevronRight className="w-5 h-5 text-[#D4AF37] rotate-90" />
+                </div>
+                {errors.service && (
+                  <p className="text-red-400 text-sm mt-1">{errors.service}</p>
+                )}
+              </div>
+
+              <div className="relative mb-8">
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  rows={5}
+                  className={`w-full bg-[#0e0e0e]/50 border rounded-lg px-4 py-4 text-white placeholder-white/50 focus:outline-none transition-all duration-300 resize-none font-manrope ${
+                    errors.message ? 'border-red-500 focus:border-red-500' : 'border-[#D4AF37]/30 focus:border-[#D4AF37]'
+                  }`}
+                  placeholder="Tell us about what you are looking for...."
+                  required
+                />
+                {errors.message && (
+                  <p className="text-red-400 text-sm mt-1">{errors.message}</p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className={`w-full relative overflow-hidden rounded-lg py-4 px-8 font-semibold text-lg transition-all duration-300 font-manrope ${
+                  isSubmitted 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black hover:shadow-2xl hover:shadow-[#D4AF37]/50 transform hover:scale-105'
+                }`}
+              >
+                <span className="relative flex items-center justify-center gap-2">
+                  {isSubmitted ? (
+                    <>
+                      <Check className="w-5 h-5" />
+                      Thank you for your response! We will get back to you soon.
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Send Message
+                    </>
+                  )}
+                </span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <ContactTestimonials />
+
+      {/* Contact Info Cards - Updated with WhatsApp and custom modals */}
+      <section className="relative py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Desktop Grid View */}
+          <div className="hidden md:grid md:grid-cols-3 gap-8">
+            {/* Call Us */}
+            <div className="group relative bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-2xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 hover:rotate-1 flex flex-col">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+              <div className="relative flex flex-col h-full">
+                <div className="flex-1">
+                <Phone className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
+                <h3 className="text-2xl font-bold mb-4 text-white/90 font-manrope">Call Us</h3>
+                <p className="text-[#D4AF37] text-xl font-semibold mb-2 font-manrope">+91-9999999999</p>
+                <p className="text-white/70 text-sm mb-4 font-manrope">Available 9:30 AM to 7:30 PM</p>
+                </div>
+                <button 
+                  onClick={handleCallClick}
+                  className="w-full bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#BFA980] transition-colors mt-auto font-manrope"
+                >
+                  Call Now
+                </button>
+              </div>
+            </div>
+
+            {/* Email Us */}
+            <div className="group relative bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-2xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 hover:-rotate-1 flex flex-col">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+              <div className="relative flex flex-col h-full">
+                <div className="flex-1">
+                <Mail className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
+                <h3 className="text-2xl font-bold mb-4 text-white/90 font-manrope">Email Us</h3>
+                <p className="text-[#D4AF37] text-lg mb-2 font-manrope">contact@epicluxe.com</p>
+                <p className="text-white/70 text-sm mb-4 font-manrope">Get detailed information about our luxury cars</p>
+                </div>
+                <button 
+                  onClick={handleEmailClick}
+                  className="w-full bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#BFA980] transition-colors flex items-center justify-center gap-2 mt-auto font-manrope"
+                >
+                  <Mail className="w-4 h-4" />
+                  Send Email
+                </button>
+              </div>
+            </div>
+
+            {/* WhatsApp Us */}
+            <div className="group relative bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-2xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 hover:rotate-1 flex flex-col">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+              <div className="relative flex flex-col h-full">
+                <div className="flex-1">
+                <WhatsAppIcon className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
+                <h3 className="text-2xl font-bold mb-4 text-white/90 font-manrope">WhatsApp Epic Luxe</h3>
+                <p className="text-[#D4AF37] text-lg mb-2 font-manrope">+91-9999999999</p>
+                <p className="text-white/70 text-sm mb-4 font-manrope">Available 9:30 AM to 7:30 PM for instant queries</p>
+                </div>
+                <button 
+                  onClick={handleWhatsAppClick}
+                  className="w-full bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#BFA980] transition-colors flex items-center justify-center gap-2 mt-auto font-manrope"
+                >
+                  <WhatsAppIcon className="w-4 h-4" />
+                  Chat on WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Carousel View */}
+          <div className="md:hidden">
+            <div className="relative overflow-hidden">
+              <div 
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${currentCardIndex * 100}%)` }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
+                {/* Call Us Card */}
+                <div className="w-full flex-shrink-0 px-4">
+                  <div className="group relative bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-2xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 flex flex-col">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+                    <div className="relative flex flex-col h-full">
+                      <div className="flex-1">
+                        <Phone className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
+                        <h3 className="text-2xl font-bold mb-4 text-white/90 font-manrope">Call Us</h3>
+                        <p className="text-[#D4AF37] text-xl font-semibold mb-2 font-manrope">+91-9999999999</p>
+                        <p className="text-white/70 text-sm mb-4 font-manrope">Available 9:30 AM to 7:30 PM</p>
+                      </div>
+                                              <button 
+                          onClick={handleCallClick}
+                          className="w-full bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#BFA980] transition-colors mt-auto font-manrope"
+                        >
+                          Call Now
+                        </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Email Us Card */}
+                <div className="w-full flex-shrink-0 px-4">
+                  <div className="group relative bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-2xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 flex flex-col">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+                    <div className="relative flex flex-col h-full">
+                      <div className="flex-1">
+                        <Mail className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
+                        <h3 className="text-2xl font-bold mb-4 text-white/90">Email Us</h3>
+                        <p className="text-[#D4AF37] text-lg mb-2">contact@epicluxe.com</p>
+                        <p className="text-white/70 text-sm mb-4">Get detailed information about our luxury cars</p>
+                      </div>
+                      <button 
+                        onClick={handleEmailClick}
+                        className="w-full bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#BFA980] transition-colors flex items-center justify-center gap-2 mt-auto"
+                      >
+                        <Mail className="w-4 h-4" />
+                        Send Email
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* WhatsApp Us Card */}
+                <div className="w-full flex-shrink-0 px-4">
+                  <div className="group relative bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-8 rounded-2xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 hover:transform hover:scale-105 flex flex-col">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+                    <div className="relative flex flex-col h-full">
+                      <div className="flex-1">
+                        <WhatsAppIcon className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
+                        <h3 className="text-2xl font-bold mb-4 text-white/90">WhatsApp Epic Luxe</h3>
+                        <p className="text-[#D4AF37] text-lg mb-2">+91-9999999999</p>
+                        <p className="text-white/70 text-sm mb-4">Available 9:30 AM to 7:30 PM for instant queries</p>
+                      </div>
+                      <button 
+                        onClick={handleWhatsAppClick}
+                        className="w-full bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#BFA980] transition-colors flex items-center justify-center gap-2 mt-auto"
+                      >
+                        <WhatsAppIcon className="w-4 h-4" />
+                        Chat on WhatsApp
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Mobile Pagination Dots */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {[0, 1, 2].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentCardIndex(index);
+                  }}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === currentCardIndex 
+                      ? 'bg-[#D4AF37] scale-125' 
+                      : 'bg-white/30 hover:bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Map Section */}
+      <section className="relative py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent">
+                Visit Our Showroom
+              </h2>
+              <p className="text-xl text-white/70 mb-8 leading-relaxed">
+                Experience luxury firsthand at our state-of-the-art showroom in the heart of Hyderabad&apos;s tech district.
+              </p>
+              
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center gap-4">
+                  <MapPin className="w-6 h-6 text-[#D4AF37]" />
+                  <span className="text-white/80">Hi-Tech City, Hyderabad, Telangana 500081</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Calendar className="w-6 h-6 text-[#D4AF37]" />
+                  <span className="text-white/80">Mon - Sun: 9:00 AM - 8:00 PM</span>
+                </div>
+              </div>
+
+              <button className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-8 py-4 rounded-lg font-semibold hover:shadow-2xl hover:shadow-[#D4AF37]/50 transition-all duration-300 transform hover:scale-105">
+                Schedule Visit
+              </button>
+            </div>
+
+            <div className="relative">
+              <GoogleMap />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer CTA */}
+      <section className="relative py-20 px-4">
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="relative">
+            {/* Enhanced background glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/30 via-[#BFA980]/20 to-[#D4AF37]/30 rounded-[2rem] blur-2xl opacity-60 animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20 rounded-[2rem] blur-xl opacity-40 animate-pulse delay-1000" />
+            
+            {/* Main button with enhanced design */}
+            <motion.button 
+              onClick={navigateToInventory}
+              className="relative bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#BFA980] text-black px-12 py-6 rounded-2xl text-xl font-bold hover:shadow-2xl hover:shadow-[#D4AF37]/60 transition-all duration-500 transform hover:scale-105 group overflow-hidden"
+              whileHover={{ 
+                scale: 1.05,
+                y: -3,
+                boxShadow: '0 20px 40px rgba(212, 175, 55, 0.4)'
+              }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {/* Animated background overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700]/20 to-[#D4AF37]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              {/* Shimmer effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+              
+              <span className="relative flex items-center justify-center gap-3 z-10">
+                <Eye className="w-6 h-6 group-hover:animate-pulse" />
+                <span className="font-serif">Explore Our Premium Collection</span>
+                <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+              </span>
+            </motion.button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Custom Permission Modal */}
+      <CustomPermissionModal
+        isOpen={modalConfig.isOpen}
+        onClose={closeModal}
+        onProceed={modalConfig.onProceed}
+        actionName={modalConfig.actionName}
+        actionDescription={modalConfig.actionDescription}
+      />
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-float {
+          animation: float 4s ease-in-out infinite;
+        }
+        
+        .animate-fade-in-up {
+          animation: fade-in-up 1s ease-out;
+        }
+        
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        
+        .bg-gradient-radial {
+          background: radial-gradient(circle, var(--tw-gradient-stops));
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default ContactUs;

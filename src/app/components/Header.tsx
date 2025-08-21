@@ -34,7 +34,7 @@ const services = [
 const navItems = [
   { name: 'Home', href: '/' },
   { name: 'Contact', href: '/luxe/contact' },
-  { name: 'About', href: '/luxe/AboutUs' },
+  { name: 'About Us', href: '/luxe/AboutUs' },
 ];
 
 const insightsItems = [
@@ -62,6 +62,40 @@ export default function Header() {
     href: string;
   }>>([]);
   const [showHeader, setShowHeader] = useState(true);
+
+  // Add custom CSS for very small screens
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @media (max-width: 520px) {
+        .header-responsive {
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+        }
+        .logo-responsive {
+          width: 72px !important;
+        }
+        .mobile-btn-responsive {
+          padding: 6px !important;
+        }
+        .mobile-btn-responsive svg {
+          width: 16px !important;
+          height: 16px !important;
+        }
+        .mobile-location-responsive {
+          font-size: 11px !important;
+          padding: 2px !important;
+        }
+        .search-dropdown-responsive {
+          width: 260px !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState('');
@@ -457,7 +491,7 @@ export default function Header() {
 
   const cityDropdownClasses = `
     absolute left-0 mt-2 z-30 
-    w-[340px] sm:w-[500px] md:w-[680px] 
+    w-[280px] sm:w-[500px] md:w-[680px] search-dropdown-responsive
     bg-[#161617] text-white border border-[#2c2c2c]/80 rounded-xl shadow-2xl
     transition-all duration-200 origin-top transform
     ${isCityDropdownOpen ? 'opacity-100 scale-100 pointer-events-auto visible animate-scalein' : 'opacity-0 scale-95 pointer-events-none invisible'}
@@ -573,7 +607,7 @@ export default function Header() {
           />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 header-responsive">
           <div className={`flex items-center justify-between transition-all duration-500 ease-out ${isSearchOpen ? 'h-20' : 'h-16'}`}>
             <div className="flex flex-row items-center">
               <Image
@@ -581,7 +615,7 @@ export default function Header() {
                 alt="Epic Luxe Logo"
                 width={140}
                 height={50}
-                className="object-contain w-24 md:w-36 h-auto"
+                className="object-contain w-20 sm:w-24 md:w-36 h-auto logo-responsive"
                 priority
               />
               {/* Desktop city selector */}
@@ -965,22 +999,22 @@ export default function Header() {
               </button>
             </div>
 
-            <div className="flex items-center lg:hidden">
+            <div className="flex items-center lg:hidden space-x-1 sm:space-x-2">
               <button
                 onClick={handleMobileSearchToggle}
-                className="mr-2 p-2 bg-[#1a1a1a]/60 border border-[#BFA980]/20 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-full transition-all duration-300 backdrop-blur-sm"
+                className="p-1.5 sm:p-2 bg-[#1a1a1a]/60 border border-[#BFA980]/20 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-full transition-all duration-300 backdrop-blur-sm mobile-btn-responsive"
                 aria-label={isSearchOpen ? 'Close search' : 'Open search'}
                 type="button"
               >
-                {isSearchOpen ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
+                {isSearchOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Search className="w-4 h-4 sm:w-5 sm:h-5" />}
               </button>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 bg-[#1a1a1a]/60 border border-[#BFA980]/20 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-full transition-all duration-300 backdrop-blur-sm"
+                className="p-1.5 sm:p-2 bg-[#1a1a1a]/60 border border-[#BFA980]/20 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-full transition-all duration-300 backdrop-blur-sm mobile-btn-responsive"
                 aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
                 type="button"
               >
-                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {isMenuOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Menu className="w-4 h-4 sm:w-5 sm:h-5" />}
               </button>
             </div>
           </div>
@@ -1076,8 +1110,8 @@ export default function Header() {
 
         {/* Mobile-only location bar */}
         <div className="md:hidden absolute top-full left-0 w-full bg-[#1a1a1a] border-t border-[#BFA980]/20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
-            <div className="text-center text-white/90 text-sm font-medium">
+          <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-1 mobile-location-responsive">
+            <div className="text-center text-white/90 text-xs sm:text-sm font-medium">
               Buy or sell luxury cars in{' '}
               <button
                 onClick={handleMobileCity}

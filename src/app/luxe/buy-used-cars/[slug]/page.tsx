@@ -8,9 +8,11 @@ import Image from 'next/image';
 import {
   ArrowLeft, Calendar, Calculator, Share2, Heart, Phone, MapPin, Fuel,
   Settings, Gauge, Car, Shield, Award, Eye, ChevronLeft, ChevronRight,
-  MessageCircle, Users, Zap
+  MessageCircle, Users
 } from 'lucide-react';
 
+import Header from '@/app/components/Header';
+import Footer from '@/app/components/Footer';
 import EMIModal from '../components/EMIModel';
 import ScheduleDemo from '../components/Schedule';
 import { RecommendedVehiclesClient } from './recommended-vehicles/RecommendedVehiclesClient';
@@ -386,6 +388,7 @@ export default function VehicleDetailsPage() {
   return (
     <>
       <Head>
+        <Header/>
         <title>{`${vehicle.year} ${vehicle.brand} ${vehicle.model} - Premium Pre-Owned`}</title>
         <meta
           name="description"
@@ -961,6 +964,7 @@ export default function VehicleDetailsPage() {
           />
         )}
       </div>
+      <Footer/>
 
       <style jsx global>{`
         /* Ultra smooth animations and interactions */

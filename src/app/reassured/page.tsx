@@ -5,6 +5,7 @@ import Services from "./components/Services/Services";
 import BrowseBySection from "./components/BrowseBy.tsx/BrowseBy";
 import WhyChooseUsSection from "./components/WhyChooseUs/WhyChooseUsSection";
 import Footer from "./components/Footer/FooterServer";
+import HomeAboutContact from "./components/HomeAboutContact";
 
 
 export default function HomePage(){
@@ -16,6 +17,7 @@ export default function HomePage(){
         <Services/>
         <BrowseBySection/>
         <WhyChooseUsSection/>
+        <HomeAboutContact/>
         <Footer/>
         </main>
     )

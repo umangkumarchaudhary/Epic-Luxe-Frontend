@@ -215,19 +215,23 @@ const WhyChooseUsSection = () => {
               key={feature.title}
               id={`feature-${index}`}
               data-animate
-              className={`group relative p-6 rounded-2xl bg-gradient-to-br from-[#1a1a1a]/90 to-[#0e0e0e]/90 backdrop-blur-sm border border-[#BFA980]/20 hover:border-[#D4AF37]/40 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#D4AF37]/10 ${
+              className={`group relative p-6 rounded-2xl bg-gradient-to-br from-[#1a1a1a]/90 to-[#0e0e0e]/90 backdrop-blur-sm border border-[#BFA980]/20 hover:border-[#D4AF37]/40 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#D4AF37]/10 text-center ${
                 isVisible[`feature-${index}`] ? 'animate-fade-in-up' : 'opacity-0'
               }`}
               style={{
                 animationDelay: `${index * 0.1}s`
               }}
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37]/20 to-[#BFA980]/10 backdrop-blur-sm border border-[#D4AF37]/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-all duration-300">
-                <feature.icon className="w-6 h-6 text-[#D4AF37]" />
+              {/* Icon and Title Row */}
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37]/20 to-[#BFA980]/10 backdrop-blur-sm border border-[#D4AF37]/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                  <feature.icon className="w-6 h-6 text-[#D4AF37]" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">
+                  {feature.title}
+                </h3>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-3">
-                {feature.title}
-              </h3>
+              {/* Description Below */}
               <p className="text-sm text-gray-300 font-light leading-relaxed">
                 {feature.description}
               </p>
@@ -241,12 +245,16 @@ const WhyChooseUsSection = () => {
             className="relative p-6 rounded-2xl bg-gradient-to-br from-[#1a1a1a]/90 to-[#0e0e0e]/90 backdrop-blur-sm border border-[#BFA980]/20 transition-all duration-500"
           >
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#D4AF37]/20 to-[#BFA980]/10 backdrop-blur-sm border border-[#D4AF37]/20 rounded-xl flex items-center justify-center mb-6 mx-auto">
-                <Star className="w-8 h-8 text-[#D4AF37]" />
+              {/* Icon and Title Row */}
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#D4AF37]/20 to-[#BFA980]/10 backdrop-blur-sm border border-[#D4AF37]/20 rounded-xl flex items-center justify-center">
+                  <Star className="w-8 h-8 text-[#D4AF37]" />
+                </div>
+                <h3 className="text-xl font-semibold text-white">
+                  Premium Quality
+                </h3>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-4">
-                Premium Quality
-              </h3>
+              {/* Description Below */}
               <p className="text-sm text-gray-300 font-light leading-relaxed">
                 Every vehicle in our collection meets the highest standards of quality and performance
               </p>
@@ -327,6 +335,19 @@ const WhyChooseUsSection = () => {
                   />
                 ))}
               </div>
+            </div>
+
+            {/* Google Reviews Button */}
+            <div className="text-center mt-8">
+              <a
+                href="https://www.google.com/search?q=epic+luxe+reviews" // Dummy link - replace with actual Google Reviews link
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] hover:from-[#BFA980] hover:to-[#D4AF37] text-black font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#D4AF37]/20"
+              >
+                <Star className="w-5 h-5" />
+                <span>View All Google Reviews</span>
+              </a>
             </div>
           </div>
         </div>
