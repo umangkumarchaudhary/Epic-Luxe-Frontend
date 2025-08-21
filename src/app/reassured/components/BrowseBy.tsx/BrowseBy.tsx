@@ -17,7 +17,7 @@ interface Vehicle {
   price: number;
   original_price?: number;
   savings?: number;
-  mileage?: string;
+  mileage?: string | number;
   fuel_type?: string;
   transmission?: string;
   location?: string;
@@ -29,8 +29,7 @@ interface Vehicle {
 // Server-side data fetching
 async function getVehiclesData() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
-    const response = await fetch(`${baseUrl}/reassured-vehicles/published`, {
+    const response = await fetch('https://raam-group-all-websites.onrender.com/admin/reassured-vehicles/published', {
       cache: 'no-store',
     });
     const data = await response.json();
@@ -45,12 +44,8 @@ const BrowseBySection = async () => {
   const vehicles = await getVehiclesData();
   
   const brandConfigs: Brand[] = [
-    { name: 'Mercedes-Benz', logo: '/assets/arya_assets/mercedeslogo.png', count: 0 },
-    { name: 'BMW', logo: '/assets/arya_assets/bmwlogo.png', count: 0 },
-    { name: 'Audi', logo: '/assets/arya_assets/audilogo.png', count: 0 },
-    { name: 'Porsche', logo: '/assets/arya_assets/porschelogo.png', count: 0 },
-    { name: 'Jaguar', logo: '/assets/arya_assets/jaguarlogo.png', count: 0 },
-    { name: 'Land Rover', logo: '/assets/arya_assets/landroverlogo.png', count: 0 }
+    { name: 'MG', logo: '/assets/images/MGLOGO.png', count: 0 },
+    { name: 'Toyota', logo: '/assets/images/TOYOTALOGO.png', count: 0 }
   ];
 
   // Calculate brand counts server-side
@@ -83,7 +78,7 @@ const BrowseBySection = async () => {
             Browse By Brand
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto font-light">
-            Discover premium pre-owned vehicles from the world&apos;s most prestigious automotive brands
+            Discover quality pre-owned vehicles from trusted automotive brands
           </p>
           <div className="w-24 h-0.5 bg-black mx-auto mt-6"></div>
         </div>

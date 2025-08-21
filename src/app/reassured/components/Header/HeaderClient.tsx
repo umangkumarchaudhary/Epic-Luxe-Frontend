@@ -19,15 +19,19 @@ import {
   MessageCircle,
   MapPin,
   CheckCircle,
+  Star,
+  Users,
+  BookOpen,
+  Settings,
 } from 'lucide-react';
 
-// Cities data for luxury car markets in India
+// Cities data for car markets in India
 const cities = [
   'Pune', 'Hyderabad', 'Chennai', 'Vizag', 'Aurangabad','Nashik'
 ];
 
 const services = [
-  { name: 'Buy Luxury Cars', icon: Car, href: '/reassured/buy-used-cars', description: 'Certified pre-owned vehicles' },
+  { name: 'Buy Cars', icon: Car, href: '/reassured/buy-used-cars', description: 'Certified pre-owned vehicles' },
   { name: 'Sell Your Car', icon: Crown, href: '/reassured/Services/sell-your-car', description: 'Best market price' },
   { name: 'Free Valuation', icon: Shield, href: '/reassured/Services/sell-your-car', description: '200+ point inspection' },
   { name: 'Car Finance', icon: CreditCard, href: '/reassured/Services/finance', description: 'Easy loan options' },
@@ -47,11 +51,47 @@ const insightsItems = [
   { name: 'Press & Media', href: '/luxe/Press', description: 'Latest news' },
 ];
 
+// Static pages for search
+const staticPages = [
+  { name: 'About Us', href: '/AboutUs', description: 'Learn about Epic Reassured', keywords: ['about', 'company', 'team', 'history'] },
+  { name: 'Contact', href: '/contact', description: 'Get in touch with us', keywords: ['contact', 'phone', 'email', 'location'] },
+  { name: 'Customer Reviews', href: '/luxe/insights/testimonials', description: 'What our customers say', keywords: ['reviews', 'testimonials', 'feedback', 'customers'] },
+  { name: 'Car Blogs', href: '/luxe/insights/blogs', description: 'Expert car insights', keywords: ['blogs', 'articles', 'guides', 'tips'] },
+  { name: 'Press & Media', href: '/luxe/Press', description: 'Latest news and media', keywords: ['press', 'media', 'news'] },
+  { name: 'Services', href: '/luxe/services', description: 'Our comprehensive services', keywords: ['services', 'offerings', 'solutions'] },
+];
+
 const popularSearches = {
-  cars: ['BMW 3 Series', 'Mercedes C-Class', 'Audi Q5', 'Porsche Cayenne'],
+  cars: ['Honda City', 'Toyota Innova', 'MG Hector', 'Skoda Rapid'],
   services: ['Car Loan Calculator', 'Insurance Quote', 'Sell My Car', 'Book Test Drive'],
-  blogs: ['Best Used Luxury Cars 2024', 'Car Maintenance Tips', 'Buying Guide'],
+  blogs: ['Best Used Cars 2024', 'Car Maintenance Tips', 'Buying Guide'],
 };
+
+interface SearchResult {
+  type: 'vehicle' | 'service' | 'page';
+  title: string;
+  category: string;
+  href: string;
+  description?: string;
+  price?: string;
+  year?: string;
+  image?: string;
+}
+
+interface Vehicle {
+  id: string;
+  make: string;
+  model: string;
+  year: number;
+  variant?: string;
+  fuel?: string;
+  transmission?: string;
+  km?: number;
+  price: number;
+  image?: string;
+  location?: string;
+  color?: string;
+}
 
 interface HeaderClientProps {
   seoData?: {
@@ -68,12 +108,8 @@ export default function HeaderClient({}: HeaderClientProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showCallPopup, setShowCallPopup] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Array<{
-    type: 'vehicle' | 'blog' | 'service';
-    title: string;
-    category: string;
-    href: string;
-  }>>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
@@ -87,12 +123,61 @@ export default function HeaderClient({}: HeaderClientProps) {
   const [popupClosed, setPopupClosed] = useState(false);
   const [citySearch, setCitySearch] = useState('');
   const [isCityMobileSheet, setIsCityMobileSheet] = useState(false);
+  const [vehicleCache, setVehicleCache] = useState<Vehicle[]>([]);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const lastScrollY = useRef(0);
   const locationDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
   const servicesDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
   const insightsDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Fetch vehicles on mount for search cache
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await fetch('https://raam-group-all-websites.onrender.com/admin/reassured-vehicles/published');
+        if (response.ok) {
+          const data = await response.json();
+          // Check if data has success property and vehicles array
+          if (data.success && Array.isArray(data.vehicles)) {
+            const transformedVehicles = data.vehicles.slice(0, 35).map((vehicle: any) => ({
+              id: vehicle.id,
+              make: vehicle.brand, // Map brand to make
+              model: vehicle.model,
+              year: vehicle.year,
+              price: vehicle.price,
+              fuel: vehicle.fuel_type || 'Petrol',
+              km: vehicle.mileage || 0,
+              variant: vehicle.variant,
+              transmission: vehicle.transmission,
+              location: vehicle.location
+            }));
+            setVehicleCache(transformedVehicles);
+          } else {
+            // Fallback to mock data if structure is wrong
+            setVehicleCache([
+              { id: '1', make: 'Honda', model: 'City', year: 2020, price: 850000, fuel: 'Petrol', km: 25000 },
+              { id: '2', make: 'Toyota', model: 'Innova', year: 2019, price: 1450000, fuel: 'Diesel', km: 35000 },
+              { id: '3', make: 'MG', model: 'Hector', year: 2021, price: 1250000, fuel: 'Petrol', km: 15000 },
+              { id: '4', make: 'Toyota', model: 'Swift', year: 2020, price: 550000, fuel: 'Petrol', km: 28000 },
+            ]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching vehicles:', error);
+        // Fallback to mock data
+        setVehicleCache([
+          { id: '1', make: 'Honda', model: 'City', year: 2020, price: 850000, fuel: 'Petrol', km: 25000 },
+          { id: '2', make: 'Toyota', model: 'Innova', year: 2019, price: 1450000, fuel: 'Diesel', km: 35000 },
+          { id: '3', make: 'MG', model: 'Hector', year: 2021, price: 1250000, fuel: 'Petrol', km: 15000 },
+          { id: '4', make: 'Toyota', model: 'Swift', year: 2020, price: 550000, fuel: 'Petrol', km: 28000 },
+        ]);
+      }
+    };
+
+    fetchVehicles();
+  }, []);
 
   const autoDetectLocation = useCallback(() => {
     if (navigator.geolocation && showBrowserLocationPrompt) {
@@ -186,6 +271,213 @@ export default function HeaderClient({}: HeaderClientProps) {
     };
   }, [showCallPopup]);
 
+  const fuzzyMatch = (text: string, query: string): number => {
+    const textLower = text.toLowerCase();
+    const queryLower = query.toLowerCase();
+    
+    // Exact match gets highest score
+    if (textLower === queryLower) return 100;
+    
+    // Starts with gets high score
+    if (textLower.startsWith(queryLower)) return 90;
+    
+    // Contains gets medium score
+    if (textLower.includes(queryLower)) return 70;
+    
+    // Fuzzy matching for typos
+    let score = 0;
+    let queryIndex = 0;
+    
+    for (let i = 0; i < textLower.length && queryIndex < queryLower.length; i++) {
+      if (textLower[i] === queryLower[queryIndex]) {
+        score += 50 / queryLower.length;
+        queryIndex++;
+      }
+    }
+    
+    return queryIndex === queryLower.length ? score : 0;
+  };
+
+  const searchVehicles = (query: string): SearchResult[] => {
+    if (!vehicleCache.length) return [];
+
+    const results: { vehicle: Vehicle; score: number }[] = [];
+
+    vehicleCache.forEach(vehicle => {
+      let maxScore = 0;
+      
+      // Search in make
+      maxScore = Math.max(maxScore, fuzzyMatch(vehicle.make, query));
+      
+      // Search in model
+      maxScore = Math.max(maxScore, fuzzyMatch(vehicle.model, query));
+      
+      // Search in combined make + model
+      maxScore = Math.max(maxScore, fuzzyMatch(`${vehicle.make} ${vehicle.model}`, query));
+      
+      // Search in variant if exists
+      if (vehicle.variant) {
+        maxScore = Math.max(maxScore, fuzzyMatch(vehicle.variant, query));
+      }
+      
+      // Search in year
+      maxScore = Math.max(maxScore, fuzzyMatch(vehicle.year.toString(), query));
+      
+      // Search in fuel type
+      if (vehicle.fuel) {
+        maxScore = Math.max(maxScore, fuzzyMatch(vehicle.fuel, query));
+      }
+
+      if (maxScore > 30) {
+        results.push({ vehicle, score: maxScore });
+      }
+    });
+
+    // Sort by score and take top 6
+    return results
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6)
+      .map(({ vehicle }) => ({
+        type: 'vehicle' as const,
+        title: `${vehicle.make} ${vehicle.model}${vehicle.variant ? ` ${vehicle.variant}` : ''}`,
+        category: `${vehicle.year} • ${vehicle.fuel || 'Petrol'} • ${vehicle.km ? `${vehicle.km.toLocaleString()} km` : 'Low KMs'}`,
+        href: `/reassured/buy-used-cars?vehicle=${vehicle.id}`,
+        description: `₹${(vehicle.price / 100000).toFixed(1)}L`,
+        price: `₹${(vehicle.price / 100000).toFixed(1)}L`,
+        year: vehicle.year.toString(),
+      }));
+  };
+
+  const searchServices = (query: string): SearchResult[] => {
+    const results: { service: typeof services[0]; score: number }[] = [];
+
+    services.forEach(service => {
+      let maxScore = 0;
+      
+      maxScore = Math.max(maxScore, fuzzyMatch(service.name, query));
+      maxScore = Math.max(maxScore, fuzzyMatch(service.description, query));
+
+      if (maxScore > 30) {
+        results.push({ service, score: maxScore });
+      }
+    });
+
+    return results
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 4)
+      .map(({ service }) => ({
+        type: 'service' as const,
+        title: service.name,
+        category: 'Service',
+        href: service.href,
+        description: service.description,
+      }));
+  };
+
+  const searchPages = (query: string): SearchResult[] => {
+    const results: { page: typeof staticPages[0]; score: number }[] = [];
+
+    staticPages.forEach(page => {
+      let maxScore = 0;
+      
+      maxScore = Math.max(maxScore, fuzzyMatch(page.name, query));
+      maxScore = Math.max(maxScore, fuzzyMatch(page.description, query));
+      
+      page.keywords.forEach(keyword => {
+        maxScore = Math.max(maxScore, fuzzyMatch(keyword, query));
+      });
+
+      if (maxScore > 30) {
+        results.push({ page, score: maxScore });
+      }
+    });
+
+    return results
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3)
+      .map(({ page }) => ({
+        type: 'page' as const,
+        title: page.name,
+        category: 'Page',
+        href: page.href,
+        description: page.description,
+      }));
+  };
+
+  const performSearch = async (query: string) => {
+    if (query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+
+    try {
+      // Search vehicles locally (fastest)
+      const vehicleResults = searchVehicles(query);
+      
+      // Search services locally
+      const serviceResults = searchServices(query);
+      
+      // Search pages locally
+      const pageResults = searchPages(query);
+
+      // Combine results with priority order: vehicles, services, pages
+      const allResults = [
+        ...vehicleResults,
+        ...serviceResults,
+        ...pageResults,
+      ].slice(0, 8); // Limit total results
+
+      setSearchResults(allResults);
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+
+    // Clear existing timeout
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+
+    if (query.length < 2) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+
+    // Debounce search by 300ms
+    searchTimeout.current = setTimeout(() => {
+      performSearch(query);
+    }, 300);
+  };
+
+  const getResultIcon = (type: SearchResult['type']) => {
+    switch (type) {
+      case 'vehicle': return Car;
+      case 'service': return Settings;
+      case 'page': return BookOpen;
+      default: return Search;
+    }
+  };
+
+  const getResultColor = (type: SearchResult['type']) => {
+    switch (type) {
+      case 'vehicle': return 'bg-blue-500';
+      case 'service': return 'bg-green-500';
+      case 'page': return 'bg-gray-500';
+      default: return 'bg-black';
+    }
+  };
+
   const openServicesDropdown = () => {
     if (servicesDropdownTimeout.current) clearTimeout(servicesDropdownTimeout.current);
     setIsServicesOpen(true);
@@ -239,23 +531,6 @@ export default function HeaderClient({}: HeaderClientProps) {
   };
 
   const handleMobileSearchToggle = () => setIsSearchOpen((v) => !v);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (query.length > 2) {
-      const mockResults = [
-        { type: 'vehicle' as const, title: 'BMW 3 Series 320d Luxury Line', category: 'Luxury Sedans', href: '/inventory/bmw-3-series' },
-        { type: 'vehicle' as const, title: 'Mercedes-Benz C-Class C220d', category: 'Premium Cars', href: '/inventory/mercedes-c-class' },
-        { type: 'blog' as const, title: 'Best Used Luxury Cars in India 2024', category: 'Buying Guide', href: '/insights/blogs/best-luxury-cars-2024' },
-        { type: 'service' as const, title: 'Used Car Loan Calculator', category: 'Finance Tools', href: '/services/loan-calculator' },
-      ].filter(
-        (item) =>
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.category.toLowerCase().includes(query.toLowerCase())
-      );
-      setSearchResults(mockResults.slice(0, 5));
-    } else setSearchResults([]);
-  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -572,6 +847,15 @@ export default function HeaderClient({}: HeaderClientProps) {
         .animate-slideUp {
           animation: slideUp 0.3s ease-out;
         }
+
+        .search-loading {
+          animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
       `}</style>
 
       {isCityMobileSheet && <CityDropdown mobile />}
@@ -637,7 +921,7 @@ export default function HeaderClient({}: HeaderClientProps) {
                   <div className="location-popup absolute top-full left-0 mt-2 z-[9999] rounded-2xl shadow-xl bg-white border border-gray-200 animate-slideDown w-80">
                     <div className="flex items-center justify-between p-4">
                       <div className="text-sm font-medium text-black mr-3 flex-1 font-manrope">
-                        Allow Epic Luxe to detect your city for personalized inventory?
+                        Allow Epic Reassured to detect your city for personalized inventory?
                       </div>
                       <button
                         onClick={(e) => {
@@ -681,7 +965,7 @@ export default function HeaderClient({}: HeaderClientProps) {
               </div>
             </div>
 
-            {/* Search Bar */}
+            {/* Enhanced Search Bar */}
             {isSearchOpen && (
               <div className="search-container absolute left-1/2 z-40 transform -translate-x-1/2 w-full max-w-2xl px-4">
                 <div className="relative animate-slideDown">
@@ -689,7 +973,7 @@ export default function HeaderClient({}: HeaderClientProps) {
                   <input
                     ref={searchInputRef}
                     type="text"
-                    placeholder="Search luxury cars, services, guides..."
+                    placeholder="Search cars, services, guides..."
                     value={searchQuery}
                     onChange={(e) => handleSearch(e.target.value)}
                     className="w-full pl-12 pr-12 py-4 bg-white border border-gray-200 rounded-2xl text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black transition-all duration-300 shadow-lg font-manrope"
@@ -709,7 +993,7 @@ export default function HeaderClient({}: HeaderClientProps) {
                   </button>
                 </div>
                 
-                {/* Search recommendations and results */}
+                {/* Enhanced Search Results */}
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden animate-fadeIn">
                   <div className="p-6 max-h-96 overflow-y-auto font-manrope">
                     {!searchQuery && (
@@ -767,40 +1051,114 @@ export default function HeaderClient({}: HeaderClientProps) {
                         </section>
                       </div>
                     )}
-                    {searchResults.length > 0 && (
-                      <div className="space-y-3 mb-6">
+
+                    {/* Loading State */}
+                    {isSearching && searchQuery && (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="flex items-center space-x-2 text-gray-500">
+                          <div className="w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                          <span className="text-sm font-medium">Searching...</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Search Results */}
+                    {searchResults.length > 0 && !isSearching && (
+                      <div className="space-y-1">
                         <div className="flex items-center space-x-2 mb-4">
                           <div className="w-1 h-4 bg-black rounded-full"></div>
                           <h3 className="text-sm font-semibold text-black">Search Results</h3>
+                          <span className="text-xs text-gray-400">({searchResults.length})</span>
                         </div>
-                        {searchResults.map((result, index) => (
-                          <a
-                            key={index}
-                            href={result.href}
-                            className="flex items-center space-x-4 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group border border-transparent hover:border-gray-200"
-                            onClick={() => {
-                              setIsSearchOpen(false);
-                              setSearchQuery('');
-                              setSearchResults([]);
-                            }}
-                          >
-                            <div
-                              className={`w-2 h-2 rounded-full ${
-                                result.type === 'vehicle'
-                                  ? 'bg-black'
-                                  : result.type === 'blog'
-                                  ? 'bg-gray-600'
-                                  : 'bg-gray-400'
-                              }`}
-                            ></div>
-                            <div className="flex-1">
-                              <div className="text-black text-sm font-medium group-hover:font-semibold transition-all">
-                                {result.title}
+                        {searchResults.map((result, index) => {
+                          const Icon = getResultIcon(result.type);
+                          const colorClass = getResultColor(result.type);
+                          
+                          return (
+                            <a
+                              key={`${result.type}-${index}`}
+                              href={result.href}
+                              className="flex items-center space-x-4 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group border border-transparent hover:border-gray-200"
+                              onClick={() => {
+                                setIsSearchOpen(false);
+                                setSearchQuery('');
+                                setSearchResults([]);
+                              }}
+                            >
+                              <div className={`w-8 h-8 ${colorClass} text-white rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                <Icon className="w-4 h-4" />
                               </div>
-                              <div className="text-gray-500 text-xs">{result.category}</div>
-                            </div>
-                          </a>
-                        ))}
+                              <div className="flex-1 min-w-0">
+                                <div className="text-black text-sm font-medium group-hover:font-semibold transition-all truncate">
+                                  {result.title}
+                                </div>
+                                <div className="text-gray-500 text-xs flex items-center space-x-2">
+                                  <span>{result.category}</span>
+                                  {result.price && (
+                                    <>
+                                      <span>•</span>
+                                      <span className="font-medium text-green-600">{result.price}</span>
+                                    </>
+                                  )}
+                                </div>
+                                {result.description && (
+                                  <div className="text-gray-400 text-xs mt-1 truncate">
+                                    {result.description}
+                                  </div>
+                                )}
+                              </div>
+                              {result.type === 'vehicle' && (
+                                <div className="text-right flex-shrink-0">
+                                  <div className="text-sm font-bold text-black">{result.price}</div>
+                                  {result.year && (
+                                    <div className="text-xs text-gray-500">{result.year}</div>
+                                  )}
+                                </div>
+                              )}
+                            </a>
+                          );
+                        })}
+                        
+                        {/* View All Results Link */}
+                        {searchResults.length >= 8 && (
+                          <div className="pt-3 mt-3 border-t border-gray-100">
+                            <a
+                              href={`/reassured/buy-used-cars?search=${encodeURIComponent(searchQuery)}`}
+                              className="block w-full text-center py-3 text-black hover:text-gray-700 font-medium text-sm border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-300"
+                              onClick={() => {
+                                setIsSearchOpen(false);
+                                setSearchQuery('');
+                                setSearchResults([]);
+                              }}
+                            >
+                              View All Results for "{searchQuery}"
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* No Results */}
+                    {searchQuery && searchResults.length === 0 && !isSearching && (
+                      <div className="text-center py-8">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Search className="w-6 h-6 text-gray-400" />
+                        </div>
+                        <h3 className="text-black font-medium mb-2">No results found</h3>
+                        <p className="text-gray-500 text-sm mb-4">
+                          Try searching for different keywords or check out our popular searches above.
+                        </p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {popularSearches.cars.slice(0, 4).map((term) => (
+                            <button
+                              key={term}
+                              onClick={() => handleSearch(term)}
+                              className="text-left text-gray-600 hover:text-black text-sm py-2 px-3 rounded-xl hover:bg-gray-50 transition-all duration-300 border border-gray-200 hover:border-black font-medium"
+                            >
+                              {term}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -1073,7 +1431,7 @@ export default function HeaderClient({}: HeaderClientProps) {
         <div className="md:hidden absolute top-full left-0 w-full bg-gray-50 border-t border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
             <div className="text-center text-black text-sm font-medium font-manrope">
-              Find luxury cars in{' '}
+              Find cars in{' '}
               <button
                 onClick={handleMobileCity}
                 onKeyDown={(e) => {
@@ -1101,7 +1459,7 @@ export default function HeaderClient({}: HeaderClientProps) {
               <div className="location-popup absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-[9999] rounded-2xl shadow-xl bg-white border border-gray-200 animate-slideDown w-80">
                 <div className="flex items-center justify-between p-4">
                   <div className="text-sm font-medium text-black mr-3 flex-1 font-manrope">
-                    Allow Epic Luxe to detect your city for personalized inventory?
+                    Allow Epic Reassured to detect your city for personalized inventory?
                   </div>
                   <button
                     onClick={(e) => {
@@ -1163,8 +1521,8 @@ export default function HeaderClient({}: HeaderClientProps) {
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-black font-bold text-xl font-manrope">Contact Epic Luxe</h2>
-                    <p className="text-gray-500 text-sm mt-1 font-manrope">Speak with our luxury car experts</p>
+                    <h2 className="text-black font-bold text-xl font-manrope">Contact Epic Reassured</h2>
+                    <p className="text-gray-500 text-sm mt-1 font-manrope">Speak with our car experts</p>
                   </div>
                 </div>
               </div>
@@ -1173,7 +1531,7 @@ export default function HeaderClient({}: HeaderClientProps) {
               <div className="p-8 text-center">
                 <div className="text-3xl font-bold text-black mb-2 font-manrope">+91-9999999999</div>
                 <p className="text-gray-500 text-sm font-manrope">Available Mon-Sat, 9:30 AM - 7:30 PM</p>
-                <p className="text-gray-400 text-xs mt-2 font-manrope">Get instant assistance for buying or selling luxury cars</p>
+                <p className="text-gray-400 text-xs mt-2 font-manrope">Get instant assistance for buying or selling cars</p>
               </div>
 
               {/* Action Buttons */}

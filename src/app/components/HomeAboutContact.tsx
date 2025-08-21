@@ -142,7 +142,24 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
 
               <div className="pt-4">
                 <button 
-                  className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-3 rounded-lg font-semibold hover:shadow-xl hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 font-manrope"
+                  onClick={() => {
+                    // Visual feedback - immediate scale down
+                    const button = document.activeElement as HTMLButtonElement;
+                    if (button) {
+                      button.style.transform = 'scale(0.95)';
+                      button.style.boxShadow = '0 4px 20px rgba(212, 175, 55, 0.5)';
+                      setTimeout(() => {
+                        button.style.transform = 'scale(1)';
+                        button.style.boxShadow = '';
+                        // Navigate to AboutUs page after animation
+                        window.location.href = '/AboutUs';
+                      }, 150);
+                    } else {
+                      // Fallback if button reference is not available
+                      window.location.href = '/AboutUs';
+                    }
+                  }}
+                  className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-6 py-3 rounded-lg font-semibold hover:shadow-xl hover:shadow-[#D4AF37]/30 transition-all duration-300 transform hover:scale-105 active:scale-95 active:shadow-2xl active:shadow-[#D4AF37]/50 flex items-center gap-2 font-manrope cursor-pointer"
                   aria-label="Learn more about Epic Luxe"
                 >
                   Learn More About Us
@@ -252,14 +269,14 @@ const HomeContactSection = React.memo(function HomeContactSection() {
     { 
       icon: Phone, 
       title: 'Call Us', 
-      subtitle: '+91-9999999999', 
+      subtitle: '+91-7288882121', 
       desc: 'Available 9:30 AM to 7:30 PM', 
       action: handleCallClick 
     },
     { 
       icon: Mail, 
       title: 'Email Us', 
-      subtitle: 'contact@epicluxe.com', 
+      subtitle: 'poc.socialmedia@mghyderabad.com', 
       desc: 'Get detailed information', 
       action: handleEmailClick 
     },
@@ -326,22 +343,67 @@ const HomeContactSection = React.memo(function HomeContactSection() {
 
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/leads`, {
+      const cleanedPhone = formData.phone.replace(/\s+/g, '');
+      
+      const submitData = {
+        lead_type: 'contact_form',
+        lead_title: 'Contact Form Inquiry',
+        name: formData.name.trim(),
+        phone: cleanedPhone,
+        email: null,
+        preferred_model: null,
+        vehicle_id: null,
+        appointment_date: null,
+        appointment_time: null,
+        message: formData.message.trim(),
+        budget: null,
+        insurance_type: null,
+        loan_details: null,
+        status: 'new',
+        source_page: 'Home Contact Form',
+        brand: null,
+        fuel: null,
+        variant: null,
+        city: null,
+        year: null,
+        owner: null,
+        kms: null,
+        whatsapp_updates: null,
+        monthly_income: null,
+        employment_type: null,
+        interested_car: formData.service,
+        loan_amount: null,
+        emi_tenure: null,
+        interest: null,
+        your_emi: null,
+        total_payable: null,
+        pan_card: null,
+        car_interest: formData.service
+      };
+
+      const res = await fetch('https://raam-group-all-websites.onrender.com/admin/leads', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(submitData),
       });
 
       if (res.ok) {
+        const result = await res.json();
+        console.log('Contact form submitted successfully:', result);
         setIsSubmitted(true);
         setTimeout(() => setIsSubmitted(false), 3000);
         setFormData({ name: '', phone: '', service: 'buy', message: '' });
         setErrors({ name: '', phone: '', message: '' });
       } else {
-        console.error('Submission failed:', await res.text());
+        const errorText = await res.text();
+        console.error('Submission failed:', errorText);
+        alert('Failed to send message. Please try again.');
       }
     } catch (error) {
       console.error('Form submission error:', error);
+      alert('Failed to send message. Please try again.');
     } finally {
       setIsLoading(false);
     }

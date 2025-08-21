@@ -19,15 +19,78 @@ export default function NoVehiclesPrompt() {
     phone: ''
   });
   const [sent, setSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setValues({ ...values, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    /* TODO: send to backend / Airtable / email */
-    console.table(values);
-    setSent(true);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const cleanedPhone = values.phone.replace(/\s+/g, '');
+      
+      const submitData = {
+        lead_type: 'vehicle_request',
+        lead_title: 'Vehicle Not Found Request',
+        name: values.name.trim(),
+        phone: cleanedPhone,
+        email: null,
+        preferred_model: values.desired.trim(),
+        vehicle_id: null,
+        appointment_date: null,
+        appointment_time: null,
+        message: `Customer is looking for: ${values.desired}`,
+        budget: null,
+        insurance_type: null,
+        loan_details: null,
+        status: 'new',
+        source_page: 'Vehicle Search - No Results',
+        brand: null,
+        fuel: null,
+        variant: null,
+        city: null,
+        year: null,
+        owner: null,
+        kms: null,
+        whatsapp_updates: null,
+        monthly_income: null,
+        employment_type: null,
+        interested_car: values.desired.trim(),
+        loan_amount: null,
+        emi_tenure: null,
+        interest: null,
+        your_emi: null,
+        total_payable: null,
+        pan_card: null,
+        car_interest: null
+      };
+
+      const response = await fetch('https://raam-group-all-websites.onrender.com/admin/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit vehicle request');
+      }
+
+      const result = await response.json();
+      console.log('Vehicle request submitted successfully:', result);
+      
+      setSent(true);
+    } catch (err) {
+      console.error('Error submitting vehicle request:', err);
+      setError('Failed to submit request. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (sent)
@@ -88,12 +151,19 @@ export default function NoVehiclesPrompt() {
         style={{borderColor:C.platinum,color:C.white}}
       />
 
+      {error && (
+        <div className="text-red-400 text-sm text-center p-2">
+          {error}
+        </div>
+      )}
+
       <button
         type="submit"
-        className="w-full py-3 rounded text-sm font-semibold"
-        style={{background:C.gold,color:C.black}}
+        disabled={isLoading}
+        className="w-full py-3 rounded text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{background: isLoading ? '#999' : C.gold, color: C.black}}
       >
-        Notify me
+        {isLoading ? 'Submitting...' : 'Notify me'}
       </button>
     </form>
   );

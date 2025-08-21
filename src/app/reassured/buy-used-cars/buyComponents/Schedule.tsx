@@ -85,11 +85,41 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
 
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsLoading(false);
-    setShowConfirmation(true);
+    try {
+      // Clean phone number (remove spaces and non-digits)
+      const cleanPhone = formData.phoneNumber.replace(/\D/g, '');
+      
+      // Prepare lead data for reassured backend
+      const leadData = {
+        lead_type: 'test_drive',
+        name: formData.fullName.trim(),
+        phone: cleanPhone,
+        email: '',
+        preferred_model: selectedVehicle ? `${selectedVehicle.year} ${selectedVehicle.brand} ${selectedVehicle.model}` : '',
+        location: '',
+        message: `Test drive booking - Date: ${formData.preferredDate}, Time: ${formData.preferredTime}${selectedVehicle ? `, Vehicle: ${selectedVehicle.year} ${selectedVehicle.brand} ${selectedVehicle.model}` : ''}`
+      };
+
+      const response = await fetch('https://raam-group-all-websites.onrender.com/admin/reassured-leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(leadData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit test drive booking');
+      }
+
+      setIsLoading(false);
+      setShowConfirmation(true);
+    } catch (error) {
+      console.error('Error submitting test drive booking:', error);
+      setIsLoading(false);
+      // You could add user-facing error handling here
+      alert('Failed to book test drive. Please try again.');
+    }
   };
 
   const handleClose = () => {

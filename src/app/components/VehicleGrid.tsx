@@ -202,9 +202,7 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
                       )}
                     </div>
 
-                    <button className="w-full bg-gradient-to-r from-[#D4AF37] to-[#F4E076] text-black font-semibold text-sm py-2 rounded-lg hover:from-[#B8941F] hover:to-[#D4AF37] transition-all duration-300 group-hover:shadow-lg group-hover:shadow-[#D4AF37]/20">
-                      View Details
-                    </button>
+                   
                   </div>
 
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">

@@ -52,19 +52,19 @@ const Footer = () => {
   };
 
   // Navigation functions
-  const navigateToInventory = () => router.push('/inventory');
-  const navigateToSell = () => router.push('/services/SellNowYourCar');
-  const navigateToValuation = () => router.push('/services/SellNowYourCar');
-  const navigateToTradeIn = () => router.push('/services/trade-in');
-  const navigateToFinance = () => router.push('/services/finance');
-  const navigateToInsurance = () => router.push('/services/insurance');
+  const navigateToInventory = () => router.push('/luxe/buy-used-cars');
+  const navigateToSell = () => router.push('/luxe/services/SellNowYourCar');
+  const navigateToValuation = () => router.push('/luxe/services/SellNowYourCar');
+  const navigateToTradeIn = () => router.push('/luxe/services/trade-in');
+  
+  const navigateToInsurance = () => router.push('/luxe/services/insurance');
   const navigateToAbout = () => router.push('/AboutUs');
   const navigateToTestimonials = () => router.push('/insights/testimonials');
   const navigateToBlogs = () => router.push('/insights/blogs');
-  const navigateToCareers = () => router.push('/careers');
-  const navigateToPress = () => router.push('/Press');
-  const navigateToContact = () => router.push('/contact');
-  const navigateToWhatsApp = () => window.open('https://wa.me/your-number', '_blank');
+ 
+  // const navigateToPress = () => router.push('/Press');
+  const navigateToContact = () => router.push('/luxe/contact');
+  const navigateToWhatsApp = () => window.open('https://wa.me/7288882121', '_blank');
   const navigateToPrivacy = () => router.push('/PrivacyPolicy');
   const navigateToTerms = () => router.push('/TermsOfUse');
 
@@ -73,16 +73,14 @@ const Footer = () => {
     'Sell Your Car', 
     'Get Valuation',
     'Trade-In',
-    'Finance',
+ 
     'Insurance'
   ];
 
   const company = [
     'About Us',
     'Testimonials',
-    'Blogs',
-    'Careers',
-    'Press'
+    'Blogs'
   ];
 
   const support = [
@@ -149,7 +147,7 @@ const Footer = () => {
                 {[
                   { Icon: Instagram, href: '#', label: 'Instagram' },
                   { Icon: Youtube, href: '#', label: 'YouTube' },
-                  { Icon: Linkedin, href: '#', label: 'LinkedIn' },
+                  
                   { Icon: MessageCircle, href: '#', label: 'WhatsApp' }
                 ].map(({ Icon, href, label }, index) => (
                   <a
@@ -192,9 +190,7 @@ const Footer = () => {
                           case 'Trade-In':
                             navigateToTradeIn();
                             break;
-                          case 'Finance':
-                            navigateToFinance();
-                            break;
+                          
                           case 'Insurance':
                             navigateToInsurance();
                             break;
@@ -233,12 +229,10 @@ const Footer = () => {
                           case 'Blogs':
                             navigateToBlogs();
                             break;
-                          case 'Careers':
-                            navigateToCareers();
-                            break;
-                          case 'Press':
-                            navigateToPress();
-                            break;
+                          
+                          // case 'Press':
+                          //   navigateToPress();
+                          //   break;
                           default:
                             break;
                         }
@@ -353,7 +347,7 @@ const Footer = () => {
               </p>
               <div className="mt-4 flex items-center text-sm text-gray-400">
                 <Phone className="w-4 h-4 mr-2 text-[#BFA980]" />
-                <span className="font-light">+91 98765 43210</span>
+                <span className="font-light">+91 7288882121</span>
               </div>
             </div>
           </div>

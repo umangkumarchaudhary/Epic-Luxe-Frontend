@@ -113,7 +113,7 @@ const ContactSection = () => {
               <Phone className="w-8 h-8 text-black" />
             </div>
             <h3 className="text-xl font-semibold text-white mb-2">Call Us</h3>
-            <p className="text-white/70">+91 98765 43210</p>
+            <p className="text-white/70">+917288882121</p>
             <p className="text-white/60 text-sm mt-1">Mon-Sun, 9 AM - 9 PM</p>
           </div>
 
@@ -122,7 +122,7 @@ const ContactSection = () => {
               <Mail className="w-8 h-8 text-black" />
             </div>
             <h3 className="text-xl font-semibold text-white mb-2">Email Us</h3>
-            <p className="text-white/70">luxury@raamgroup.com</p>
+            <p className="text-white/70">poc.socialmedia@mghyderabad.com</p>
             <p className="text-white/60 text-sm mt-1">24/7 Support Available</p>
           </div>
 
@@ -132,7 +132,7 @@ const ContactSection = () => {
             </div>
             <h3 className="text-xl font-semibold text-white mb-2">Visit Us</h3>
             <p className="text-white/70">Pan India Presence</p>
-            <p className="text-white/60 text-sm mt-1">Mumbai | Delhi | Bangalore</p>
+            <p className="text-white/60 text-sm mt-1">Pune| Hyderabad | Chennai</p>
           </div>
         </div>
       </div>

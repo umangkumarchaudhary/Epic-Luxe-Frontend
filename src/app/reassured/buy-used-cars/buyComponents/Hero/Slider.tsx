@@ -38,18 +38,18 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/assets/images/bugatti.jpg',
+        url: '/assets/images/r1.jpg',
         width: 1200,
         height: 630,
         alt: 'EPIC Collection of Pre-Owned Luxury Vehicles',
-        type: 'image/jpeg',
+        type: 'image/jpg',
       },
       {
-        url: '/assets/images/innova.jpg',
+        url: '/assets/images/r2.jpg',
         width: 1920,
         height: 1080,
         alt: 'Premium Pre-Owned Luxury Car Showroom',
-        type: 'image/jpeg',
+        type: 'image/jpg',
       }
     ],
   },
@@ -267,19 +267,19 @@ const EpicHeroSlider: React.FC<EpicHeroSliderProps> = ({
           slides={[
             {
               id: '1',
-              imageUrl: '/assets/images/MGHector3.webp',
+              imageUrl: '/assets/images/r1.jpg',
               title: 'EPIC Collection',
               description: 'Discover pre-owned luxury vehicles, meticulously curated for perfection'
             },
             {
               id: '2',
-              imageUrl: '/assets/images/MGGloster3.avif',
+              imageUrl: '/assets/images/r2.jpg',
               title: 'Exclusive Luxury Fleet',
               description: 'Elite vehicles that combine unmatched performance with prestigious elegance'
             },
             {
               id: '3',
-              imageUrl: '/assets/images/innova2.jpg',
+              imageUrl: '/assets/images/r3.jpg',
               title: 'Premium Automobiles',
               description: 'Experience the pinnacle of automotive excellence with our handpicked collection'
             }

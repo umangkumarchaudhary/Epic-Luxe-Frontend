@@ -79,34 +79,53 @@ export default function SliderClient({ slides = [], priority = true }: SliderCli
   }
 
   return (
-    <div
+    <section
       ref={slideRef}
       className="relative w-full overflow-hidden"
+      style={{
+        height: "25vh",
+        minHeight: 180,
+        maxHeight: 250,
+        marginTop: 60,
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Responsive height styles */}
+      <style jsx>{`
+        section {
+          height: 25vh;
+          min-height: 180px;
+          max-height: 250px;
+        }
+        @media (max-width: 640px) {
+          section {
+            height: 18vh;
+            min-height: 150px;
+            max-height: 200px;
+          }
+        }
+      `}</style>
+
       {/* Slides */}
       <div
-        className="flex transition-transform duration-700"
+        className="flex transition-transform duration-700 h-full"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className="w-full flex-shrink-0 relative h-[60vh] md:h-[80vh]"
+            className="w-full flex-shrink-0 relative h-full"
           >
             <Image
               src={slide.imageUrl}
               alt={slide.title}
               fill
               className="object-cover"
-              priority={priority && index === 0} // Only prioritize the first image when priority is enabled
+              priority={priority && index === 0}
               sizes="100vw"
             />
-            <div className="absolute bottom-10 left-10 text-white drop-shadow-lg">
-              <h2 className="text-3xl font-bold">{slide.title}</h2>
-              <p className="text-lg">{slide.description}</p>
-            </div>
+            {/* Removed text overlay completely */}
           </div>
         ))}
       </div>
@@ -144,6 +163,6 @@ export default function SliderClient({ slides = [], priority = true }: SliderCli
           </div>
         </>
       )}
-    </div>
+    </section>
   );
 }

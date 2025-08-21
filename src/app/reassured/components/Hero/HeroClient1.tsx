@@ -101,8 +101,6 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
                   sizes="100vw"
                 />
                 
-                {/* Overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-white/10"></div>
               </div>
 
               {/* Content */}

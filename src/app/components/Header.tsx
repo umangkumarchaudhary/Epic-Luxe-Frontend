@@ -16,6 +16,9 @@ import {
   FileText,
   ArrowUpDown,
   MessageCircle,
+  Settings,
+  User,
+  MapPin,
 } from 'lucide-react';
 
 // Tier city data (fill as needed)
@@ -26,13 +29,14 @@ const cities = [
 const services = [
   { name: 'Buy Now', icon: Car, href: '/luxe/buy-used-cars' },
   { name: 'Sell Now', icon: Crown, href: '/luxe/services/SellNowYourCar' },
-  { name: 'Free Evaluation', icon: Shield, href: '/services/SellNowYourCar' },
-  { name: 'Finance', icon: CreditCard, href: '/luxe/services/finance' },
-  { name: 'Insurance', icon: FileText, href: '/luxe/services/Extended Warranty' },
+  { name: 'Free Evaluation', icon: Shield, href: 'luxe/services/SellNowYourCar' },
+  { name: 'Epic Shield', icon: CreditCard, href: '/luxe/ExtendedWarranty' },
+  
   { name: 'Trade In', icon: ArrowUpDown, href: '/luxe/services/TradeIn' },
 ];
+
 const navItems = [
-  { name: 'Home', href: '/' },
+  { name: 'Home', href: '/luxe' },
   { name: 'Contact', href: '/luxe/contact' },
   { name: 'About Us', href: '/luxe/AboutUs' },
 ];
@@ -40,13 +44,27 @@ const navItems = [
 const insightsItems = [
   { name: 'Testimonials', href: '/luxe/insights/testimonials' },
   { name: 'Blogs', href: '/luxe/insights/blogs' },
-  { name: 'Press', href: '/luxe/Press' },
+  // { name: 'Press', href: '/luxe/Press' },
 ];
-const popularSearches = {
-  cars: ['BMW M3', 'Porsche 911'],
-  services: ['Car Financing', 'Insurance Quote'],
-  blogs: ['Car Buying Tips'],
-};
+
+// Static data for pages and other searchable content
+const staticPages = [
+  { name: 'About Us', href: '/luxe/AboutUs', category: 'Pages', keywords: ['about', 'company', 'team', 'history', 'story'] },
+  { name: 'Contact', href: '/luxe/contact', category: 'Pages', keywords: ['contact', 'phone', 'email', 'address', 'location'] },
+  { name: 'Home', href: '/luxe', category: 'Pages', keywords: ['home', 'main', 'landing'] },
+  { name: 'Testimonials', href: '/luxe/insights/testimonials', category: 'Insights', keywords: ['testimonials', 'reviews', 'feedback', 'customer', 'experience'] },
+  { name: 'Blogs', href: '/luxe/insights/blogs', category: 'Insights', keywords: ['blogs', 'articles', 'news', 'updates', 'tips'] },
+];
+
+// Enhanced service data with keywords
+const searchableServices = [
+  { name: 'Buy Now', href: '/luxe/buy-used-cars', category: 'Services', keywords: ['buy', 'purchase', 'cars', 'vehicles', 'inventory'] },
+  { name: 'Sell Now', href: '/luxe/services/SellNowYourCar', category: 'Services', keywords: ['sell', 'selling', 'car', 'vehicle', 'money'] },
+  { name: 'Free Evaluation', href: '/luxe/services/SellNowYourCar', category: 'Services', keywords: ['evaluation', 'valuation', 'price', 'estimate', 'worth', 'free'] },
+  { name: 'Epic Shield', href: '/luxe/ExtendedWarranty', category: 'Services', keywords: ['warranty', 'shield', 'protection', 'coverage', 'extended'] },
+  { name: 'Trade In', href: '/luxe/services/TradeIn', category: 'Services', keywords: ['trade', 'exchange', 'swap', 'upgrade'] },
+  { name: 'Services', href: '/luxe/services', category: 'Services', keywords: ['services', 'help', 'support', 'assistance'] },
+];
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,12 +74,18 @@ export default function Header() {
   const [showCallPopup, setShowCallPopup] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Array<{
-    type: 'vehicle' | 'blog' | 'service';
+    type: 'vehicle' | 'blog' | 'service' | 'page' | 'insight';
     title: string;
     category: string;
     href: string;
+    subtitle?: string;
+    price?: string;
+    year?: string;
+    make?: string;
+    model?: string;
   }>>([]);
   const [showHeader, setShowHeader] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Add custom CSS for very small screens
   useEffect(() => {
@@ -110,12 +134,12 @@ export default function Header() {
   const [citySearch, setCitySearch] = useState('');
   const [isCityMobileSheet, setIsCityMobileSheet] = useState(false);
 
-
   const searchInputRef = useRef<HTMLInputElement>(null);
   const lastScrollY = useRef(0);
   const locationDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
   const servicesDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
   const insightsDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const autoDetectLocation = useCallback(() => {
     if (navigator.geolocation && showBrowserLocationPrompt) {
@@ -165,8 +189,6 @@ export default function Header() {
       );
     }
   }, [showBrowserLocationPrompt]);
-
-
 
   useEffect(() => {
     let ticking = false;
@@ -247,7 +269,7 @@ export default function Header() {
     // Small delay to ensure popup closes before initiating call
     setTimeout(() => {
       if (typeof window !== 'undefined') {
-        window.location.href = 'tel:+919999999999';
+        window.location.href = 'tel:7288882121';
       }
     }, 100);
   };
@@ -275,21 +297,213 @@ export default function Header() {
 
   const handleMobileSearchToggle = () => setIsSearchOpen((v) => !v);
 
+  // Enhanced fuzzy search function
+  const fuzzyMatch = (text: string, query: string): number => {
+    const textLower = text.toLowerCase();
+    const queryLower = query.toLowerCase();
+    
+    // Exact match gets highest score
+    if (textLower === queryLower) return 100;
+    
+    // Starts with query gets high score
+    if (textLower.startsWith(queryLower)) return 90;
+    
+    // Contains query gets medium score
+    if (textLower.includes(queryLower)) return 70;
+    
+    // Word boundary match
+    const words = textLower.split(/\s+/);
+    for (const word of words) {
+      if (word.startsWith(queryLower)) return 60;
+      if (word.includes(queryLower)) return 40;
+    }
+    
+    // Character similarity (simple)
+    let matches = 0;
+    const queryChars = queryLower.split('');
+    for (const char of queryChars) {
+      if (textLower.includes(char)) matches++;
+    }
+    const similarity = (matches / queryChars.length) * 30;
+    
+    return similarity > 20 ? similarity : 0;
+  };
+
+  // Enhanced search function
+  const performSearch = async (query: string) => {
+    if (!query || query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    const results: Array<{
+      type: 'vehicle' | 'blog' | 'service' | 'page' | 'insight';
+      title: string;
+      category: string;
+      href: string;
+      subtitle?: string;
+      price?: string;
+      year?: string;
+      make?: string;
+      model?: string;
+      score: number;
+    }> = [];
+
+    try {
+      // 1. Search Vehicles
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'http://localhost:5000/admin';
+        const response = await fetch(`${baseUrl}/vehicles`);
+        
+        if (response.ok) {
+          const vehicles = await response.json();
+          
+          vehicles.forEach((vehicle: any) => {
+            const searchableFields = [
+              vehicle.make,
+              vehicle.model,
+              vehicle.variant,
+              vehicle.fuelType,
+              vehicle.transmission,
+              `${vehicle.make} ${vehicle.model}`,
+              `${vehicle.make} ${vehicle.model} ${vehicle.variant}`,
+              vehicle.year?.toString(),
+            ].filter(Boolean);
+
+            let maxScore = 0;
+            for (const field of searchableFields) {
+              const score = fuzzyMatch(field, query);
+              maxScore = Math.max(maxScore, score);
+            }
+
+            if (maxScore > 20) {
+              results.push({
+                type: 'vehicle',
+                title: `${vehicle.make} ${vehicle.model} ${vehicle.variant || ''}`.trim(),
+                category: 'Vehicles',
+                href: `/luxe/buy-used-cars/${vehicle._id || vehicle.id}`,
+                subtitle: `${vehicle.year} • ${vehicle.fuelType} • ${vehicle.transmission}`,
+                price: vehicle.price ? `₹${vehicle.price.toLocaleString()}` : undefined,
+                year: vehicle.year?.toString(),
+                make: vehicle.make,
+                model: vehicle.model,
+                score: maxScore,
+              });
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching vehicles:', error);
+      }
+
+      // 2. Search Services
+      searchableServices.forEach(service => {
+        let maxScore = 0;
+        
+        // Check name
+        const nameScore = fuzzyMatch(service.name, query);
+        maxScore = Math.max(maxScore, nameScore);
+        
+        // Check keywords
+        service.keywords.forEach(keyword => {
+          const keywordScore = fuzzyMatch(keyword, query);
+          maxScore = Math.max(maxScore, keywordScore);
+        });
+
+        if (maxScore > 20) {
+          results.push({
+            type: 'service',
+            title: service.name,
+            category: service.category,
+            href: service.href,
+            score: maxScore,
+          });
+        }
+      });
+
+      // 3. Search Pages
+      staticPages.forEach(page => {
+        let maxScore = 0;
+        
+        // Check name
+        const nameScore = fuzzyMatch(page.name, query);
+        maxScore = Math.max(maxScore, nameScore);
+        
+        // Check keywords
+        page.keywords.forEach(keyword => {
+          const keywordScore = fuzzyMatch(keyword, query);
+          maxScore = Math.max(maxScore, keywordScore);
+        });
+
+        if (maxScore > 20) {
+          results.push({
+            type: page.category.toLowerCase() === 'insights' ? 'insight' : 'page',
+            title: page.name,
+            category: page.category,
+            href: page.href,
+            score: maxScore,
+          });
+        }
+      });
+
+      // Sort by score and limit results
+      const sortedResults = results
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 8)
+        .map(({ score, ...item }) => item);
+
+      setSearchResults(sortedResults);
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query.length > 2) {
-      const mockResults = [
-        { type: 'vehicle' as const, title: 'BMW M3 Competition', category: 'Luxury Cars', href: '/buy-used-cars/bmw-m3' },
-        { type: 'vehicle' as const, title: 'Porsche 911 Carrera', category: 'Sports Cars', href: '/buy-used-cars/porsche-911' },
-        { type: 'blog' as const, title: 'Best Luxury Cars 2024', category: 'Blog Posts', href: '/insights/blogs/luxury-cars-2024' },
-        { type: 'service' as const, title: 'Car Financing Options', category: 'Services', href: '/services/financing' },
-      ].filter(
-        (item) =>
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.category.toLowerCase().includes(query.toLowerCase())
-      );
-      setSearchResults(mockResults.slice(0, 5));
-    } else setSearchResults([]);
+    
+    // Clear existing timeout
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+    
+    // Debounce search
+    searchTimeout.current = setTimeout(() => {
+      performSearch(query);
+    }, 300);
+  };
+
+  const getResultIcon = (type: string) => {
+    switch (type) {
+      case 'vehicle':
+        return Car;
+      case 'service':
+        return Settings;
+      case 'page':
+        return User;
+      case 'insight':
+        return MessageCircle;
+      default:
+        return FileText;
+    }
+  };
+
+  const getResultColor = (type: string) => {
+    switch (type) {
+      case 'vehicle':
+        return 'text-[#D4AF37]';
+      case 'service':
+        return 'text-[#BFA980]';
+      case 'page':
+        return 'text-blue-400';
+      case 'insight':
+        return 'text-purple-400';
+      default:
+        return 'text-gray-400';
+    }
   };
 
   useEffect(() => {
@@ -591,8 +805,6 @@ export default function Header() {
 
   return (
     <>
-
-
       {isCityMobileSheet && <CityDropdown mobile />}
 
       <header
@@ -610,14 +822,16 @@ export default function Header() {
         <div className="relative max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 header-responsive">
           <div className={`flex items-center justify-between transition-all duration-500 ease-out ${isSearchOpen ? 'h-20' : 'h-16'}`}>
             <div className="flex flex-row items-center">
-              <Image
-                src="/assets/images/EpicLuxeLogoCopy.jpeg"
-                alt="Epic Luxe Logo"
-                width={140}
-                height={50}
-                className="object-contain w-20 sm:w-24 md:w-36 h-auto logo-responsive"
-                priority
-              />
+              <Link href="/" className="cursor-pointer">
+                <Image
+                  src="/assets/images/EpicLuxeLogoCopy.jpeg"
+                  alt="Epic Luxe Logo"
+                  width={140}
+                  height={50}
+                  className="object-contain w-20 sm:w-24 md:w-36 h-auto logo-responsive hover:opacity-90 transition-opacity duration-300"
+                  priority
+                />
+              </Link>
               {/* Desktop city selector */}
               <div
                 className="relative ml-6 hidden md:block"
@@ -722,7 +936,6 @@ export default function Header() {
                 )}
               </div>
             </div>
-            {/* Mobile city selector - removed from header for mobile view */}
 
             {/* Search Bar */}
             {isSearchOpen && (
@@ -751,7 +964,8 @@ export default function Header() {
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-                {/* Search recommendations and results */}
+
+                {/* Enhanced Search Results */}
                 <div className="absolute top-full left-0 right-0 mt-2 bg-gradient-to-br from-[#1a1a1a]/95 to-[#0e0e0e]/95 backdrop-blur-lg border border-[#BFA980]/20 rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-top-1 duration-300">
                   <div className="p-6 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-[#BFA980]/80 scrollbar-track-transparent manrope-font">
                     {!searchQuery && (
@@ -759,10 +973,10 @@ export default function Header() {
                         <section>
                           <div className="flex items-center space-x-2 mb-3">
                             <Car className="w-4 h-4 text-[#D4AF37]" />
-                            <h3 className="text-sm font-semibold text-white/90">Popular Searches in Cars</h3>
+                            <h3 className="text-sm font-semibold text-white/90">Popular Vehicle Searches</h3>
                           </div>
                           <div className="grid grid-cols-2 gap-2">
-                            {popularSearches.cars.map((term) => (
+                            {['BMW M3', 'Porsche 911', 'Mercedes AMG', 'Audi RS6'].map((term) => (
                               <button
                                 key={term}
                                 onClick={() => handleSearch(term)}
@@ -776,10 +990,10 @@ export default function Header() {
                         <section>
                           <div className="flex items-center space-x-2 mb-3">
                             <Shield className="w-4 h-4 text-[#BFA980]" />
-                            <h3 className="text-sm font-semibold text-white/90">Popular Searches in Services</h3>
+                            <h3 className="text-sm font-semibold text-white/90">Popular Service Searches</h3>
                           </div>
                           <div className="grid grid-cols-2 gap-2">
-                            {popularSearches.services.map((term) => (
+                            {['Buy Car', 'Sell Car', 'Car Evaluation', 'Trade In'].map((term) => (
                               <button
                                 key={term}
                                 onClick={() => handleSearch(term)}
@@ -793,10 +1007,10 @@ export default function Header() {
                         <section>
                           <div className="flex items-center space-x-2 mb-3">
                             <MessageCircle className="w-4 h-4 text-[#D4AF37]" />
-                            <h3 className="text-sm font-semibold text-white/90">Popular Searches in Blogs</h3>
+                            <h3 className="text-sm font-semibold text-white/90">Quick Access</h3>
                           </div>
                           <div className="grid grid-cols-2 gap-2">
-                            {popularSearches.blogs.map((term) => (
+                            {['About Us', 'Contact', 'Testimonials', 'Blogs'].map((term) => (
                               <button
                                 key={term}
                                 onClick={() => handleSearch(term)}
@@ -809,40 +1023,72 @@ export default function Header() {
                         </section>
                       </div>
                     )}
-                    {searchResults.length > 0 && (
-                      <div className="space-y-3 mb-6">
+
+                    {/* Loading State */}
+                    {isSearching && searchQuery && (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-6 h-6 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+                          <span className="text-white/70">Searching...</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Search Results */}
+                    {searchResults.length > 0 && !isSearching && (
+                      <div className="space-y-3">
                         <div className="flex items-center space-x-2 mb-4">
                           <div className="w-1 h-4 bg-gradient-to-b from-[#D4AF37] to-[#BFA980] rounded-full"></div>
-                          <h3 className="text-sm font-semibold text-white/90">Search Results</h3>
+                          <h3 className="text-sm font-semibold text-white/90">Search Results ({searchResults.length})</h3>
                         </div>
-                        {searchResults.map((result, index) => (
-                          <a
-                            key={index}
-                            href={result.href}
-                            className="flex items-center space-x-4 p-3 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300 group border border-transparent hover:border-[#BFA980]/20"
-                            onClick={() => {
-                              setIsSearchOpen(false);
-                              setSearchQuery('');
-                              setSearchResults([]);
-                            }}
-                          >
-                            <div
-                              className={`w-3 h-3 rounded-full ${
-                                result.type === 'vehicle'
-                                  ? 'bg-[#D4AF37]'
-                                  : result.type === 'blog'
-                                  ? 'bg-[#BFA980]'
-                                  : 'bg-white/40'
-                              }`}
-                            ></div>
-                            <div className="flex-1">
-                              <div className="text-white/90 text-sm font-medium group-hover:text-white transition-colors">
-                                {result.title}
+                        {searchResults.map((result, index) => {
+                          const IconComponent = getResultIcon(result.type);
+                          const colorClass = getResultColor(result.type);
+                          
+                          return (
+                            <a
+                              key={index}
+                              href={result.href}
+                              className="flex items-start space-x-4 p-4 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300 group border border-transparent hover:border-[#BFA980]/20"
+                              onClick={() => {
+                                setIsSearchOpen(false);
+                                setSearchQuery('');
+                                setSearchResults([]);
+                              }}
+                            >
+                              <div className={`mt-0.5 ${colorClass}`}>
+                                <IconComponent className="w-4 h-4" />
                               </div>
-                              <div className="text-white/50 text-xs">{result.category}</div>
-                            </div>
-                          </a>
-                        ))}
+                              <div className="flex-1 min-w-0">
+                                <div className="text-white/90 text-sm font-medium group-hover:text-white transition-colors line-clamp-1">
+                                  {result.title}
+                                </div>
+                                <div className="flex items-center space-x-2 mt-1">
+                                  <span className={`text-xs px-2 py-0.5 rounded-full ${
+                                    result.type === 'vehicle' ? 'bg-[#D4AF37]/20 text-[#D4AF37]' :
+                                    result.type === 'service' ? 'bg-[#BFA980]/20 text-[#BFA980]' :
+                                    result.type === 'page' ? 'bg-blue-400/20 text-blue-400' :
+                                    'bg-purple-400/20 text-purple-400'
+                                  }`}>
+                                    {result.category}
+                                  </span>
+                                  {result.price && (
+                                    <span className="text-[#D4AF37] text-xs font-semibold">{result.price}</span>
+                                  )}
+                                </div>
+                                {result.subtitle && (
+                                  <div className="text-white/50 text-xs mt-1">{result.subtitle}</div>
+                                )}
+                              </div>
+                            </a>
+                          );
+                        })}
+                        {searchQuery && searchResults.length === 0 && !isSearching && (
+                          <div className="text-center py-8">
+                            <div className="text-white/60 text-sm mb-2">No results found for "{searchQuery}"</div>
+                            <div className="text-white/40 text-xs">Try different keywords or check spelling</div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -855,7 +1101,7 @@ export default function Header() {
                 isSearchOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
               }`}
             >
-              <Link href="/" className="relative group px-1">
+              <Link href="/luxe" className="relative group px-1">
                 <span className="text-base font-semibold tracking-wide text-white/90 hover:text-[#D4AF37] transition-all duration-300">
                   Home
                 </span>
@@ -1024,7 +1270,7 @@ export default function Header() {
           <div className="lg:hidden absolute top-full left-0 w-full bg-gradient-to-b from-[#0e0e0e]/95 to-[#1a1a1a]/95 backdrop-blur-lg border-t border-[#BFA980]/10 shadow-2xl">
             <div className="p-6 space-y-4 manrope-font">
               <Link
-                href="/"
+                href="/luxe"
                 className="block text-white/90 hover:text-[#D4AF37] font-semibold px-4 py-3 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300"
               >
                 Home
@@ -1312,6 +1558,12 @@ export default function Header() {
           .scrollbar-track-transparent {
             background: transparent;
           }
+          .line-clamp-1 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+          }
         `}</style>
 
         {/* Custom Call Popup */}
@@ -1340,7 +1592,7 @@ export default function Header() {
 
               {/* Phone Number */}
               <div className="p-6 text-center">
-                <div className="text-3xl font-bold text-[#D4AF37] mb-2">+91-9999999999</div>
+                <div className="text-3xl font-bold text-[#D4AF37] mb-2">+91-7288882121</div>
                 <p className="text-gray-400 text-sm">Available 9:30 AM to 7:30 PM for your luxury car needs</p>
               </div>
 

@@ -40,7 +40,7 @@ interface PremiumCarFilterClientProps {
 }
 
 // Constants
-const BRANDS = ["Audi", "BMW", "Mercedes", "Lexus", "Tesla"];
+const BRANDS = ["Toyota", "Maruti Suzuki", "MG", "skoda", "Honda"];
 const MODELS_BY_BRAND: Record<string, string[]> = {
   Audi: ["A6", "Q5", "RS7"],
   BMW: ["X5", "M3", "i8"],

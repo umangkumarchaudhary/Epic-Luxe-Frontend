@@ -182,6 +182,8 @@ const SellNowWizard: React.FC<SellNowWizardProps> = () => {
     tyres: [],
     interior: [],
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Search states
   const [modelSearch, setModelSearch] = useState('');
@@ -274,27 +276,98 @@ const getVariantsForModel = (brand: string, model: string, fuel: string): Varian
   const isPhoneValid = /^\d{10}$/.test(phone);
   const showPhoneError = touched && !isPhoneValid;
 
+  // Handle image upload
+  const handleImageUpload = async () => {
+    try {
+      // For now, just log the images as backend image handling would need a file upload endpoint
+      console.log('Uploading images:', {
+        rc: uploadedFiles.rc?.name || null,
+        exterior: uploadedFiles.exterior.map(f => f.name),
+        tyres: uploadedFiles.tyres.map(f => f.name),
+        interior: uploadedFiles.interior.map(f => f.name),
+      });
+
+      // Here you would normally upload files to a file server or cloud storage
+      // and then update the lead record with the file URLs
+      
+      alert('Images submitted successfully! Our team will review them and contact you soon.');
+      
+      // Could redirect or show success message
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      alert('Failed to upload images. Please try again.');
+    }
+  };
+
   // Handle final submission
-  const handleSubmit = () => {
-    const formData = {
-      brand: selectedBrand,
-      model: selectedModel,
-      fuel: selectedFuel,
-      variant: selectedVariant,
-      city: selectedCity,
-      year: selectedYear,
-      owner: selectedOwner,
-      kms: selectedKms,
-      phone: phone,
-      whatsappUpdates: whatsappUpdates,
-      timestamp: new Date().toISOString(),
-    };
+  const handleSubmit = async () => {
+    if (!isPhoneValid || isSubmitting) return;
+    
+    setIsSubmitting(true);
+    setSubmitError(null);
 
-    // (Optional) Send formData to backend here
-    console.log('Form data:', formData);
+    try {
+      const cleanedPhone = phone.replace(/\s+/g, '');
+      
+      const submitData = {
+        lead_type: 'sell_car',
+        lead_title: 'Car Selling Request',
+        name: null, // Will be collected later or from user profile
+        phone: cleanedPhone,
+        email: null,
+        preferred_model: `${selectedYear} ${selectedBrand} ${selectedModel}`,
+        vehicle_id: null,
+        appointment_date: null,
+        appointment_time: null,
+        message: `Car Details: ${selectedYear} ${selectedBrand} ${selectedModel} ${selectedVariant}, ${selectedFuel}, ${selectedOwner}, ${selectedKms}`,
+        budget: null,
+        insurance_type: null,
+        loan_details: null,
+        status: 'new',
+        source_page: 'Sell Car Wizard',
+        brand: selectedBrand,
+        fuel: selectedFuel,
+        variant: selectedVariant,
+        city: selectedCity,
+        year: parseInt(selectedYear) || null,
+        owner: selectedOwner,
+        kms: selectedKms,
+        whatsapp_updates: whatsappUpdates,
+        monthly_income: null,
+        employment_type: null,
+        interested_car: `${selectedBrand} ${selectedModel}`,
+        loan_amount: null,
+        emi_tenure: null,
+        interest: null,
+        your_emi: null,
+        total_payable: null,
+        pan_card: null,
+        car_interest: null
+      };
 
-    // Save state so wizard shows upload images step
-    setValuationSubmitted(true);
+      const response = await fetch('https://raam-group-all-websites.onrender.com/admin/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit car selling request');
+      }
+
+      const result = await response.json();
+      console.log('Car selling request submitted successfully:', result);
+      
+      // Save state so wizard shows upload images step
+      setValuationSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting car selling request:', error);
+      setSubmitError('Failed to submit request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Filter functions for search
@@ -861,6 +934,12 @@ const getVariantsForModel = (brand: string, model: string, fuel: string): Varian
               {showPhoneError && (
                 <span className="text-red-400 text-xs">Please enter a valid 10-digit mobile number.</span>
               )}
+
+              {submitError && (
+                <div className="text-red-400 text-xs text-center p-2 bg-red-500/10 rounded-lg border border-red-500/20">
+                  {submitError}
+                </div>
+              )}
               
               <div className="flex items-center gap-2 p-3 bg-black/20 rounded-lg border border-gray-700">
                 <input
@@ -869,6 +948,7 @@ const getVariantsForModel = (brand: string, model: string, fuel: string): Varian
                   onChange={e => setWhatsappUpdates(e.target.checked)}
                   className="accent-[#D4AF37] w-4 h-4"
                   id="whatsapp-updates"
+                  disabled={isSubmitting}
                 />
                 <label htmlFor="whatsapp-updates" className="font-medium text-white text-xs">
                   Send updates on WhatsApp
@@ -876,14 +956,14 @@ const getVariantsForModel = (brand: string, model: string, fuel: string): Varian
               </div>
               
               <button
-                className={`w-full py-3 text-sm rounded-lg font-bold transition-all ${
-                  isPhoneValid 
+                className={`w-full py-3 text-sm rounded-lg font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                  isPhoneValid && !isSubmitting
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black hover:shadow-lg' 
                     : 'bg-gray-600 text-gray-400 cursor-not-allowed'}`}
                 onClick={handleSubmit}
-                disabled={!isPhoneValid}
+                disabled={!isPhoneValid || isSubmitting}
               >
-                Get Instant Valuation
+                {isSubmitting ? 'Submitting...' : 'Get Instant Valuation'}
               </button>
               
               <div className="text-gray-400 text-center text-xs">
@@ -927,7 +1007,7 @@ const getVariantsForModel = (brand: string, model: string, fuel: string): Varian
                     <UploadImagesScreen
                       uploadedFiles={uploadedFiles}
                       setUploadedFiles={setUploadedFiles}
-                      onUpload={() => {/* handle images submit here */}}
+                      onUpload={handleImageUpload}
                     />
                   )
             }

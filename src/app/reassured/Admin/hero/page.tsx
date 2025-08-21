@@ -216,9 +216,8 @@ export default function AdminHeroBanners() {
     setLoadingBanners(true);
     setLoadBannersError("");
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
       const res = await axios.get<{ banners: Banner[] }>(
-        `${baseUrl}/banners`
+        "https://raam-group-all-websites.onrender.com/admin/reassured-banners"
       );
       setBanners(res.data.banners);
     } catch (error) {
@@ -358,9 +357,8 @@ export default function AdminHeroBanners() {
         formData.append("cta2_text", newBanners[i].cta2_text);
         formData.append("cta2_url_or_action", newBanners[i].cta2_url_or_action);
 
-        const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
         const res = await axios.post(
-          `${baseUrl}/upload-hero`,
+          "https://raam-group-all-websites.onrender.com/admin/reassured-upload-hero",
           formData,
           {
             headers: {
@@ -405,8 +403,7 @@ export default function AdminHeroBanners() {
   const deleteBanner = async (id: number | string) => {
     if (!confirm("Are you sure you want to delete this banner?")) return;
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
-      await axios.delete(`${baseUrl}/delete-hero/${id}`);
+      await axios.delete(`https://raam-group-all-websites.onrender.com/admin/reassureddelete-hero/${id}`);
       await fetchBanners();
       setGlobalMessage("Banner deleted successfully.");
     } catch (error) {
@@ -506,8 +503,7 @@ export default function AdminHeroBanners() {
         cta2_url_or_action: editState.cta2_url_or_action,
       };
 
-      const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
-      await axios.put(`${baseUrl}/update-hero/${id}`, updatePayload);
+      await axios.put(`https://raam-group-all-websites.onrender.com/admin/reassured-update-hero/${id}`, updatePayload);
       setEditStates((prev) => {
         const copy = { ...prev };
         delete copy[id];
@@ -533,7 +529,7 @@ export default function AdminHeroBanners() {
       <h1
         className={`text-4xl font-extrabold mb-6 ${goldGradient} bg-clip-text text-transparent`}
       >
-        Admin Hero Banners Management
+        Reassured Hero Banners Management
       </h1>
 
       {/* Upload Section */}

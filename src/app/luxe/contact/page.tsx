@@ -66,7 +66,7 @@ const GoogleMap = () => {
             <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
             <span className="text-white text-sm font-semibold">Epic Luxe Showroom</span>
           </div>
-          <p className="text-white/70 text-xs mt-1">Silver Star Mercedes Benz, Banjara Hills</p>
+          
         </div>
       </div>
     </div>
@@ -90,6 +90,8 @@ const ContactUs = () => {
     message: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
@@ -249,78 +251,91 @@ const ContactUs = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (validateForm()) {
-      try {
-        // Submit lead with type tracking
-        await submitLead({
-          type: 'Contact Page',
-          data: formData,
-          onSuccess: () => {
-            setIsSubmitted(true);
-            setTimeout(() => {
-              if (isComponentMounted) {
-                setIsSubmitted(false);
-              }
-            }, 5000);
-            // Reset form after successful submission
-            setFormData({
-              name: '',
-              phone: '',
-              service: 'buy',
-              message: ''
-            });
-            setErrors({
-              name: '',
-              phone: '',
-              service: '',
-              message: ''
-            });
-          },
-          onError: (error) => {
-            console.error('Lead submission failed:', error);
-            // Still show success to user but log the error
-            setIsSubmitted(true);
-            setTimeout(() => {
-              if (isComponentMounted) {
-                setIsSubmitted(false);
-              }
-            }, 5000);
-            setFormData({
-              name: '',
-              phone: '',
-              service: 'buy',
-              message: ''
-            });
-            setErrors({
-              name: '',
-              phone: '',
-              service: '',
-              message: ''
-            });
-          }
-        });
-      } catch (error) {
-        console.error('Form submission error:', error);
-        // Fallback to original behavior
-        setIsSubmitted(true);
-        setTimeout(() => {
-          if (isComponentMounted) {
-            setIsSubmitted(false);
-          }
-        }, 5000);
-        setFormData({
-          name: '',
-          phone: '',
-          service: 'buy',
-          message: ''
-        });
-        setErrors({
-          name: '',
-          phone: '',
-          service: '',
-          message: ''
-        });
+    if (!validateForm() || isSubmitting) return;
+    
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const cleanedPhone = formData.phone.replace(/\s+/g, '');
+      
+      const submitData = {
+        lead_type: 'contact_page',
+        lead_title: 'Contact Page Inquiry',
+        name: formData.name.trim(),
+        phone: cleanedPhone,
+        email: null,
+        preferred_model: null,
+        vehicle_id: null,
+        appointment_date: null,
+        appointment_time: null,
+        message: formData.message.trim(),
+        budget: null,
+        insurance_type: null,
+        loan_details: null,
+        status: 'new',
+        source_page: 'Contact Page',
+        brand: null,
+        fuel: null,
+        variant: null,
+        city: null,
+        year: null,
+        owner: null,
+        kms: null,
+        whatsapp_updates: null,
+        monthly_income: null,
+        employment_type: null,
+        interested_car: formData.service,
+        loan_amount: null,
+        emi_tenure: null,
+        interest: null,
+        your_emi: null,
+        total_payable: null,
+        pan_card: null,
+        car_interest: null
+      };
+
+      const response = await fetch('https://raam-group-all-websites.onrender.com/admin/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit contact form');
       }
+
+      const result = await response.json();
+      console.log('Contact form submitted successfully:', result);
+      
+      // Show success and reset form
+      setIsSubmitted(true);
+      setTimeout(() => {
+        if (isComponentMounted) {
+          setIsSubmitted(false);
+        }
+      }, 5000);
+      
+      setFormData({
+        name: '',
+        phone: '',
+        service: 'buy',
+        message: ''
+      });
+      setErrors({
+        name: '',
+        phone: '',
+        service: '',
+        message: ''
+      });
+      
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      setSubmitError('Failed to submit message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -331,7 +346,7 @@ const ContactUs = () => {
       actionName: 'Call Epic Luxe',
       actionDescription: 'Speak directly with our luxury car expert',
       onProceed: () => {
-        window.location.href = 'tel:+919999999999';
+        window.location.href = 'tel:+917288882121';
         setModalConfig(prev => ({ ...prev, isOpen: false }));
       }
     });
@@ -357,7 +372,7 @@ const ContactUs = () => {
       actionName: 'WhatsApp Epic Luxe',
       actionDescription: 'Chat instantly with our luxury car expert',
       onProceed: () => {
-        window.open('https://wa.me/919999999999', '_blank');
+        window.open('https://wa.me/917288882121', '_blank');
         setModalConfig(prev => ({ ...prev, isOpen: false }));
       }
     });
@@ -368,7 +383,7 @@ const ContactUs = () => {
   };
 
   const navigateToInventory = () => {
-    router.push('/inventory');
+    router.push('/luxe/buy-used-cars');
   };
 
   // Don't render if component is unmounting
@@ -501,11 +516,20 @@ const ContactUs = () => {
                 )}
               </div>
 
+              {submitError && (
+                <div className="text-red-400 text-sm text-center p-2 bg-red-500/10 rounded-lg border border-red-500/20 mb-4">
+                  {submitError}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className={`w-full relative overflow-hidden rounded-lg py-4 px-8 font-semibold text-lg transition-all duration-300 font-manrope ${
+                disabled={isSubmitting}
+                className={`w-full relative overflow-hidden rounded-lg py-4 px-8 font-semibold text-lg transition-all duration-300 font-manrope disabled:opacity-50 disabled:cursor-not-allowed ${
                   isSubmitted 
                     ? 'bg-green-600 text-white' 
+                    : isSubmitting
+                    ? 'bg-gray-600 text-gray-300'
                     : 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black hover:shadow-2xl hover:shadow-[#D4AF37]/50 transform hover:scale-105'
                 }`}
               >
@@ -514,6 +538,14 @@ const ContactUs = () => {
                     <>
                       <Check className="w-5 h-5" />
                       Thank you for your response! We will get back to you soon.
+                    </>
+                  ) : isSubmitting ? (
+                    <>
+                      <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" className="opacity-25"/>
+                        <path fill="currentColor" className="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                      </svg>
+                      Submitting...
                     </>
                   ) : (
                     <>
@@ -543,7 +575,7 @@ const ContactUs = () => {
                 <div className="flex-1">
                 <Phone className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
                 <h3 className="text-2xl font-bold mb-4 text-white/90 font-manrope">Call Us</h3>
-                <p className="text-[#D4AF37] text-xl font-semibold mb-2 font-manrope">+91-9999999999</p>
+                <p className="text-[#D4AF37] text-xl font-semibold mb-2 font-manrope">+91-7288882121</p>
                 <p className="text-white/70 text-sm mb-4 font-manrope">Available 9:30 AM to 7:30 PM</p>
                 </div>
                 <button 
@@ -582,7 +614,7 @@ const ContactUs = () => {
                 <div className="flex-1">
                 <WhatsAppIcon className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
                 <h3 className="text-2xl font-bold mb-4 text-white/90 font-manrope">WhatsApp Epic Luxe</h3>
-                <p className="text-[#D4AF37] text-lg mb-2 font-manrope">+91-9999999999</p>
+                <p className="text-[#D4AF37] text-lg mb-2 font-manrope">+91-7288882121</p>
                 <p className="text-white/70 text-sm mb-4 font-manrope">Available 9:30 AM to 7:30 PM for instant queries</p>
                 </div>
                 <button 
@@ -614,7 +646,7 @@ const ContactUs = () => {
                       <div className="flex-1">
                         <Phone className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
                         <h3 className="text-2xl font-bold mb-4 text-white/90 font-manrope">Call Us</h3>
-                        <p className="text-[#D4AF37] text-xl font-semibold mb-2 font-manrope">+91-9999999999</p>
+                        <p className="text-[#D4AF37] text-xl font-semibold mb-2 font-manrope">+91-7288882121</p>
                         <p className="text-white/70 text-sm mb-4 font-manrope">Available 9:30 AM to 7:30 PM</p>
                       </div>
                                               <button 
@@ -635,7 +667,7 @@ const ContactUs = () => {
                       <div className="flex-1">
                         <Mail className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
                         <h3 className="text-2xl font-bold mb-4 text-white/90">Email Us</h3>
-                        <p className="text-[#D4AF37] text-lg mb-2">contact@epicluxe.com</p>
+                        <p className="text-[#D4AF37] text-lg mb-2">poc.socialmedia@mghyderabad.com</p>
                         <p className="text-white/70 text-sm mb-4">Get detailed information about our luxury cars</p>
                       </div>
                       <button 
@@ -657,7 +689,7 @@ const ContactUs = () => {
                       <div className="flex-1">
                         <WhatsAppIcon className="w-12 h-12 text-[#D4AF37] mb-6 group-hover:animate-bounce" />
                         <h3 className="text-2xl font-bold mb-4 text-white/90">WhatsApp Epic Luxe</h3>
-                        <p className="text-[#D4AF37] text-lg mb-2">+91-9999999999</p>
+                        <p className="text-[#D4AF37] text-lg mb-2">+91-7288882121</p>
                         <p className="text-white/70 text-sm mb-4">Available 9:30 AM to 7:30 PM for instant queries</p>
                       </div>
                       <button 

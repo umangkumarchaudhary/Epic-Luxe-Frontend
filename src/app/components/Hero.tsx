@@ -24,8 +24,9 @@ interface Banner {
 interface FormData {
   name: string;
   phone: string;
-  preferredModel: string;
-  additionalNotes: string;
+  preferred_model: string;
+  message: string;
+  lead_type: string;
 }
 
 interface QuoteFormProps {
@@ -34,13 +35,8 @@ interface QuoteFormProps {
   formType: 'buy' | 'sell';
 }
 
-
-
 const luxuryCarModels: string[] = [
-  'Bugatti Chiron', 'McLaren 720S', 'Porsche 911 Turbo S', 'Ferrari F8 Tributo',
-  'Lamborghini Huracán', 'Aston Martin DB11', 'Bentley Continental GT',
-  'Rolls-Royce Ghost', 'Mercedes AMG GT', 'BMW M8 Competition', 'Audi R8',
-  'Maserati MC20', 'Other'
+  'Mercedes-Benz', 'Audi', 'BMW', 'Volvo', 'Lexus', 'Porsche', 'Jaguar', 'Land Rover',
 ];
 
 // Trust badges for Buy and Sell cards
@@ -109,27 +105,123 @@ const AnimatedTrustBadges: React.FC<{ badges: typeof buyTrustBadges }> = ({ badg
   );
 };
 
-// Quote Form Component
+// Quote Form Component - FIXED VERSION
 function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactElement | null {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
     name: '',
     phone: '',
-    preferredModel: '',
-    additionalNotes: ''
+    preferred_model: '',
+    message: '', // Fixed: was trying to access additionalNotes
+    lead_type: 'Hero slider leads'
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+    console.log('🚀 Form submission started');
+    console.log('📝 Form data before processing:', formData);
+    
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Clean phone number to only digits for backend validation
+      const cleanedPhone = formData.phone.replace(/\D/g, '');
+      console.log('📱 Original phone:', formData.phone, '→ Cleaned:', cleanedPhone);
+      
+      // Validate phone number has exactly 10 digits
+      if (cleanedPhone.length !== 10) {
+        console.log('❌ Phone validation failed. Length:', cleanedPhone.length);
+        alert('Please enter a valid 10-digit phone number');
+        setIsLoading(false);
+        return;
+      }
+      
+      // Prepare data for backend
+      const submitData = {
+        lead_type: formData.lead_type,
+        lead_title: 'First page leads',
+        name: formData.name.trim(),
+        phone: cleanedPhone,
+        email: null,
+        preferred_model: formData.preferred_model,
+        vehicle_id: null,
+        appointment_date: null,
+        appointment_time: null,
+        message: formData.message.trim() || null,
+        budget: null,
+        insurance_type: null,
+        loan_details: null,
+        status: 'new',
+        source_page: 'Hero Component',
+        brand: null,
+        fuel: null,
+        variant: null,
+        city: null,
+        year: null,
+        owner: null,
+        kms: null,
+        whatsapp_updates: null,
+        monthly_income: null,
+        employment_type: null,
+        interested_car: null,
+        loan_amount: null,
+        emi_tenure: null,
+        interest: null,
+        your_emi: null,
+        total_payable: null,
+        pan_card: null,
+        car_interest: null
+      };
 
-      // Normally, send data to API
-      console.log('Form submitted:', formData);
+      console.log('📤 Submitting lead data to backend:', JSON.stringify(submitData, null, 2));
+      
+      // Try both endpoints for testing
+      const endpoints = [
+        'https://raam-group-all-websites.onrender.com/admin/leads',
+        'http://localhost:5000/admin/leads'
+      ];
+      
+      let response;
+      let endpointUsed;
+      
+      for (const endpoint of endpoints) {
+        try {
+          console.log(`🎯 Trying endpoint: ${endpoint}`);
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(submitData),
+          });
+          endpointUsed = endpoint;
+          console.log(`✅ Connected to: ${endpoint}`);
+          break;
+        } catch (fetchError) {
+          const errorMessage = fetchError instanceof Error ? fetchError.message : String(fetchError);
+          console.log(`❌ Failed to connect to ${endpoint}:`, errorMessage);
+          continue;
+        }
+      }
+
+      if (!response) {
+        throw new Error('Could not connect to any endpoint');
+      }
+
+      console.log('📡 Response status:', response.status);
+      console.log('📡 Response headers:', [...response.headers.entries()]);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Response error:', errorText);
+        throw new Error(`Failed to submit lead: ${response.status} - ${errorText}`);
+      }
+
+      const result = await response.json();
+      console.log('✅ Lead submitted successfully:', result);
+      console.log('🌐 Endpoint used:', endpointUsed);
 
       setIsLoading(false);
       setIsSubmitted(true);
@@ -138,16 +230,27 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
       setTimeout(() => {
         setIsSubmitted(false);
         onClose();
-        setFormData({ name: '', phone: '', preferredModel: '', additionalNotes: '' });
+        setFormData({ 
+          name: '', 
+          phone: '', 
+          preferred_model: '', 
+          message: '', 
+          lead_type: 'Hero slider leads' 
+        });
       }, 3000);
+      
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error('💥 Form submission error:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      console.error('💥 Error stack:', errorStack);
       setIsLoading(false);
-      // Handle error state here
+      alert(`Form submission failed: ${errorMessage}`);
     }
   };
 
   const handleInputChange = (field: keyof FormData, value: string): void => {
+    console.log(`📝 Field updated - ${field}: "${value}"`);
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -261,7 +364,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
-                placeholder="+1 (555) 000-0000"
+                placeholder="1234567890"
                 aria-required="true"
               />
             </div>
@@ -269,14 +372,14 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
 
           {/* Preferred Model */}
           <div className="space-y-2">
-            <label className="block text-sm font-semibold text-white/90" htmlFor="preferredModel">
+            <label className="block text-sm font-semibold text-white/90" htmlFor="preferred_model">
               {formType === 'buy' ? 'Preferred Model' : 'Your Car Model'} <span className="text-[#D4AF37]">*</span>
             </label>
             <select
-              id="preferredModel"
+              id="preferred_model"
               required
-              value={formData.preferredModel}
-              onChange={(e) => handleInputChange('preferredModel', e.target.value)}
+              value={formData.preferred_model}
+              onChange={(e) => handleInputChange('preferred_model', e.target.value)}
               className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
               aria-required="true"
             >
@@ -289,15 +392,15 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
             </select>
           </div>
 
-          {/* Additional Notes */}
+          {/* Additional Notes - FIXED FIELD NAME */}
           <div className="space-y-2">
-            <label className="block text-sm font-semibold text-white/90" htmlFor="additionalNotes">
+            <label className="block text-sm font-semibold text-white/90" htmlFor="message">
               Additional Requirements (Optional)
             </label>
             <textarea
-              id="additionalNotes"
-              value={formData.additionalNotes}
-              onChange={(e) => handleInputChange('additionalNotes', e.target.value)}
+              id="message"
+              value={formData.message}
+              onChange={(e) => handleInputChange('message', e.target.value)}
               rows={3}
               className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all resize-none"
               placeholder={formType === 'buy' ?
@@ -376,11 +479,11 @@ export default function LuxuryVehicleHero(): React.ReactElement {
 
   // Navigation functions
   const navigateToBrowseCars = (): void => {
-    router.push('/buy-used-cars');
+    router.push('/luxe/buy-used-cars');
   };
 
   const navigateToSellCar = (): void => {
-    router.push('/services/SellYourCarNow');
+    router.push('/luxe/services/SellNowYourCar');
   };
 
   const openQuoteForm = (type: 'buy' | 'sell'): void => {
@@ -400,7 +503,7 @@ export default function LuxuryVehicleHero(): React.ReactElement {
       try {
         setLoadingBanners(true);
         setLoadError('');
-        const res = await fetch(`${process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin'}/banners`);
+        const res = await fetch('https://raam-group-all-websites.onrender.com/admin/banners');
         if (!res.ok) throw new Error('Failed to fetch banners');
         const json = await res.json();
         // Sort banners by position ascending
@@ -431,14 +534,6 @@ export default function LuxuryVehicleHero(): React.ReactElement {
     return () => clearInterval(interval);
   }, [banners]);
 
-  // Parallax effect - Fixed version
-  useEffect(() => {
-  // Parallax effect removed (unused variables)
-
-  // Parallax effect removed
-  return undefined;
-  }, []);
-
   // Cleanup scroll style on unmount
   useEffect(() => {
     return () => {
@@ -464,17 +559,13 @@ export default function LuxuryVehicleHero(): React.ReactElement {
     }
   };
 
-  // Dynamic hero top padding based on header height
-
-  
-
   return (
     <div className="min-h-screen w-full relative overflow-hidden bg-black manrope-font" id="hero-section">
 
       {/* Loading/Error states */}
       {loadingBanners && (
         <div className="flex justify-center items-center h-64 text-lg text-gray-600 pt-[10vh]" role="status" aria-live="polite">
-          Loading EPICness
+          Loading EPICness...
         </div>
       )}
 
@@ -486,39 +577,39 @@ export default function LuxuryVehicleHero(): React.ReactElement {
 
       {/* Main slider */}
       {!loadingBanners && currentBanner && (
-    <section
-      aria-label="Featured Luxury Vehicle Banner"
-      style={{
-        paddingTop: 10,
-        height: '60vh'
-      }}
-      className="w-full relative overflow-hidden"
-    >
+        <section
+          aria-label="Featured Luxury Vehicle Banner"
+          style={{
+            paddingTop: 10,
+            height: '60vh'
+          }}
+          className="w-full relative overflow-hidden"
+        >
 
           {/* Background Image with Enhanced Gradient Overlay - Responsive */}
-            <div className="absolute inset-0 w-full h-full">
-              {/* Mobile Image - Show on screens smaller than 768px */}
-              {currentBanner.mobile_image_url && (
-                <Image
-                  src={currentBanner.mobile_image_url}
-                  alt={`${currentBanner.title} (Mobile)`}
-                  fill
-                  className="object-cover w-full h-full block md:hidden"
-                  priority
-                  sizes="100vw"
-                />
-              )}
-              
-              {/* PC Image - Show on screens 768px and larger, or if no mobile image */}
+          <div className="absolute inset-0 w-full h-full">
+            {/* Mobile Image - Show on screens smaller than 768px */}
+            {currentBanner.mobile_image_url && (
               <Image
-                src={currentBanner.image_url}
-                alt={`${currentBanner.title} (Desktop)`}
+                src={currentBanner.mobile_image_url}
+                alt={`${currentBanner.title} (Mobile)`}
                 fill
-                className={`object-cover w-full h-full ${currentBanner.mobile_image_url ? 'hidden md:block' : 'block'}`}
+                className="object-cover w-full h-full block md:hidden"
                 priority
                 sizes="100vw"
               />
-            </div>
+            )}
+            
+            {/* PC Image - Show on screens 768px and larger, or if no mobile image */}
+            <Image
+              src={currentBanner.image_url}
+              alt={`${currentBanner.title} (Desktop)`}
+              fill
+              className={`object-cover w-full h-full ${currentBanner.mobile_image_url ? 'hidden md:block' : 'block'}`}
+              priority
+              sizes="100vw"
+            />
+          </div>
 
           {/* Desktop Content Overlay */}
           <div className="hidden md:flex absolute inset-0 flex-col justify-center px-8 lg:px-16 z-20">

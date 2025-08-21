@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Header from '../components/Header/HeaderServer';
-import Footer from '@/app/components/Footer';
+import Footer from '../components/Footer/FooterServer';
 import ServiceCard from './ServiceCard';
-import TestimonialSection from './TestimonialSection';
-import CTASection from './CTASection';
-import ConsultationModal from './ConsultationModal';
+import dynamic from 'next/dynamic';
+import { TestimonialSkeleton, CTASkeleton } from './LoadingSkeleton';
 import './services.css'; // Import the CSS file
+
+// Lazy load components below the fold for better performance
+const TestimonialSection = dynamic(() => import('./TestimonialSection'), {
+  loading: () => <TestimonialSkeleton />
+});
+
+const CTASection = dynamic(() => import('./CTASection'), {
+  loading: () => <CTASkeleton />
+});
+
+const ConsultationModal = dynamic(() => import('./ConsultationModal'));
 
 // This is now a Server Component by default - great for SEO
 const ServicesPage = () => {
@@ -20,6 +30,7 @@ const ServicesPage = () => {
       cta: 'Browse Collection',
       backgroundImage: '/assets/buyNowServices.png',
       altText: 'Happy customer receiving luxury car keys from dealer',
+      route: '/reassured/buy-used-cars',
     },
     {
       id: 'sell-luxury',
@@ -31,6 +42,7 @@ const ServicesPage = () => {
       cta: 'Start Selling',
       backgroundImage: '/assets/sellNow.png',
       altText: 'Professional handshake between car seller and buyer',
+      route: '/reassured/Services/sell-your-car',
     },
     {
       id: 'free-valuation',
@@ -42,6 +54,7 @@ const ServicesPage = () => {
       cta: 'Get Valuation',
       backgroundImage: '/assets/valuation.png',
       altText: 'Professional using tablet for car valuation assessment',
+      route: '/reassured/Services/sell-your-car',
     },
     {
       id: 'finance-options',
@@ -53,6 +66,7 @@ const ServicesPage = () => {
       cta: 'Explore Finance',
       backgroundImage: '/assets/finance.png',
       altText: 'Financial consultant discussing loan options with client',
+      route: '/reassured/Services/finance',
     },
     {
       id: 'insurance',
@@ -64,39 +78,29 @@ const ServicesPage = () => {
       cta: 'Get Protected',
       backgroundImage: '/assets/insurance.png',
       altText: 'Friendly insurance agent helping couple with car insurance',
-    },
-    {
-      id: 'trade-in',
-      iconName: 'RefreshCw', // Changed from icon component to string
-      title: 'Trade-In Program',
-      summary: 'Seamlessly upgrade your luxury vehicle with our exclusive trade program',
-      description: 'Experience ultimate convenience in luxury car trading with instant trade value and seamless processes.',
-      features: ['Instant Trade Value', 'Seamless Process', 'Best Price Guarantee'],
-      cta: 'Trade Now',
-      backgroundImage: '/assets/TradeIn.png',
-      altText: 'Customer exchanging old car keys for new luxury vehicle keys',
+      route: '/reassured/Services/insurance-and-warranty',
     },
   ];
 
   const testimonials = [
     {
-      name: 'Alexander Chen',
-      role: 'CEO, Tech Ventures',
-      content: 'Epic Luxe transformed my car buying experience. Their attention to detail and premium service is unmatched.',
+      name: 'Rohan Mathur',
+      role: 'Business Owner',
+      content: 'Epic Reassured made car buying easy. Great service and fair prices.',
       rating: 5,
       image: '👨‍💼',
     },
     {
-      name: 'Sophia Rodriguez',
-      role: 'Investment Banker',
-      content: 'Sold my Porsche through Epic Luxe. The process was seamless and I got an exceptional price.',
+      name: 'Priya Sharma', 
+      role: 'Software Engineer',
+      content: 'Sold my car through them. Quick process and good price.',
       rating: 5,
       image: '👩‍💼',
     },
     {
-      name: 'Marcus Thompson',
-      role: 'Entrepreneur',
-      content: 'Their trade-in program is revolutionary. Upgraded from my BMW to a Bentley effortlessly.',
+      name: 'Amit Kumar',
+      role: 'Teacher',
+      content: 'Reliable service and transparent dealing. Highly recommended.',
       rating: 5,
       image: '🧔‍♂️',
     },
@@ -117,7 +121,7 @@ const ServicesPage = () => {
               </h1>
               <div className="w-24 h-0.5 bg-black mx-auto mb-8"></div>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed">
-                Six comprehensive services designed to exceed the expectations of discerning luxury car enthusiasts.
+                Comprehensive services designed to meet all your automotive needs with quality and reliability.
               </p>
             </div>
           </div>
@@ -126,7 +130,7 @@ const ServicesPage = () => {
         {/* Services Grid */}
         <section className="py-20 px-4 bg-white">
           <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service, index) => (
                 <ServiceCard key={service.id} service={service} index={index} />
               ))}
@@ -134,11 +138,15 @@ const ServicesPage = () => {
           </div>
         </section>
 
-        {/* Testimonials */}
-        <TestimonialSection testimonials={testimonials} />
+        {/* Testimonials - Lazy Loaded */}
+        <Suspense fallback={<TestimonialSkeleton />}>
+          <TestimonialSection testimonials={testimonials} />
+        </Suspense>
 
-        {/* CTA Section */}
-        <CTASection />
+        {/* CTA Section - Lazy Loaded */}
+        <Suspense fallback={<CTASkeleton />}>
+          <CTASection />
+        </Suspense>
       </main>
       <Footer />
     </>

@@ -11,12 +11,13 @@ interface Banner {
   cta1_url_or_action?: string;
   cta2_text?: string;
   cta2_url_or_action?: string;
-  image_url: string; // updated to match backend
+  image_url: string; // PC image (required)
+  mobile_image_url?: string; // Mobile image (optional)
 }
 
 async function getBanners(): Promise<Banner[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/banners`, {
+    const res = await fetch(`https://raam-group-all-websites.onrender.com/admin/reassured-banners`, {
       cache: "no-store", // Always get latest banners
     });
     if (!res.ok) throw new Error("Failed to fetch banners");

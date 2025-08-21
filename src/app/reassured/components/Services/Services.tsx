@@ -11,7 +11,7 @@ const Services = () => {
       title: 'Buy Premium Cars',
       summary: 'Curated collection of certified luxury vehicles',
       features: ['360° Inspection', 'Verified History'],
-      route: '/inventory',
+      route: '/reassured/buy-used-cars',
       bgImage: '/assets/buyNowServices.png'
     },
     {
@@ -20,7 +20,7 @@ const Services = () => {
       title: 'Sell Your Car',
       summary: 'Get maximum value with expert evaluation',
       features: ['Best Market Price', 'Instant Quote'],
-      route: '/services/SellNowYourCar',
+      route: '/reassured/services/Sell-your-car',
       bgImage: '/assets/sellNow.png'
     },
     {
@@ -29,7 +29,7 @@ const Services = () => {
       title: 'Free Valuation',
       summary: 'AI-powered instant valuation with market insights',
       features: ['Instant Results', 'Market Analysis'],
-      route: '/services/SellNowYourCar',
+      route: '/reassured/services/Sell-your-car',
       bgImage: '/assets/valuation.png'
     },
     {
@@ -38,27 +38,19 @@ const Services = () => {
       title: 'Finance Options',
       summary: 'Flexible financing with competitive rates',
       features: ['Low Interest', 'Quick Approval'],
-      route: '/services/finance',
+      route: '/reassured/services/finance',
       bgImage: '/assets/Finance.png'
     },
     {
-      id: 'insurance',
+      id: 'insurance and Warranty',
       iconName: 'Shield',
       title: 'Insurance',
       summary: 'Comprehensive coverage for your investment',
       features: ['Premium Coverage', 'Best Rates'],
-      route: '/services/insurance',
+      route: '/reassured/services/insurance-and-warranty',
       bgImage: '/assets/Insurance.png'
     },
-    {
-      id: 'trade-in',
-      iconName: 'RefreshCw',
-      title: 'Trade-In Program',
-      summary: 'Seamlessly upgrade to your dream car',
-      features: ['Easy Upgrade', 'Fair Value'],
-      route: '/services/trade-in',
-      bgImage: '/assets/tradein.png'
-    }
+    
   ];
 
   return (

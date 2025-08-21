@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Star,
   Award,
@@ -75,6 +76,34 @@ const SimpleModal = ({ isOpen, onClose, title, description, onProceed }: {
     </div>
   );
 };
+
+// Learn More Button Component
+const LearnMoreButton = React.memo(function LearnMoreButton() {
+  const router = useRouter();
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleClick = () => {
+    setIsClicked(true);
+    setTimeout(() => {
+      router.push('/AboutUs');
+    }, 150); // Small delay for visual feedback
+  };
+
+  return (
+    <button 
+      onClick={handleClick}
+      className={`bg-black text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform flex items-center gap-2 font-manrope ${
+        isClicked 
+          ? 'scale-95 bg-black/80' 
+          : 'hover:bg-black/90 hover:scale-105 active:scale-95'
+      }`}
+      aria-label="Learn more about Epic Reassured"
+    >
+      Learn More About Us
+      <ChevronRight className="w-4 h-4" />
+    </button>
+  );
+});
 
 // -------------------- About Section --------------------
 const HomeAboutSection = React.memo(function HomeAboutSection() {
@@ -173,13 +202,7 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
               </div>
 
               <div className="pt-4">
-                <button 
-                  className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-black/90 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 font-manrope"
-                  aria-label="Learn more about Epic Reassured"
-                >
-                  Learn More About Us
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+                <LearnMoreButton />
               </div>
             </div>
           </div>
@@ -363,16 +386,13 @@ const HomeContactSection = React.memo(function HomeContactSection() {
         lead_type: 'contact_form',
         name: formData.name.trim(),
         phone: formData.phone.trim(),
+        email: '',
         preferred_model: formData.service === 'buy' ? 'Interested in buying' : 'Interested in selling',
+        location: '',
         message: formData.message.trim()
       };
 
-      const apiUrl = process.env.NEXT_PUBLIC_REASSURED_LEADS_URL;
-      if (!apiUrl) {
-        throw new Error('API URL not configured');
-      }
-
-      const response = await fetch(apiUrl, {
+      const response = await fetch('https://raam-group-all-websites.onrender.com/admin/reassured-leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -385,8 +405,7 @@ const HomeContactSection = React.memo(function HomeContactSection() {
         throw new Error(errorData.error || 'Failed to submit form');
       }
 
-      const result = await response.json();
-      console.log('Lead created successfully:', result);
+      await response.json();
       
       setIsSubmitted(true);
       setTimeout(() => setIsSubmitted(false), 3000);

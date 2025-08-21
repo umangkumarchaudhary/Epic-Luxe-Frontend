@@ -298,17 +298,12 @@ const ServicesCarousel = ({ services }: ServicesCarouselProps) => {
       <div className="text-center mt-10">
         <div className="inline-flex items-center gap-4">
           <button 
-            onClick={() => router.push('/services')}
+            onClick={() => router.push('/reassured/Services')}
             className="mercedes-button bg-black text-white font-medium py-3 px-8 hover:bg-gray-900 transition-all duration-300"
           >
             View All Services
           </button>
-          <button 
-            onClick={() => router.push('/contact')}
-            className="border border-black text-black font-medium py-3 px-8 hover:bg-black hover:text-white transition-all duration-300"
-          >
-            Contact Us
-          </button>
+          
         </div>
       </div>
     </>

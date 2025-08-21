@@ -19,15 +19,50 @@ export default function NoVehiclesPrompt() {
     phone: ''
   });
   const [sent, setSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setValues({ ...values, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    /* TODO: send to backend / Airtable / email */
-    console.table(values);
-    setSent(true);
+    setIsLoading(true);
+    
+    try {
+      // Clean phone number (remove any non-digits)
+      const cleanPhone = values.phone.replace(/\D/g, '');
+      
+      // Prepare lead data for reassured backend
+      const leadData = {
+        lead_type: 'vehicle_request',
+        name: values.name.trim(),
+        phone: cleanPhone,
+        email: '',
+        preferred_model: values.desired.trim(),
+        location: '',
+        message: `Vehicle availability request for: ${values.desired.trim()}`
+      };
+
+      const response = await fetch('https://raam-group-all-websites.onrender.com/admin/reassured-leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(leadData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit vehicle request');
+      }
+
+      setIsLoading(false);
+      setSent(true);
+    } catch (error) {
+      console.error('Error submitting vehicle request:', error);
+      setIsLoading(false);
+      // You could add user-facing error handling here
+      alert('Failed to submit request. Please try again.');
+    }
   };
 
   if (sent)
@@ -90,10 +125,11 @@ export default function NoVehiclesPrompt() {
 
       <button
         type="submit"
-        className="w-full py-3 rounded text-sm font-semibold"
-        style={{background:C.gold,color:C.black}}
+        disabled={isLoading}
+        className="w-full py-3 rounded text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{background: isLoading ? C.platinum : C.gold, color:C.black}}
       >
-        Notify me
+        {isLoading ? 'Submitting...' : 'Notify me'}
       </button>
     </form>
   );

@@ -293,7 +293,7 @@ const LandingPageClient = () => {
 
         {/* Premium Navigation Header - Always visible */}
         <header className="fixed top-0 left-0 right-0 z-[9999] translate-y-0 opacity-100 bg-black/98 backdrop-blur-2xl border-b border-[#D4AF37]/20 shadow-lg transition-all duration-700 ease-out">
-          <nav className="px-6 sm:px-8 lg:px-12 py-2 sm:py-3 relative" role="navigation" aria-label="Main navigation">
+          <nav className="px-6 sm:px-8 lg:px-12 py-4 sm:py-4 relative" role="navigation" aria-label="Main navigation">
             <div className="flex items-center justify-between">
               {/* Logo - Left */}
               <div className={`transition-all duration-1000 transform ${
@@ -470,74 +470,146 @@ const LandingPageClient = () => {
           </div>
         )}
 
-        {/* Hero Section with Background and Moving Cars */}
+        
         <section
           className={`relative w-full h-screen flex justify-center overflow-hidden ${isMobile ? 'mt-16' : 'mt-16'}`}
         >
-          {/* Background Image - Full cover */}
+          {/* Background Image - Responsive for Desktop/Mobile */}
           <div className="absolute inset-0 z-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/assets/images/landingpage.jpg"
-              alt="Epic Cars Background"
-              className="w-full h-full object-cover"
-              loading="eager"
-            />
-            {/* Dark overlay for better contrast */}
-            <div className="absolute inset-0 bg-black/30"></div>
-          </div>
-
-          {/* Left Side Car - Epic Luxe */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: isMobile ? '16px' : '48px',
-              transform: getLeftCarTransform(),
-              zIndex: 20,
-              willChange: 'transform',
-              opacity: contentLoaded ? 1 : 0,
-            }}
-          >
-            <div className="group cursor-pointer" onClick={handleLuxeNavigation}>
+            {/* Desktop Background */}
+            <div className="hidden md:block w-full h-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/assets/images/rightside.png"
-                alt="Epic Luxe Car"
-                width={isMobile ? 300 : 500}
-                height={isMobile ? 200 : 350}
-                className="object-contain filter drop-shadow-2xl group-hover:scale-105 transition-all duration-500"
+                src="/assets/images/landingpage.jpg"
+                alt="Epic Cars Background Desktop"
+                className="w-full h-full object-cover"
                 loading="eager"
               />
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+            </div>
+            
+            {/* Mobile Background */}
+            <div className="block md:hidden w-full h-full">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/assets/images/mainhero2.jpeg"
+                alt="Epic Cars Background Mobile"
+                className="w-full h-full object-cover"
+                loading="eager"
+              />
+            </div>
+            
+           
+          </div>
+
+          {/* Desktop View - Cars on left and right with buttons */}
+          <div className="hidden md:block w-full h-full relative">
+            {/* Left Side Car - Epic Luxe */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '48px',
+                transform: getLeftCarTransform(),
+                zIndex: 20,
+                willChange: 'transform',
+                opacity: contentLoaded ? 1 : 0,
+              }}
+            >
+              <div className="group cursor-pointer" onClick={handleLuxeNavigation}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/assets/images/rightside.png"
+                  alt="Epic Luxe Car"
+                  width={500}
+                  height={350}
+                  className="object-contain filter drop-shadow-2xl group-hover:scale-105 transition-all duration-500"
+                  loading="eager"
+                />
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+              </div>
+            </div>
+
+            {/* Right Side Car - Epic Reassured */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                right: '48px',
+                transform: getRightCarTransform(),
+                zIndex: 20,
+                willChange: 'transform',
+                opacity: contentLoaded ? 1 : 0,
+              }}
+            >
+              <div className="group cursor-pointer" onClick={handleReassuredNavigation}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/assets/images/leftside.png"
+                  alt="Epic Reassured Car"
+                  width={500}
+                  height={350}
+                  className="object-contain filter drop-shadow-2xl group-hover:scale-105 transition-all duration-500"
+                  loading="eager"
+                />
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-l from-gray-400/20 to-gray-600/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+              </div>
+            </div>
+
+            {/* Desktop Buttons - 20px margin from image edge */}
+            <div className="absolute bottom-30 left-5 right-0 flex justify-between px-16 z-30">
+              {/* Explore LUXE Button */}
+              <button
+                onClick={handleLuxeNavigation}
+                className="group flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold rounded-full hover:shadow-2xl hover:shadow-[#D4AF37]/40 hover:scale-110 transition-all duration-500 transform hover:-translate-y-2"
+                style={{ fontFamily: 'Manrope, sans-serif' }}
+              >
+                <Sparkles className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
+                <span className="text-xl tracking-wide">Explore LUXE</span>
+                <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+              </button>
+
+              {/* Explore Reassured Button */}
+              <button
+                onClick={handleReassuredNavigation}
+                className="group flex items-center space-x-3 px-8 py-4 bg-white/90 backdrop-blur-sm text-black font-bold rounded-full hover:bg-white hover:shadow-2xl hover:shadow-white/25 hover:scale-110 transition-all duration-500 transform hover:-translate-y-2"
+                style={{ fontFamily: 'Manrope, sans-serif' }}
+              >
+                <Shield className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-xl tracking-wide">Explore Reassured</span>
+                <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+              </button>
             </div>
           </div>
 
-          {/* Right Side Car - Epic Reassured */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              right: isMobile ? '16px' : '48px',
-              transform: getRightCarTransform(),
-              zIndex: 20,
-              willChange: 'transform',
-              opacity: contentLoaded ? 1 : 0,
-            }}
-          >
-            <div className="group cursor-pointer" onClick={handleReassuredNavigation}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/assets/images/leftside.png"
-                alt="Epic Reassured Car"
-                width={isMobile ? 300 : 500}
-                height={isMobile ? 200 : 350}
-                className="object-contain filter drop-shadow-2xl group-hover:scale-105 transition-all duration-500"
-                loading="eager"
-              />
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-l from-gray-400/20 to-gray-600/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+          {/* Mobile View - Stacked buttons */}
+          <div className="block md:hidden w-full h-full relative">
+            {/* Mobile Buttons Container - Bottom positioned with margin */}
+            <div className="absolute bottom-0 left-0 right-0 px-6 pb-60 z-30">
+              <div className="flex flex-col space-y-6">
+                {/* Explore LUXE Button - Black background with white text */}
+                <button
+                  onClick={handleLuxeNavigation}
+                  className="group flex items-center justify-center space-x-3 px-8 py-5 bg-black/90 backdrop-blur-sm text-white font-bold rounded-full border-2 border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black hover:scale-105 transition-all duration-500 shadow-lg hover:shadow-2xl"
+                  style={{ fontFamily: 'Manrope, sans-serif' }}
+                >
+                  <Sparkles className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+                  <span className="text-lg tracking-wide">Explore LUXE</span>
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                </button>
+
+                {/* Explore Reassured Button - White background with black text */}
+                <button
+                  onClick={handleReassuredNavigation}
+                  className="group flex items-center justify-center space-x-3 px-8 py-5 bg-white/95 backdrop-blur-sm text-black font-bold rounded-full border-2 border-gray-300 hover:bg-black hover:text-white hover:border-white hover:scale-105 transition-all duration-500 shadow-lg hover:shadow-2xl"
+                  style={{ fontFamily: 'Manrope, sans-serif' }}
+                >
+                  <Shield className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="text-lg tracking-wide">Explore Reassured</span>
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -591,60 +663,7 @@ const LandingPageClient = () => {
           </div>
         </section>
 
-        {/* WhatsApp Floating Widget - Compact & Subtle */}
-        {whatsappVisible && (
-          <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
-            {/* Message Bubble - Side positioned */}
-            <div className={`absolute bottom-2 right-14 sm:right-16 transition-all duration-500 transform ${
-              showWhatsappMessage 
-                ? 'opacity-100 translate-x-0 scale-100' 
-                : 'opacity-0 translate-x-4 scale-95 pointer-events-none'
-            }`}>
-              <div className="relative">
-                {/* Compact Message Content */}
-                <div className="bg-white rounded-lg shadow-lg px-3 py-2 max-w-[200px] sm:max-w-[220px] border border-green-100">
-                  <div className="flex items-start justify-between">
-                    <p className="text-xs text-gray-700 font-medium pr-1" style={{ fontFamily: 'Manrope, sans-serif' }}>
-                      {whatsappMessages[whatsappMessageIndex]}
-                    </p>
-                    <button 
-                      onClick={() => setShowWhatsappMessage(false)}
-                      className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 ml-1"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                  <div className="text-[10px] text-green-600 mt-0.5 font-medium">Epic Cars</div>
-                </div>
-                {/* Arrow pointing to WhatsApp button - from side */}
-                <div className="absolute bottom-3 right-0 transform translate-x-1/2">
-                  <div className="w-2 h-2 bg-white border-r border-b border-green-100 rotate-45"></div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Smaller WhatsApp Button */}
-            <a
-              href="https://wa.me/919876543210?text=Hi%20Epic%20Cars%2C%20I%20need%20help%20with%20finding%20a%20car"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 group"
-            >
-              {/* Smaller WhatsApp Icon */}
-              <svg 
-                className="w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:scale-110 transition-transform duration-300" 
-                fill="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.570-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.886 3.75"/>
-              </svg>
-              
-              {/* Subtle pulse effect */}
-              <div className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-10"></div>
-            </a>
-          </div>
-          
-        )}
+  
         <Section2AboutEpicCars/>
         <ThisMonthsHighlights/>
         <Section3WhyChooseUs/>

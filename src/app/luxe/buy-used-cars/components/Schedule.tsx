@@ -85,11 +85,67 @@ const Schedule: React.FC<ScheduleProps> = ({ isOpen, onClose, selectedVehicle })
 
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsLoading(false);
-    setShowConfirmation(true);
+    try {
+      const cleanedPhone = formData.phoneNumber.replace(/\s+/g, '');
+      
+      const submitData = {
+        lead_type: 'test_drive',
+        lead_title: 'Test Drive Booking',
+        name: formData.fullName.trim(),
+        phone: cleanedPhone,
+        email: null,
+        preferred_model: selectedVehicle ? `${selectedVehicle.year} ${selectedVehicle.brand} ${selectedVehicle.model}` : null,
+        vehicle_id: selectedVehicle?.id?.toString() || null,
+        appointment_date: formData.preferredDate,
+        appointment_time: formData.preferredTime,
+        message: null,
+        budget: null,
+        insurance_type: null,
+        loan_details: null,
+        status: 'new',
+        source_page: 'Schedule Component',
+        brand: selectedVehicle?.brand || null,
+        fuel: null,
+        variant: null,
+        city: null,
+        year: selectedVehicle?.year || null,
+        owner: null,
+        kms: null,
+        whatsapp_updates: null,
+        monthly_income: null,
+        employment_type: null,
+        interested_car: selectedVehicle ? `${selectedVehicle.brand} ${selectedVehicle.model}` : null,
+        loan_amount: null,
+        emi_tenure: null,
+        interest: null,
+        your_emi: null,
+        total_payable: null,
+        pan_card: null,
+        car_interest: null
+      };
+
+      const response = await fetch('https://raam-group-all-websites.onrender.com/admin/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit test drive booking');
+      }
+
+      const result = await response.json();
+      console.log('Test drive booking submitted successfully:', result);
+      
+      setIsLoading(false);
+      setShowConfirmation(true);
+    } catch (error) {
+      console.error('Error submitting test drive booking:', error);
+      setIsLoading(false);
+      alert('Failed to book test drive. Please try again.');
+    }
   };
 
   const handleClose = () => {

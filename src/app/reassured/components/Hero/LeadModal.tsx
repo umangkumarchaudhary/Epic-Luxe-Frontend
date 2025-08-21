@@ -60,16 +60,61 @@ const LeadModal: React.FC<LeadModalProps> = ({ isOpen, onClose, ctaText }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    
+    try {
+      // Clean phone number (remove spaces, hyphens, etc.)
+      const cleanPhone = form.phone.replace(/\D/g, '');
+      
+      // Determine lead type based on CTA text
+      const lowerCTA = ctaText.toLowerCase();
+      let leadType = 'hero_banner_inquiry';
+      
+      if (lowerCTA.includes('quote') || lowerCTA.includes('price')) {
+        leadType = 'quote_request';
+      } else if (lowerCTA.includes('test') || lowerCTA.includes('drive')) {
+        leadType = 'test_drive';
+      } else if (lowerCTA.includes('call') || lowerCTA.includes('contact')) {
+        leadType = 'callback_request';
+      }
+
+      const leadData = {
+        lead_type: leadType,
+        name: form.name.trim(),
+        phone: cleanPhone,
+        email: '',
+        preferred_model: '',
+        location: '',
+        message: `Hero banner CTA: ${ctaText}`
+      };
+
+      const response = await fetch('https://raam-group-all-websites.onrender.com/admin/reassured-leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(leadData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit lead');
+      }
+
       setLoading(false);
       setSuccess(true);
+      
+      // Auto-close after success
       setTimeout(() => {
         onClose();
         setSuccess(false);
         setForm({ name: '', phone: '' });
       }, 2000);
-    }, 1200);
+      
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      setLoading(false);
+      // You could add error handling here if needed
+      alert('Failed to submit. Please try again.');
+    }
   };
 
   if (!isOpen) return null;

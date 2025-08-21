@@ -71,12 +71,26 @@ const ConsultationModal = () => {
 
       setIsSubmitting(true);
       try {
-        const response = await fetch('/api/leads', {
+        // Clean phone number (remove any non-digits)
+        const cleanPhone = formData.phone.replace(/\D/g, '');
+        
+        // Prepare lead data for reassured backend
+        const leadData = {
+          lead_type: 'consultation_request',
+          name: formData.name.trim(),
+          phone: cleanPhone,
+          email: '',
+          preferred_model: '',
+          location: '',
+          message: `Services page consultation request - Lead Type: ${formData.leadType}`
+        };
+
+        const response = await fetch('https://raam-group-all-websites.onrender.com/admin/reassured-leads', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(leadData),
         });
 
         if (response.ok) {
@@ -88,9 +102,12 @@ const ConsultationModal = () => {
           }, 2000);
         } else {
           console.error('Submission failed:', await response.text());
+          // You could add user-facing error handling here
+          alert('Failed to submit consultation request. Please try again.');
         }
       } catch (error) {
         console.error('Error submitting form:', error);
+        alert('Failed to submit consultation request. Please try again.');
       } finally {
         setIsSubmitting(false);
       }

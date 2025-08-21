@@ -13,7 +13,7 @@ interface Vehicle {
   price: number;
   original_price?: number;
   savings?: number;
-  mileage?: string;
+  mileage?: string | number;
   fuel_type?: string;
   transmission?: string;
   location?: string;
@@ -41,13 +41,12 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
       const vehiclesWithImages = await Promise.all(
         limitedVehicles.map(async (vehicle: Vehicle) => {
           try {
-            const baseUrl = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
-            const imageResponse = await fetch(`${baseUrl}/reassured-vehicle/${vehicle.id}`);
+            const imageResponse = await fetch(`https://raam-group-all-websites.onrender.com/admin/reassured-vehicle/${vehicle.id}`);
             const imageData = await imageResponse.json();
             
             return {
               ...vehicle,
-              image_url: imageData.images?.[0]?.image_url || '/placeholder.png'
+              image_url: imageData.vehicle?.image_urls?.[0] || '/placeholder.png'
             };
           } catch {
             return {
@@ -96,9 +95,12 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
     }
   };
 
-  const formatMileage = (mileage?: string) => {
-    if (!mileage) return 'N/A';
-    return mileage.replace(/\s*km\s*$/i, '') + ' km';
+  const formatMileage = (mileage?: string | number) => {
+    if (!mileage && mileage !== 0) return 'N/A';
+    // Convert to string if it's a number
+    const mileageStr = typeof mileage === 'number' ? mileage.toString() : mileage;
+    // Remove existing 'km' and add it back
+    return mileageStr.replace(/\s*km\s*$/i, '') + ' km';
   };
 
   if (!selectedBrand) return null;
@@ -137,9 +139,9 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   
-                  {/* Premium Badge */}
+                  {/* Quality Badge */}
                   <div className="absolute top-4 left-4 bg-white border border-black text-black text-xs font-medium px-3 py-1">
-                    PREMIUM CERTIFIED
+                    QUALITY ASSURED
                   </div>
 
                   {vehicle.savings && (
@@ -192,10 +194,7 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
                     )}
                   </div>
 
-                  {/* CTA Button */}
-                  <button className="w-full bg-black text-white font-medium text-sm py-3 hover:bg-gray-900 transition-all duration-300">
-                    VIEW DETAILS
-                  </button>
+                  
                 </div>
               </div>
             ))}
