@@ -58,7 +58,6 @@ interface PaginationStyleProps {
   active: boolean;
   disabled?: boolean;
 }
-
 export default function Inventory() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(false);
@@ -191,7 +190,7 @@ export default function Inventory() {
       console.log("Deleting vehicle ID:", id);
       await axiosInstance.delete(API_ENDPOINTS.vehicle(id));
       setMessage("Vehicle deleted successfully.");
-      // Remove deleted vehicle from local state immediately
+     
       setVehicles(prevVehicles => prevVehicles.filter(vehicle => vehicle.id !== id));
     } catch (err) {
       const error = err as AxiosError<ApiError>;
@@ -360,7 +359,7 @@ export default function Inventory() {
             ))}
           </div>
 
-          <Link href="/luxe/admin/vehicle-new" style={{ flex: "0 0 auto" }}>
+          <Link href="/luxe/admin/inventory/vehicle-new" style={{ flex: "0 0 auto" }}>
             <button
               type="button"
               style={{
