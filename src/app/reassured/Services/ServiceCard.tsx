@@ -3,7 +3,7 @@ import React, { useState, useEffect, memo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { CheckCircle, ArrowRight, Car, DollarSign, Calculator, CreditCard, Shield, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
+
 
 // Map icon names to actual components
 const iconMap = {

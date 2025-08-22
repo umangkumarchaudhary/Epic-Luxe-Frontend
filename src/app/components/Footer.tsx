@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { 
   Instagram, 
   Youtube, 
-  Linkedin, 
+
   MessageCircle, 
   Mail, 
   MapPin, 

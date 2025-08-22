@@ -268,18 +268,21 @@ const EpicHeroSlider: React.FC<EpicHeroSliderProps> = ({
             {
               id: '1',
               imageUrl: '/assets/images/r1.jpg',
+              mobileImageUrl: '/assets/images/ri1.jpg',
               title: 'EPIC Collection',
               description: 'Discover pre-owned luxury vehicles, meticulously curated for perfection'
             },
             {
               id: '2',
               imageUrl: '/assets/images/r2.jpg',
+              mobileImageUrl: '/assets/images/ri2.jpg',
               title: 'Exclusive Luxury Fleet',
               description: 'Elite vehicles that combine unmatched performance with prestigious elegance'
             },
             {
               id: '3',
               imageUrl: '/assets/images/r3.jpg',
+              mobileImageUrl: '/assets/images/ri3.jpg',
               title: 'Premium Automobiles',
               description: 'Experience the pinnacle of automotive excellence with our handpicked collection'
             }

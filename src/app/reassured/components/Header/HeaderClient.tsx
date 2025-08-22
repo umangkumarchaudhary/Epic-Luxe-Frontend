@@ -19,8 +19,6 @@ import {
   MessageCircle,
   MapPin,
   CheckCircle,
-  Star,
-  Users,
   BookOpen,
   Settings,
 } from 'lucide-react';
@@ -41,24 +39,24 @@ const services = [
 
 const navItems = [
   { name: 'Home', href: '/reassured' },
-  { name: 'Contact', href: '/contact' },
+  { name: 'Contact', href: '/reassured/ContactUs' },
   { name: 'About', href: '/AboutUs' },
 ];
 
 const insightsItems = [
-  { name: 'Customer Reviews', href: '/luxe/insights/testimonials', description: 'Real experiences' },
-  { name: 'Car Blogs', href: '/luxe/insights/blogs', description: 'Expert insights' },
-  { name: 'Press & Media', href: '/luxe/Press', description: 'Latest news' },
+  { name: 'Customer Reviews', href: '/insights/testimonials', description: 'Real experiences' },
+  { name: 'Car Blogs', href: '/insights/blogs', description: 'Expert insights' },
+  // { name: 'Press & Media', href: '/luxe/Press', description: 'Latest news' },
 ];
 
 // Static pages for search
 const staticPages = [
   { name: 'About Us', href: '/AboutUs', description: 'Learn about Epic Reassured', keywords: ['about', 'company', 'team', 'history'] },
-  { name: 'Contact', href: '/contact', description: 'Get in touch with us', keywords: ['contact', 'phone', 'email', 'location'] },
-  { name: 'Customer Reviews', href: '/luxe/insights/testimonials', description: 'What our customers say', keywords: ['reviews', 'testimonials', 'feedback', 'customers'] },
-  { name: 'Car Blogs', href: '/luxe/insights/blogs', description: 'Expert car insights', keywords: ['blogs', 'articles', 'guides', 'tips'] },
-  { name: 'Press & Media', href: '/luxe/Press', description: 'Latest news and media', keywords: ['press', 'media', 'news'] },
-  { name: 'Services', href: '/luxe/services', description: 'Our comprehensive services', keywords: ['services', 'offerings', 'solutions'] },
+  { name: 'Contact', href: '/ContactUs', description: 'Get in touch with us', keywords: ['contact', 'phone', 'email', 'location'] },
+  { name: 'Customer Reviews', href: '/insights/testimonials', description: 'What our customers say', keywords: ['reviews', 'testimonials', 'feedback', 'customers'] },
+  { name: 'Car Blogs', href: '/insights/blogs', description: 'Expert car insights', keywords: ['blogs', 'articles', 'guides', 'tips'] },
+  { name: 'Press & Media', href: '/Press', description: 'Latest news and media', keywords: ['press', 'media', 'news'] },
+  { name: 'Services', href: '/reassured/Services', description: 'Our comprehensive services', keywords: ['services', 'offerings', 'solutions'] },
 ];
 
 const popularSearches = {
@@ -141,7 +139,7 @@ export default function HeaderClient({}: HeaderClientProps) {
           const data = await response.json();
           // Check if data has success property and vehicles array
           if (data.success && Array.isArray(data.vehicles)) {
-            const transformedVehicles = data.vehicles.slice(0, 35).map((vehicle: any) => ({
+            const transformedVehicles = data.vehicles.slice(0, 35).map((vehicle: { id: string; brand: string; model: string; year: string; price: string; fuel_type?: string; mileage?: number; variant?: string; transmission?: string; location?: string; image?: string; description?: string }) => ({
               id: vehicle.id,
               make: vehicle.brand, // Map brand to make
               model: vehicle.model,
@@ -1131,7 +1129,7 @@ export default function HeaderClient({}: HeaderClientProps) {
                                 setSearchResults([]);
                               }}
                             >
-                              View All Results for "{searchQuery}"
+                              View All Results for &ldquo;{searchQuery}&rdquo;
                             </a>
                           </div>
                         )}

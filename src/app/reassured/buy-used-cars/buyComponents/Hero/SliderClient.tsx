@@ -10,6 +10,7 @@ import { usePreloadImages } from '@/hooks/usePreloadImages';
 interface Slide {
   id: string;
   imageUrl: string;
+  mobileImageUrl?: string;
   title: string;
   description: string;
 }
@@ -22,13 +23,29 @@ interface SliderClientProps {
 export default function SliderClient({ slides = [], priority = true }: SliderClientProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const slideRef = useRef<HTMLDivElement>(null);
   const isVisible = useIntersectionObserver<HTMLDivElement>(slideRef, { threshold: 0.3 });
 
   // Always call hooks - but handle empty slides gracefully
   const imageUrls = slides.map((slide) => slide.imageUrl);
-  const imagesLoaded = usePreloadImages(imageUrls);
+  const mobileImageUrls = slides.map((slide) => slide.mobileImageUrl || slide.imageUrl);
+  const imagesLoaded = usePreloadImages([...imageUrls, ...mobileImageUrls]);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
 
   // Auto-slide logic
   useEffect(() => {
@@ -118,7 +135,7 @@ export default function SliderClient({ slides = [], priority = true }: SliderCli
             className="w-full flex-shrink-0 relative h-full"
           >
             <Image
-              src={slide.imageUrl}
+              src={isMobile && slide.mobileImageUrl ? slide.mobileImageUrl : slide.imageUrl}
               alt={slide.title}
               fill
               className="object-cover"

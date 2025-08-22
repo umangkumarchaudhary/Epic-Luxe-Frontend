@@ -10,11 +10,9 @@ import {
   Car,
   CheckCircle,
   Calculator,
-  CreditCard,
   TrendingUp,
   Star,
   ChevronDown,
-  Upload,
   Sparkles,
   MessageCircle,
   RefreshCw,
@@ -33,12 +31,8 @@ interface TradeInValue {
 }
 
 const TradeInPage = () => {
-  const luxuryBrands = [
-    'Mercedes-Benz', 'BMW', 'Audi', 'Volvo', 'Jaguar', 
-    'Land Rover', 'Porsche', 'Lexus', 'Bentley', 'Maserati'
-  ];
 
-  const upgradeOptions = [
+  const upgradeOptions = React.useMemo(() => [
     {
       brand: 'BMW',
       model: '5 Series',
@@ -71,12 +65,10 @@ const TradeInPage = () => {
       image: '/api/placeholder/300/200',
       savings: '₹6,00,000'
     }
-  ];
+  ], []);
 
   const [isVisible] = useState(Array(12).fill(true));
   const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
-  const [selectedBrand, setSelectedBrand] = useState('');
-  const [tradeInValue, setTradeInValue] = useState<TradeInValue | null>(null);
   const [showCallModal, setShowCallModal] = useState(false);
   const [vehicles, setVehicles] = useState(upgradeOptions);
   const [formData, setFormData] = useState({
@@ -134,16 +126,6 @@ const TradeInPage = () => {
     }
   ];
 
-  const handleValuation = () => {
-    // Simulate valuation calculation
-    const baseValue = Math.floor(Math.random() * 2000000) + 1500000;
-    const bonus = Math.floor(baseValue * 0.15);
-    setTradeInValue({
-      market: baseValue,
-      tradeIn: baseValue + bonus,
-      bonus: bonus
-    });
-  };
 
   // Fetch vehicles from backend
   React.useEffect(() => {
@@ -154,7 +136,7 @@ const TradeInPage = () => {
         if (response.ok) {
           const vehicleData = await response.json();
           // Transform backend data to match our UI structure
-          const transformedVehicles = vehicleData.vehicles?.slice(0, 4).map((vehicle: any, index: number) => ({
+          const transformedVehicles = vehicleData.vehicles?.slice(0, 4).map((vehicle: { brand?: string; model?: string; year?: string; price?: string; image?: string }) => ({
             brand: vehicle.brand || 'Luxury Car',
             model: vehicle.model || 'Premium Model',
             year: vehicle.year || '2021',
@@ -170,7 +152,7 @@ const TradeInPage = () => {
       }
     };
     fetchVehicles();
-  }, []);
+  }, [upgradeOptions]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

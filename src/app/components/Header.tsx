@@ -18,7 +18,6 @@ import {
   MessageCircle,
   Settings,
   User,
-  MapPin,
 } from 'lucide-react';
 
 // Tier city data (fill as needed)
@@ -38,7 +37,7 @@ const services = [
 const navItems = [
   { name: 'Home', href: '/luxe' },
   { name: 'Contact', href: '/luxe/contact' },
-  { name: 'About Us', href: '/luxe/AboutUs' },
+  { name: 'About Us', href: '/AboutUs' },
 ];
 
 const insightsItems = [
@@ -49,7 +48,7 @@ const insightsItems = [
 
 // Static data for pages and other searchable content
 const staticPages = [
-  { name: 'About Us', href: '/luxe/AboutUs', category: 'Pages', keywords: ['about', 'company', 'team', 'history', 'story'] },
+  { name: 'About Us', href: '/AboutUs', category: 'Pages', keywords: ['about', 'company', 'team', 'history', 'story'] },
   { name: 'Contact', href: '/luxe/contact', category: 'Pages', keywords: ['contact', 'phone', 'email', 'address', 'location'] },
   { name: 'Home', href: '/luxe', category: 'Pages', keywords: ['home', 'main', 'landing'] },
   { name: 'Testimonials', href: '/luxe/insights/testimonials', category: 'Insights', keywords: ['testimonials', 'reviews', 'feedback', 'customer', 'experience'] },
@@ -290,10 +289,6 @@ export default function Header() {
     }, 120);
   };
 
-  const handleMobileCity = () => {
-    setIsCityMobileSheet(true);
-    setCitySearch('');
-  };
 
   const handleMobileSearchToggle = () => setIsSearchOpen((v) => !v);
 
@@ -359,7 +354,17 @@ export default function Header() {
         if (response.ok) {
           const vehicles = await response.json();
           
-          vehicles.forEach((vehicle: any) => {
+          vehicles.forEach((vehicle: {
+            _id?: string;
+            id?: string;
+            make: string;
+            model: string;
+            variant?: string;
+            fuelType: string;
+            transmission: string;
+            year?: number;
+            price?: number;
+          }) => {
             const searchableFields = [
               vehicle.make,
               vehicle.model,
@@ -373,8 +378,10 @@ export default function Header() {
 
             let maxScore = 0;
             for (const field of searchableFields) {
-              const score = fuzzyMatch(field, query);
-              maxScore = Math.max(maxScore, score);
+              if (field) {
+                const score = fuzzyMatch(field, query);
+                maxScore = Math.max(maxScore, score);
+              }
             }
 
             if (maxScore > 20) {
@@ -451,7 +458,7 @@ export default function Header() {
       const sortedResults = results
         .sort((a, b) => b.score - a.score)
         .slice(0, 8)
-        .map(({ score, ...item }) => item);
+        .map(({ score: _, ...item }) => item);
 
       setSearchResults(sortedResults);
     } catch (error) {
@@ -1085,7 +1092,7 @@ export default function Header() {
                         })}
                         {searchQuery && searchResults.length === 0 && !isSearching && (
                           <div className="text-center py-8">
-                            <div className="text-white/60 text-sm mb-2">No results found for "{searchQuery}"</div>
+                            <div className="text-white/60 text-sm mb-2">No results found for &quot;{searchQuery}&quot;</div>
                             <div className="text-white/40 text-xs">Try different keywords or check spelling</div>
                           </div>
                         )}
@@ -1353,108 +1360,6 @@ export default function Header() {
             </div>
           </div>
         )}
-
-        {/* Mobile-only location bar */}
-        <div className="md:hidden absolute top-full left-0 w-full bg-[#1a1a1a] border-t border-[#BFA980]/20">
-          <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-1 mobile-location-responsive">
-            <div className="text-center text-white/90 text-xs sm:text-sm font-medium">
-              Buy or sell luxury cars in{' '}
-              <button
-                onClick={handleMobileCity}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleMobileCity();
-                  }
-                }}
-                className="underline decoration-[#D4AF37] decoration-2 underline-offset-2 text-[#D4AF37] hover:text-[#BFA980] transition-colors duration-200 font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded"
-                type="button"
-                aria-label="Select city"
-                role="button"
-                tabIndex={0}
-              >
-                {isDetectingLocation ? (
-                  <span className="text-[#D4AF37]">
-                    Detecting...
-                  </span>
-                ) : selectedCity || (
-                  <span className="text-white/60">
-                    Select City<span className="text-[#D4AF37]">?</span>
-                  </span>
-                )}
-              </button>
-            </div>
-            
-            {/* Mobile location popup */}
-            {locationAsk && !popupClosed && (
-              <div className="location-popup absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-[9999] rounded-lg shadow-xl bg-[#1a1a1a] border border-[#BFA980]/30 animate-popdown w-80">
-                <div className="flex items-center justify-between p-3">
-                  <div className="text-sm font-medium text-white mr-3 flex-1">
-                    Allow EpicLuxe to detect your city for personalized inventory?
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleLocationReject();
-                    }}
-                    className="text-gray-400 hover:text-gray-300 transition-colors duration-200"
-                    type="button"
-                    aria-label="Close popup"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="flex gap-2 px-3 pb-3">
-                  <button
-                    className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980] font-bold text-[#201d16] hover:from-[#BFA980] hover:to-[#D4AF37] transition-all duration-200"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleLocationConfirm();
-                    }}
-                    type="button"
-                  >
-                    Yes
-                  </button>
-                  <button
-                    className="px-4 py-1.5 rounded-lg bg-[#2b2661] text-white font-medium border border-[#BFA980]/30 hover:bg-[#201d16] transition-all duration-200"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleLocationReject();
-                    }}
-                    type="button"
-                  >
-                    No
-                  </button>
-                </div>
-                {permissionBlocked && (
-                  <div className="px-3 pb-3">
-                    <div className="text-xs text-red-400 mb-2">
-                      Location permission is blocked. 
-                      <button
-                        onClick={() => {
-                          // Try to open browser settings
-                          if (navigator.userAgent.includes('Chrome')) {
-                            window.open('chrome://settings/content/location');
-                          } else if (navigator.userAgent.includes('Firefox')) {
-                            window.open('about:preferences#privacy');
-                          } else {
-                            alert('Please enable location permission in your browser settings.');
-                          }
-                        }}
-                        className="text-[#D4AF37] underline ml-1 hover:text-[#BFA980]"
-                      >
-                        Enable it here
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
 
         <style jsx>{`
           @keyframes animate-in {

@@ -2,8 +2,9 @@
 
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Phone, Mail, MapPin, Check, ArrowRight, Clock } from 'lucide-react';
-import Header from '@/app/components/Header';
-import Footer from '@/app/components/Footer';
+import Header from '../components/Header/HeaderServer';
+import Footer from '../components/Footer/FooterServer';
+
 
 interface FormData {
   name: string;
@@ -37,10 +38,34 @@ const Contact = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const submitData = {
+        lead_type: 'contact_form',
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email || null,
+        preferred_model: formData.carInterest || null,
+        location: null,
+        message: formData.message || null
+      };
+
+      const response = await fetch('https://raam-group-all-websites.onrender.com/api/reassured-leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      
       setIsSubmitted(true);
       setIsLoading(false);
+      
+      // Reset form after 3 seconds
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({
@@ -52,7 +77,12 @@ const Contact = () => {
           contactMethod: 'phone',
         });
       }, 3000);
-    }, 1500);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setIsLoading(false);
+      // You might want to show an error message to the user here
+      alert('Failed to submit form. Please try again.');
+    }
   };
 
   return (
@@ -60,13 +90,13 @@ const Contact = () => {
       <Header />
       
       {/* Hero Section - Minimal and Clean */}
-      <section className="pt-24 pb-12 px-4">
+      <section className="pt-24 pb-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-7xl font-extralight text-black mb-6 tracking-tight leading-[0.9]">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extralight text-black mb-6 tracking-tight leading-[0.9]">
               Contact
             </h1>
-            <p className="text-lg md:text-xl text-black/70 font-light max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-black/70 font-light max-w-2xl mx-auto leading-relaxed px-4">
               Experience premium automotive excellence. Our specialists are ready to assist you.
             </p>
           </div>
@@ -74,80 +104,80 @@ const Contact = () => {
       </section>
 
       {/* Main Content - Single Screen Layout */}
-      <section className="px-4 pb-16">
+      <section className="px-4 sm:px-6 pb-16">
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-12 items-start">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12 items-start">
             
             {/* Contact Information */}
-            <div className="lg:col-span-1 space-y-8">
+            <div className="lg:col-span-1 space-y-6 lg:space-y-8">
               
               {/* Phone */}
               <div className="group">
-                <div className="border border-black/10 rounded-2xl p-6 hover:border-black/30 transition-all duration-300 hover:shadow-lg">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
-                      <Phone className="w-5 h-5 text-white" />
+                <div className="border border-black/20 rounded-2xl p-5 sm:p-6 hover:border-black/40 transition-all duration-300 hover:shadow-lg bg-white">
+                  <div className="flex items-center gap-3 sm:gap-4 mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-full flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-medium text-black">Call</h3>
-                      <p className="text-sm text-black/60">Immediate assistance</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-black">Call</h3>
+                      <p className="text-xs sm:text-sm text-black/70">Immediate assistance</p>
                     </div>
                   </div>
-                  <p className="text-black font-medium mb-4">+91 98765 43210</p>
+                  <p className="text-black font-semibold mb-4 text-sm sm:text-base">+91 8121021135</p>
                   <button 
                     onClick={() => window.open('tel:+919876543210')}
-                    className="w-full bg-black text-white py-3 rounded-full font-medium hover:bg-black/90 transition-colors flex items-center justify-center gap-2"
+                    className="w-full bg-black text-white py-3 sm:py-3 rounded-full font-semibold hover:bg-black/90 transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
                     Call Now
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               </div>
 
               {/* Email */}
               <div className="group">
-                <div className="border border-black/10 rounded-2xl p-6 hover:border-black/30 transition-all duration-300 hover:shadow-lg">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
-                      <Mail className="w-5 h-5 text-white" />
+                <div className="border border-black/20 rounded-2xl p-5 sm:p-6 hover:border-black/40 transition-all duration-300 hover:shadow-lg bg-white">
+                  <div className="flex items-center gap-3 sm:gap-4 mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-full flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-medium text-black">Email</h3>
-                      <p className="text-sm text-black/60">Detailed inquiries</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-black">Email</h3>
+                      <p className="text-xs sm:text-sm text-black/70">Detailed inquiries</p>
                     </div>
                   </div>
-                  <p className="text-black font-medium mb-4">contact@raamgroup.com</p>
+                  <p className="text-black font-semibold mb-4 text-sm sm:text-base break-all">contact@raamgroup.com</p>
                   <button 
                     onClick={() => window.open('mailto:contact@raamgroup.com')}
-                    className="w-full border border-black text-black py-3 rounded-full font-medium hover:bg-black hover:text-white transition-all flex items-center justify-center gap-2"
+                    className="w-full border-2 border-black text-black py-3 sm:py-3 rounded-full font-semibold hover:bg-black hover:text-white transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
                     Send Email
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               </div>
 
               {/* Location */}
               <div className="group">
-                <div className="border border-black/10 rounded-2xl p-6 hover:border-black/30 transition-all duration-300 hover:shadow-lg">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-white" />
+                <div className="border border-black/20 rounded-2xl p-5 sm:p-6 hover:border-black/40 transition-all duration-300 hover:shadow-lg bg-white">
+                  <div className="flex items-center gap-3 sm:gap-4 mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-full flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-medium text-black">Visit</h3>
-                      <p className="text-sm text-black/60">Experience center</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-black">Visit</h3>
+                      <p className="text-xs sm:text-sm text-black/70">Experience center</p>
                     </div>
                   </div>
-                  <p className="text-black font-medium mb-2">Hi-Tech City, Hyderabad</p>
-                  <p className="text-black/60 text-sm mb-4">Telangana 500081</p>
-                  <div className="flex items-center gap-2 text-sm text-black/60 mb-4">
-                    <Clock className="w-4 h-4" />
+                  <p className="text-black font-semibold mb-2 text-sm sm:text-base">Hi-Tech City, Hyderabad</p>
+                  <p className="text-black/70 text-xs sm:text-sm mb-4">Telangana 500081</p>
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-black/70 mb-4">
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                     <span>Mon - Sun: 9:00 AM - 8:00 PM</span>
                   </div>
-                  <button className="w-full border border-black text-black py-3 rounded-full font-medium hover:bg-black hover:text-white transition-all flex items-center justify-center gap-2">
+                  <button className="w-full border-2 border-black text-black py-3 sm:py-3 rounded-full font-semibold hover:bg-black hover:text-white transition-all flex items-center justify-center gap-2 text-sm sm:text-base">
                     Get Directions
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               </div>
@@ -155,15 +185,15 @@ const Contact = () => {
 
             {/* Contact Form */}
             <div className="lg:col-span-2">
-              <div className="border border-black/10 rounded-3xl p-8 md:p-12">
-                <div className="mb-8">
-                  <h2 className="text-3xl md:text-4xl font-light text-black mb-4">Get in Touch</h2>
-                  <p className="text-black/60 font-light">Tell us about your automotive needs and preferences.</p>
+              <div className="border border-black/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 bg-white">
+                <div className="mb-6 sm:mb-8">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-light text-black mb-4">Get in Touch</h2>
+                  <p className="text-black/70 font-light text-sm sm:text-base">Tell us about your automotive needs and preferences.</p>
                 </div>
 
                 {!isSubmitted ? (
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
+                  <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+                    <div className="grid md:grid-cols-2 gap-5 sm:gap-6">
                       {/* Name Field */}
                       <div className="relative">
                         <label 
@@ -185,7 +215,7 @@ const Contact = () => {
                           onFocus={() => setFocusedField('name')}
                           onBlur={() => setFocusedField('')}
                           required
-                          className="w-full h-16 pt-6 pb-2 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors"
+                          className="w-full h-14 sm:h-16 pt-6 pb-2 px-4 bg-white border-2 border-black/30 rounded-xl sm:rounded-2xl focus:border-black focus:outline-none transition-colors text-sm sm:text-base"
                         />
                       </div>
 
@@ -210,7 +240,7 @@ const Contact = () => {
                           onFocus={() => setFocusedField('phone')}
                           onBlur={() => setFocusedField('')}
                           required
-                          className="w-full h-16 pt-6 pb-2 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors"
+                          className="w-full h-14 sm:h-16 pt-6 pb-2 px-4 bg-white border-2 border-black/30 rounded-xl sm:rounded-2xl focus:border-black focus:outline-none transition-colors text-sm sm:text-base"
                         />
                       </div>
                     </div>
@@ -236,7 +266,7 @@ const Contact = () => {
                         onFocus={() => setFocusedField('email')}
                         onBlur={() => setFocusedField('')}
                         required
-                        className="w-full h-16 pt-6 pb-2 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors"
+                        className="w-full h-14 sm:h-16 pt-6 pb-2 px-4 bg-white border-2 border-black/30 rounded-xl sm:rounded-2xl focus:border-black focus:outline-none transition-colors text-sm sm:text-base"
                       />
                     </div>
 
@@ -250,8 +280,8 @@ const Contact = () => {
                         name="carInterest"
                         value={formData.carInterest}
                         onChange={handleInputChange}
-                        className="w-full h-16 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors appearance-none"
-                        style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+                        className="w-full h-14 sm:h-16 px-4 bg-white border-2 border-black/30 rounded-xl sm:rounded-2xl focus:border-black focus:outline-none transition-colors appearance-none text-sm sm:text-base font-medium"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em' }}
                       >
                         <option value="">Select a vehicle type</option>
                         <option value="Luxury Sedan">Luxury Sedan</option>
@@ -267,7 +297,7 @@ const Contact = () => {
                       <label className="block text-sm text-black/60 mb-4 font-medium">
                         Preferred Contact Method
                       </label>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <label className="relative">
                           <input
                             type="radio"
@@ -277,14 +307,14 @@ const Contact = () => {
                             onChange={handleInputChange}
                             className="sr-only"
                           />
-                          <div className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                          <div className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 cursor-pointer transition-all ${
                             formData.contactMethod === 'phone' 
                               ? 'border-black bg-black text-white' 
-                              : 'border-black/20 hover:border-black/40'
+                              : 'border-black/30 hover:border-black/50'
                           }`}>
-                            <div className="flex items-center gap-3">
-                              <Phone className="w-5 h-5" />
-                              <span className="font-medium">Phone Call</span>
+                            <div className="flex items-center gap-2 sm:gap-3">
+                              <Phone className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                              <span className="font-semibold text-sm sm:text-base">Phone Call</span>
                             </div>
                           </div>
                         </label>
@@ -297,14 +327,14 @@ const Contact = () => {
                             onChange={handleInputChange}
                             className="sr-only"
                           />
-                          <div className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                          <div className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 cursor-pointer transition-all ${
                             formData.contactMethod === 'email' 
                               ? 'border-black bg-black text-white' 
-                              : 'border-black/20 hover:border-black/40'
+                              : 'border-black/30 hover:border-black/50'
                           }`}>
-                            <div className="flex items-center gap-3">
-                              <Mail className="w-5 h-5" />
-                              <span className="font-medium">Email</span>
+                            <div className="flex items-center gap-2 sm:gap-3">
+                              <Mail className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                              <span className="font-semibold text-sm sm:text-base">Email</span>
                             </div>
                           </div>
                         </label>
@@ -331,7 +361,7 @@ const Contact = () => {
                         onFocus={() => setFocusedField('message')}
                         onBlur={() => setFocusedField('')}
                         rows={4}
-                        className="w-full pt-8 pb-4 px-4 bg-white border border-black/20 rounded-2xl focus:border-black focus:outline-none transition-colors resize-none"
+                        className="w-full pt-8 pb-4 px-4 bg-white border-2 border-black/30 rounded-xl sm:rounded-2xl focus:border-black focus:outline-none transition-colors resize-none text-sm sm:text-base"
                       />
                     </div>
 
@@ -339,7 +369,7 @@ const Contact = () => {
                     <button
                       type="submit"
                       disabled={!formData.name || !formData.email || !formData.phone || isLoading}
-                      className="w-full h-16 bg-black text-white rounded-2xl font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/90 transition-all flex items-center justify-center gap-3 text-lg"
+                      className="w-full h-14 sm:h-16 bg-black text-white rounded-xl sm:rounded-2xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/90 transition-all flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg"
                     >
                       {isLoading ? (
                         <>
@@ -349,12 +379,12 @@ const Contact = () => {
                       ) : (
                         <>
                           Send Message
-                          <ArrowRight className="w-5 h-5" />
+                          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                         </>
                       )}
                     </button>
 
-                    <p className="text-xs text-black/40 text-center leading-relaxed">
+                    <p className="text-xs sm:text-sm text-black/60 text-center leading-relaxed px-2">
                       By submitting this form, you agree to our privacy policy and terms of service. 
                       We will contact you within 24 hours.
                     </p>

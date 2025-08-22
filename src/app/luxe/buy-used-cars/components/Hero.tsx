@@ -11,28 +11,29 @@ import Image from "next/image";
 const slides = [
   {
     bgImage: "/assets/images/1.jpg",
+    mobileImage: "/assets/images/li1.jpg",
   },
   {
     bgImage: "/assets/images/2.jpg",
+    mobileImage: "/assets/images/li2.jpg",
   },
   {
     bgImage: "/assets/images/3.jpg",
+    mobileImage: "/assets/images/li3.jpg",
   },
 ];
 
 
 export default function EpicHeroSlider() {
   const [current, setCurrent] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [, setIsTransitioning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const slideCount = slides.length;
 
   const slideIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const debounceRef = useRef(false);
-
-  const { bgImage } = slides[current];
 
   const clearAllIntervals = () => {
     if (slideIntervalRef.current) {
@@ -90,8 +91,18 @@ export default function EpicHeroSlider() {
     return () => clearAllIntervals();
   }, [isPaused, startSlideAutoPlay]);
 
+
   useEffect(() => {
-    setTimeout(() => setIsLoaded(true), 100);
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
   }, []);
 
 
@@ -118,12 +129,13 @@ export default function EpicHeroSlider() {
             max-height: 250px;
           }
           @media (max-width: 640px) {
-            section {
-              height: 18vh;
-              min-height: 150px;
-              max-height: 200px;
-            }
-          }
+  section {
+    height: 8vh;
+    min-height: 80px;
+    max-height: 120px;
+  }
+}
+
           .cta-buttons > div {
             width: auto !important;
             align-items: flex-start !important;
@@ -154,7 +166,7 @@ export default function EpicHeroSlider() {
 
         {/* Background slides */}
         <div className="absolute inset-0 will-change-transform">
-          {slides.map(({ bgImage }, idx) => (
+          {slides.map((slide, idx) => (
             <div
               key={idx}
               className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
@@ -166,7 +178,7 @@ export default function EpicHeroSlider() {
               style={{ willChange: "opacity, transform, filter" }}
             >
               <Image
-                src={bgImage}
+                src={isMobile ? slide.mobileImage : slide.bgImage}
                 alt={`Banner ${idx + 1}`}
                 fill
                 priority={idx === 0}

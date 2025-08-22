@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, Sparkles, Shield, Award, ChevronDown, Phone, X } from 'lucide-react';
+import { ChevronRight, Sparkles, Shield, Award, ChevronDown, Phone } from 'lucide-react';
 import Section2AboutEpicCars from '../LandingPage/AboutEpic_corrected';
 import Section3WhyChooseUs from '../LandingPage/Section3WhyChooseUs';
 import ThisMonthsHighlights from '../LandingPage/ThisMonthHighlights';
@@ -26,11 +26,7 @@ const LandingPageClient = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [buyDropdownOpen, setBuyDropdownOpen] = useState(false);
   const [sellDropdownOpen, setSellDropdownOpen] = useState(false);
-  const [whatsappMessageIndex, setWhatsappMessageIndex] = useState(0);
-  const [showWhatsappMessage, setShowWhatsappMessage] = useState(false);
   const [contentLoaded, setContentLoaded] = useState(false);
-    // Fix: Declare whatsappVisible state to resolve TS error
-    const whatsappVisible = true;
 
   // Smooth car animation with easing
   useEffect(() => {
@@ -109,13 +105,6 @@ const LandingPageClient = () => {
     // Header is now always visible, no complex logic needed
   }, []);
 
-  // Memoized WhatsApp messages to prevent recreation
-  const whatsappMessages = useMemo(() => [
-    "Need help? Chat now! 🚗",
-    "Find your car? 💭", 
-    "Questions? Ask us! 🤝",
-    "Best deals here! 💰"
-  ], []);
 
   // Optimized mouse move handler with throttling
   const handleMouseMove = useCallback(() => {
@@ -172,32 +161,15 @@ const LandingPageClient = () => {
     window.addEventListener('scroll', throttledScroll, { passive: true });
     window.addEventListener('mousemove', throttledMouseMove, { passive: true });
     
-    // WhatsApp message rotation with delay after content loads
-    const initialDelay = setTimeout(() => {
-      if (contentLoaded) {
-        setShowWhatsappMessage(true);
-      }
-    }, 3000);
-    
-    const messageInterval = setInterval(() => {
-      setWhatsappMessageIndex(prev => (prev + 1) % whatsappMessages.length);
-      setShowWhatsappMessage(true);
-      
-      setTimeout(() => {
-        setShowWhatsappMessage(false);
-      }, 4000);
-    }, 8000);
     
     return () => {
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('scroll', throttledScroll);
       window.removeEventListener('mousemove', throttledMouseMove);
-      clearTimeout(initialDelay);
-      clearInterval(messageInterval);
       if (scrollTimeout) clearTimeout(scrollTimeout);
       if (mouseMoveTimeout) clearTimeout(mouseMoveTimeout);
     };
-  }, [handleScroll, handleMouseMove, checkMobile, contentLoaded, whatsappMessages]);
+  }, [handleScroll, handleMouseMove, checkMobile, contentLoaded]);
 
   const handleLuxeNavigation = () => {
     router.push('/luxe');
