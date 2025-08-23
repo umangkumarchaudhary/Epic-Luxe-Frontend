@@ -459,7 +459,7 @@ export default function Header() {
         .sort((a, b) => b.score - a.score)
         .slice(0, 8)
         .map((item) => {
-          const { score, ...rest } = item;
+          const { score: _, ...rest } = item;
           return rest;
         });
 

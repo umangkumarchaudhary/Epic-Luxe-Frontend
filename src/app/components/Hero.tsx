@@ -4,7 +4,7 @@ import React, { useEffect, useState, FormEvent } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Car, DollarSign, Shield, Search, Phone, Star, TrendingUp, Eye, Clock, Home, User, MessageCircle, X, Loader2, CheckCircle, ArrowRight } from 'lucide-react';
+import { ChevronRight, Car, DollarSign, Shield, Phone, Star, TrendingUp, Eye, Clock, X, Loader2, CheckCircle, ArrowRight } from 'lucide-react';
 
 // Type definitions
 interface Banner {
@@ -896,7 +896,7 @@ export default function LuxuryVehicleHero(): React.ReactElement {
                 href="tel:7288882121" 
                 className="flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/80 font-semibold hover:bg-white/10 transition-all text-sm cursor-pointer relative z-50" 
                 aria-label="Call Expert"
-                onClick={(e) => {
+                onClick={() => {
                   console.log('Call expert button clicked');
                 }}
               >

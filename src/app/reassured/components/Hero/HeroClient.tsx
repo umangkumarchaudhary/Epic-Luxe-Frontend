@@ -4,8 +4,8 @@ import React, { useEffect, useState, FormEvent } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Car, DollarSign, Shield, Search, Phone, Star, TrendingUp, Eye, Clock, Home, User, MessageCircle, X, Loader2, CheckCircle, ArrowRight } from 'lucide-react';
-import { HeroClientProps, BadgeData, SectionData } from './types';
+import { ChevronRight, Car, DollarSign, Shield, Phone, Star, TrendingUp, Eye, Clock, MessageCircle, X, Loader2, CheckCircle, ArrowRight } from 'lucide-react';
+import { HeroClientProps } from './types';
 
 // Type definitions for form
 interface FormData {
@@ -169,7 +169,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
             body: JSON.stringify(submitData),
           });
           break;
-        } catch (fetchError) {
+        } catch {
           continue;
         }
       }
@@ -183,7 +183,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
         throw new Error(`Failed to submit lead: ${response.status} - ${errorText}`);
       }
 
-      const result = await response.json();
+      await response.json();
       setIsLoading(false);
       setIsSubmitted(true);
 
@@ -374,7 +374,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
 
           {/* Privacy Notice */}
           <p className="text-xs text-black/50 text-center leading-relaxed px-2">
-            By submitting, you agree to our privacy policy. We'll contact you within 30 minutes.
+            By submitting, you agree to our privacy policy. We&apos;ll contact you within 30 minutes.
           </p>
         </form>
       </div>
