@@ -491,69 +491,10 @@ export default function ReassuredHeroClient({ data }: HeroClientProps): React.Re
   }, [data.backgroundImages.images.length]);
 
   return (
-    <div className="w-full relative overflow-hidden bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen w-full relative overflow-hidden bg-gradient-to-br from-gray-50 to-white">
       
-      {/* Mobile Hero Banner Section */}
-      <section className="md:hidden relative w-full h-[70vh] min-h-[500px] overflow-hidden">
-        {/* Mobile Background Images */}
-        <div className="absolute inset-0 w-full h-full">
-          {data.backgroundImages.images.map((image, index) => (
-            <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ${index === backgroundIndex ? 'opacity-30' : 'opacity-0'}`}>
-              <Image
-                src={data.backgroundImages.mobileImages?.[index] || image}
-                alt="Background"
-                fill
-                className="object-cover"
-                priority={index === 0}
-              />
-            </div>
-          ))}
-          
-          {/* Mobile Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-white/80 z-10"></div>
-        </div>
-
-        {/* Mobile Hero Content */}
-        <div className="absolute inset-0 flex flex-col justify-center px-6 z-20">
-          <div className="max-w-md mx-auto text-center space-y-4">
-            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm border border-gray-200/50 mb-2">
-              <div className="w-1.5 h-1.5 bg-black rounded-full mr-2 animate-pulse"></div>
-              <span className="text-black font-bold text-xs tracking-wider">
-                EPIC REASSURED
-              </span>
-            </div>
-            
-            <h1 className="text-3xl sm:text-4xl font-bold text-black mb-2 leading-tight">
-              Premium Pre-Owned Cars
-            </h1>
-            <h2 className="text-lg font-light text-black/80 mb-4 leading-snug">
-              Quality assured vehicles at best prices
-            </h2>
-            
-            {/* Mobile CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button
-                onClick={navigateToBrowseCars}
-                className="flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-black text-white font-bold hover:bg-gray-800 transition-all text-sm"
-              >
-                <Eye className="w-4 h-4" />
-                <span>Browse Cars</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => openQuoteForm('buy')}
-                className="flex items-center justify-center space-x-2 px-6 py-3 rounded-full border-2 border-black text-black font-bold hover:bg-black hover:text-white transition-all text-sm"
-              >
-                <DollarSign className="w-4 h-4" />
-                <span>Get Quote</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Desktop Background Images */}
-      <div className="hidden md:block absolute inset-0 w-full h-full">
+      {/* Background Images */}
+      <div className="absolute inset-0 w-full h-full">
         {data.backgroundImages.images.map((image, index) => (
           <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ${index === backgroundIndex ? 'opacity-20' : 'opacity-0'}`}>
             <Image
@@ -566,7 +507,7 @@ export default function ReassuredHeroClient({ data }: HeroClientProps): React.Re
           </div>
         ))}
         
-        {/* Desktop Gradient overlay to ensure readability */}
+        {/* Gradient overlay to ensure readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/60 to-white/80 z-10"></div>
       </div>
 

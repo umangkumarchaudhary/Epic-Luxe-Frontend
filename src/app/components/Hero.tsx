@@ -414,25 +414,25 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex items-center justify-center space-x-2 px-6 py-3.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold hover:from-[#BFA980] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full flex items-center justify-center space-x-2 px-4 sm:px-6 py-3 sm:py-3.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold text-sm sm:text-base hover:from-[#BFA980] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                 <span>Processing...</span>
               </>
             ) : (
               <>
-                <Phone className="w-5 h-5" />
-                <span>{formType === 'buy' ? 'Get Purchase Quote' : 'Get Valuation'}</span>
-                <ArrowRight className="w-5 h-5" />
+                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>{formType === 'buy' ? 'Get Quote' : 'Get Valuation'}</span>
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </>
             )}
           </button>
 
           {/* Privacy Notice */}
-          <p className="text-xs text-white/50 text-center leading-relaxed">
-            By submitting, you agree to our privacy policy. We&apos;ll only use your information to provide the requested quote and may contact you about related luxury vehicle services.
+          <p className="text-xs text-white/50 text-center leading-relaxed px-2">
+            By submitting, you agree to our privacy policy. We&apos;ll contact you within 30 minutes.
           </p>
         </form>
       </div>
@@ -486,32 +486,35 @@ function BottomNav(): React.ReactElement {
       role="navigation" 
       aria-label="Bottom navigation"
     >
-      <div className="grid grid-cols-3 gap-1 py-2 px-2">
+      <div className="grid grid-cols-3 gap-1 py-2 sm:py-3 px-2 sm:px-4">
         <button 
           onClick={handleBuyClick}
-          className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" 
-          aria-label="Buy"
+          className="flex flex-col items-center space-y-1 py-2 sm:py-3 px-1 sm:px-2 rounded-lg hover:bg-[#D4AF37]/10 active:bg-[#D4AF37]/20 transition-all duration-300" 
+          aria-label="Buy Cars"
         >
-          <Car className="w-5 h-5 text-[#D4AF37]" />
-          <span className="text-xs text-[#D4AF37] font-semibold">Buy</span>
+          <Car className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37]" />
+          <span className="text-xs sm:text-sm text-[#D4AF37] font-semibold">Buy</span>
         </button>
         <button 
           onClick={handleSellClick}
-          className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" 
-          aria-label="Sell"
+          className="flex flex-col items-center space-y-1 py-2 sm:py-3 px-1 sm:px-2 rounded-lg hover:bg-[#D4AF37]/10 active:bg-[#D4AF37]/20 transition-all duration-300" 
+          aria-label="Sell Your Car"
         >
-          <DollarSign className="w-5 h-5 text-[#D4AF37]" />
-          <span className="text-xs text-[#D4AF37] font-semibold">Sell</span>
+          <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37]" />
+          <span className="text-xs sm:text-sm text-[#D4AF37] font-semibold">Sell</span>
         </button>
         <button 
           onClick={handleCallClick}
-          className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" 
-          aria-label="Call Now"
+          className="flex flex-col items-center space-y-1 py-2 sm:py-3 px-1 sm:px-2 rounded-lg hover:bg-[#D4AF37]/10 active:bg-[#D4AF37]/20 transition-all duration-300" 
+          aria-label="Call Expert Now"
         >
-          <Phone className="w-5 h-5 text-[#D4AF37]" />
-          <span className="text-xs text-[#D4AF37] font-semibold">Call Now</span>
+          <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37]" />
+          <span className="text-xs sm:text-sm text-[#D4AF37] font-semibold">Call</span>
         </button>
       </div>
+      
+      {/* Safe area for devices with home indicator */}
+      <div className="pb-safe-area-inset-bottom"></div>
     </div>
   );
 }

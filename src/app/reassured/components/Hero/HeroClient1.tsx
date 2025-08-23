@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { SwiperRef } from "swiper/react";
-import { Pagination, Autoplay, EffectFade } from "swiper/modules";
+import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 import { useRef, useState } from "react";
 import LeadModal from "./LeadModal";
 
@@ -62,7 +62,7 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
     >
       <Swiper
         ref={swiperRef}
-        modules={[Pagination, Autoplay, EffectFade]}
+        modules={[Navigation, Pagination, Autoplay, EffectFade]}
         effect="fade"
         fadeEffect={{ crossFade: true }}
         loop={true}
@@ -71,6 +71,7 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
           disableOnInteraction: false,
         }}
         pagination={{ clickable: true }}
+        navigation
         className="h-full"
       >
         {banners.map((banner) => (
