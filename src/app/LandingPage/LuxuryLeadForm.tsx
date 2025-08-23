@@ -169,12 +169,49 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
         timestamp: new Date().toISOString()
       });
       
-      const response = await fetch('/api/leads', {
+      const response = await fetch('https://raam-group-all-websites.onrender.com/admin/leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          lead_type: 'landing_page_lead',
+          lead_title: 'Landing Page Lead Form',
+          name: formData.name.trim(),
+          phone: formData.phone.trim(),
+          email: formData.email.trim() || null,
+          preferred_model: null,
+          vehicle_id: null,
+          appointment_date: null,
+          appointment_time: null,
+          message: `Interest: ${formData.interest}`,
+          budget: null,
+          insurance_type: null,
+          loan_details: null,
+          status: 'new',
+          source_page: 'Landing Page - Luxury Lead Form',
+          brand: null,
+          fuel: null,
+          variant: null,
+          city: null,
+          year: null,
+          owner: null,
+          kms: null,
+          whatsapp_updates: null,
+          monthly_income: null,
+          employment_type: null,
+          interested_car: formData.interest,
+          loan_amount: null,
+          emi_tenure: null,
+          interest: null,
+          your_emi: null,
+          total_payable: null,
+          pan_card: null,
+          car_interest: formData.interest,
+          utm_source: formData.utm_source,
+          utm_medium: formData.utm_medium,
+          utm_campaign: formData.utm_campaign
+        }),
       })
       
       console.log('[DEBUG] Lead form response received:', {
@@ -245,7 +282,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
     >
       {/* Success icon */}
       <motion.div
-        className="w-20 h-20 mx-auto mb-8 rounded-full bg-gradient-to-r from-yellow-600 to-yellow-500 flex items-center justify-center"
+        className="w-20 h-20 mx-auto mb-8 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] flex items-center justify-center"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
@@ -270,7 +307,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
       <motion.h3
         className="text-3xl lg:text-4xl font-light mb-6"
         style={{ 
-          fontFamily: 'Cormorant Garamond, serif',
+          fontFamily: 'Manrope, sans-serif',
           color: '#EAD9B8',
           letterSpacing: '-0.02em'
         }}
@@ -283,7 +320,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
 
       <motion.p
         className="text-lg text-gray-300 mb-4 leading-relaxed"
-        style={{ fontFamily: 'Inter, sans-serif' }}
+        style={{ fontFamily: 'Manrope, sans-serif' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
@@ -292,8 +329,8 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
       </motion.p>
 
       <motion.p
-        className="text-base text-yellow-600/80 font-medium"
-        style={{ fontFamily: 'Inter, sans-serif' }}
+        className="text-base text-[#D4AF37]/80 font-medium"
+        style={{ fontFamily: 'Manrope, sans-serif' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
@@ -303,7 +340,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
 
       {/* Elegant divider */}
       <motion.div
-        className="w-16 h-px bg-yellow-600/30 mx-auto mt-8"
+        className="w-16 h-px bg-[#D4AF37]/30 mx-auto mt-8"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ delay: 0.7, duration: 0.8 }}
@@ -316,7 +353,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
       ref={sectionRef}
       className={`relative py-24 lg:py-32 overflow-hidden ${className}`}
       style={{
-        background: 'linear-gradient(135deg, #0F0F10 0%, #1A1A1A 50%, #0F0F10 100%)'
+        background: '#000000'
       }}
       aria-labelledby="contact-heading"
     >
@@ -344,11 +381,8 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
               id="contact-heading"
               className="text-4xl md:text-5xl lg:text-6xl font-light mb-6"
               style={{ 
-                fontFamily: 'Cormorant Garamond, serif',
-                background: 'linear-gradient(90deg, #D4AF37 0%, #FFD700 25%, #F4E4C1 50%, #FFD700 75%, #D4AF37 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                fontFamily: 'Manrope, sans-serif',
+                color: 'white',
                 letterSpacing: '-0.02em'
               }}
             >
@@ -356,7 +390,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
             </motion.h2>
             <motion.p
               className="text-lg text-gray-300 leading-relaxed"
-              style={{ fontFamily: 'Inter, sans-serif' }}
+              style={{ fontFamily: 'Manrope, sans-serif' }}
             >
               Connect with our automotive specialists
             </motion.p>
@@ -401,7 +435,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
                       <label 
                         htmlFor="name"
                         className="block text-sm font-medium text-gray-300 mb-3"
-                        style={{ fontFamily: 'Inter, sans-serif' }}
+                        style={{ fontFamily: 'Manrope, sans-serif' }}
                       >
                         Full Name *
                       </label>
@@ -410,11 +444,11 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
                         id="name"
                         value={formData.name}
                         onChange={(e) => handleInputChange('name', e.target.value)}
-                        className={`w-full px-6 py-4 rounded-xl bg-black/30 border backdrop-blur-sm text-white placeholder-gray-500 text-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-600/50 ${
-                          errors.name ? 'border-red-500/50' : 'border-gray-700/50 hover:border-yellow-600/30'
+                        className={`w-full px-6 py-4 rounded-xl bg-black/30 border backdrop-blur-sm text-white placeholder-gray-500 text-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 ${
+                          errors.name ? 'border-red-500/50' : 'border-gray-700/50 hover:border-[#D4AF37]/30'
                         }`}
                         style={{
-                          fontFamily: 'Inter, sans-serif',
+                          fontFamily: 'Manrope, sans-serif',
                           boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)'
                         }}
                         placeholder="Enter your full name"
@@ -435,7 +469,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
                       <label 
                         htmlFor="phone"
                         className="block text-sm font-medium text-gray-300 mb-3"
-                        style={{ fontFamily: 'Inter, sans-serif' }}
+                        style={{ fontFamily: 'Manrope, sans-serif' }}
                       >
                         Phone Number *
                       </label>
@@ -444,11 +478,11 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
                         id="phone"
                         value={formData.phone}
                         onChange={(e) => handleInputChange('phone', e.target.value)}
-                        className={`w-full px-6 py-4 rounded-xl bg-black/30 border backdrop-blur-sm text-white placeholder-gray-500 text-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-600/50 ${
-                          errors.phone ? 'border-red-500/50' : 'border-gray-700/50 hover:border-yellow-600/30'
+                        className={`w-full px-6 py-4 rounded-xl bg-black/30 border backdrop-blur-sm text-white placeholder-gray-500 text-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 ${
+                          errors.phone ? 'border-red-500/50' : 'border-gray-700/50 hover:border-[#D4AF37]/30'
                         }`}
                         style={{
-                          fontFamily: 'Inter, sans-serif',
+                          fontFamily: 'Manrope, sans-serif',
                           boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)'
                         }}
                         placeholder="10-digit mobile or +country code"
@@ -469,7 +503,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
                       <label 
                         htmlFor="email"
                         className="block text-sm font-medium text-gray-300 mb-3"
-                        style={{ fontFamily: 'Inter, sans-serif' }}
+                        style={{ fontFamily: 'Manrope, sans-serif' }}
                       >
                         Email Address
                       </label>
@@ -478,11 +512,11 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
                         id="email"
                         value={formData.email}
                         onChange={(e) => handleInputChange('email', e.target.value)}
-                        className={`w-full px-6 py-4 rounded-xl bg-black/30 border backdrop-blur-sm text-white placeholder-gray-500 text-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-600/50 ${
-                          errors.email ? 'border-red-500/50' : 'border-gray-700/50 hover:border-yellow-600/30'
+                        className={`w-full px-6 py-4 rounded-xl bg-black/30 border backdrop-blur-sm text-white placeholder-gray-500 text-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 ${
+                          errors.email ? 'border-red-500/50' : 'border-gray-700/50 hover:border-[#D4AF37]/30'
                         }`}
                         style={{
-                          fontFamily: 'Inter, sans-serif',
+                          fontFamily: 'Manrope, sans-serif',
                           boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)'
                         }}
                         placeholder="your@email.com (optional)"
@@ -503,7 +537,7 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
                       <label 
                         htmlFor="interest"
                         className="block text-sm font-medium text-gray-300 mb-3"
-                        style={{ fontFamily: 'Inter, sans-serif' }}
+                        style={{ fontFamily: 'Manrope, sans-serif' }}
                       >
                         Car Interest *
                       </label>
@@ -511,11 +545,11 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
                         id="interest"
                         value={formData.interest}
                         onChange={(e) => handleInputChange('interest', e.target.value)}
-                        className={`w-full px-6 py-4 rounded-xl bg-black/30 border backdrop-blur-sm text-white text-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-600/50 appearance-none cursor-pointer ${
-                          errors.interest ? 'border-red-500/50' : 'border-gray-700/50 hover:border-yellow-600/30'
+                        className={`w-full px-6 py-4 rounded-xl bg-black/30 border backdrop-blur-sm text-white text-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 appearance-none cursor-pointer ${
+                          errors.interest ? 'border-red-500/50' : 'border-gray-700/50 hover:border-[#D4AF37]/30'
                         }`}
                         style={{
-                          fontFamily: 'Inter, sans-serif',
+                          fontFamily: 'Manrope, sans-serif',
                           boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)',
                           backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                           backgroundPosition: 'right 1.5rem center',
@@ -559,11 +593,9 @@ const LuxuryLeadForm: React.FC<{ className?: string }> = ({ className = '' }) =>
                         disabled={isSubmitting}
                         className="w-full py-5 rounded-xl font-semibold text-black text-lg tracking-wide transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group overflow-hidden relative"
                         style={{
-                          background: isSubmitting 
-                            ? 'linear-gradient(135deg, #B8941F 0%, #D4AF37 100%)'
-                            : 'linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%)',
-                          boxShadow: '0 8px 32px rgba(212, 175, 55, 0.3)',
-                          fontFamily: 'Inter, sans-serif'
+                          background: 'white',
+                          boxShadow: '0 8px 32px rgba(255, 255, 255, 0.3)',
+                          fontFamily: 'Manrope, sans-serif'
                         }}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}

@@ -199,7 +199,7 @@ const ChooseYourJourneySection: React.FC = () => {
               onClick={() => handleNavigation('luxe')}
               className="group relative w-full md:w-80 h-20 bg-black border-2 border-yellow-500 overflow-hidden transition-all duration-700 ease-in-out hover:transform hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-yellow-500/30 focus:ring-offset-2 focus:ring-offset-transparent"
               style={{
-                fontFamily: 'Cormorant Garamond, serif',
+                fontFamily: 'Manrope, sans-serif',
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
               }}
               aria-label="Begin your luxury car journey"
@@ -216,7 +216,7 @@ const ChooseYourJourneySection: React.FC = () => {
               {/* Border Pulse Animation */}
               <div className="absolute inset-0 border-2 border-yellow-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse" />
               
-              <span className="relative z-10 text-xl font-bold text-yellow-500 tracking-wide uppercase">
+              <span className="relative z-10 text-lg font-bold text-white whitespace-nowrap">
                 Begin My Luxe Journey
               </span>
             </motion.button>
@@ -227,7 +227,7 @@ const ChooseYourJourneySection: React.FC = () => {
               onClick={() => handleNavigation('reassured')}
               className="group relative w-full md:w-80 h-20 bg-white border-2 border-black overflow-hidden transition-all duration-700 ease-in-out hover:transform hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-gray-400/30 focus:ring-offset-2 focus:ring-offset-transparent"
               style={{
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: 'Manrope, sans-serif',
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'
               }}
               aria-label="Begin your assured car journey"
@@ -244,7 +244,7 @@ const ChooseYourJourneySection: React.FC = () => {
               {/* Enhanced Border on Hover */}
               <div className="absolute inset-0 border-4 border-black opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               
-              <span className="relative z-10 text-xl font-semibold text-black tracking-wide uppercase">
+              <span className="relative z-10 text-lg font-semibold text-black tracking-wide uppercase whitespace-nowrap">
                 Begin My Reassured Journey
               </span>
             </motion.button>
@@ -255,7 +255,7 @@ const ChooseYourJourneySection: React.FC = () => {
             variants={microtextVariants}
             className="text-gray-400 text-sm font-light tracking-widest uppercase"
             style={{ 
-              fontFamily: 'Inter, sans-serif',
+              fontFamily: 'Manrope, sans-serif',
               letterSpacing: '0.2em'
             }}
           >
@@ -324,7 +324,7 @@ export default function EpicCarsPage() {
         {/* 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         */}
       </Head>
 

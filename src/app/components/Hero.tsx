@@ -609,6 +609,9 @@ export default function LuxuryVehicleHero(): React.ReactElement {
               priority
               sizes="100vw"
             />
+            
+            {/* Gradient overlay to blend with black grid section below */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80"></div>
           </div>
 
           {/* Desktop Content Overlay */}

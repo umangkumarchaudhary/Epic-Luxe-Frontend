@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   ArrowRight,
   RotateCcw,
@@ -24,15 +24,11 @@ import Image from 'next/image';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 
-interface TradeInValue {
-  market: number;
-  tradeIn: number;
-  bonus: number;
-}
+
 
 const TradeInPage = () => {
 
-  const upgradeOptions = React.useMemo(() => [
+  const upgradeOptions = useMemo(() => [
     {
       brand: 'BMW',
       model: '5 Series',
@@ -41,6 +37,7 @@ const TradeInPage = () => {
       image: '/api/placeholder/300/200',
       savings: '₹3,50,000'
     },
+    
     {
       brand: 'Audi',
       model: 'Q5',

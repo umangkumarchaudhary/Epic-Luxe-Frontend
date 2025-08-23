@@ -95,7 +95,7 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
   return (
     <section 
       id="about-section" 
-      className="relative py-12 px-2 sm:px-4 bg-gradient-to-b from-[#0e0e0e] to-[#1a1a1a] w-full overflow-x-hidden"
+      className="relative py-12 px-2 sm:px-4 bg-black"
       aria-labelledby="about-heading"
     >
       <div className="max-w-7xl w-full mx-auto">
@@ -417,20 +417,20 @@ const HomeContactSection = React.memo(function HomeContactSection() {
     return (
       <div 
         onClick={card.action} 
-        className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] p-6 rounded-xl border border-[#D4AF37]/20 cursor-pointer hover:border-[#D4AF37]/50 transition"
+        className="bg-white/5 hover:bg-white/10 p-4 lg:p-5 rounded-xl border border-[#D4AF37]/20 cursor-pointer hover:border-[#D4AF37]/50 transition-all duration-300 flex-1"
         role="button"
         tabIndex={0}
         aria-label={`${card.title} - ${card.subtitle}`}
         onKeyDown={(e) => e.key === 'Enter' && card.action()}
       >
-        <div className="flex items-center gap-4">
-          <card.icon className="w-8 h-8 text-[#D4AF37]" aria-hidden="true" />
-          <div>
-            <h3 className="text-lg font-bold text-white font-manrope">{card.title}</h3>
-            <p className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-semibold font-manrope">{card.subtitle}</p>
-            <p className="text-white/80 text-sm font-manrope">{card.desc}</p>
+        <div className="flex items-center gap-3 lg:gap-4 h-full">
+          <card.icon className="w-7 h-7 lg:w-8 lg:h-8 text-[#D4AF37] flex-shrink-0" aria-hidden="true" />
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base lg:text-lg font-bold text-white font-manrope truncate">{card.title}</h3>
+            <p className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-semibold font-manrope text-sm lg:text-base truncate">{card.subtitle}</p>
+            <p className="text-white/80 text-xs lg:text-sm font-manrope">{card.desc}</p>
           </div>
-          <ChevronRight className="w-5 h-5 text-[#D4AF37]" aria-hidden="true" />
+          <ChevronRight className="w-4 h-4 lg:w-5 lg:h-5 text-[#D4AF37] flex-shrink-0" aria-hidden="true" />
         </div>
       </div>
     );
@@ -439,28 +439,28 @@ const HomeContactSection = React.memo(function HomeContactSection() {
   return (
     <section 
       id="contact-section" 
-      className="relative py-12 px-2 sm:px-4 bg-gradient-to-b from-[#1a1a1a] to-[#0e0e0e] w-full overflow-x-hidden"
+      className="relative py-8 sm:py-12 px-4 sm:px-6 lg:px-4 bg-black"
       aria-labelledby="contact-heading"
     >
       <div className="max-w-7xl w-full mx-auto">
         {/* Header */}
-        <div className={`text-center mb-12 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-          <h2 id="contact-heading" className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-manrope">
+        <div className={`text-center mb-8 lg:mb-12 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+          <h2 id="contact-heading" className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-manrope">
             Contact Epic Luxe
           </h2>
-          <p className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto font-manrope">
+          <p className="text-base sm:text-lg lg:text-xl text-white/70 max-w-3xl mx-auto px-4 font-manrope">
             Ready to find your perfect luxury vehicle? Let&apos;s start the conversation
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-stretch">
           {/* Left Form */}
-          <div>
-            <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] backdrop-blur-lg p-8 rounded-2xl border border-[#D4AF37]/30">
-              <h3 className="text-2xl font-bold mb-6 text-white font-manrope">Send us a message</h3>
-              <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          <div className="h-full">
+            <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] backdrop-blur-lg p-6 lg:p-8 rounded-2xl border border-[#D4AF37]/30 h-full flex flex-col">
+              <h3 className="text-xl lg:text-2xl font-bold mb-6 text-white font-manrope">Send us a message</h3>
+              <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-5 flex-grow flex flex-col" noValidate>
                 {/* NAME & PHONE */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
                   <div>
                     <input
                       type="text"
@@ -507,53 +507,59 @@ const HomeContactSection = React.memo(function HomeContactSection() {
                 </div>
 
                 {/* MESSAGE */}
-                <div>
+                <div className="flex-grow flex flex-col">
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
                     placeholder="Tell us what you're looking for..."
                     aria-label="Your Message"
-                    rows={4}
-                    className={`w-full bg-white/10 text-white placeholder-white/60 border rounded-lg px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-manrope ${errors.message ? 'border-red-500' : 'border-[#D4AF37]/30'}`}
+                    className={`w-full flex-grow min-h-[100px] lg:min-h-[120px] bg-white/10 text-white placeholder-white/60 border rounded-lg px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-manrope ${errors.message ? 'border-red-500' : 'border-[#D4AF37]/30'}`}
                   />
                   {errors.message && <p className="text-red-400 text-sm mt-1 font-manrope">{errors.message}</p>}
                 </div>
 
                 {/* BUTTON */}
-                <button
-                  type="submit"
-                  disabled={isLoading || isSubmitted}
-                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 font-manrope ${
-                    isSubmitted 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black hover:shadow-lg hover:shadow-[#D4AF37]/20'
-                  } ${isLoading ? 'opacity-80 cursor-not-allowed' : ''}`}
-                  aria-live="polite"
-                >
-                  {isLoading ? (
-                    'Sending...'
-                  ) : isSubmitted ? (
-                    <>
-                      <Check className="w-5 h-5" aria-hidden="true" />
-                      Message Sent!
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-5 h-5" aria-hidden="true" />
-                      Send Message
-                    </>
-                  )}
-                </button>
+                <div className="mt-auto pt-2">
+                  <button
+                    type="submit"
+                    disabled={isLoading || isSubmitted}
+                    className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 font-manrope ${
+                      isSubmitted 
+                        ? 'bg-green-600 text-white' 
+                        : 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black hover:shadow-lg hover:shadow-[#D4AF37]/20'
+                    } ${isLoading ? 'opacity-80 cursor-not-allowed' : ''}`}
+                    aria-live="polite"
+                  >
+                    {isLoading ? (
+                      'Sending...'
+                    ) : isSubmitted ? (
+                      <>
+                        <Check className="w-5 h-5" aria-hidden="true" />
+                        Message Sent!
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5" aria-hidden="true" />
+                        Send Message
+                      </>
+                    )}
+                  </button>
+                </div>
               </form>
             </div>
           </div>
 
           {/* Right Contact Cards */}
-          <div className="space-y-4">
-            {contactCards.map((card, i) => (
-              <ContactCardItem key={i} card={card} />
-            ))}
+          <div className="h-full">
+            <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] backdrop-blur-lg p-6 lg:p-8 rounded-2xl border border-[#D4AF37]/30 h-full flex flex-col">
+              <h3 className="text-xl lg:text-2xl font-bold mb-6 text-white font-manrope">Get in Touch</h3>
+              <div className="flex flex-col gap-4 lg:gap-5 flex-grow justify-center">
+                {contactCards.map((card, i) => (
+                  <ContactCardItem key={i} card={card} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

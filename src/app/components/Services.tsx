@@ -149,14 +149,14 @@ const Services = () => {
   }, [currentSlide, services.length]);
 
   // Navigation functions
-  const navigateToInventory = () => router.push('/buy-used-cars');
-  const navigateToSell = () => router.push('/services/SellNowYourCar');
-  const navigateToValuation = () => router.push('/services/SellNowYourCar');
-  const navigateToFinance = () => router.push('/services/finance');
-  const navigateToInsurance = () => router.push('/services/insurance');
-  const navigateToTradeIn = () => router.push('/services/trade-in');
-  const navigateToServices = () => router.push('/services');
-  const navigateToContact = () => router.push('/contact');
+  const navigateToInventory = () => router.push('/luxe/buy-used-cars');
+  const navigateToSell = () => router.push('/luxe/services/SellNowYourCar');
+  const navigateToValuation = () => router.push('/luxe/services/SellNowYourCar');
+  const navigateToFinance = () => router.push('/luxe/services/finance');
+  const navigateToInsurance = () => router.push('/luxe/services/insurance');
+  const navigateToTradeIn = () => router.push('/luxe/services/trade-in');
+  const navigateToServices = () => router.push('/luxe/services');
+  const navigateToContact = () => router.push('/luxe/contact');
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {

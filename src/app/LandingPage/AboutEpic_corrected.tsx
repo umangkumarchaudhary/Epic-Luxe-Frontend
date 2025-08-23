@@ -21,7 +21,7 @@ declare global {
 
 const Section2AboutEpicCars = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const [, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const router = useRouter();
 
@@ -75,30 +75,11 @@ const Section2AboutEpicCars = () => {
         id="about-epic-cars"
         className="relative overflow-hidden py-24 md:py-25 lg:py-25"
         style={{
-          background: 'linear-gradient(135deg, #0D0D0D 0%, #1A1A1A 40%, rgba(212,175,55,0.05) 60%, #0D0D0D 100%)',
+          background: '#000000',
         }}
         role="region"
         aria-label="About Epic Cars"
       >
-        {/* Subtle animated gradient orbs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div 
-            className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] rounded-full opacity-[0.02]"
-            style={{
-              background: 'radial-gradient(circle, #D4AF37 0%, transparent 70%)',
-              transform: `translateY(${scrollY * 0.05}px) rotate(${scrollY * 0.02}deg)`,
-              filter: 'blur(100px)'
-            }}
-          />
-          <div 
-            className="absolute bottom-1/4 -right-1/4 w-[800px] h-[800px] rounded-full opacity-[0.02]"
-            style={{
-              background: 'radial-gradient(circle, #EAD9B8 0%, transparent 70%)',
-              transform: `translateY(${-scrollY * 0.03}px) rotate(${-scrollY * 0.02}deg)`,
-              filter: 'blur(120px)'
-            }}
-          />
-        </div>
 
         {/* Content Container */}
         <div className="relative z-10 container mx-auto px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 max-w-7xl">
@@ -112,12 +93,10 @@ const Section2AboutEpicCars = () => {
                   isVisible 
                     ? 'opacity-100 translate-y-0' 
                     : 'opacity-0 translate-y-12'
-                } bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent`}
+                } text-white`}
         style={{
           fontFamily: 'Manrope, sans-serif',
           fontWeight: 700,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
           transitionDelay: '0ms'
         }}
               >
@@ -127,7 +106,7 @@ const Section2AboutEpicCars = () => {
 
               {/* Paragraph with fade-up delay */}
               <p 
-                className={`text-gray-400 text-base sm:text-lg lg:text-xl leading-relaxed tracking-wide transition-all duration-1000 ease-out ${
+                className={`text-white text-base sm:text-lg lg:text-xl leading-relaxed tracking-wide transition-all duration-1000 ease-out ${
                   isVisible 
                     ? 'opacity-100 translate-y-0' 
                     : 'opacity-0 translate-y-12'
@@ -160,12 +139,10 @@ const Section2AboutEpicCars = () => {
                 aria-label="Discover our collection"
               >
                 <span 
-                  className="text-sm uppercase tracking-[0.2em] transition-colors duration-300 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent"
+                  className="text-sm uppercase tracking-[0.2em] transition-colors duration-300 text-white"
                   style={{
                     fontFamily: 'Manrope, sans-serif',
                     fontWeight: 600,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
                   }}
                 >
                   Discover Our Legacy

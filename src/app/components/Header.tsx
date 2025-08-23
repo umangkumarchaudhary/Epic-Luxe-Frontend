@@ -29,7 +29,7 @@ const services = [
   { name: 'Buy Now', icon: Car, href: '/luxe/buy-used-cars' },
   { name: 'Sell Now', icon: Crown, href: '/luxe/services/SellNowYourCar' },
   { name: 'Free Evaluation', icon: Shield, href: 'luxe/services/SellNowYourCar' },
-  { name: 'Epic Shield', icon: CreditCard, href: '/luxe/ExtendedWarranty' },
+  { name: 'Epic Shield', icon: CreditCard, href: '/ExtendedWarranty' },
   
   { name: 'Trade In', icon: ArrowUpDown, href: '/luxe/services/TradeIn' },
 ];
@@ -60,7 +60,7 @@ const searchableServices = [
   { name: 'Buy Now', href: '/luxe/buy-used-cars', category: 'Services', keywords: ['buy', 'purchase', 'cars', 'vehicles', 'inventory'] },
   { name: 'Sell Now', href: '/luxe/services/SellNowYourCar', category: 'Services', keywords: ['sell', 'selling', 'car', 'vehicle', 'money'] },
   { name: 'Free Evaluation', href: '/luxe/services/SellNowYourCar', category: 'Services', keywords: ['evaluation', 'valuation', 'price', 'estimate', 'worth', 'free'] },
-  { name: 'Epic Shield', href: '/luxe/ExtendedWarranty', category: 'Services', keywords: ['warranty', 'shield', 'protection', 'coverage', 'extended'] },
+  { name: 'Epic Shield', href: '/ExtendedWarranty', category: 'Services', keywords: ['warranty', 'shield', 'protection', 'coverage', 'extended'] },
   { name: 'Trade In', href: '/luxe/services/TradeIn', category: 'Services', keywords: ['trade', 'exchange', 'swap', 'upgrade'] },
   { name: 'Services', href: '/luxe/services', category: 'Services', keywords: ['services', 'help', 'support', 'assistance'] },
 ];
@@ -458,7 +458,10 @@ export default function Header() {
       const sortedResults = results
         .sort((a, b) => b.score - a.score)
         .slice(0, 8)
-        .map(({ score: _, ...item }) => item);
+        .map((item) => {
+          const { score, ...rest } = item;
+          return rest;
+        });
 
       setSearchResults(sortedResults);
     } catch (error) {

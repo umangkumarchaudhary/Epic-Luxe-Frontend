@@ -221,7 +221,7 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
             >
               <motion.h2
                 id="why-choose-heading"
-                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white"
                 style={{
                   fontFamily: 'Manrope, sans-serif',
                   letterSpacing: '-0.02em'
@@ -233,7 +233,7 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
               {/* Gold hairline divider */}
               <motion.div 
                 className="w-24 h-px mx-auto"
-                style={{ background: 'linear-gradient(to right, #D4AF37, #BFA980)' }}
+                style={{ background: 'white' }}
                 initial={{ scaleX: 0 }}
                 animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
@@ -301,7 +301,7 @@ const Section3WhyChooseUs: React.FC<WhyChooseUsProps> = ({ className = '' }) => 
               className="text-center mt-12"
             >
               <motion.p
-                className="text-lg font-medium opacity-90 max-w-2xl mx-auto leading-relaxed bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent"
+                className="text-lg font-medium opacity-90 max-w-2xl mx-auto leading-relaxed text-white"
                 style={{ 
                   fontFamily: 'Manrope, sans-serif',
                   letterSpacing: '0.01em'

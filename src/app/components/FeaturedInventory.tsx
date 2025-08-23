@@ -316,7 +316,7 @@ const FeaturedInventory: React.FC = () => {
   const featuredVehicles = vehicles.slice(0, 6);
 
   return (
-    <section className="bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden w-full py-12 md:py-16 font-manrope">
+    <section className="bg-black w-full py-12 md:py-16 font-manrope">
       
       {/* Background Elements */}
       <div className="absolute inset-0">

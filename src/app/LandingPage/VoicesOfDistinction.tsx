@@ -321,7 +321,7 @@ const VoicesOfDistinction: React.FC<{ className?: string }> = ({ className = '' 
               ref={headingRef}
               id="testimonials-heading"
               animate={shimmerControls}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent"
+              className="text-5xl md:text-6xl lg:text-7xl font-bold text-white"
               style={{ 
                 fontFamily: 'Manrope, sans-serif',
                 backgroundSize: '200% 100%',

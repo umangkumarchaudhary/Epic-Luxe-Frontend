@@ -99,7 +99,7 @@ const LuxeTile: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
     
     // Navigate after circle animation starts
     setTimeout(() => {
-      router.push('/luxe/inventory')
+      router.push('/luxe/buy-used-cars')
     }, 400)
   }, [highlight.model, router])
 
@@ -430,7 +430,7 @@ const ThisMonthsHighlights: React.FC<{ className?: string }> = ({ className = ''
       ref={sectionRef}
       className={`relative py-16 sm:py-20 lg:py-32 overflow-hidden ${className}`}
       style={{
-        background: 'linear-gradient(135deg, #0F0F10 0%, #1A1A1A 100%)'
+        background: '#000000'
       }}
       aria-labelledby="highlights-heading"
     >
@@ -457,13 +457,9 @@ const ThisMonthsHighlights: React.FC<{ className?: string }> = ({ className = ''
           >
             <motion.h2 
               id="highlights-heading"
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light mb-6 sm:mb-8"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light mb-6 sm:mb-8 text-white"
               style={{ 
                 fontFamily: 'Manrope, sans-serif',
-                background: 'linear-gradient(90deg, #D4AF37 0%, #BFA980 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
                 letterSpacing: '-0.02em'
               }}
             >
@@ -486,9 +482,8 @@ const ThisMonthsHighlights: React.FC<{ className?: string }> = ({ className = ''
             className="text-center"
           >
             <p 
-              className="text-xs sm:text-sm font-medium tracking-[0.2em] uppercase opacity-80"
+              className="text-xs sm:text-sm font-medium tracking-[0.2em] uppercase opacity-80 text-white"
               style={{ 
-                color: '#D4AF37',
                 fontFamily: 'Manrope, sans-serif'
               }}
             >

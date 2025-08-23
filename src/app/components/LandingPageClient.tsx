@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback} from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, Sparkles, Shield, Award, ChevronDown, Phone } from 'lucide-react';
 import Section2AboutEpicCars from '../LandingPage/AboutEpic_corrected';
@@ -27,6 +27,32 @@ const LandingPageClient = () => {
   const [buyDropdownOpen, setBuyDropdownOpen] = useState(false);
   const [sellDropdownOpen, setSellDropdownOpen] = useState(false);
   const [contentLoaded, setContentLoaded] = useState(false);
+  const [bottomBuyOpen, setBottomBuyOpen] = useState(false);
+  const [bottomSellOpen, setBottomSellOpen] = useState(false);
+  const [loadingNavigation, setLoadingNavigation] = useState<string | null>(null);
+  const [buttonLoading, setButtonLoading] = useState<string | null>(null);
+  const [headerLoading, setHeaderLoading] = useState<string | null>(null);
+  const [dropdownLoading, setDropdownLoading] = useState<string | null>(null);
+  const [callButtonPressed, setCallButtonPressed] = useState(false);
+  const [hapticFeedback, setHapticFeedback] = useState<string | null>(null);
+
+  // Haptic feedback simulation function
+  const simulateHapticFeedback = useCallback((type: 'light' | 'medium' | 'heavy', buttonId: string) => {
+    setHapticFeedback(buttonId);
+    
+    // Visual feedback duration based on haptic type
+    const duration = type === 'light' ? 50 : type === 'medium' ? 100 : 150;
+    
+    // Try actual haptic feedback if available
+    if ('vibrate' in navigator) {
+      const pattern = type === 'light' ? 10 : type === 'medium' ? 20 : 30;
+      navigator.vibrate(pattern);
+    }
+    
+    setTimeout(() => {
+      setHapticFeedback(null);
+    }, duration);
+  }, []);
 
   // Smooth car animation with easing
   useEffect(() => {
@@ -171,32 +197,90 @@ const LandingPageClient = () => {
     };
   }, [handleScroll, handleMouseMove, checkMobile, contentLoaded]);
 
+  // Premium navigation handler with loading states
+  const handlePremiumNavigation = useCallback(async (url: string, buttonType: string) => {
+    setButtonLoading(buttonType);
+
+    // Add premium loading animation
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Start navigation
+    router.push(url);
+    
+    // Keep loading state for visual feedback
+    setTimeout(() => {
+      setButtonLoading(null);
+    }, 1500);
+  }, [router]);
+
   const handleLuxeNavigation = () => {
-    router.push('/luxe');
+    simulateHapticFeedback('heavy', 'luxe-main');
+    handlePremiumNavigation('/luxe', 'luxe');
   };
 
   const handleReassuredNavigation = () => {
-    router.push('/reassured');
+    simulateHapticFeedback('heavy', 'reassured-main');
+    handlePremiumNavigation('/reassured', 'reassured');
   };
 
-  // Navigation dropdown handlers
-  const handleBuyDropdown = (e: React.MouseEvent<HTMLButtonElement>) => {
+  // Bottom navigation handlers with loading states
+  const handleBottomNavigation = useCallback(async (url: string, key: string) => {
+    setLoadingNavigation(key);
+    
+    // Simulate loading for smooth UX
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    router.push(url);
+    setLoadingNavigation(null);
+    setBottomBuyOpen(false);
+    setBottomSellOpen(false);
+  }, [router]);
+
+  // Close dropdowns when clicking outside
+  const handleClickOutside = useCallback(() => {
+    setBottomBuyOpen(false);
+    setBottomSellOpen(false);
+  }, []);
+
+  // Navigation dropdown handlers with premium animations
+  const handleBuyDropdown = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    setBuyDropdownOpen(!buyDropdownOpen);
-    setSellDropdownOpen(false);
-  };
+    setHeaderLoading('buy');
+    
+    // Simulate premium loading for smooth UX
+    setTimeout(() => {
+      setBuyDropdownOpen(!buyDropdownOpen);
+      setSellDropdownOpen(false);
+      setHeaderLoading(null);
+    }, 200);
+  }, [buyDropdownOpen]);
 
-  const handleSellDropdown = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSellDropdown = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    setSellDropdownOpen(!sellDropdownOpen);
-    setBuyDropdownOpen(false);
-  };
+    setHeaderLoading('sell');
+    
+    // Simulate premium loading for smooth UX
+    setTimeout(() => {
+      setSellDropdownOpen(!sellDropdownOpen);
+      setBuyDropdownOpen(false);
+      setHeaderLoading(null);
+    }, 200);
+  }, [sellDropdownOpen]);
 
-  const handleNavigation = (path: string) => {
+  const handleNavigation = useCallback(async (path: string, buttonKey: string) => {
+    setDropdownLoading(buttonKey);
+    
+    // Premium loading animation
+    await new Promise(resolve => setTimeout(resolve, 600));
+    
     router.push(path);
     setBuyDropdownOpen(false);
     setSellDropdownOpen(false);
-  };
+    
+    setTimeout(() => {
+      setDropdownLoading(null);
+    }, 1000);
+  }, [router]);
 
   // Calculate smooth transforms with hardware acceleration
   const getLeftCarTransform = () => {
@@ -235,7 +319,7 @@ const LandingPageClient = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            EPIC CARS
+            EPIC
           </div>
           <div className="w-16 h-1 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] mx-auto rounded-full animate-pulse"></div>
         </div>
@@ -264,7 +348,7 @@ const LandingPageClient = () => {
         </div>
 
         {/* Premium Navigation Header - Always visible */}
-        <header className="fixed top-0 left-0 right-0 z-[9999] translate-y-0 opacity-100 bg-black/98 backdrop-blur-2xl border-b border-[#D4AF37]/20 shadow-lg transition-all duration-700 ease-out">
+        <header className="fixed top-0 left-0 right-0 z-[9999] translate-y-0 opacity-100 bg-black backdrop-blur-2xl border-b border-white/20 shadow-lg transition-all duration-700 ease-out">
           <nav className="px-6 sm:px-8 lg:px-12 py-4 sm:py-4 relative" role="navigation" aria-label="Main navigation">
             <div className="flex items-center justify-between">
               {/* Logo - Left */}
@@ -272,19 +356,13 @@ const LandingPageClient = () => {
                 contentLoaded ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'
               }`}>
                 <h1 
-                  className="text-lg sm:text-xl lg:text-2xl font-light tracking-[0.25em] cursor-pointer"
+                  className="text-lg sm:text-xl lg:text-2xl font-light tracking-[0.25em] cursor-pointer text-white"
                   onClick={() => router.push('/')}
                   style={{
-                    fontFamily: 'Manrope, sans-serif',
-                    background: 'linear-gradient(90deg, #D4AF37 0%, #BFA980 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    backgroundSize: '200% auto',
-                    animation: 'goldShimmer 8s linear infinite'
+                    fontFamily: 'Manrope, sans-serif'
                   }}
                 >
-                  EPIC CARS
+                  EPIC
                 </h1>
               </div>
 
@@ -297,16 +375,32 @@ const LandingPageClient = () => {
                 <div className="relative">
                   <button 
                     onClick={handleBuyDropdown}
-                    className="group flex items-center space-x-2 px-6 py-2 text-white hover:text-[#D4AF37] transition-all duration-300 font-medium tracking-wide hover:scale-105"
+                    disabled={headerLoading === 'buy'}
+                    className={`group flex items-center space-x-2 px-6 py-2 font-medium tracking-wide transition-all duration-300 relative overflow-hidden disabled:opacity-80 ${
+                      headerLoading === 'buy' 
+                        ? 'text-[#D4AF37] scale-95' 
+                        : 'text-white hover:text-[#D4AF37] hover:scale-105'
+                    }`}
                     style={{ fontFamily: 'Manrope, sans-serif' }}
                     aria-expanded={buyDropdownOpen}
                     aria-haspopup="true"
                   >
-                    <span className="relative">
-                      Buy Now
-                      <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] group-hover:w-full transition-all duration-300"></div>
+                    {/* Premium shimmer effect */}
+                    <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent -translate-x-full transition-transform duration-600 ${
+                      headerLoading === 'buy' ? 'translate-x-full' : 'group-hover:translate-x-full'
+                    }`}></div>
+                    
+                    <span className="relative z-10">
+                      {headerLoading === 'buy' ? 'Loading...' : 'Buy Now'}
+                      <div className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] transition-all duration-300 ${
+                        headerLoading === 'buy' || buyDropdownOpen ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}></div>
                     </span>
-                    <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${buyDropdownOpen ? 'rotate-180' : ''}`} />
+                    {headerLoading === 'buy' ? (
+                      <div className="w-4 h-4 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin" />
+                    ) : (
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${buyDropdownOpen ? 'rotate-180' : ''}`} />
+                    )}
                   </button>
                 </div>
 
@@ -314,16 +408,32 @@ const LandingPageClient = () => {
                 <div className="relative">
                   <button 
                     onClick={handleSellDropdown}
-                    className="group flex items-center space-x-2 px-6 py-2 text-white hover:text-[#D4AF37] transition-all duration-300 font-medium tracking-wide hover:scale-105"
+                    disabled={headerLoading === 'sell'}
+                    className={`group flex items-center space-x-2 px-6 py-2 font-medium tracking-wide transition-all duration-300 relative overflow-hidden disabled:opacity-80 ${
+                      headerLoading === 'sell' 
+                        ? 'text-[#D4AF37] scale-95' 
+                        : 'text-white hover:text-[#D4AF37] hover:scale-105'
+                    }`}
                     style={{ fontFamily: 'Manrope, sans-serif' }}
                     aria-expanded={sellDropdownOpen}
                     aria-haspopup="true"
                   >
-                    <span className="relative">
-                      Sell Now
-                      <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] group-hover:w-full transition-all duration-300"></div>
+                    {/* Premium shimmer effect */}
+                    <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent -translate-x-full transition-transform duration-600 ${
+                      headerLoading === 'sell' ? 'translate-x-full' : 'group-hover:translate-x-full'
+                    }`}></div>
+                    
+                    <span className="relative z-10">
+                      {headerLoading === 'sell' ? 'Loading...' : 'Sell Now'}
+                      <div className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] transition-all duration-300 ${
+                        headerLoading === 'sell' || sellDropdownOpen ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}></div>
                     </span>
-                    <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${sellDropdownOpen ? 'rotate-180' : ''}`} />
+                    {headerLoading === 'sell' ? (
+                      <div className="w-4 h-4 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin" />
+                    ) : (
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${sellDropdownOpen ? 'rotate-180' : ''}`} />
+                    )}
                   </button>
                 </div>
               </div>
@@ -334,32 +444,70 @@ const LandingPageClient = () => {
               }`}>
                 <a 
                   href="tel:+919876543210" 
-                  className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-semibold rounded-full hover:shadow-lg hover:shadow-[#D4AF37]/25 hover:scale-105 transition-all duration-300 group"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCallButtonPressed(true);
+                    // Simulate call initiation
+                    setTimeout(() => {
+                      window.location.href = 'tel:+919876543210';
+                    }, 300);
+                    setTimeout(() => {
+                      setCallButtonPressed(false);
+                    }, 2000);
+                  }}
+                  className={`flex items-center space-x-2 px-4 py-2 bg-white text-black font-semibold rounded-full transition-all duration-300 group overflow-hidden relative ${
+                    callButtonPressed 
+                      ? 'scale-95 shadow-inner' 
+                      : 'hover:shadow-lg hover:shadow-white/25 hover:scale-105'
+                  }`}
                 >
-                  <Phone className="w-4 h-4 group-hover:animate-pulse" />
-                  <span className="font-medium tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>Call Now</span>
+                  {/* Premium shimmer effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-gray-200/40 to-transparent -translate-x-full transition-transform duration-700 ${
+                    callButtonPressed ? 'translate-x-full' : 'group-hover:translate-x-full'
+                  }`}></div>
+                  
+                  {callButtonPressed ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      <span className="font-medium tracking-wide relative z-10" style={{ fontFamily: 'Manrope, sans-serif' }}>Calling...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Phone className="w-4 h-4 group-hover:animate-pulse relative z-10" />
+                      <span className="font-medium tracking-wide relative z-10" style={{ fontFamily: 'Manrope, sans-serif' }}>Call Now</span>
+                    </>
+                  )}
                 </a>
               </div>
             </div>
           </nav>
         </header>
 
-        {/* Buy Now Dropdown Portal - Fixed positioning */}
+        {/* Buy Now Dropdown Portal - Fixed positioning with smooth animations */}
         {buyDropdownOpen && (
-          <div className="fixed top-16 left-1/2 transform -translate-x-32 z-[99999] w-64 bg-black/95 backdrop-blur-xl border border-[#D4AF37]/20 rounded-xl shadow-2xl transition-all duration-300">
+          <div className="fixed top-16 left-1/2 transform -translate-x-32 z-[99999] w-64 bg-black/95 backdrop-blur-xl border border-[#D4AF37]/20 rounded-xl shadow-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-4 duration-300">
             <div className="p-2">
               {/* Epic Luxe Option */}
               <button
-                onClick={() => handleNavigation('/luxe')}
-                className="group/item w-full text-left p-4 rounded-lg hover:bg-gradient-to-r hover:from-[#D4AF37]/10 hover:to-[#BFA980]/10 transition-all duration-300 hover:scale-[1.02]"
+                onClick={() => handleNavigation('/luxe', 'buy-luxe-dropdown')}
+                disabled={dropdownLoading === 'buy-luxe-dropdown'}
+                className={`group/item w-full text-left p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-70 ${
+                  dropdownLoading === 'buy-luxe-dropdown' 
+                    ? 'bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20 scale-[0.98]' 
+                    : 'hover:bg-gradient-to-r hover:from-[#D4AF37]/10 hover:to-[#BFA980]/10'
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-[#D4AF37] font-semibold text-lg tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>
-                      Epic Luxe
+                      {dropdownLoading === 'buy-luxe-dropdown' ? 'Connecting...' : 'Epic Luxe'}
                     </h3>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-[#D4AF37] group-hover/item:translate-x-1 transition-transform duration-300" />
+                  {dropdownLoading === 'buy-luxe-dropdown' ? (
+                    <div className="w-5 h-5 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-[#D4AF37] group-hover/item:translate-x-1 transition-transform duration-300" />
+                  )}
                 </div>
                 <div className="mt-2 flex items-center space-x-2">
                   <Sparkles className="w-3 h-3 text-amber-500/60" />
@@ -372,17 +520,26 @@ const LandingPageClient = () => {
               
               {/* Epic Reassured Option */}
               <button
-                onClick={() => handleNavigation('/reassured')}
-                className="group/item w-full text-left p-4 rounded-lg hover:bg-gradient-to-r hover:from-gray-800/30 hover:to-gray-700/30 transition-all duration-300 hover:scale-[1.02]"
+                onClick={() => handleNavigation('/reassured', 'buy-reassured-dropdown')}
+                disabled={dropdownLoading === 'buy-reassured-dropdown'}
+                className={`group/item w-full text-left p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-70 ${
+                  dropdownLoading === 'buy-reassured-dropdown' 
+                    ? 'bg-gradient-to-r from-gray-700/30 to-gray-600/30 scale-[0.98]' 
+                    : 'hover:bg-gradient-to-r hover:from-gray-800/30 hover:to-gray-700/30'
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-white font-semibold text-lg tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>
-                      Epic Reassured
+                      {dropdownLoading === 'buy-reassured-dropdown' ? 'Connecting...' : 'Epic Reassured'}
                     </h3>
                     
                   </div>
-                  <ChevronRight className="w-5 h-5 text-white group-hover/item:translate-x-1 transition-transform duration-300" />
+                  {dropdownLoading === 'buy-reassured-dropdown' ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-white group-hover/item:translate-x-1 transition-transform duration-300" />
+                  )}
                 </div>
                 <div className="mt-2 flex items-center space-x-2">
                   <Shield className="w-3 h-3 text-gray-500" />
@@ -393,22 +550,31 @@ const LandingPageClient = () => {
           </div>
         )}
 
-        {/* Sell Now Dropdown Portal - Fixed positioning */}
+        {/* Sell Now Dropdown Portal - Fixed positioning with smooth animations */}
         {sellDropdownOpen && (
-          <div className="fixed top-16 left-1/2 transform translate-x-8 z-[99999] w-64 bg-black/95 backdrop-blur-xl border border-[#D4AF37]/20 rounded-xl shadow-2xl transition-all duration-300">
+          <div className="fixed top-16 left-1/2 transform translate-x-8 z-[99999] w-64 bg-black/95 backdrop-blur-xl border border-[#D4AF37]/20 rounded-xl shadow-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-4 duration-300">
             <div className="p-2">
               {/* Sell to Epic Luxe */}
               <button
-                onClick={() => handleNavigation('/sell/luxe')}
-                className="group/item w-full text-left p-4 rounded-lg hover:bg-gradient-to-r hover:from-[#D4AF37]/10 hover:to-[#BFA980]/10 transition-all duration-300 hover:scale-[1.02]"
+                onClick={() => handleNavigation('/sell/luxe', 'sell-luxe-dropdown')}
+                disabled={dropdownLoading === 'sell-luxe-dropdown'}
+                className={`group/item w-full text-left p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-70 ${
+                  dropdownLoading === 'sell-luxe-dropdown' 
+                    ? 'bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20 scale-[0.98]' 
+                    : 'hover:bg-gradient-to-r hover:from-[#D4AF37]/10 hover:to-[#BFA980]/10'
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-[#D4AF37] font-semibold text-lg tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>
-                      Sell to Epic Luxe
+                      {dropdownLoading === 'sell-luxe-dropdown' ? 'Connecting...' : 'Sell to Epic Luxe'}
                     </h3>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-[#D4AF37] group-hover/item:translate-x-1 transition-transform duration-300" />
+                  {dropdownLoading === 'sell-luxe-dropdown' ? (
+                    <div className="w-5 h-5 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-[#D4AF37] group-hover/item:translate-x-1 transition-transform duration-300" />
+                  )}
                 </div>
                 <div className="mt-2 flex items-center space-x-2">
                   <Award className="w-3 h-3 text-amber-500/60" />
@@ -421,17 +587,26 @@ const LandingPageClient = () => {
               
               {/* Sell to Epic Reassured */}
               <button
-                onClick={() => handleNavigation('/sell/reassured')}
-                className="group/item w-full text-left p-4 rounded-lg hover:bg-gradient-to-r hover:from-gray-800/30 hover:to-gray-700/30 transition-all duration-300 hover:scale-[1.02]"
+                onClick={() => handleNavigation('/sell/reassured', 'sell-reassured-dropdown')}
+                disabled={dropdownLoading === 'sell-reassured-dropdown'}
+                className={`group/item w-full text-left p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-70 ${
+                  dropdownLoading === 'sell-reassured-dropdown' 
+                    ? 'bg-gradient-to-r from-gray-700/30 to-gray-600/30 scale-[0.98]' 
+                    : 'hover:bg-gradient-to-r hover:from-gray-800/30 hover:to-gray-700/30'
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-white font-semibold text-lg tracking-wide" style={{ fontFamily: 'Manrope, sans-serif' }}>
-                      Sell to Epic Reassured
+                      {dropdownLoading === 'sell-reassured-dropdown' ? 'Connecting...' : 'Sell to Epic Reassured'}
                     </h3>
                    
                   </div>
-                  <ChevronRight className="w-5 h-5 text-white group-hover/item:translate-x-1 transition-transform duration-300" />
+                  {dropdownLoading === 'sell-reassured-dropdown' ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-white group-hover/item:translate-x-1 transition-transform duration-300" />
+                  )}
                 </div>
                 <div className="mt-2 flex items-center space-x-2">
                   <Shield className="w-3 h-3 text-gray-500" />
@@ -463,7 +638,7 @@ const LandingPageClient = () => {
             <div className="block md:hidden w-full h-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/assets/images/mainhero2.jpeg"
+                src="/assets/images/epiccarsLP.jpg"
                 alt="Epic Cars Background Mobile"
                 className="w-full h-full object-cover"
                 loading="eager"
@@ -534,76 +709,137 @@ const LandingPageClient = () => {
               {/* Explore LUXE Button */}
               <button
                 onClick={handleLuxeNavigation}
-                className="group flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold rounded-full hover:shadow-2xl hover:shadow-[#D4AF37]/40 hover:scale-110 transition-all duration-500 transform hover:-translate-y-2"
+                disabled={buttonLoading === 'luxe'}
+                className={`group relative overflow-hidden flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold rounded-full transition-all duration-500 transform disabled:opacity-80 ${
+                  buttonLoading === 'luxe' || hapticFeedback === 'luxe-main'
+                    ? 'scale-95 shadow-inner' 
+                    : 'hover:shadow-2xl hover:shadow-[#D4AF37]/40 hover:scale-110 hover:-translate-y-2'
+                }`}
                 style={{ fontFamily: 'Manrope, sans-serif' }}
               >
-                <Sparkles className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
-                <span className="text-xl tracking-wide">Explore LUXE</span>
-                <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+                {/* Premium shimmer effect */}
+                <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full transition-transform duration-1000 ${
+                  buttonLoading === 'luxe' || hapticFeedback === 'luxe-main' ? 'translate-x-full' : 'group-hover:translate-x-full'
+                }`}></div>
+                
+                {buttonLoading === 'luxe' ? (
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 border-3 border-black/20 border-t-black rounded-full animate-spin"></div>
+                    <span className="text-xl tracking-wide">Connecting...</span>
+                    <div className="w-6 h-6"></div>
+                  </div>
+                ) : (
+                  <>
+                    <Sparkles className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
+                    <span className="text-xl tracking-wide relative z-10">Explore LUXE</span>
+                    <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+                  </>
+                )}
               </button>
 
               {/* Explore Reassured Button */}
               <button
                 onClick={handleReassuredNavigation}
-                className="group flex items-center space-x-3 px-8 py-4 bg-white/90 backdrop-blur-sm text-black font-bold rounded-full hover:bg-white hover:shadow-2xl hover:shadow-white/25 hover:scale-110 transition-all duration-500 transform hover:-translate-y-2"
+                disabled={buttonLoading === 'reassured'}
+                className={`group relative overflow-hidden flex items-center space-x-3 px-8 py-4 bg-white/90 backdrop-blur-sm text-black font-bold rounded-full transition-all duration-500 transform disabled:opacity-80 ${
+                  buttonLoading === 'reassured' || hapticFeedback === 'reassured-main'
+                    ? 'scale-95 shadow-inner bg-white/70' 
+                    : 'hover:bg-white hover:shadow-2xl hover:shadow-white/25 hover:scale-110 hover:-translate-y-2'
+                }`}
                 style={{ fontFamily: 'Manrope, sans-serif' }}
               >
-                <Shield className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
-                <span className="text-xl tracking-wide">Explore Reassured</span>
-                <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+                {/* Premium shimmer effect */}
+                <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-black/10 to-transparent -translate-x-full transition-transform duration-1000 ${
+                  buttonLoading === 'reassured' || hapticFeedback === 'reassured-main' ? 'translate-x-full' : 'group-hover:translate-x-full'
+                }`}></div>
+                
+                {buttonLoading === 'reassured' ? (
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 border-3 border-black/20 border-t-black rounded-full animate-spin"></div>
+                    <span className="text-xl tracking-wide">Connecting...</span>
+                    <div className="w-6 h-6"></div>
+                  </div>
+                ) : (
+                  <>
+                    <Shield className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+                    <span className="text-xl tracking-wide relative z-10">Explore Reassured</span>
+                    <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+                  </>
+                )}
               </button>
             </div>
           </div>
 
           {/* Mobile View - Stacked buttons */}
           <div className="block md:hidden w-full h-full relative">
-            {/* Mobile Buttons Container - Bottom positioned with margin */}
-            <div className="absolute bottom-0 left-0 right-0 px-6 pb-60 z-30">
-              <div className="flex flex-col space-y-6">
-                {/* Explore LUXE Button - Black background with white text */}
+            {/* Mobile Buttons Container - Bottom positioned with margin - Smaller size */}
+            <div className="absolute bottom-0 left-0 right-0 px-6 pb-48 z-30">
+              <div className="flex flex-col space-y-4 max-w-xs mx-auto">
+                {/* Explore LUXE Button - Smaller size with premium loading */}
                 <button
                   onClick={handleLuxeNavigation}
-                  className="group flex items-center justify-center space-x-3 px-8 py-5 bg-black/90 backdrop-blur-sm text-white font-bold rounded-full border-2 border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black hover:scale-105 transition-all duration-500 shadow-lg hover:shadow-2xl"
+                  disabled={buttonLoading === 'luxe'}
+                  className={`group relative overflow-hidden flex items-center justify-center space-x-2 px-6 py-3 bg-black/90 backdrop-blur-sm text-white font-bold rounded-full border-2 border-[#D4AF37] shadow-lg transition-all duration-500 disabled:opacity-80 ${
+                    buttonLoading === 'luxe' || hapticFeedback === 'luxe-main'
+                      ? 'scale-95 bg-[#D4AF37] text-black border-[#BFA980]' 
+                      : 'hover:bg-[#D4AF37] hover:text-black hover:scale-105 hover:shadow-2xl'
+                  }`}
                   style={{ fontFamily: 'Manrope, sans-serif' }}
                 >
-                  <Sparkles className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-                  <span className="text-lg tracking-wide">Explore LUXE</span>
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  {/* Mobile shimmer effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent -translate-x-full transition-transform duration-800 ${
+                    buttonLoading === 'luxe' || hapticFeedback === 'luxe-main' ? 'translate-x-full' : 'group-hover:translate-x-full'
+                  }`}></div>
+                  
+                  {buttonLoading === 'luxe' ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+                      <span className="text-sm tracking-wide">Loading...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                      <span className="text-sm tracking-wide relative z-10">Explore LUXE</span>
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                    </>
+                  )}
                 </button>
 
-                {/* Explore Reassured Button - White background with black text */}
+                {/* Explore Reassured Button - Smaller size with premium loading */}
                 <button
                   onClick={handleReassuredNavigation}
-                  className="group flex items-center justify-center space-x-3 px-8 py-5 bg-white/95 backdrop-blur-sm text-black font-bold rounded-full border-2 border-gray-300 hover:bg-black hover:text-white hover:border-white hover:scale-105 transition-all duration-500 shadow-lg hover:shadow-2xl"
+                  disabled={buttonLoading === 'reassured'}
+                  className={`group relative overflow-hidden flex items-center justify-center space-x-2 px-6 py-3 bg-white/95 backdrop-blur-sm text-black font-bold rounded-full border-2 shadow-lg transition-all duration-500 disabled:opacity-80 ${
+                    buttonLoading === 'reassured' || hapticFeedback === 'reassured-main'
+                      ? 'scale-95 bg-gray-800 text-white border-white' 
+                      : 'border-gray-300 hover:bg-black hover:text-white hover:border-white hover:scale-105 hover:shadow-2xl'
+                  }`}
                   style={{ fontFamily: 'Manrope, sans-serif' }}
                 >
-                  <Shield className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                  <span className="text-lg tracking-wide">Explore Reassured</span>
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  {/* Mobile shimmer effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full transition-transform duration-800 ${
+                    buttonLoading === 'reassured' || hapticFeedback === 'reassured-main' ? 'translate-x-full' : 'group-hover:translate-x-full'
+                  }`}></div>
+                  
+                  {buttonLoading === 'reassured' ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span className="text-sm tracking-wide">Loading...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <Shield className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
+                      <span className="text-sm tracking-wide relative z-10">Explore Reassured</span>
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                    </>
+                  )}
                 </button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Tagline Below Hero - Hidden on mobile to maintain clean split */}
-        {!isMobile && (
-          <section className={`relative w-full py-12 bg-gradient-to-b from-black via-gray-900 to-black transition-all duration-1500 transform ${
-            contentLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
-            <div className="text-center">
-              <p className="text-2xl lg:text-3xl">
-                <span style={{ fontFamily: 'Manrope, sans-serif' }} className="font-light text-gray-400">
-                  Choose Your Journey
-                </span>
-                <span className="mx-3 text-amber-500/60">·</span>
-                <span style={{ fontFamily: 'Manrope, sans-serif' }} className="font-light text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#BFA980]">
-                  Experience Excellence
-                </span>
-              </p>
-            </div>
-          </section>
-        )}
+        
         
         {/* SEO Content - Hidden but crawlable */}
         <section className="sr-only">
@@ -642,6 +878,148 @@ const LandingPageClient = () => {
         <VoicesOfDistinction/>
         <LuxuryLeadForm/>
         <ChooseYourJourneySection/>
+
+        {/* Bottom Sticky Navigation - Mobile Only */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-black/95 via-gray-900/95 to-black/95 backdrop-blur-sm border-t border-[#D4AF37]/20" onClick={handleClickOutside}>
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-center space-x-4">
+              
+              {/* BUY NOW Button with Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    simulateHapticFeedback('medium', 'bottom-buy');
+                    setBottomBuyOpen(!bottomBuyOpen);
+                    setBottomSellOpen(false);
+                  }}
+                  className={`flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold rounded-full transition-all duration-300 relative overflow-hidden ${
+                    hapticFeedback === 'bottom-buy' 
+                      ? 'scale-95 shadow-inner' 
+                      : loadingNavigation?.startsWith('buy') 
+                        ? 'scale-95' 
+                        : 'hover:shadow-lg hover:shadow-[#D4AF37]/30 hover:scale-105'
+                  }`}
+                  style={{ fontFamily: 'Manrope, sans-serif' }}
+                >
+                  {/* Premium shimmer effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full transition-transform duration-500 ${
+                    hapticFeedback === 'bottom-buy' || loadingNavigation?.startsWith('buy') ? 'translate-x-full' : 'group-hover:translate-x-full'
+                  }`}></div>
+                  
+                  {loadingNavigation?.startsWith('buy') ? (
+                    <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <span className="text-sm relative z-10">BUY NOW</span>
+                  )}
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${bottomBuyOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Buy Dropdown */}
+                {bottomBuyOpen && (
+                  <div className="absolute bottom-full left-0 mb-2 w-48 bg-black/90 backdrop-blur-sm border border-[#D4AF37]/30 rounded-xl shadow-xl">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBottomNavigation('/luxe/buy-used-cars', 'buy-luxe');
+                      }}
+                      disabled={loadingNavigation === 'buy-luxe'}
+                      className="w-full px-4 py-3 text-left text-white hover:bg-[#D4AF37]/20 rounded-t-xl transition-colors duration-200 flex items-center justify-between disabled:opacity-50"
+                      style={{ fontFamily: 'Manrope, sans-serif' }}
+                    >
+                      <span className="text-sm">Explore Luxe</span>
+                      {loadingNavigation === 'buy-luxe' && (
+                        <div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+                      )}
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBottomNavigation('/reassured/buy-used-cars', 'buy-reassured');
+                      }}
+                      disabled={loadingNavigation === 'buy-reassured'}
+                      className="w-full px-4 py-3 text-left text-white hover:bg-[#D4AF37]/20 rounded-b-xl transition-colors duration-200 flex items-center justify-between disabled:opacity-50"
+                      style={{ fontFamily: 'Manrope, sans-serif' }}
+                    >
+                      <span className="text-sm">Explore Reassured</span>
+                      {loadingNavigation === 'buy-reassured' && (
+                        <div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="w-px h-6 bg-[#D4AF37]/40"></div>
+
+              {/* SELL NOW Button with Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    simulateHapticFeedback('medium', 'bottom-sell');
+                    setBottomSellOpen(!bottomSellOpen);
+                    setBottomBuyOpen(false);
+                  }}
+                  className={`flex items-center space-x-2 px-6 py-2 bg-white/10 backdrop-blur-sm text-white border border-[#D4AF37]/40 font-bold rounded-full transition-all duration-300 relative overflow-hidden ${
+                    hapticFeedback === 'bottom-sell' 
+                      ? 'scale-95 bg-[#D4AF37]/30 border-[#D4AF37]' 
+                      : loadingNavigation?.startsWith('sell') 
+                        ? 'scale-95' 
+                        : 'hover:bg-[#D4AF37]/20 hover:border-[#D4AF37] hover:scale-105'
+                  }`}
+                  style={{ fontFamily: 'Manrope, sans-serif' }}
+                >
+                  {/* Premium shimmer effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent -translate-x-full transition-transform duration-500 ${
+                    hapticFeedback === 'bottom-sell' || loadingNavigation?.startsWith('sell') ? 'translate-x-full' : 'group-hover:translate-x-full'
+                  }`}></div>
+                  
+                  {loadingNavigation?.startsWith('sell') ? (
+                    <div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <span className="text-sm relative z-10">SELL NOW</span>
+                  )}
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${bottomSellOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Sell Dropdown */}
+                {bottomSellOpen && (
+                  <div className="absolute bottom-full left-0 mb-2 w-48 bg-black/90 backdrop-blur-sm border border-[#D4AF37]/30 rounded-xl shadow-xl">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBottomNavigation('/luxe/services/SellNowYourCar', 'sell-luxe');
+                      }}
+                      disabled={loadingNavigation === 'sell-luxe'}
+                      className="w-full px-4 py-3 text-left text-white hover:bg-[#D4AF37]/20 rounded-t-xl transition-colors duration-200 flex items-center justify-between disabled:opacity-50"
+                      style={{ fontFamily: 'Manrope, sans-serif' }}
+                    >
+                      <span className="text-sm">Luxe Services</span>
+                      {loadingNavigation === 'sell-luxe' && (
+                        <div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+                      )}
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBottomNavigation('/reassured/Services/sell-your-car', 'sell-reassured');
+                      }}
+                      disabled={loadingNavigation === 'sell-reassured'}
+                      className="w-full px-4 py-3 text-left text-white hover:bg-[#D4AF37]/20 rounded-b-xl transition-colors duration-200 flex items-center justify-between disabled:opacity-50"
+                      style={{ fontFamily: 'Manrope, sans-serif' }}
+                    >
+                      <span className="text-sm">Reassured Services</span>
+                      {loadingNavigation === 'sell-reassured' && (
+                        <div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Enhanced Styles for smooth animations */}
         <style jsx>{`
@@ -737,6 +1115,17 @@ const LandingPageClient = () => {
             font-display: swap;
             src: local('Manrope');
           }
+          
+          /* Progressive enhancement for touch devices */
+          @media (hover: none) and (pointer: coarse) {
+            .hover-float:active {
+              animation: microBounce 0.2s ease-out;
+            }
+            
+            .button-transition {
+              transition: all 0.2s ease-out;
+            }
+          }
 
           /* Smooth hardware-accelerated transforms */
           .car-transform {
@@ -783,6 +1172,52 @@ const LandingPageClient = () => {
           .transform-gpu {
             transform: translateZ(0);
             will-change: transform;
+          }
+          
+          /* Premium button press effects */
+          @keyframes buttonPress {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+          }
+          
+          @keyframes shimmerSlide {
+            0% { transform: translateX(-100%) skewX(-15deg); }
+            100% { transform: translateX(200%) skewX(-15deg); }
+          }
+          
+          /* Enhanced hover effects */
+          @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-2px); }
+          }
+          
+          .hover-float:hover {
+            animation: gentleFloat 0.6s ease-in-out;
+          }
+          
+          /* Micro-interaction feedback */
+          @keyframes microBounce {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.02); }
+            60% { transform: scale(0.98); }
+            80% { transform: scale(1.01); }
+            100% { transform: scale(1); }
+          }
+          
+          .micro-bounce {
+            animation: microBounce 0.3s ease-out;
+          }
+          
+          /* Smooth state transitions */
+          .button-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          
+          /* Enhanced backdrop blur for mobile */
+          .mobile-blur {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
           }
         `}</style>
       </div>

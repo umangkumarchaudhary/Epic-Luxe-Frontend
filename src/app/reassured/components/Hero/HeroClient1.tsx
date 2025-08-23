@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { SwiperRef } from "swiper/react";
-import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+import { Pagination, Autoplay, EffectFade } from "swiper/modules";
 import { useRef, useState } from "react";
 import LeadModal from "./LeadModal";
 
@@ -62,7 +62,7 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
     >
       <Swiper
         ref={swiperRef}
-        modules={[Navigation, Pagination, Autoplay, EffectFade]}
+        modules={[Pagination, Autoplay, EffectFade]}
         effect="fade"
         fadeEffect={{ crossFade: true }}
         loop={true}
@@ -71,7 +71,6 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
           disableOnInteraction: false,
         }}
         pagination={{ clickable: true }}
-        navigation
         className="h-full"
       >
         {banners.map((banner) => (
@@ -103,8 +102,8 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
                 
               </div>
 
-              {/* Content */}
-              <div className="relative z-10 h-full flex flex-col justify-center px-6 lg:px-16 max-w-7xl mx-auto">
+              {/* Content - Desktop */}
+              <div className="relative z-10 h-full flex-col justify-center px-6 lg:px-16 max-w-7xl mx-auto hidden md:flex">
                 {banner.badge && (
                   <span className="inline-block bg-black text-white px-4 py-1 text-sm font-semibold uppercase tracking-wide mb-4 w-max">
                     {banner.badge}
@@ -121,7 +120,7 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
                   </p>
                 )}
 
-                {/* CTA Buttons */}
+                {/* CTA Buttons - Desktop */}
                 <div className="flex flex-wrap gap-4">
                   {banner.cta1_text && (
                     <Link
@@ -140,6 +139,55 @@ export default function HeroClient({ banners }: { banners: Banner[] }) {
                     </button>
                   )}
                 </div>
+              </div>
+
+              {/* Mobile Content - Title Overlay */}
+              <div className="md:hidden relative z-10 h-full flex flex-col justify-center px-4">
+                {banner.badge && (
+                  <span className="inline-block bg-black/80 backdrop-blur-sm text-white px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-3 w-max rounded">
+                    {banner.badge}
+                  </span>
+                )}
+                {banner.title && (
+                  <h1 className="text-xl font-extrabold leading-tight mb-2 text-black drop-shadow-sm">
+                    {banner.title}
+                  </h1>
+                )}
+                {banner.subtitle && (
+                  <p className="text-sm font-medium mb-4 text-black/80 drop-shadow-sm max-w-sm">
+                    {banner.subtitle}
+                  </p>
+                )}
+              </div>
+
+              {/* Mobile CTA Buttons - Positioned below image with 0px gap */}
+              <div className="md:hidden absolute bottom-0 left-0 right-0 z-20 flex justify-center gap-2 p-4">
+                {banner.cta1_text && (
+                  <Link
+                    href={banner.cta1_url_or_action || "#"}
+                    className="px-4 py-2 bg-white/80 backdrop-blur-md border border-white/20 text-black text-xs font-semibold tracking-wide rounded-lg shadow-lg hover:bg-white/90 transition-all duration-300 flex-1 text-center"
+                    style={{ 
+                      backdropFilter: 'blur(12px)',
+                      WebkitBackdropFilter: 'blur(12px)',
+                      maxWidth: '140px'
+                    }}
+                  >
+                    {banner.cta1_text}
+                  </Link>
+                )}
+                {banner.cta2_text && (
+                  <button
+                    onClick={(e) => handleCTA2Click(e, banner.cta2_url_or_action, banner.cta2_text)}
+                    className="px-4 py-2 bg-white/80 backdrop-blur-md border border-white/20 text-black text-xs font-semibold tracking-wide rounded-lg shadow-lg hover:bg-white/90 transition-all duration-300 flex-1"
+                    style={{ 
+                      backdropFilter: 'blur(12px)',
+                      WebkitBackdropFilter: 'blur(12px)',
+                      maxWidth: '140px'
+                    }}
+                  >
+                    {banner.cta2_text}
+                  </button>
+                )}
               </div>
             </div>
           </SwiperSlide>
