@@ -313,31 +313,31 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
           <X className="w-5 h-5 text-white/70" />
         </button>
 
-        {/* Form Header with reduced padding for compactness */}
-        <div className="p-4 pb-3 border-b border-[#D4AF37]/20 flex items-center space-x-3">
-          <div className="p-2 rounded-lg bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20">
+        {/* Form Header with responsive design */}
+        <div className="p-3 sm:p-4 pb-2 sm:pb-3 border-b border-[#D4AF37]/20 flex items-center space-x-2 sm:space-x-3">
+          <div className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20">
             {formType === 'buy' ?
-              <Car className="w-5 h-5 text-[#D4AF37]" /> :
-              <DollarSign className="w-5 h-5 text-[#BFA980]" />
+              <Car className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37]" /> :
+              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-[#BFA980]" />
             }
           </div>
           <div>
-            <h2 id="quote-form-title" className="text-lg font-bold text-white leading-tight">
-              {formType === 'buy' ? 'Get Your Dream Car Quote' : 'Get Instant Car Valuation'}
+            <h2 id="quote-form-title" className="text-sm sm:text-base md:text-lg font-bold text-white leading-tight">
+              {formType === 'buy' ? 'Get Dream Car Quote' : 'Get Car Valuation'}
             </h2>
             <p id="quote-form-desc" className="text-white/60 text-xs">
-              We&apos;ll contact you within 30 minutes
+              Contact within 30 minutes
             </p>
           </div>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 sm:gap-x-4 gap-y-4 sm:gap-y-5">
             {/* Name Field */}
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-white/90" htmlFor="name">
+            <div className="space-y-1.5 sm:space-y-2">
+              <label className="block text-xs sm:text-sm font-semibold text-white/90" htmlFor="name">
                 Full Name <span className="text-[#D4AF37]">*</span>
               </label>
               <input
@@ -346,15 +346,15 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
                 required
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
                 placeholder="Enter your full name"
                 aria-required="true"
               />
             </div>
 
             {/* Phone Field */}
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-white/90" htmlFor="phone">
+            <div className="space-y-1.5 sm:space-y-2">
+              <label className="block text-xs sm:text-sm font-semibold text-white/90" htmlFor="phone">
                 Phone Number <span className="text-[#D4AF37]">*</span>
               </label>
               <input
@@ -363,7 +363,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
                 required
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
                 placeholder="1234567890"
                 aria-required="true"
               />
@@ -371,8 +371,8 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
           </div>
 
           {/* Preferred Model */}
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-white/90" htmlFor="preferred_model">
+          <div className="space-y-1.5 sm:space-y-2">
+            <label className="block text-xs sm:text-sm font-semibold text-white/90" htmlFor="preferred_model">
               {formType === 'buy' ? 'Preferred Model' : 'Your Car Model'} <span className="text-[#D4AF37]">*</span>
             </label>
             <select
@@ -380,7 +380,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
               required
               value={formData.preferred_model}
               onChange={(e) => handleInputChange('preferred_model', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
               aria-required="true"
             >
               <option value="">Select a model</option>
@@ -392,9 +392,9 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
             </select>
           </div>
 
-          {/* Additional Notes - FIXED FIELD NAME */}
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-white/90" htmlFor="message">
+          {/* Additional Notes */}
+          <div className="space-y-1.5 sm:space-y-2">
+            <label className="block text-xs sm:text-sm font-semibold text-white/90" htmlFor="message">
               Additional Requirements (Optional)
             </label>
             <textarea
@@ -402,10 +402,10 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
               value={formData.message}
               onChange={(e) => handleInputChange('message', e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all resize-none"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all resize-none"
               placeholder={formType === 'buy' ?
-                "Budget range, specific features, timeline..." :
-                "Year, mileage, condition details..."
+                "Budget range, features, timeline..." :
+                "Year, mileage, condition..."
               }
             />
           </div>
@@ -440,26 +440,76 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
   );
 }
 
-// Bottom Sticky Navigation (Mobile Only)
+// Bottom Sticky Navigation (Mobile Only) with Scroll Behavior
 function BottomNav(): React.ReactElement {
+  const router = useRouter();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const controlNavbar = () => {
+      if (typeof window !== 'undefined') {
+        if (window.scrollY > lastScrollY && window.scrollY > 100) {
+          // Scrolling down & past 100px
+          setIsVisible(false);
+        } else {
+          // Scrolling up
+          setIsVisible(true);
+        }
+        setLastScrollY(window.scrollY);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', controlNavbar);
+      return () => window.removeEventListener('scroll', controlNavbar);
+    }
+  }, [lastScrollY]);
+
+  const handleBuyClick = () => {
+    router.push('/luxe/buy-used-cars');
+  };
+
+  const handleSellClick = () => {
+    router.push('/luxe/services/SellNowYourCar');
+  };
+
+  const handleCallClick = () => {
+    window.location.href = 'tel:7288882121';
+  };
+
   return (
-    <div className="md:hidden fixed bottom-0 left-0 w-full bg-black/95 backdrop-blur-md border-t border-[#D4AF37]/20 z-50 manrope-font" role="navigation" aria-label="Bottom navigation">
-      <div className="grid grid-cols-4 gap-1 py-2 px-2">
-        <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" aria-label="Home">
-          <Home className="w-5 h-5 text-[#D4AF37]" />
-          <span className="text-xs text-[#D4AF37] font-semibold">Home</span>
+    <div 
+      className={`md:hidden fixed bottom-0 left-0 w-full bg-black/95 backdrop-blur-md border-t border-[#D4AF37]/20 z-50 manrope-font transition-transform duration-300 ${
+        isVisible ? 'translate-y-0' : 'translate-y-full'
+      }`} 
+      role="navigation" 
+      aria-label="Bottom navigation"
+    >
+      <div className="grid grid-cols-3 gap-1 py-2 px-2">
+        <button 
+          onClick={handleBuyClick}
+          className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" 
+          aria-label="Buy"
+        >
+          <Car className="w-5 h-5 text-[#D4AF37]" />
+          <span className="text-xs text-[#D4AF37] font-semibold">Buy</span>
         </button>
-        <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#BFA980]/10 transition-all duration-300" aria-label="Buy">
-          <DollarSign className="w-5 h-5 text-gray-400" />
-          <span className="text-xs text-gray-400 font-semibold">Buy</span>
+        <button 
+          onClick={handleSellClick}
+          className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" 
+          aria-label="Sell"
+        >
+          <DollarSign className="w-5 h-5 text-[#D4AF37]" />
+          <span className="text-xs text-[#D4AF37] font-semibold">Sell</span>
         </button>
-        <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#BFA980]/10 transition-all duration-300" aria-label="Sell">
-          <Search className="w-5 h-5 text-gray-400" />
-          <span className="text-xs text-gray-400 font-semibold">Sell</span>
-        </button>
-        <button className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#BFA980]/10 transition-all duration-300" aria-label="Connect">
-          <User className="w-5 h-5 text-gray-400" />
-          <span className="text-xs text-gray-400 font-semibold">Connect</span>
+        <button 
+          onClick={handleCallClick}
+          className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" 
+          aria-label="Call Now"
+        >
+          <Phone className="w-5 h-5 text-[#D4AF37]" />
+          <span className="text-xs text-[#D4AF37] font-semibold">Call Now</span>
         </button>
       </div>
     </div>
@@ -611,7 +661,7 @@ export default function LuxuryVehicleHero(): React.ReactElement {
             />
             
             {/* Gradient overlay to blend with black grid section below */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 z-10"></div>
           </div>
 
           {/* Desktop Content Overlay */}
@@ -658,7 +708,7 @@ export default function LuxuryVehicleHero(): React.ReactElement {
           </div>
 
           {/* Mobile Content Overlay */}
-          <div className="md:hidden absolute bottom-0 left-0 right-0 z-20">
+          <div className="md:hidden absolute bottom-0 left-0 right-0 z-30">
             <div className={`transition-all duration-700 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}> 
               <div className="px-6 pb-6">
                 {/* Badge */}
@@ -768,7 +818,7 @@ export default function LuxuryVehicleHero(): React.ReactElement {
       </div>
 
       {/* Final CTA Section - MOBILE ONLY */}
-      <div className="md:hidden w-full bg-gradient-to-b from-[#0e0e0e] to-[#1a1a1a] py-8 px-5 border-t border-[#BFA980]/20">
+      <div className="md:hidden w-full bg-gradient-to-b from-[#0e0e0e] to-[#1a1a1a] py-8 px-5 border-t border-[#BFA980]/20 relative z-40">
         <div className="max-w-md mx-auto text-center space-y-6">
 
           {/* Heading */}
@@ -778,14 +828,19 @@ export default function LuxuryVehicleHero(): React.ReactElement {
 
           {/* Toggle Buttons */}
           <div className="flex justify-center">
-            <div className="bg-black/30 backdrop-blur-sm rounded-full p-1 border border-[#BFA980]/20" role="tablist" aria-label="Select buy or sell">
+            <div className="bg-black/30 backdrop-blur-sm rounded-full p-1 border border-[#BFA980]/20 relative z-50" role="tablist" aria-label="Select buy or sell">
               <button
-                onClick={() => setActiveTab('buy')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Buy button clicked');
+                  setActiveTab('buy');
+                }}
                 role="tab"
                 aria-selected={activeTab === 'buy'}
                 aria-controls="buy-tab-panel"
                 id="buy-tab"
-                className={`px-4 py-1.5 rounded-full font-semibold text-sm transition-all duration-300 ${
+                className={`px-4 py-1.5 rounded-full font-semibold text-sm transition-all duration-300 cursor-pointer ${
                   activeTab === 'buy'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black'
                     : 'text-white/80 hover:bg-white/10'
@@ -794,12 +849,17 @@ export default function LuxuryVehicleHero(): React.ReactElement {
                 Buy
               </button>
               <button
-                onClick={() => setActiveTab('sell')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Sell button clicked');
+                  setActiveTab('sell');
+                }}
                 role="tab"
                 aria-selected={activeTab === 'sell'}
                 aria-controls="sell-tab-panel"
                 id="sell-tab"
-                className={`px-4 py-1.5 rounded-full font-semibold text-sm transition-all duration-300 ${
+                className={`px-4 py-1.5 rounded-full font-semibold text-sm transition-all duration-300 cursor-pointer ${
                   activeTab === 'sell'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black'
                     : 'text-white/80 hover:bg-white/10'
@@ -811,38 +871,55 @@ export default function LuxuryVehicleHero(): React.ReactElement {
           </div>
 
           {/* Dual Action Buttons with Fade-in */}
-          <div className="relative h-[46px] transition-opacity duration-500 ease-in-out" role="tabpanel" tabIndex={0} id={`${activeTab}-tab-panel`} aria-labelledby={`${activeTab}-tab`}>
+          <div className="relative h-[46px] transition-opacity duration-500 ease-in-out z-50" role="tabpanel" tabIndex={0} id={`${activeTab}-tab-panel`} aria-labelledby={`${activeTab}-tab`}>
             <div
               key={activeTab}
               className="absolute inset-0 flex justify-center gap-3 opacity-0 animate-[fadeIn_0.4s_ease-in-out_forwards]"
             >
               <button
-                onClick={() => openQuoteForm(activeTab)}
-                className="flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/80 font-semibold hover:bg-white/10 transition-all text-sm"
-                aria-label={activeTab === 'buy' ? 'Browse Collection' : 'Get Valuation'}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Quote form button clicked, activeTab:', activeTab);
+                  openQuoteForm(activeTab);
+                }}
+                className="flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/80 font-semibold hover:bg-white/10 transition-all text-sm cursor-pointer relative z-50"
+                aria-label={activeTab === 'buy' ? 'Get Quote' : 'Get Valuation'}
               >
                 {activeTab === 'buy' ? <Eye className="w-4 h-4" /> : <DollarSign className="w-4 h-4" />}
-                <span>{activeTab === 'buy' ? 'Browse Collection' : 'Get Valuation'}</span>
+                <span>{activeTab === 'buy' ? 'Get Quote' : 'Get Valuation'}</span>
               </button>
-              <button className="flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/80 font-semibold hover:bg-white/10 transition-all text-sm" aria-label="Call Expert">
+              <a 
+                href="tel:7288882121" 
+                className="flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/80 font-semibold hover:bg-white/10 transition-all text-sm cursor-pointer relative z-50" 
+                aria-label="Call Expert"
+                onClick={(e) => {
+                  console.log('Call expert button clicked');
+                }}
+              >
                 <Phone className="w-4 h-4" />
                 <span>Call Expert</span>
-              </button>
+              </a>
             </div>
           </div>
 
           {/* Quick Actions */}
           <div className="pt-5 border-t border-white/10">
-            <div className="flex flex-wrap justify-center gap-4 text-xs">
-              <button className="flex items-center gap-1 text-[#D4AF37] hover:text-[#BFA980] transition-colors">
-                <DollarSign className="w-3.5 h-3.5" />
-                <span className="font-semibold">Finance Option</span>
+            <div className="flex flex-wrap justify-center gap-3 text-xs">
+             
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Epic Shield button clicked');
+                  router.push('/luxe/ExtendedWarranty');
+                }}
+                className="flex items-center gap-1 text-[#D4AF37] hover:text-[#BFA980] transition-colors cursor-pointer relative z-50"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                <span className="font-semibold">Epic Shield</span>
               </button>
-              <span className="text-white/30">|</span>
-              <button className="flex items-center gap-1 text-[#D4AF37] hover:text-[#BFA980] transition-colors">
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span className="font-semibold">Live Chat</span>
-              </button>
+              
             </div>
           </div>
         </div>
