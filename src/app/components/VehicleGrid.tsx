@@ -40,10 +40,11 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
       const limitedVehicles = brandVehicles.slice(0, 3);
 
       // Fetch images for each vehicle
+      const HERO_URL = process.env.NEXT_PUBLIC_HERO_URL || 'https://raam-group-all-websites.onrender.com/admin';
       const vehiclesWithImages = await Promise.all(
         limitedVehicles.map(async (vehicle: Vehicle) => {
           try {
-            const imageResponse = await fetch(`http://localhost:5000/admin/vehicle/${vehicle.id}`);
+            const imageResponse = await fetch(`${HERO_URL}/vehicle/${vehicle.id}`);
             const imageData = await imageResponse.json();
 
             return {
