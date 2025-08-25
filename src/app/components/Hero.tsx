@@ -265,7 +265,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
       />
 
       {/* Form Container - Fully Responsive */}
-      <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] rounded-xl sm:rounded-2xl border border-[#D4AF37]/30 shadow-2xl animate-[slideUp_0.5s_ease-out] overflow-hidden max-h-[85vh] sm:max-h-[80vh]">
+      <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] rounded-xl sm:rounded-2xl border border-[#D4AF37]/30 shadow-2xl animate-[slideUp_0.5s_ease-out] overflow-hidden max-h-[85vh] sm:max-h-[80vh] flex flex-col">
 
         {/* Loading Overlay */}
         {isLoading && (
@@ -327,7 +327,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-3 sm:p-4 md:p-5 lg:p-6 space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 overflow-y-auto max-h-[calc(85vh-140px)] sm:max-h-none">
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col p-3 sm:p-4 md:p-5 lg:p-6 space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 overflow-y-auto max-h-[calc(85vh-140px)] sm:max-h-none pb-6">
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 sm:gap-x-4 md:gap-x-5 gap-y-3 sm:gap-y-4 md:gap-y-5">
             {/* Name Field */}
@@ -410,6 +410,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
             type="submit"
             disabled={isLoading}
             className="w-full flex items-center justify-center space-x-2 px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 md:py-3.5 lg:py-4 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold text-sm md:text-base lg:text-lg hover:from-[#BFA980] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            style={{ marginBottom: 0 }}
           >
             {isLoading ? (
               <>
@@ -683,7 +684,7 @@ export default function LuxuryVehicleHero(): React.ReactElement {
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                 <button
-                  onClick={() => handleCTAButtonClick(currentBanner.cta1_text, currentBanner.cta1_url_or_action)}
+                  onClick={() => router.push('/luxe/buy-used-cars')}
                   className="flex items-center justify-center space-x-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold hover:from-[#BFA980] hover:to-[#D4AF37] transition-all transform hover:scale-105 shadow-2xl hover:shadow-[#D4AF37]/30 text-sm"
                   aria-label={currentBanner.cta1_text || 'Explore Collection'}
                 >
@@ -692,7 +693,11 @@ export default function LuxuryVehicleHero(): React.ReactElement {
                   <ChevronRight className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleCTAButtonClick(currentBanner.cta2_text, currentBanner.cta2_url_or_action)}
+                  onClick={() => {
+                    setFormType('sell');
+                    setIsFormOpen(true);
+                    document.body.style.overflow = 'hidden';
+                  }}
                   className="flex items-center justify-center space-x-2 px-6 py-2.5 rounded-full border-2 border-[#D4AF37]/70 text-white/80 font-bold hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#BFA980] hover:text-black transition-all transform hover:scale-105 hover:shadow-xl text-sm"
                   aria-label={currentBanner.cta2_text || 'Get Free Quote'}
                 >
@@ -769,8 +774,9 @@ export default function LuxuryVehicleHero(): React.ReactElement {
 
                 <button
                   onClick={navigateToBrowseCars}
-                  className="w-full mt-4 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-[#0e0e0e] font-semibold hover:shadow-lg hover:shadow-[#D4AF37]/20 transition-all duration-300 group-hover:scale-105"
+                  className="w-full mt-4 flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#FFD700] to-[#BFA980] text-black font-bold border-2 border-[#D4AF37] shadow-lg hover:shadow-xl hover:bg-[#FFF8DC] transition-all duration-300 group-hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2 z-50 pointer-events-auto"
                   aria-label="Browse Cars for Buying"
+                  tabIndex={0}
                 >
                   <Eye className="w-4 h-4" />
                   <span>Browse Cars</span>
@@ -803,8 +809,9 @@ export default function LuxuryVehicleHero(): React.ReactElement {
                     setIsFormOpen(true);
                     document.body.style.overflow = 'hidden';
                   }}
-                  className="w-full mt-4 flex items-center justify-center space-x-2 px-6 py-3 rounded-full border-2 border-[#BFA980] text-[#BFA980] font-semibold hover:bg-[#BFA980] hover:text-[#0e0e0e] transition-all duration-300 group-hover:scale-105"
+                  className="w-full mt-4 flex items-center justify-center space-x-2 px-6 py-3 rounded-full border-2 border-[#BFA980] text-[#BFA980] font-semibold hover:bg-[#BFA980] hover:text-[#0e0e0e] transition-all duration-300 group-hover:scale-105 z-50 pointer-events-auto"
                   aria-label="Get Valuation for Selling"
+                  tabIndex={0}
                 >
                   <DollarSign className="w-4 h-4" />
                   <span>Get Valuation</span>
@@ -926,11 +933,19 @@ export default function LuxuryVehicleHero(): React.ReactElement {
       </div>
 
       {/* Quote Form Modal */}
-      <QuoteForm
-        isOpen={isFormOpen}
-        onClose={closeQuoteForm}
-        formType={formType}
-      />
+      {/* Desktop: show form as a side modal if open, else as center modal on mobile */}
+      {isFormOpen && (
+        <div>
+          <div className="hidden md:block fixed top-0 right-0 h-full w-full max-w-xl z-[120] flex items-center justify-end pointer-events-none">
+            <div className="w-full max-w-xl pointer-events-auto">
+              <QuoteForm isOpen={isFormOpen} onClose={closeQuoteForm} formType={formType} />
+            </div>
+          </div>
+          <div className="md:hidden">
+            <QuoteForm isOpen={isFormOpen} onClose={closeQuoteForm} formType={formType} />
+          </div>
+        </div>
+      )}
 
       {/* Custom Animations */}
       <style jsx>{`
