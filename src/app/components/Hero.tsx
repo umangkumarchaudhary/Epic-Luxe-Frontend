@@ -798,7 +798,11 @@ export default function LuxuryVehicleHero(): React.ReactElement {
                 </div>
 
                 <button
-                  onClick={navigateToSellCar}
+                  onClick={() => {
+                    setFormType('sell');
+                    setIsFormOpen(true);
+                    document.body.style.overflow = 'hidden';
+                  }}
                   className="w-full mt-4 flex items-center justify-center space-x-2 px-6 py-3 rounded-full border-2 border-[#BFA980] text-[#BFA980] font-semibold hover:bg-[#BFA980] hover:text-[#0e0e0e] transition-all duration-300 group-hover:scale-105"
                   aria-label="Get Valuation for Selling"
                 >
