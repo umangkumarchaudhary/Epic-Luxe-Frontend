@@ -29,7 +29,7 @@ const services = [
   { name: 'Buy Now', icon: Car, href: '/luxe/buy-used-cars' },
   { name: 'Sell Now', icon: Crown, href: '/luxe/services/SellNowYourCar' },
   { name: 'Free Evaluation', icon: Shield, href: 'luxe/services/SellNowYourCar' },
-  { name: 'Epic Shield', icon: CreditCard, href: '/ExtendedWarranty' },
+  { name: 'Epic Shield', icon: CreditCard, href: '/luxe/ExtendedWarranty' },
   
   { name: 'Trade In', icon: ArrowUpDown, href: '/luxe/services/TradeIn' },
 ];
@@ -41,8 +41,8 @@ const navItems = [
 ];
 
 const insightsItems = [
-  { name: 'Testimonials', href: '/luxe/insights/testimonials' },
-  { name: 'Blogs', href: '/luxe/insights/blogs' },
+  { name: 'Testimonials', href: '/insights/testimonials' },
+  { name: 'Blogs', href: '/insights/blogs' },
   // { name: 'Press', href: '/luxe/Press' },
 ];
 
