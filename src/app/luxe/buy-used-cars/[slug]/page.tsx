@@ -81,15 +81,15 @@ const HealthScore = ({ score, label }: { score?: number, label: string }) => {
   else colorClass = 'text-red-400 bg-red-500/10 border-red-500/30';
 
   return (
-    <div className="flex items-center justify-between p-4 rounded-2xl border bg-black/40 backdrop-blur-sm">
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${colorClass}`}>
-          <Shield size={18} />
+    <div className="flex items-center justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl border bg-black/40 backdrop-blur-sm">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${colorClass}`}>
+          <Shield size={16} className="sm:w-[18px] sm:h-[18px]" />
         </div>
-        <span className="font-medium text-white font-manrope">{label}</span>
+        <span className="font-medium text-white font-manrope text-sm sm:text-base">{label}</span>
       </div>
       <div className="text-right">
-        <div className="text-2xl font-bold text-white font-manrope">{score}</div>
+        <div className="text-xl sm:text-2xl font-bold text-white font-manrope">{score}</div>
         <div className="text-xs text-gray-400 font-manrope">/10</div>
       </div>
     </div>
@@ -404,33 +404,33 @@ export default function VehicleDetailsPage() {
       <div className="min-h-screen bg-black">
         {/* Header - FIXED: Not sticky for full page scroll */}
         <header className="bg-black/80 backdrop-blur-sm border-b border-gray-800">
-          <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-gray-400 hover:text-[#D4AF37] transition-all duration-300 hover:scale-105 active:scale-95"
+              className="flex items-center gap-1.5 sm:gap-2 text-gray-400 hover:text-[#D4AF37] transition-all duration-300 hover:scale-105 active:scale-95"
             >
-              <ArrowLeft size={20} />
-              <span className="font-medium font-manrope">Back</span>
+              <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
+              <span className="font-medium font-manrope text-sm sm:text-base">Back</span>
             </button>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={() => setLiked(!liked)}
-                className={`w-10 h-10 rounded-full border transition-all duration-300 hover:scale-110 active:scale-90 ${
+                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full border transition-all duration-300 hover:scale-110 active:scale-90 ${
                   liked 
                     ? 'border-red-400 bg-red-500/10 text-red-400 shadow-md shadow-red-400/25' 
                     : 'border-gray-600 hover:border-red-400 hover:bg-red-500/10 hover:text-red-400 hover:shadow-md'
                 }`}
               >
-                <Heart size={18} fill={liked ? 'currentColor' : 'none'} className="mx-auto" />
+                <Heart size={16} className="sm:w-[18px] sm:h-[18px]" fill={liked ? 'currentColor' : 'none'} />
               </button>
               
               <div className="relative">
                 <button
                   onClick={handleShare}
-                  className="w-10 h-10 rounded-full border border-gray-600 hover:border-[#D4AF37] hover:bg-gray-900/50 transition-all duration-300 hover:scale-110 active:scale-90 hover:shadow-md flex items-center justify-center"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-gray-600 hover:border-[#D4AF37] hover:bg-gray-900/50 transition-all duration-300 hover:scale-110 active:scale-90 hover:shadow-md flex items-center justify-center"
                 >
-                  <Share2 size={18} className="text-gray-400 hover:text-[#D4AF37]" />
+                  <Share2 size={16} className="sm:w-[18px] sm:h-[18px] text-gray-400 hover:text-[#D4AF37]" />
                 </button>
                 {copyMessage && (
                   <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1 bg-black/90 text-[#D4AF37] text-sm rounded-lg whitespace-nowrap border border-[#D4AF37]/30 font-manrope">
@@ -442,42 +442,42 @@ export default function VehicleDetailsPage() {
           </div>
         </header>
 
-        {/* Main Content - Bugatti Level Premium Layout */}
+        {/* Main Content - Responsive Premium Layout */}
         <main className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 p-4 lg:p-8 min-h-screen">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 xl:gap-8 p-2 sm:p-3 lg:p-4 xl:p-6 min-h-screen">
             {/* Left Column - Visual Showcase */}
-            <div className="space-y-8">
+            <div className="space-y-3 sm:space-y-4 lg:space-y-6">
               {/* Hero Image Gallery */}
               <div className="relative">
                 <ImageGallery images={images} />
                 
                 {/* Floating Luxury Badge */}
-                <div className="absolute top-6 left-6 bg-gradient-to-r from-[#D4AF37]/90 to-[#BFA980]/90 backdrop-blur-sm px-4 py-2 rounded-full border border-[#D4AF37]/30">
-                  <span className="text-black font-bold text-sm font-manrope">LUXURY CERTIFIED</span>
+                <div className="absolute top-2 left-2 sm:top-3 sm:left-3 lg:top-6 lg:left-6 bg-gradient-to-r from-[#D4AF37]/90 to-[#BFA980]/90 backdrop-blur-sm px-2 py-1 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 rounded-full border border-[#D4AF37]/30">
+                  <span className="text-black font-bold text-xs sm:text-sm font-manrope">LUXURY CERTIFIED</span>
                 </div>
               </div>
 
               {/* Luxury Specifications Showcase */}
-              <div className="bg-gradient-to-br from-black/60 to-gray-900/80 backdrop-blur-xl rounded-3xl p-8 border border-[#D4AF37]/20 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-black/60 to-gray-900/80 backdrop-blur-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 lg:p-6 xl:p-8 border border-[#D4AF37]/20 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent"></div>
                 <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#BFA980] rounded-2xl flex items-center justify-center">
-                      <Car className="w-6 h-6 text-black" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-[#D4AF37] to-[#BFA980] rounded-lg sm:rounded-xl lg:rounded-2xl flex items-center justify-center">
+                      <Car className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-black" />
                     </div>
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-manrope">
+                    <h3 className="text-sm sm:text-lg lg:text-xl xl:text-2xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-manrope">
                       Luxury Specifications
                     </h3>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 lg:gap-4 xl:gap-6">
                     {vehicle.mileage && (
                       <div className="group">
-                        <div className="flex items-center gap-3 p-4 rounded-2xl bg-gray-900/50 border border-gray-700/50 hover:border-[#D4AF37]/50 transition-all">
-                          <Gauge size={20} className="text-[#D4AF37]" />
+                        <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl lg:rounded-2xl bg-gray-900/50 border border-gray-700/50 hover:border-[#D4AF37]/50 transition-all">
+                          <Gauge size={16} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#D4AF37]" />
                           <div>
                             <p className="text-gray-400 text-xs font-manrope">Mileage</p>
-                            <p className="text-white font-bold font-manrope">{vehicle.mileage}</p>
+                            <p className="text-white font-bold font-manrope text-xs sm:text-sm lg:text-base">{vehicle.mileage}</p>
                           </div>
                         </div>
                       </div>
@@ -485,11 +485,11 @@ export default function VehicleDetailsPage() {
                     
                     {vehicle.fuel_type && (
                       <div className="group">
-                        <div className="flex items-center gap-3 p-4 rounded-2xl bg-gray-900/50 border border-gray-700/50 hover:border-[#D4AF37]/50 transition-all">
-                          <Fuel size={20} className="text-[#D4AF37]" />
+                        <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl lg:rounded-2xl bg-gray-900/50 border border-gray-700/50 hover:border-[#D4AF37]/50 transition-all">
+                          <Fuel size={16} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#D4AF37]" />
                           <div>
                             <p className="text-gray-400 text-xs font-manrope">Fuel Type</p>
-                            <p className="text-white font-bold font-manrope">{vehicle.fuel_type}</p>
+                            <p className="text-white font-bold font-manrope text-xs sm:text-sm lg:text-base">{vehicle.fuel_type}</p>
                           </div>
                         </div>
                       </div>
@@ -497,22 +497,22 @@ export default function VehicleDetailsPage() {
                     
                     {vehicle.transmission && (
                       <div className="group">
-                        <div className="flex items-center gap-3 p-4 rounded-2xl bg-gray-900/50 border border-gray-700/50 hover:border-[#D4AF37]/50 transition-all">
-                          <Settings size={20} className="text-[#D4AF37]" />
+                        <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl lg:rounded-2xl bg-gray-900/50 border border-gray-700/50 hover:border-[#D4AF37]/50 transition-all">
+                          <Settings size={16} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#D4AF37]" />
                           <div>
                             <p className="text-gray-400 text-xs font-manrope">Transmission</p>
-                            <p className="text-white font-bold font-manrope">{vehicle.transmission}</p>
+                            <p className="text-white font-bold font-manrope text-xs sm:text-sm lg:text-base">{vehicle.transmission}</p>
                           </div>
                         </div>
                       </div>
                     )}
                     
-                    <div className="group">
-                      <div className="flex items-center gap-3 p-4 rounded-2xl bg-gray-900/50 border border-gray-700/50 hover:border-[#D4AF37]/50 transition-all">
-                        <Calendar size={20} className="text-[#D4AF37]" />
+                    <div className="group sm:col-span-2">
+                      <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl lg:rounded-2xl bg-gray-900/50 border border-gray-700/50 hover:border-[#D4AF37]/50 transition-all">
+                        <Calendar size={16} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#D4AF37]" />
                         <div>
                           <p className="text-gray-400 text-xs font-manrope">Year</p>
-                          <p className="text-white font-bold font-manrope">{vehicle.year}</p>
+                          <p className="text-white font-bold font-manrope text-xs sm:text-sm lg:text-base">{vehicle.year}</p>
                         </div>
                       </div>
                     </div>
@@ -522,15 +522,15 @@ export default function VehicleDetailsPage() {
 
               {/* Vehicle Health Report */}
               {healthScores.length > 0 && (
-                <div className="bg-gradient-to-br from-black/60 to-gray-900/80 backdrop-blur-xl rounded-3xl p-8 border border-[#D4AF37]/20">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center">
-                      <Shield className="w-6 h-6 text-white" />
+                <div className="bg-gradient-to-br from-black/60 to-gray-900/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-[#D4AF37]/20">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
+                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white font-manrope">Health Report</h3>
+                    <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white font-manrope">Health Report</h3>
                   </div>
                   
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {healthScores.slice(0, 3).map((item, index) => (
                       <HealthScore key={index} score={item.score} label={item.label} />
                     ))}
@@ -540,12 +540,12 @@ export default function VehicleDetailsPage() {
 
               {/* Luxury Features Preview */}
               {features.length > 0 && (
-                <div className="bg-gradient-to-br from-black/60 to-gray-900/80 backdrop-blur-xl rounded-3xl p-8 border border-[#D4AF37]/20">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                      <Award className="w-6 h-6 text-white" />
+                <div className="bg-gradient-to-br from-black/60 to-gray-900/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-[#D4AF37]/20">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
+                      <Award className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white font-manrope">Luxury Features</h3>
+                    <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white font-manrope">Luxury Features</h3>
                   </div>
                   
                   <div className="grid grid-cols-1 gap-3">
@@ -566,20 +566,20 @@ export default function VehicleDetailsPage() {
             </div>
 
             {/* Right Column - Premium Information */}
-            <div className="space-y-8 lg:sticky lg:top-8">
+            <div className="space-y-3 sm:space-y-4 lg:space-y-6 lg:sticky lg:top-8">
               {/* Luxury Title Card */}
-              <div className="bg-gradient-to-br from-black/80 to-gray-900/80 backdrop-blur-xl rounded-3xl p-8 border border-[#D4AF37]/20 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-black/80 to-gray-900/80 backdrop-blur-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 lg:p-6 xl:p-8 border border-[#D4AF37]/20 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/3 to-transparent"></div>
                 <div className="relative z-10">
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="flex-1">
-                      <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-2 font-manrope leading-tight">
+                  <div className="flex items-start justify-between mb-3 sm:mb-4 lg:mb-6">
+                    <div className="flex-1 pr-2">
+                      <h1 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1 sm:mb-2 font-manrope leading-tight">
                         {vehicle.year} {vehicle.brand}
                       </h1>
-                      <h2 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-manrope">
+                      <h2 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent font-manrope">
                         {vehicle.model}
                         {vehicle.variant && (
-                          <span className="block text-xl text-gray-400 mt-1 font-manrope">
+                          <span className="block text-sm sm:text-base lg:text-lg text-gray-400 mt-0.5 sm:mt-1 font-manrope">
                             {vehicle.variant}
                           </span>
                         )}
@@ -587,55 +587,57 @@ export default function VehicleDetailsPage() {
                     </div>
                     
                     {/* Premium Badge */}
-                    <div className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] p-3 rounded-2xl">
-                      <Car className="w-6 h-6 text-black" />
+                    <div className="bg-gradient-to-r from-[#D4AF37] to-[#BFA980] p-1.5 sm:p-2 lg:p-3 rounded-lg sm:rounded-xl lg:rounded-2xl flex-shrink-0">
+                      <Car className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-black" />
                     </div>
                   </div>
                   
                   {/* Vehicle Meta */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6">
                     {vehicle.location && (
-                      <div className="flex items-center gap-2 p-3 bg-gray-900/50 rounded-xl border border-gray-700/50">
-                        <MapPin size={16} className="text-[#D4AF37]" />
-                        <span className="text-white font-manrope text-sm">{vehicle.location}</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 lg:p-3 bg-gray-900/50 rounded-md sm:rounded-lg lg:rounded-xl border border-gray-700/50">
+                        <MapPin size={12} className="sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-[#D4AF37]" />
+                        <span className="text-white font-manrope text-xs sm:text-sm">{vehicle.location}</span>
                       </div>
                     )}
                     {vehicle.condition && (
-                      <div className="flex items-center gap-2 p-3 bg-gray-900/50 rounded-xl border border-gray-700/50">
-                        <Shield size={16} className="text-[#D4AF37]" />
-                        <span className="text-white font-manrope text-sm">{vehicle.condition}</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 lg:p-3 bg-gray-900/50 rounded-md sm:rounded-lg lg:rounded-xl border border-gray-700/50">
+                        <Shield size={12} className="sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-[#D4AF37]" />
+                        <span className="text-white font-manrope text-xs sm:text-sm">{vehicle.condition}</span>
                       </div>
                     )}
                     {vehicle.ownership && (
-                      <div className="flex items-center gap-2 p-3 bg-gray-900/50 rounded-xl border border-gray-700/50 col-span-2">
-                        <Users size={16} className="text-[#D4AF37]" />
-                        <span className="text-white font-manrope text-sm">{vehicle.ownership}</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 lg:p-3 bg-gray-900/50 rounded-md sm:rounded-lg lg:rounded-xl border border-gray-700/50 sm:col-span-2">
+                        <Users size={12} className="sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-[#D4AF37]" />
+                        <span className="text-white font-manrope text-xs sm:text-sm">{vehicle.ownership}</span>
                       </div>
                     )}
                   </div>
 
                   {/* Pricing Section */}
-                  <div className="border-t border-gray-700/50 pt-6">
-                    <div className="flex items-baseline gap-4 mb-4">
-                      <span className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent font-manrope">
-                        {formatPrice(vehicle.price)}
-                      </span>
-                      {vehicle.original_price && (
-                        <span className="text-xl text-gray-500 line-through font-manrope">
-                          {formatPrice(vehicle.original_price)}
+                  <div className="border-t border-gray-700/50 pt-3 sm:pt-4 lg:pt-6">
+                    <div className="flex flex-col gap-1 sm:gap-2 mb-2 sm:mb-3 lg:mb-4">
+                      <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
+                        <span className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent font-manrope">
+                          {formatPrice(vehicle.price)}
                         </span>
-                      )}
+                        {vehicle.original_price && (
+                          <span className="text-sm sm:text-base lg:text-lg text-gray-500 line-through font-manrope">
+                            {formatPrice(vehicle.original_price)}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex flex-col gap-2">
                       {vehicle.savings && (
-                        <div className="bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-full">
-                          <span className="font-bold font-manrope text-sm">Save ₹{vehicle.savings.toLocaleString()}</span>
+                        <div className="bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30 text-emerald-400 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-center">
+                          <span className="font-bold font-manrope text-xs sm:text-sm">Save ₹{vehicle.savings.toLocaleString()}</span>
                         </div>
                       )}
                       
-                      <div className="bg-gray-900/50 border border-gray-700/50 text-gray-300 px-4 py-2 rounded-full">
-                        <span className="font-manrope text-sm">EMI from ₹{emiAmount.toLocaleString()}/month</span>
+                      <div className="bg-gray-900/50 border border-gray-700/50 text-gray-300 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-center">
+                        <span className="font-manrope text-xs sm:text-sm">EMI from ₹{emiAmount.toLocaleString()}/month</span>
                       </div>
                     </div>
                   </div>
@@ -643,71 +645,71 @@ export default function VehicleDetailsPage() {
               </div>
 
               {/* Premium Action Center */}
-              <div className="bg-gradient-to-br from-black/80 to-gray-900/80 backdrop-blur-xl rounded-3xl p-8 border border-[#D4AF37]/20">
-                <h3 className="text-2xl font-bold text-white mb-6 font-manrope">Take Action</h3>
+              <div className="bg-gradient-to-br from-black/80 to-gray-900/80 backdrop-blur-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 lg:p-6 xl:p-8 border border-[#D4AF37]/20">
+                <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-white mb-3 sm:mb-4 lg:mb-6 font-manrope">Take Action</h3>
                 
                 {/* Primary Actions */}
-                <div className="grid grid-cols-1 gap-4 mb-6">
+                <div className="grid grid-cols-1 gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6">
                   <button
                     onClick={handleCallDealer}
-                    className="flex items-center justify-center gap-3 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-8 py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-[#D4AF37]/25 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-manrope text-lg"
+                    className="flex items-center justify-center gap-1.5 sm:gap-2 lg:gap-3 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black px-3 sm:px-4 lg:px-6 xl:px-8 py-2.5 sm:py-3 lg:py-4 rounded-lg sm:rounded-xl lg:rounded-2xl font-bold hover:shadow-xl hover:shadow-[#D4AF37]/25 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-manrope text-xs sm:text-sm lg:text-base xl:text-lg"
                   >
-                    <Phone size={24} />
-                    Speak with Luxury Specialist
+                    <Phone size={14} className="sm:w-4 sm:h-4 lg:w-5 lg:h-5 xl:w-6 xl:h-6" />
+                    <span className="text-center">Speak with Luxury Specialist</span>
                   </button>
                   
                   <button
                     onClick={handleWhatsApp}
-                    className="flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-emerald-500/25 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-manrope text-lg"
+                    className="flex items-center justify-center gap-1.5 sm:gap-2 lg:gap-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-3 sm:px-4 lg:px-6 xl:px-8 py-2.5 sm:py-3 lg:py-4 rounded-lg sm:rounded-xl lg:rounded-2xl font-bold hover:shadow-xl hover:shadow-emerald-500/25 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-manrope text-xs sm:text-sm lg:text-base xl:text-lg"
                   >
-                    <MessageCircle size={24} />
-                    WhatsApp Inquiry
+                    <MessageCircle size={14} className="sm:w-4 sm:h-4 lg:w-5 lg:h-5 xl:w-6 xl:h-6" />
+                    <span className="text-center">WhatsApp Inquiry</span>
                   </button>
                 </div>
                 
                 {/* Secondary Actions */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2 lg:gap-3">
                   <button
                     onClick={handleEMICalculator}
-                    className="flex items-center justify-center gap-2 border border-[#D4AF37]/50 text-[#D4AF37] px-6 py-3 rounded-xl font-semibold hover:bg-[#D4AF37]/10 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-manrope"
+                    className="flex flex-col items-center justify-center gap-1 border border-[#D4AF37]/50 text-[#D4AF37] px-1 sm:px-2 lg:px-3 py-2 sm:py-2.5 lg:py-3 rounded-md sm:rounded-lg lg:rounded-xl font-semibold hover:bg-[#D4AF37]/10 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-manrope text-xs sm:text-sm"
                   >
-                    <Calculator size={18} />
-                    EMI Calculator
+                    <Calculator size={12} className="sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4" />
+                    <span className="text-center leading-tight">EMI Calculator</span>
                   </button>
                   
                   <button
                     onClick={() => setShowScheduleModal(true)}
-                    className="flex items-center justify-center gap-2 border border-[#D4AF37]/50 text-[#D4AF37] px-6 py-3 rounded-xl font-semibold hover:bg-[#D4AF37]/10 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-manrope"
+                    className="flex flex-col items-center justify-center gap-1 border border-[#D4AF37]/50 text-[#D4AF37] px-1 sm:px-2 lg:px-3 py-2 sm:py-2.5 lg:py-3 rounded-md sm:rounded-lg lg:rounded-xl font-semibold hover:bg-[#D4AF37]/10 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-manrope text-xs sm:text-sm"
                   >
-                    <Calendar size={18} />
-                    Test Drive
+                    <Calendar size={12} className="sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4" />
+                    <span className="text-center leading-tight">Test Drive</span>
                   </button>
                 </div>
               </div>
 
               {/* Advanced Technical Details */}
-              <div className="bg-gradient-to-br from-black/80 to-gray-900/80 backdrop-blur-xl rounded-3xl p-8 border border-[#D4AF37]/20">
-                <h3 className="text-2xl font-bold text-white mb-6 font-manrope">Technical Excellence</h3>
+              <div className="bg-gradient-to-br from-black/80 to-gray-900/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-[#D4AF37]/20">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-4 sm:mb-6 font-manrope">Technical Excellence</h3>
                 
                 {/* Advanced Specs */}
                 {(vehicle.horsepower || vehicle.torque || vehicle.engine_capacity) && (
-                  <div className="grid grid-cols-1 gap-4 mb-6">
+                  <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4 sm:mb-6">
                     {vehicle.engine_capacity && (
-                      <div className="flex justify-between items-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
-                        <span className="text-gray-400 font-manrope">Engine Capacity</span>
-                        <span className="font-bold text-[#D4AF37] font-manrope">{vehicle.engine_capacity}</span>
+                      <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-900/50 rounded-lg sm:rounded-xl border border-gray-700/50">
+                        <span className="text-gray-400 font-manrope text-sm sm:text-base">Engine Capacity</span>
+                        <span className="font-bold text-[#D4AF37] font-manrope text-sm sm:text-base">{vehicle.engine_capacity}</span>
                       </div>
                     )}
                     {vehicle.horsepower && (
-                      <div className="flex justify-between items-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
-                        <span className="text-gray-400 font-manrope">Power Output</span>
-                        <span className="font-bold text-[#D4AF37] font-manrope">{vehicle.horsepower}</span>
+                      <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-900/50 rounded-lg sm:rounded-xl border border-gray-700/50">
+                        <span className="text-gray-400 font-manrope text-sm sm:text-base">Power Output</span>
+                        <span className="font-bold text-[#D4AF37] font-manrope text-sm sm:text-base">{vehicle.horsepower}</span>
                       </div>
                     )}
                     {vehicle.torque && (
-                      <div className="flex justify-between items-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
-                        <span className="text-gray-400 font-manrope">Torque</span>
-                        <span className="font-bold text-[#D4AF37] font-manrope">{vehicle.torque}</span>
+                      <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-900/50 rounded-lg sm:rounded-xl border border-gray-700/50">
+                        <span className="text-gray-400 font-manrope text-sm sm:text-base">Torque</span>
+                        <span className="font-bold text-[#D4AF37] font-manrope text-sm sm:text-base">{vehicle.torque}</span>
                       </div>
                     )}
                   </div>
@@ -715,19 +717,19 @@ export default function VehicleDetailsPage() {
                 
                 {/* Color Specifications */}
                 {(vehicle.color_exterior || vehicle.color_interior) && (
-                  <div className="border-t border-gray-700/50 pt-6">
-                    <h4 className="text-lg font-bold text-white mb-4 font-manrope">Color Specifications</h4>
-                    <div className="grid grid-cols-1 gap-4">
+                  <div className="border-t border-gray-700/50 pt-4 sm:pt-6">
+                    <h4 className="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4 font-manrope">Color Specifications</h4>
+                    <div className="grid grid-cols-1 gap-3 sm:gap-4">
                       {vehicle.color_exterior && (
-                        <div className="flex justify-between items-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
-                          <span className="text-gray-400 font-manrope">Exterior</span>
-                          <span className="font-bold text-white font-manrope">{vehicle.color_exterior}</span>
+                        <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-900/50 rounded-lg sm:rounded-xl border border-gray-700/50">
+                          <span className="text-gray-400 font-manrope text-sm sm:text-base">Exterior</span>
+                          <span className="font-bold text-white font-manrope text-sm sm:text-base">{vehicle.color_exterior}</span>
                         </div>
                       )}
                       {vehicle.color_interior && (
-                        <div className="flex justify-between items-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
-                          <span className="text-gray-400 font-manrope">Interior</span>
-                          <span className="font-bold text-white font-manrope">{vehicle.color_interior}</span>
+                        <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-900/50 rounded-lg sm:rounded-xl border border-gray-700/50">
+                          <span className="text-gray-400 font-manrope text-sm sm:text-base">Interior</span>
+                          <span className="font-bold text-white font-manrope text-sm sm:text-base">{vehicle.color_interior}</span>
                         </div>
                       )}
                     </div>
@@ -738,101 +740,101 @@ export default function VehicleDetailsPage() {
           </div>
 
           {/* Additional Full-Width Content Sections */}
-          <div className="px-4 lg:px-8 space-y-12 pb-32 lg:pb-12">
+          <div className="px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10 lg:space-y-12 pb-32 lg:pb-12">
             {/* Financing Options */}
-            <section className="bg-gradient-to-br from-gray-900/80 to-black rounded-3xl p-8 lg:p-12 border border-gray-700/50">
+            <section className="bg-gradient-to-br from-gray-900/80 to-black rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 xl:p-12 border border-gray-700/50">
               <div className="max-w-4xl mx-auto text-center">
-                <h2 className="text-3xl font-bold text-white mb-6 font-manrope">Flexible Financing Options</h2>
-                <p className="text-lg text-gray-400 mb-8 font-manrope">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-4 sm:mb-6 font-manrope">Flexible Financing Options</h2>
+                <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-6 sm:mb-8 font-manrope">
                   Choose from our range of financing solutions tailored to your needs
                 </p>
                 
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-gray-700">
-                    <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
-                      <Calculator size={28} className="text-blue-400" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="bg-black/40 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-500/10 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border border-blue-500/30">
+                      <Calculator size={20} className="sm:w-7 sm:h-7 text-blue-400" />
                     </div>
-                    <h3 className="font-semibold text-white mb-2 font-manrope">Low EMI Options</h3>
-                    <p className="text-gray-400 text-sm font-manrope">Starting from ₹{emiAmount.toLocaleString()}/month</p>
+                    <h3 className="font-semibold text-white mb-2 font-manrope text-sm sm:text-base">Low EMI Options</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm font-manrope">Starting from ₹{emiAmount.toLocaleString()}/month</p>
                   </div>
                   
-                  <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-gray-700">
-                    <div className="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-green-500/30">
-                      <Award size={28} className="text-green-400" />
+                  <div className="bg-black/40 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-500/10 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border border-green-500/30">
+                      <Award size={20} className="sm:w-7 sm:h-7 text-green-400" />
                     </div>
-                    <h3 className="font-semibold text-white mb-2 font-manrope">Quick Approval</h3>
-                    <p className="text-gray-400 text-sm font-manrope">Get approved in as little as 24 hours</p>
+                    <h3 className="font-semibold text-white mb-2 font-manrope text-sm sm:text-base">Quick Approval</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm font-manrope">Get approved in as little as 24 hours</p>
                   </div>
                   
-                  <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-gray-700">
-                    <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-purple-500/30">
-                      <Shield size={28} className="text-purple-400" />
+                  <div className="bg-black/40 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700 sm:col-span-2 md:col-span-1">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-500/10 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border border-purple-500/30">
+                      <Shield size={20} className="sm:w-7 sm:h-7 text-purple-400" />
                     </div>
-                    <h3 className="font-semibold text-white mb-2 font-manrope">Flexible Terms</h3>
-                    <p className="text-gray-400 text-sm font-manrope">Choose from 1-7 year repayment options</p>
+                    <h3 className="font-semibold text-white mb-2 font-manrope text-sm sm:text-base">Flexible Terms</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm font-manrope">Choose from 1-7 year repayment options</p>
                   </div>
                 </div>
               </div>
             </section>
 
             {/* Service & Maintenance */}
-            <section className="grid lg:grid-cols-2 gap-12 items-center">
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
               <div>
-                <h2 className="text-3xl font-bold text-white mb-6 font-manrope">Comprehensive Service & Support</h2>
-                <p className="text-lg text-gray-400 mb-8 font-manrope">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-4 sm:mb-6 font-manrope">Comprehensive Service & Support</h2>
+                <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-6 sm:mb-8 font-manrope">
                   Our commitment doesn&apos;t end with the purchase. We provide comprehensive after-sales support to keep your vehicle in pristine condition.
                 </p>
                 
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-blue-500/10 rounded-full flex items-center justify-center flex-shrink-0 border border-blue-500/30">
-                      <Shield size={20} className="text-blue-400" />
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500/10 rounded-full flex items-center justify-center flex-shrink-0 border border-blue-500/30">
+                      <Shield size={16} className="sm:w-5 sm:h-5 text-blue-400" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-white mb-1 font-manrope">Extended Warranty</h3>
-                      <p className="text-gray-400 font-manrope">Comprehensive coverage for peace of mind</p>
+                      <h3 className="font-semibold text-white mb-1 font-manrope text-sm sm:text-base">Extended Warranty</h3>
+                      <p className="text-gray-400 font-manrope text-xs sm:text-sm">Comprehensive coverage for peace of mind</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-green-500/10 rounded-full flex items-center justify-center flex-shrink-0 border border-green-500/30">
-                      <Settings size={20} className="text-green-400" />
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500/10 rounded-full flex items-center justify-center flex-shrink-0 border border-green-500/30">
+                      <Settings size={16} className="sm:w-5 sm:h-5 text-green-400" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-white mb-1 font-manrope">Regular Maintenance</h3>
-                      <p className="text-gray-400 font-manrope">Scheduled service reminders and support</p>
+                      <h3 className="font-semibold text-white mb-1 font-manrope text-sm sm:text-base">Regular Maintenance</h3>
+                      <p className="text-gray-400 font-manrope text-xs sm:text-sm">Scheduled service reminders and support</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-purple-500/10 rounded-full flex items-center justify-center flex-shrink-0 border border-purple-500/30">
-                      <Phone size={20} className="text-purple-400" />
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500/10 rounded-full flex items-center justify-center flex-shrink-0 border border-purple-500/30">
+                      <Phone size={16} className="sm:w-5 sm:h-5 text-purple-400" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-white mb-1 font-manrope">24/7 Support</h3>
-                      <p className="text-gray-400 font-manrope">Round-the-clock customer assistance</p>
+                      <h3 className="font-semibold text-white mb-1 font-manrope text-sm sm:text-base">24/7 Support</h3>
+                      <p className="text-gray-400 font-manrope text-xs sm:text-sm">Round-the-clock customer assistance</p>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <div className="bg-gray-900/50 rounded-3xl p-8 border border-gray-700/50">
+              <div className="bg-gray-900/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-gray-700/50">
                 <div className="text-center">
-                  <h3 className="text-2xl font-bold text-white mb-4 font-manrope">Ready to Experience This Vehicle?</h3>
-                  <p className="text-gray-400 mb-6 font-manrope">
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-3 sm:mb-4 font-manrope">Ready to Experience This Vehicle?</h3>
+                  <p className="text-gray-400 mb-4 sm:mb-6 font-manrope text-sm sm:text-base">
                     Schedule a test drive or visit our showroom to see this amazing vehicle in person.
                   </p>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     <button
                       onClick={() => setShowScheduleModal(true)}
-                      className="w-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black py-3 px-6 rounded-xl font-semibold hover:shadow-lg hover:shadow-[#D4AF37]/25 transition-all duration-300 font-manrope"
+                      className="w-full bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl font-semibold hover:shadow-lg hover:shadow-[#D4AF37]/25 transition-all duration-300 font-manrope text-sm sm:text-base"
                     >
                       Schedule Test Drive
                     </button>
                     <button
                       onClick={handleCallDealer}
-                      className="w-full border border-gray-600 text-white py-3 px-6 rounded-xl font-semibold hover:bg-gray-900/50 transition-all duration-300 font-manrope"
+                      className="w-full border border-gray-600 text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl font-semibold hover:bg-gray-900/50 transition-all duration-300 font-manrope text-sm sm:text-base"
                     >
                       Call Our Expert
                     </button>
@@ -842,32 +844,32 @@ export default function VehicleDetailsPage() {
             </section>
 
             {/* Trust Indicators */}
-            <section className="bg-gradient-to-br from-black to-gray-900 text-white rounded-3xl p-8 lg:p-12 border border-gray-800">
+            <section className="bg-gradient-to-br from-black to-gray-900 text-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 xl:p-12 border border-gray-800">
               <div className="max-w-4xl mx-auto text-center">
-                <h2 className="text-3xl font-bold mb-6 font-manrope">Trusted by Thousands</h2>
-                <p className="text-lg text-gray-400 mb-12 font-manrope">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6 font-manrope">Trusted by Thousands</h2>
+                <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-8 sm:mb-10 lg:mb-12 font-manrope">
                   Join thousands of satisfied customers who have found their perfect vehicle with us
                 </p>
                 
-                <div className="grid md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                   <div className="text-center">
-                    <div className="text-3xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent mb-2 font-manrope">10,000+</div>
-                    <div className="text-gray-400 font-manrope">Happy Customers</div>
+                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent mb-1 sm:mb-2 font-manrope">10,000+</div>
+                    <div className="text-gray-400 font-manrope text-xs sm:text-sm lg:text-base">Happy Customers</div>
                   </div>
                   
                   <div className="text-center">
-                    <div className="text-3xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent mb-2 font-manrope">5,000+</div>
-                    <div className="text-gray-400 font-manrope">Vehicles Sold</div>
+                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent mb-1 sm:mb-2 font-manrope">5,000+</div>
+                    <div className="text-gray-400 font-manrope text-xs sm:text-sm lg:text-base">Vehicles Sold</div>
                   </div>
                   
                   <div className="text-center">
-                    <div className="text-3xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent mb-2 font-manrope">15+</div>
-                    <div className="text-gray-400 font-manrope">Years Experience</div>
+                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent mb-1 sm:mb-2 font-manrope">15+</div>
+                    <div className="text-gray-400 font-manrope text-xs sm:text-sm lg:text-base">Years Experience</div>
                   </div>
                   
-                  <div className="text-center">
-                    <div className="text-3xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent mb-2 font-manrope">4.8/5</div>
-                    <div className="text-gray-400 font-manrope">Customer Rating</div>
+                  <div className="text-center col-span-2 md:col-span-1">
+                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#BFA980] bg-clip-text text-transparent mb-1 sm:mb-2 font-manrope">4.8/5</div>
+                    <div className="text-gray-400 font-manrope text-xs sm:text-sm lg:text-base">Customer Rating</div>
                   </div>
                 </div>
               </div>
@@ -910,13 +912,7 @@ export default function VehicleDetailsPage() {
               onClick={handleEMICalculator}
               className="flex-1 border border-gray-600 text-white py-3 px-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 active:scale-95 hover:bg-gray-900/50"
             >
-              <Calculator size={18} />
-              EMI
-            </button>
-            <button
-              onClick={() => setShowScheduleModal(true)}
-              className="flex-1 border border-gray-600 text-white py-3 px-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 active:scale-95 hover:bg-gray-900/50"
-            >
+
               <Calendar size={18} />
               Drive
             </button>

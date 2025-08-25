@@ -144,14 +144,13 @@ const WhyChooseUsSection = () => {
   );
 
   return (
-    <section className="relative py-20 px-4 overflow-hidden font-primary w-full">
+    <section className="relative py-20 px-4 overflow-hidden font-primary w-full max-w-full">
       {/* Background Image with Animation */}
       <div className="absolute inset-0">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-fixed animate-slow-zoom"
+          className="absolute inset-0 bg-cover bg-center animate-slow-zoom"
           style={{
-            backgroundImage: "url('/assets/images/LandingPageCar2.jpg')",
-            backgroundAttachment: 'fixed'
+            backgroundImage: "url('/assets/images/LandingPageCar2.jpg')"
           }}
         ></div>
         {/* Dark Overlay */}

@@ -410,7 +410,7 @@ const FeaturedInventory: React.FC = () => {
             onMouseUp={onMouseUp}
             style={{ touchAction: 'none' }}
           >
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-xs sm:max-w-sm mx-auto featured-grid-responsive">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-xs sm:max-w-sm mx-auto">
               {featuredVehicles.map((vehicle, index) => (
                 <motion.button
                   key={vehicle.id}
@@ -516,7 +516,8 @@ const FeaturedInventory: React.FC = () => {
         </motion.div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-8">
           
           {/* Vehicle Image - Hero Section */}
           <motion.div 
@@ -554,12 +555,12 @@ const FeaturedInventory: React.FC = () => {
                 </AnimatePresence>
               </div>
               
-              {/* Left Navigation Arrow - Desktop (Outside Image) */}
+              {/* Left Navigation Arrow - Desktop (Inside Container) */}
               <button
                 onClick={() => navigateVehicle('prev')}
-                className="absolute -left-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-black/40 hover:border-[#D4AF37]/30 transition-all duration-300 group"
+                className="hidden lg:flex absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 items-center justify-center hover:bg-black/60 hover:border-[#D4AF37]/50 transition-all duration-300 group z-10"
               >
-                <ChevronLeft className="w-5 h-5 text-white group-hover:text-[#D4AF37] transition-colors" />
+                <ChevronLeft className="w-4 h-4 text-white group-hover:text-[#D4AF37] transition-colors" />
               </button>
             </div>
           </motion.div>
@@ -571,12 +572,12 @@ const FeaturedInventory: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            {/* Right Navigation Arrow - Desktop (Next to text content) */}
+            {/* Right Navigation Arrow - Desktop (Inside Container) */}
             <button
               onClick={() => navigateVehicle('next')}
-              className="hidden lg:flex absolute -right-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 items-center justify-center hover:bg-black/40 hover:border-[#D4AF37]/30 transition-all duration-300 group"
+              className="hidden lg:flex absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 items-center justify-center hover:bg-black/60 hover:border-[#D4AF37]/50 transition-all duration-300 group z-10"
             >
-              <ChevronRight className="w-5 h-5 text-white group-hover:text-[#D4AF37] transition-colors" />
+              <ChevronRight className="w-4 h-4 text-white group-hover:text-[#D4AF37] transition-colors" />
             </button>
             
             {/* Top Section - Title & Info */}
@@ -791,7 +792,24 @@ const FeaturedInventory: React.FC = () => {
                 Schedule Test Drive
               </motion.button>
             </div>
+
+            {/* Mobile Navigation Arrows - Bottom of screen */}
+            <div className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 flex gap-4 z-20">
+              <button
+                onClick={() => navigateVehicle('prev')}
+                className="w-10 h-10 rounded-full bg-black/70 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-black/90 hover:border-[#D4AF37]/50 transition-all duration-300"
+              >
+                <ChevronLeft className="w-5 h-5 text-white" />
+              </button>
+              <button
+                onClick={() => navigateVehicle('next')}
+                className="w-10 h-10 rounded-full bg-black/70 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-black/90 hover:border-[#D4AF37]/50 transition-all duration-300"
+              >
+                <ChevronRight className="w-5 h-5 text-white" />
+              </button>
+            </div>
           </motion.div>
+          </div>
         </div>
 
         {/* Render the Schedule modal at the end */}

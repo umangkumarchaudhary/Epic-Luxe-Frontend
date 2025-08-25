@@ -95,7 +95,7 @@ const HomeAboutSection = React.memo(function HomeAboutSection() {
   return (
     <section 
       id="about-section" 
-      className="relative py-12 px-2 sm:px-4 bg-black"
+      className="relative py-12 px-2 sm:px-4 bg-black w-full max-w-full overflow-hidden"
       aria-labelledby="about-heading"
     >
       <div className="max-w-7xl w-full mx-auto">
@@ -439,7 +439,7 @@ const HomeContactSection = React.memo(function HomeContactSection() {
   return (
     <section 
       id="contact-section" 
-      className="relative py-8 sm:py-12 px-4 sm:px-6 lg:px-4 bg-black"
+      className="relative py-8 sm:py-12 px-4 sm:px-6 lg:px-4 bg-black w-full max-w-full overflow-hidden"
       aria-labelledby="contact-heading"
     >
       <div className="max-w-7xl w-full mx-auto">

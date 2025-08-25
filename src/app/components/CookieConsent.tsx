@@ -16,14 +16,20 @@ const defaultConsent: Consent = {
 };
 
 export default function CookieConsentLite() {
-  const [consent, setConsent] = useState<Consent>(defaultConsent);
+  const [, setConsent] = useState<Consent>(defaultConsent);
   const [showBanner, setShowBanner] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const saved = Cookies.get("epic_cookie_consent");
     if (!saved) {
       setShowBanner(true);
+      // Show the banner after 10 seconds with slide-in animation
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, 10000);
+      
+      return () => clearTimeout(timer);
     } else {
       try {
         setConsent(JSON.parse(saved));
@@ -40,8 +46,12 @@ export default function CookieConsentLite() {
       sameSite: "strict",
     });
     setConsent(newConsent);
-    setShowBanner(false);
-    setShowSettings(false);
+    
+    // Slide out animation before hiding
+    setIsVisible(false);
+    setTimeout(() => {
+      setShowBanner(false);
+    }, 300); // Wait for slide-out animation to complete
 
     // Load scripts conditionally
     if (newConsent.analytics) loadAnalytics();
@@ -88,79 +98,50 @@ export default function CookieConsentLite() {
   return (
     <>
       {showBanner && (
-        <div className="fixed bottom-0 w-full bg-black text-white p-4 flex flex-col md:flex-row items-center justify-between z-50 shadow-lg">
-          <p className="text-sm mb-2 md:mb-0">
-            We use cookies to enhance your experience. Manage preferences below.
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={() =>
-                saveConsent({ essential: true, analytics: true, marketing: true })
-              }
-              className="bg-green-600 px-4 py-2 rounded text-sm"
-            >
-              Accept All
-            </button>
-            <button
-              onClick={() => setShowSettings(true)}
-              className="bg-gray-700 px-4 py-2 rounded text-sm"
-            >
-              Customize
-            </button>
-            <button
-              onClick={() => saveConsent(defaultConsent)}
-              className="bg-red-600 px-4 py-2 rounded text-sm"
-            >
-              Reject All
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showSettings && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl max-w-md w-full shadow-xl">
-            <h2 className="text-xl font-bold mb-4">Cookie Preferences</h2>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span>Essential (always on)</span>
-                <input type="checkbox" checked disabled />
+        <div 
+          className={`fixed bottom-6 left-4 z-[60] transition-all duration-300 ease-out transform ${
+            isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
+          }`}
+        >
+          {/* WhatsApp-style floating widget */}
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden max-w-xs">
+            {/* Header */}
+            <div className="bg-gray-600 px-4 py-2 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-white text-sm font-medium">Cookie Settings</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span>Analytics</span>
-                <input
-                  type="checkbox"
-                  checked={consent.analytics}
-                  onChange={(e) =>
-                    setConsent({ ...consent, analytics: e.target.checked })
-                  }
-                />
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Marketing</span>
-                <input
-                  type="checkbox"
-                  checked={consent.marketing}
-                  onChange={(e) =>
-                    setConsent({ ...consent, marketing: e.target.checked })
-                  }
-                />
-              </div>
+              <button
+                onClick={() => saveConsent(defaultConsent)}
+                className="text-white/80 hover:text-white text-xs"
+              >
+                ✕
+              </button>
             </div>
-
-            <div className="flex justify-end gap-2 mt-6">
-              <button
-                onClick={() => setShowSettings(false)}
-                className="px-4 py-2 bg-gray-200 rounded-lg"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => saveConsent(consent)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-              >
-                Save
-              </button>
+            
+            {/* Message */}
+            <div className="p-4">
+              <p className="text-gray-700 text-sm mb-4 leading-relaxed">
+                🍪 We use cookies to enhance your experience. Accept to continue with the best experience!
+              </p>
+              
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() =>
+                    saveConsent({ essential: true, analytics: true, marketing: true })
+                  }
+                  className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => saveConsent(defaultConsent)}
+                  className="px-3 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors"
+                >
+                  Decline
+                </button>
+              </div>
             </div>
           </div>
         </div>

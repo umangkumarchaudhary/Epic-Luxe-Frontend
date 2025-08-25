@@ -84,21 +84,16 @@ const AnimatedTrustBadges: React.FC<{ badges: typeof buyTrustBadges }> = ({ badg
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center space-x-2 text-sm text-white/60"
+          className="flex items-center justify-between space-x-6 w-full"
         >
-          {React.createElement(currentBadges[0].icon, { className: "w-4 h-4 text-[#BFA980]" })}
-          <span className="font-medium">{currentBadges[0].text}</span>
-        </motion.div>
-        <motion.div
-          key={`${currentGroup}-second`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex items-center space-x-2 text-sm text-white/60"
-        >
-          {React.createElement(currentBadges[1].icon, { className: "w-4 h-4 text-[#BFA980]" })}
-          <span className="font-medium">{currentBadges[1].text}</span>
+          <div className="flex items-center space-x-2 text-sm text-white/60">
+            {React.createElement(currentBadges[0].icon, { className: "w-4 h-4 text-[#BFA980]" })}
+            <span className="font-medium">{currentBadges[0].text}</span>
+          </div>
+          <div className="flex items-center space-x-2 text-sm text-white/60">
+            {React.createElement(currentBadges[1].icon, { className: "w-4 h-4 text-[#BFA980]" })}
+            <span className="font-medium">{currentBadges[1].text}</span>
+          </div>
         </motion.div>
       </AnimatePresence>
     </div>
@@ -257,7 +252,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" aria-modal="true" role="dialog" aria-labelledby="quote-form-title" aria-describedby="quote-form-desc">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6" aria-modal="true" role="dialog" aria-labelledby="quote-form-title" aria-describedby="quote-form-desc">
 
       {/* Backdrop */}
       <div
@@ -269,8 +264,8 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
         aria-label="Close quote form backdrop"
       />
 
-      {/* Form Container with increased width and reduced height for header */}
-      <div className="relative w-full max-w-lg bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] rounded-2xl border border-[#D4AF37]/30 shadow-2xl animate-[slideUp_0.5s_ease-out] overflow-hidden">
+      {/* Form Container - Fully Responsive */}
+      <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] rounded-xl sm:rounded-2xl border border-[#D4AF37]/30 shadow-2xl animate-[slideUp_0.5s_ease-out] overflow-hidden max-h-[85vh] sm:max-h-[80vh]">
 
         {/* Loading Overlay */}
         {isLoading && (
@@ -288,12 +283,12 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
         {/* Success State */}
         {isSubmitted && (
           <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] flex items-center justify-center z-10 animate-[slideUp_0.4s_ease-out]">
-            <div className="text-center space-y-4 p-8">
+            <div className="text-center space-y-3 sm:space-y-4 p-4 sm:p-6 md:p-8">
               <div className="mx-auto w-16 h-16 bg-gradient-to-r from-[#D4AF37] to-[#BFA980] rounded-full flex items-center justify-center animate-[scaleIn_0.5s_ease-out]">
                 <CheckCircle className="w-8 h-8 text-black" />
               </div>
-              <h3 className="text-xl font-bold text-white">Request Submitted!</h3>
-              <p className="text-white/70 text-sm leading-relaxed">
+              <h3 className="text-lg sm:text-xl font-bold text-white">Request Submitted!</h3>
+              <p className="text-white/70 text-xs sm:text-sm leading-relaxed">
                 Our luxury car expert will contact you within 30 minutes to discuss your {formType === 'buy' ? 'purchase' : 'valuation'} requirements.
               </p>
               <div className="flex items-center justify-center space-x-2 text-[#D4AF37] text-sm font-medium">
@@ -307,37 +302,37 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 z-20"
+          className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1.5 sm:p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 z-20"
           aria-label="Close form"
         >
-          <X className="w-5 h-5 text-white/70" />
+          <X className="w-4 h-4 sm:w-5 sm:h-5 text-white/70" />
         </button>
 
         {/* Form Header with responsive design */}
-        <div className="p-3 sm:p-4 pb-2 sm:pb-3 border-b border-[#D4AF37]/20 flex items-center space-x-2 sm:space-x-3">
-          <div className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20">
+        <div className="p-3 sm:p-4 md:p-5 pb-2 sm:pb-3 md:pb-4 border-b border-[#D4AF37]/20 flex items-center space-x-2 sm:space-x-3 md:space-x-4">
+          <div className="p-1.5 sm:p-2 md:p-2.5 rounded-lg bg-gradient-to-r from-[#D4AF37]/20 to-[#BFA980]/20">
             {formType === 'buy' ?
-              <Car className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37]" /> :
-              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-[#BFA980]" />
+              <Car className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-[#D4AF37]" /> :
+              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-[#BFA980]" />
             }
           </div>
           <div>
-            <h2 id="quote-form-title" className="text-sm sm:text-base md:text-lg font-bold text-white leading-tight">
+            <h2 id="quote-form-title" className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white leading-tight">
               {formType === 'buy' ? 'Get Dream Car Quote' : 'Get Car Valuation'}
             </h2>
-            <p id="quote-form-desc" className="text-white/60 text-xs">
+            <p id="quote-form-desc" className="text-white/60 text-xs sm:text-sm">
               Contact within 30 minutes
             </p>
           </div>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
+        <form onSubmit={handleSubmit} className="p-3 sm:p-4 md:p-5 lg:p-6 space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 overflow-y-auto max-h-[calc(85vh-140px)] sm:max-h-none">
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 sm:gap-x-4 gap-y-4 sm:gap-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 sm:gap-x-4 md:gap-x-5 gap-y-3 sm:gap-y-4 md:gap-y-5">
             {/* Name Field */}
-            <div className="space-y-1.5 sm:space-y-2">
-              <label className="block text-xs sm:text-sm font-semibold text-white/90" htmlFor="name">
+            <div className="space-y-1.5 sm:space-y-2 md:space-y-2.5">
+              <label className="block text-xs sm:text-sm md:text-base font-semibold text-white/90" htmlFor="name">
                 Full Name <span className="text-[#D4AF37]">*</span>
               </label>
               <input
@@ -346,15 +341,15 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
                 required
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
+                className="w-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 lg:py-3.5 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm md:text-base placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
                 placeholder="Enter your full name"
                 aria-required="true"
               />
             </div>
 
             {/* Phone Field */}
-            <div className="space-y-1.5 sm:space-y-2">
-              <label className="block text-xs sm:text-sm font-semibold text-white/90" htmlFor="phone">
+            <div className="space-y-1.5 sm:space-y-2 md:space-y-2.5">
+              <label className="block text-xs sm:text-sm md:text-base font-semibold text-white/90" htmlFor="phone">
                 Phone Number <span className="text-[#D4AF37]">*</span>
               </label>
               <input
@@ -363,7 +358,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
                 required
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
+                className="w-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 lg:py-3.5 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm md:text-base placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
                 placeholder="1234567890"
                 aria-required="true"
               />
@@ -371,8 +366,8 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
           </div>
 
           {/* Preferred Model */}
-          <div className="space-y-1.5 sm:space-y-2">
-            <label className="block text-xs sm:text-sm font-semibold text-white/90" htmlFor="preferred_model">
+          <div className="space-y-1.5 sm:space-y-2 md:space-y-2.5">
+            <label className="block text-xs sm:text-sm md:text-base font-semibold text-white/90" htmlFor="preferred_model">
               {formType === 'buy' ? 'Preferred Model' : 'Your Car Model'} <span className="text-[#D4AF37]">*</span>
             </label>
             <select
@@ -380,7 +375,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
               required
               value={formData.preferred_model}
               onChange={(e) => handleInputChange('preferred_model', e.target.value)}
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
+              className="w-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 lg:py-3.5 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm md:text-base focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
               aria-required="true"
             >
               <option value="">Select a model</option>
@@ -393,8 +388,8 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
           </div>
 
           {/* Additional Notes */}
-          <div className="space-y-1.5 sm:space-y-2">
-            <label className="block text-xs sm:text-sm font-semibold text-white/90" htmlFor="message">
+          <div className="space-y-1.5 sm:space-y-2 md:space-y-2.5">
+            <label className="block text-xs sm:text-sm md:text-base font-semibold text-white/90" htmlFor="message">
               Additional Requirements (Optional)
             </label>
             <textarea
@@ -402,7 +397,7 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
               value={formData.message}
               onChange={(e) => handleInputChange('message', e.target.value)}
               rows={3}
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all resize-none"
+              className="w-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 lg:py-3.5 rounded-lg bg-black/30 border border-[#BFA980]/30 text-white text-sm md:text-base placeholder-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all resize-none"
               placeholder={formType === 'buy' ?
                 "Budget range, features, timeline..." :
                 "Year, mileage, condition..."
@@ -414,24 +409,24 @@ function QuoteForm({ isOpen, onClose, formType }: QuoteFormProps): React.ReactEl
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex items-center justify-center space-x-2 px-4 sm:px-6 py-3 sm:py-3.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold text-sm sm:text-base hover:from-[#BFA980] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full flex items-center justify-center space-x-2 px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 md:py-3.5 lg:py-4 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#BFA980] text-black font-bold text-sm md:text-base lg:text-lg hover:from-[#BFA980] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 animate-spin" />
                 <span>Processing...</span>
               </>
             ) : (
               <>
-                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Phone className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                 <span>{formType === 'buy' ? 'Get Quote' : 'Get Valuation'}</span>
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
               </>
             )}
           </button>
 
           {/* Privacy Notice */}
-          <p className="text-xs text-white/50 text-center leading-relaxed px-2">
+          <p className="text-xs sm:text-sm text-white/50 text-center leading-relaxed px-2 sm:px-3">
             By submitting, you agree to our privacy policy. We&apos;ll contact you within 30 minutes.
           </p>
         </form>
@@ -449,19 +444,20 @@ function BottomNav(): React.ReactElement {
   useEffect(() => {
     const controlNavbar = () => {
       if (typeof window !== 'undefined') {
-        if (window.scrollY > lastScrollY && window.scrollY > 100) {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
           // Scrolling down & past 100px
           setIsVisible(false);
         } else {
           // Scrolling up
           setIsVisible(true);
         }
-        setLastScrollY(window.scrollY);
+        setLastScrollY(currentScrollY);
       }
     };
 
     if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', controlNavbar);
+      window.addEventListener('scroll', controlNavbar, { passive: true });
       return () => window.removeEventListener('scroll', controlNavbar);
     }
   }, [lastScrollY]);
@@ -486,35 +482,32 @@ function BottomNav(): React.ReactElement {
       role="navigation" 
       aria-label="Bottom navigation"
     >
-      <div className="grid grid-cols-3 gap-1 py-2 sm:py-3 px-2 sm:px-4">
+      <div className="grid grid-cols-3 gap-1 py-2 px-2">
         <button 
           onClick={handleBuyClick}
-          className="flex flex-col items-center space-y-1 py-2 sm:py-3 px-1 sm:px-2 rounded-lg hover:bg-[#D4AF37]/10 active:bg-[#D4AF37]/20 transition-all duration-300" 
-          aria-label="Buy Cars"
+          className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" 
+          aria-label="Buy"
         >
-          <Car className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37]" />
-          <span className="text-xs sm:text-sm text-[#D4AF37] font-semibold">Buy</span>
+          <Car className="w-5 h-5 text-[#D4AF37]" />
+          <span className="text-xs text-[#D4AF37] font-semibold">Buy</span>
         </button>
         <button 
           onClick={handleSellClick}
-          className="flex flex-col items-center space-y-1 py-2 sm:py-3 px-1 sm:px-2 rounded-lg hover:bg-[#D4AF37]/10 active:bg-[#D4AF37]/20 transition-all duration-300" 
-          aria-label="Sell Your Car"
+          className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" 
+          aria-label="Sell"
         >
-          <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37]" />
-          <span className="text-xs sm:text-sm text-[#D4AF37] font-semibold">Sell</span>
+          <DollarSign className="w-5 h-5 text-[#D4AF37]" />
+          <span className="text-xs text-[#D4AF37] font-semibold">Sell</span>
         </button>
         <button 
           onClick={handleCallClick}
-          className="flex flex-col items-center space-y-1 py-2 sm:py-3 px-1 sm:px-2 rounded-lg hover:bg-[#D4AF37]/10 active:bg-[#D4AF37]/20 transition-all duration-300" 
-          aria-label="Call Expert Now"
+          className="flex flex-col items-center space-y-1 py-2 px-1 rounded-lg hover:bg-[#D4AF37]/10 transition-all duration-300" 
+          aria-label="Call Now"
         >
-          <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37]" />
-          <span className="text-xs sm:text-sm text-[#D4AF37] font-semibold">Call</span>
+          <Phone className="w-5 h-5 text-[#D4AF37]" />
+          <span className="text-xs text-[#D4AF37] font-semibold">Call Now</span>
         </button>
       </div>
-      
-      {/* Safe area for devices with home indicator */}
-      <div className="pb-safe-area-inset-bottom"></div>
     </div>
   );
 }

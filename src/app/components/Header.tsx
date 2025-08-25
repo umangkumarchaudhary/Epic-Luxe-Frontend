@@ -459,7 +459,7 @@ export default function Header() {
         .sort((a, b) => b.score - a.score)
         .slice(0, 8)
         .map((item) => {
-          const { score: _, ...rest } = item;
+          const { score, ...rest } = item;
           return rest;
         });
 
@@ -834,11 +834,11 @@ export default function Header() {
             <div className="flex flex-row items-center">
               <Link href="/" className="cursor-pointer">
                 <Image
-                  src="/assets/images/EpicLuxeLogoCopy.jpeg"
+                  src="/assets/images/Epic Logo-02.png"
                   alt="Epic Luxe Logo"
                   width={140}
                   height={50}
-                  className="object-contain w-20 sm:w-24 md:w-36 h-auto logo-responsive hover:opacity-90 transition-opacity duration-300"
+                  className="object-contain w-20 sm:w-28 md:w-36 lg:w-40 h-10 sm:h-12 md:h-14 max-h-12 logo-responsive hover:opacity-90 transition-opacity duration-300"
                   priority
                 />
               </Link>

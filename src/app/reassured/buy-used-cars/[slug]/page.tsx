@@ -382,10 +382,10 @@ export default function VehicleDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-gray-700 border-t-[#D4AF37] rounded-full animate-spin mx-auto mb-6"></div>
-          <h2 className="text-xl font-semibold text-white font-manrope">Loading vehicle details...</h2>
+          <div className="w-16 h-16 border-4 border-gray-300 border-t-black rounded-full animate-spin mx-auto mb-6"></div>
+          <h2 className="text-xl font-semibold text-black font-manrope">Loading vehicle details...</h2>
         </div>
       </div>
     );
@@ -393,15 +393,15 @@ export default function VehicleDetailsPage() {
 
   if (error || !vehicle) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="max-w-md text-center">
           <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/30">
             <Car size={32} className="text-red-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-3 font-manrope">
+          <h1 className="text-2xl font-bold text-black mb-3 font-manrope">
             {error === 'Vehicle not found' ? 'Vehicle Not Found' : 'Error Loading Vehicle'}
           </h1>
-          <p className="text-gray-400 mb-8 font-manrope">
+          <p className="text-gray-600 mb-8 font-manrope">
             {error === 'Vehicle not found'
               ? 'The vehicle you&apos;re looking for is no longer available.'
               : error || 'Unable to load vehicle details at the moment.'}
@@ -415,7 +415,7 @@ export default function VehicleDetailsPage() {
             </button>
             <button
               onClick={() => window.location.reload()}
-              className="w-full border border-gray-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-gray-900/50 transition-colors font-manrope"
+              className="w-full border border-gray-400 text-black px-6 py-3 rounded-2xl font-semibold hover:bg-gray-100 transition-colors font-manrope"
             >
               Try Again
             </button>
@@ -448,13 +448,13 @@ export default function VehicleDetailsPage() {
         <meta property="og:type" content="product" />
       </Head>
 
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-white">
         {/* Header - FIXED: Not sticky for full page scroll */}
-        <header className="bg-black/80 backdrop-blur-sm border-b border-gray-800">
+        <header className="bg-white border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-gray-400 hover:text-[#D4AF37] transition-all duration-300 hover:scale-105 active:scale-95"
+              className="flex items-center gap-2 text-gray-600 hover:text-black transition-all duration-300 hover:scale-105 active:scale-95"
             >
               <ArrowLeft size={20} />
               <span className="font-medium font-manrope">Back</span>
@@ -466,7 +466,7 @@ export default function VehicleDetailsPage() {
                 className={`w-10 h-10 rounded-full border transition-all duration-300 hover:scale-110 active:scale-90 ${
                   liked 
                     ? 'border-red-400 bg-red-500/10 text-red-400 shadow-md shadow-red-400/25' 
-                    : 'border-gray-600 hover:border-red-400 hover:bg-red-500/10 hover:text-red-400 hover:shadow-md'
+                    : 'border-gray-400 hover:border-red-400 hover:bg-red-500/10 hover:text-red-400 hover:shadow-md'
                 }`}
               >
                 <Heart size={18} fill={liked ? 'currentColor' : 'none'} className="mx-auto" />
@@ -475,9 +475,9 @@ export default function VehicleDetailsPage() {
               <div className="relative">
                 <button
                   onClick={handleShare}
-                  className="w-10 h-10 rounded-full border border-gray-600 hover:border-[#D4AF37] hover:bg-gray-900/50 transition-all duration-300 hover:scale-110 active:scale-90 hover:shadow-md flex items-center justify-center"
+                  className="w-10 h-10 rounded-full border border-gray-400 hover:border-black hover:bg-gray-100 transition-all duration-300 hover:scale-110 active:scale-90 hover:shadow-md flex items-center justify-center"
                 >
-                  <Share2 size={18} className="text-gray-400 hover:text-[#D4AF37]" />
+                  <Share2 size={18} className="text-gray-600 hover:text-black" />
                 </button>
                 {copyMessage && (
                   <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1 bg-black/90 text-[#D4AF37] text-sm rounded-lg whitespace-nowrap border border-[#D4AF37]/30 font-manrope">

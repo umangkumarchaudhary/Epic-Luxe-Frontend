@@ -117,13 +117,7 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
         </div>
       ) : vehicles.length > 0 ? (
         <>
-          <div
-            className={`flex justify-center gap-6 ${
-              vehicles.length === 1 ? 'max-w-xs mx-auto' :
-              vehicles.length === 2 ? 'max-w-2xl mx-auto' :
-              'max-w-4xl mx-auto'
-            }`}
-          >
+          <div className="flex flex-col sm:flex-row justify-center items-center sm:items-stretch gap-4 sm:gap-6 max-w-6xl mx-auto px-4">
             {vehicles.map((vehicle) => {
               const premiumBadges = [
                 { text: 'Curated Selection', gradient: 'from-[#D4AF37] to-[#F4E076]' },
@@ -138,13 +132,14 @@ const VehicleGrid = ({ vehiclesByBrand, defaultBrand }: VehicleGridProps) => {
               return (
                 <div
                   key={vehicle.id}
-                  className="group relative bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border border-gray-800 hover:border-gray-600 transition-all duration-500 hover:transform hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 w-80"
+                  className="group relative bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border border-gray-800 hover:border-gray-600 transition-all duration-500 hover:transform hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 flex-1 max-w-sm w-full"
                 >
                   <div className="relative h-40 overflow-hidden">
                     <Image
                       src={vehicle.image_url || '/placeholder.png'}
                       alt={`${vehicle.year} ${vehicle.brand} ${vehicle.model}${vehicle.variant ? ` ${vehicle.variant}` : ''}`}
-                      layout="fill"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>

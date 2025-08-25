@@ -15,7 +15,7 @@ import HomeAboutContact from "../components/HomeAboutContact"
 
 export default function HomePage(){
   return (
-    <main>
+    <main className="overflow-x-hidden w-full">
       <Header/>
       <Hero/>
       

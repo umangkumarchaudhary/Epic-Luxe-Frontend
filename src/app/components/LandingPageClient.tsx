@@ -30,6 +30,7 @@ const LandingPageClient = () => {
   const [bottomBuyOpen, setBottomBuyOpen] = useState(false);
   const [bottomSellOpen, setBottomSellOpen] = useState(false);
   const [loadingNavigation, setLoadingNavigation] = useState<string | null>(null);
+  const [bottomNavVisible, setBottomNavVisible] = useState(false);
   const [buttonLoading, setButtonLoading] = useState<string | null>(null);
   const [headerLoading, setHeaderLoading] = useState<string | null>(null);
   const [dropdownLoading, setDropdownLoading] = useState<string | null>(null);
@@ -126,9 +127,17 @@ const LandingPageClient = () => {
     };
   }, [animationComplete]);
 
-  // Simplified scroll handler - header always visible
+  // Scroll handler with bottom nav visibility logic
   const handleScroll = useCallback(() => {
-    // Header is now always visible, no complex logic needed
+    const scrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
+    
+    // Show bottom nav after scrolling past the first section (about 50% of viewport)
+    if (scrollY > windowHeight * 0.5) {
+      setBottomNavVisible(true);
+    } else {
+      setBottomNavVisible(false);
+    }
   }, []);
 
 
@@ -199,7 +208,7 @@ const LandingPageClient = () => {
 
   // Premium navigation handler with loading states
   const handlePremiumNavigation = useCallback(async (url: string, buttonType: string) => {
-    setButtonLoading(buttonType);
+  setButtonLoading(buttonType);
 
     // Add premium loading animation
     await new Promise(resolve => setTimeout(resolve, 800));
@@ -362,7 +371,7 @@ const LandingPageClient = () => {
                     fontFamily: 'Manrope, sans-serif'
                   }}
                 >
-                  EPIC
+                  EPIC CARS
                 </h1>
               </div>
 
@@ -665,7 +674,7 @@ const LandingPageClient = () => {
               <div className="group cursor-pointer" onClick={handleLuxeNavigation}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/assets/images/rightside.png"
+                  src="/assets/images/MB GMC.png"
                   alt="Epic Luxe Car"
                   width={500}
                   height={350}
@@ -692,7 +701,7 @@ const LandingPageClient = () => {
               <div className="group cursor-pointer" onClick={handleReassuredNavigation}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/assets/images/leftside.png"
+                  src="/assets/images/MG Astor.png"
                   alt="Epic Reassured Car"
                   width={500}
                   height={350}
@@ -872,15 +881,19 @@ const LandingPageClient = () => {
         </section>
 
   
-        <Section2AboutEpicCars/>
-        <ThisMonthsHighlights/>
-        <Section3WhyChooseUs/>
-        <VoicesOfDistinction/>
-        <LuxuryLeadForm/>
-        <ChooseYourJourneySection/>
+        <div className="relative">
+          <Section2AboutEpicCars/>
+          <ThisMonthsHighlights/>
+          <Section3WhyChooseUs/>
+          <VoicesOfDistinction/>
+          <LuxuryLeadForm/>
+          <ChooseYourJourneySection/>
+        </div>
 
         {/* Bottom Sticky Navigation - Mobile Only */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-black/95 via-gray-900/95 to-black/95 backdrop-blur-sm border-t border-[#D4AF37]/20" onClick={handleClickOutside}>
+        <div className={`md:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-black/95 via-gray-900/95 to-black/95 backdrop-blur-sm border-t border-[#D4AF37]/20 transition-transform duration-300 ${
+          bottomNavVisible ? 'translate-y-0' : 'translate-y-full'
+        }`} onClick={handleClickOutside}>
           <div className="container mx-auto px-4 py-3">
             <div className="flex items-center justify-center space-x-4">
               
