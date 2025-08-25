@@ -244,7 +244,7 @@ const ChooseYourJourneySection: React.FC = () => {
               {/* Enhanced Border on Hover */}
               <div className="absolute inset-0 border-4 border-black opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               
-              <span className="relative z-10 text-lg font-semibold text-black tracking-wide uppercase whitespace-nowrap">
+              <span className="relative z-10 text-lg font-semibold text-black tracking-wide whitespace-nowrap">
                 Begin My Reassured Journey
               </span>
             </motion.button>
